@@ -1,0 +1,19 @@
+package mc.fenix.fischertechnik;
+
+component SortingLine(
+  boolean pumpRunning,
+  boolean pusher1Extended,
+  boolean pusher2Extended,
+  boolean pusher3Extended,
+  boolean beltRunning,
+
+  boolean barrierIndicator1On,
+  boolean barrierIndicator2On,
+  boolean barrierIndicator3On,
+  boolean barrierIndicatorFeed1On,
+  boolean barrierIndicatorFeed2On,
+
+  String colorSensor
+){
+
+}

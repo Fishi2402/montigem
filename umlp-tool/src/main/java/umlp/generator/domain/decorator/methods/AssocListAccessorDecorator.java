@@ -14,6 +14,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.StringTransformations;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,15 +51,21 @@ public class AssocListAccessorDecorator extends MandatoryAccessorDecorator {
 
     // generate getXGem-Method
     ASTCDMethod getGemList = createGetGemList(ast);
+    methodList.add(getGemList);
     if (getGemList.getModifier().isAbstract()) {
-      //Add method to override
-      ASTCDMethod getOverride = createGetGemListOverride(ast);
-      methodList.add(getOverride);
       //modify internal getter to call override
       getGemList.getModifier().setAbstract(false);
-      this.replaceTemplate(EMPTY_BODY, getGemList, new TemplateHookPoint("umlp.methods.GetDerived", getOverride.getName()));
+      this.replaceTemplate(EMPTY_BODY, getGemList, new TemplateHookPoint(
+          "umlp.methods.GetDerived",
+          String.format(GET, paramName) + "DerivedGemList")
+      );
+
+      if(!(ast.getModifier().isPresentStereotype() && ast.getModifier().getStereotype().contains(GenService.DERIVED_IMPL_TEMPLATE))) {
+        //Add method to override
+        ASTCDMethod getOverride = createGetGemListOverride(ast);
+        methodList.add(getOverride);
+      }
     }
-    methodList.add(getGemList);
 
     return methodList;
   }

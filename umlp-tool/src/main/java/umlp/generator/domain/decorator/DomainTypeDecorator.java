@@ -10,6 +10,7 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
+import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static umlp.generator.domain.decorator.GenService.DERIVED_IMPL_TEMPLATE;
 import static umlp.generator.domain.decorator.GenService.createType;
 
 public abstract class DomainTypeDecorator extends AbstractDecorator {
@@ -147,7 +149,14 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       // TODO AGe: wrong optionals
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(),
           createType(visibleAttribute), GenService.createName(visibleAttribute.getName()));
-      attribute.getModifier().setDerived(visibleAttribute.getModifier().isDerived());
+      ASTModifier targetMod = attribute.getModifier();
+      ASTModifier sourceMod = visibleAttribute.getModifier();
+      targetMod.setDerived(sourceMod.isDerived());
+
+      if(sourceMod.isPresentStereotype() && sourceMod.getStereotype().contains(DERIVED_IMPL_TEMPLATE)){
+        copyImplTemplateStereo(targetMod, sourceMod);
+      }
+
       attributesList.add(attribute);
       if (!visibleAttribute.isPresentInitial() && GenService.isOptional(visibleAttribute)) {
         glex.replaceTemplate("cd2java.Value", attribute, new StringHookPoint(" = Optional.empty()"));
@@ -157,6 +166,19 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       }
     }
     return attributesList;
+  }
+
+  protected void copyImplTemplateStereo(ASTModifier targetMod, ASTModifier sourceMod) {
+    if(!targetMod.isPresentStereotype()){
+      targetMod.setStereotype(UMLPMill.stereotypeBuilder().build());
+    }
+
+    targetMod.getStereotype().addValues(
+        UMLPMill.stereoValueBuilder()
+            .setName(DERIVED_IMPL_TEMPLATE)
+            .setContent(sourceMod.getStereotype().getValue(DERIVED_IMPL_TEMPLATE))
+            .build()
+    );
   }
 
   protected List<ASTCDAttribute> getAttributesForAssociations(ASTCDType domainType, boolean isInterface, ASTCDCompilationUnit cd) {
@@ -178,6 +200,14 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
       );
       if (GenService.isSymbolDerived(assocSide)) {
         attribute.getModifier().setDerived(true);
+        if(GenService.hasImplTemplate(assocSide)){
+          ASTModifier targetMod = attribute.getModifier();
+
+          ASTCDAssociation assoc = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();
+          ASTModifier sourceMod = assoc.getModifier();
+
+          copyImplTemplateStereo(targetMod, sourceMod);
+        }
       }
       if (GenService.isBidirectional(assocSide)) {
         addStereotype(attribute.getModifier(), STEREOTYPE_OTHERSIDE, assocSide.getSymbol().getOtherSide().getName());
@@ -223,9 +253,8 @@ public abstract class DomainTypeDecorator extends AbstractDecorator {
   }
 
   protected void markDeepEqualsBackendOnly(ASTCDType targetType, ASTCDMethodSignature m) {
-    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@BackendOnly(BackendOnlyModes.THROW_ERROR)"));
-    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnly");
-    getCD4C().addImport(targetType, "umlp.jsweet.extension.annotation.BackendOnlyModes");
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@Erased"));
+    getCD4C().addImport(targetType, "jsweet.lang.Erased");
   }
 
   protected String getDeepEqualsTemplate(){

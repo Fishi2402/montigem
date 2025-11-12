@@ -1,11 +1,12 @@
 package functionstructure4fenix.ma2fenix;
 
+import arcbasis._ast.ASTArcComponentType;
 import arcbasis._ast.ASTArcPort;
 import arcbasis._ast.ASTComponentInstance;
-import arcbasis._ast.ASTComponentType;
 import arcbasis._ast.ASTConnector;
 import arcbasis._ast.ASTPortAccess;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.compsymbols._ast.ASTPort;
 import de.se_rwth.commons.logging.Log;
 import functionstructure4fenix.Category;
 import functionstructure4fenix.Channel;
@@ -51,7 +52,7 @@ public class MA2FenixTransformer {
     buildFunctions();
   }
 
-  public void transform(ASTComponentType node){
+  public void transform(ASTArcComponentType node){
     createFunction(node);
     buildFunctionStructure();
   }
@@ -64,7 +65,7 @@ public class MA2FenixTransformer {
     }
     return qname;
   }
-  public Function createFunction(ASTComponentType node){
+  public Function createFunction(ASTArcComponentType node){
     if(this.getQname().isEmpty()) {
       stack.push(node.getName().toLowerCase());
     }
@@ -77,7 +78,7 @@ public class MA2FenixTransformer {
     if(node.getSymbol().isDecomposed()){
       for(ASTComponentInstance instance : node.getSubComponents()) {
         stack.push(instance.getName());
-        function.subFunctionAdd(createFunction(node.getSpannedScope().resolveComponentType(
+        function.subFunctionAdd(createFunction(node.getSpannedScope().resolveArcComponentType(
             instance.getSymbol().getType().getTypeInfo().getName()
         ).get().getAstNode()));
         stack.pop();
@@ -101,7 +102,7 @@ public class MA2FenixTransformer {
     return function;
   }
 
-  public Category createCategory(ASTArcPort node){
+  public Category createCategory(ASTPort node){
     Category category;
     if(categories.containsKey(node.getSymbol().getTypeInfo().getFullName())){
       category = categories.get(node.getSymbol().getTypeInfo().getFullName());

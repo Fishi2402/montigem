@@ -1,32 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
-plugins {
-    id 'application'
-    id 'com.google.cloud.tools.jib' version '3.4.4'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    id 'org.springframework.boot' version "${spring_version}"
 
-    id 'de.rwth.se.umlp-tool-backend'
+import de.montigem.gradle.specific.UMLP2JavaTask
+
+plugins {
+  id 'de.rwth.se.montigem-backend'
+
+  id 'com.google.cloud.tools.jib' version '3.4.4'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
 }
 
 description 'StatServer'
 
-application {
-    mainClass = 'log_mc_jar.StatServerApplication'
-}
-
 bootBuildImage {
-    imageName = "statserver"
+  imageName = "statserver"
 }
 
 jib {
-    to {
-        image 'umlp_statserver'
-    }
+  container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}stat_backend:latest"
 }
 
 dependencies {
     implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
     // Spring Boot Dependencies
     def withoutSpringLogging = {
@@ -40,37 +37,30 @@ dependencies {
 
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
-    implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
-    testImplementation "org.neo4j:neo4j:4.4.10"
-    implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
-    //symbol "de.monticore:frontend-rte:$mc_version"
+    runtimeOnly group: 'org.neo4j', name: 'neo4j-jdbc', version: neo4j_jdbc_version
+
+    testImplementation "org.neo4j.test:neo4j-harness:5.26.12" exclude module: "commons-text"
+
     testImplementation project(':umlp-test-rte')
 }
 
-tasks.register('runServer') {
-    dependsOn(bootRun)
-}
-
-
-String diff_location="diff_store"
+String diff_location = "diff_store"
 tasks.register('copyGeneratedFiles', Sync) {
   group = "diff"
-  from generateUmlpBackend.getOutputDir()
+  from umlp2java.getOutputDir()
   into layout.buildDirectory.dir(diff_location)
 }
 
-generateUmlpBackend {
+def umlp2java = tasks.named("umlp2java", UMLP2JavaTask) {
+  input = file("./src/models")
   configTemplate = "umlp.UMLP2JavaNeo4j"
+  useSpring = false
 }
 
-tasks.register('diff', Exec){
+
+tasks.register('diff', Exec) {
   group = "diff"
-  dependsOn(generateUmlpBackend)
-  commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), generateUmlpBackend.getOutputDir().get().getAsFile().toPath()
+  dependsOn(umlp2java)
+  commandLine 'cmd', '/c', 'git', 'diff', '--no-index', layout.buildDirectory.dir(diff_location).get().getAsFile().toPath(), umlp2java.get().getOutputDir().get().getAsFile().toPath()
   ignoreExitValue true
-}
-
-
-tasks.register('generateNPMAuth', NPMAuthCreate){
-  gitignore = project.getRootProject().file(".gitignore") // Task reads gitignore to ensure <.npmrc> is not committed
 }

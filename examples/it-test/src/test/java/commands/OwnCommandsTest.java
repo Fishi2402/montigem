@@ -79,4 +79,40 @@ public class OwnCommandsTest {
     assertEquals("a@b.com", result3.get().get(0).getEmail());
   }
 
+  @Test
+  public void testLineBreaks() {
+    CommandsMock.init();
+    var user = CommandsManager.userBuilder().name("username").email("a@b.com").build().get();
+
+    var command = new SendEmail(user.getGemId(), "abc ReplaceMe {\n" +
+        "      abcd efg;\n" +
+        "\n" +
+        "    }", Optional.of("cde ReplaceMe {\n" +
+        "      cde efg;\n" +
+        "\n" +
+        "    }"),
+        Lists.newArrayList("f1", "f2", "lmn ReplaceMe {\n" +
+            "      lmn efg;\n" +
+            "\n" +
+            "    }"));
+    var cmdStr = CommandObjectMapper.serializeCommand(command);
+    Command<?> clonedCommand = CommandObjectMapper.deserializeCommand(cmdStr).get();
+    assertTrue(clonedCommand instanceof SendEmail);
+    assertEquals("abc ReplaceMe {\n" +
+        "      abcd efg;\n" +
+        "\n" +
+        "    }", ((SendEmail) clonedCommand).getText());
+    assertEquals("cde ReplaceMe {\n" +
+        "      cde efg;\n" +
+        "\n" +
+        "    }", ((SendEmail) clonedCommand).getSubject());
+    assertEquals(3, ((SendEmail) clonedCommand).getForwardsList().size());
+    assertEquals("f1", ((SendEmail) clonedCommand).getForwards(0));
+    assertEquals("lmn ReplaceMe {\n" +
+        "      lmn efg;\n" +
+        "\n" +
+        "    }", ((SendEmail) clonedCommand).getForwards(2));
+    assertEquals(user.getGemId(), ((SendEmail) clonedCommand).getUserGemId());
+  }
+
 }

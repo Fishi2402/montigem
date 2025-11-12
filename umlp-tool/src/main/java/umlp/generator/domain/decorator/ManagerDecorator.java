@@ -135,6 +135,9 @@ public class ManagerDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, false);
 
+      getCD4C().addMethod(managerClass, "umlp.manager.GetFilteredList", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetFilteredList", name, false);
+
 
       if (!domainClass.getModifier().isAbstract()) {
         getCD4C().addMethod(managerClass, "umlp.manager.BuilderParam", name, true);
@@ -200,6 +203,8 @@ public class ManagerDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.manager.GetSure", name, false);
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.GetList", name, false);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetFilteredList", name, true);
+      getCD4C().addMethod(managerClass, "umlp.manager.GetFilteredList", name, false);
       getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
 

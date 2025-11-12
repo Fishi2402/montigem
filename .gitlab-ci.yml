@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromium-deps
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:8-jdk21-chromium-installed
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -20,27 +20,66 @@ stages:
   - deploy
   - testDeployed
 
-build_no_containers:
+gendoc:
   stage: build
   script:
-    - "gradle --version"
-    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true"
+    - gradle comment2doc:md --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user
+  artifacts:
+    paths:
+      - docs/gendoc_components
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+
+pages:
+  stage: build
+  needs: ["gendoc"]
+  image: python:alpine
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  before_script:
+    - apk add gcc musl-dev python3-dev
+    - pip install cython
+    - pip install mkdocs
+    - pip install mkdocs-material
+  script:
+    - mkdocs build --verbose --clean
+    - mv site public
+  artifacts:
+    paths:
+      - public
+
+build_no_containers:
+  stage: build
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
+  script:
+    - export CHROME_BIN=/usr/bin/google-chrome-stable
+    - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+  after_script:
+    - "cp -r /root/.npm/_logs/ ."
   cache:
     paths:
       - .gradle/nodejs
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/build/app/node_modules
+      - examples/sehub/frontend/build/app/node_modules
+      - examples/dtcockpit/frontend/build/app/node_modules
+      - products/demorec/frontend/build/app/node_modules
   artifacts:
+    when: always
     paths:
-      - umlp-tool/build/distributions/**
+      - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
+      - ./**/build/reports/tests/test/**
+      - build.log
+      - ./_logs
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -49,84 +88,78 @@ build_no_containers:
     refs:
       - dev
 
-build_with_deploy:
+build_intellij_plugin:
   stage: build
   script:
+    - "cd umlp-tool"
+    - "gradle buildPlugin -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+  artifacts:
+    when: always
+    paths:
+      - umlp-tool/umlp-intellij-plugin/build/distributions/**
+      - build.log
+    reports:
+      # Lets gitlab render infos about failed tests
+      junit: "**/test/**/TEST-*.xml"
+    expire_in: 1 week
+
+build_with_deploy:
+  stage: build
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
+  script:
     # Build project + examples
-    - "gradle --version"
-    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true"
+    - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
+    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     # Deploy RTEs
-    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-test-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish :modules:publishModules -P mavenPassword=$pass -P mavenUser=$user"
+    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-rte:backend:publish :umlp-rte:frontend:publish :umlp-test-rte:publish :umlp-jsweet:publish :modules:publishModules :experiments:python-client:backend:publish -P mavenPassword=$pass -P mavenUser=$user 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     # Build editor plugin
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    # monticore/monticore#4743 - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     - "cd .."
     # Build containers
-    # Weather Backend
-    - "gradle :examples:weather:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
+    # Backends
+    - "gradle \
+      :examples:weather:backend:jib \
+      :examples:sehub:backend:jib \
+      :examples:stat:jib \
+      :products:demorec:backend:jib \
+      :examples:vis-lib:backend:jib \
+      :experiments:server-performance:backend:jib \
+      -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/weather_backend:latest \
+      -Djib.console=plain \
       -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
-    # SEHub Backend
-    - "gradle :examples:sehub:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
-      -Djib.from.auth.username=$CI_REGISTRY_USER  \
-      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/sehub_backend:latest \
-      -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
-    # Stat-Server
-    - "gradle :examples:stat:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
-      -Djib.from.auth.username=$CI_REGISTRY_USER  \
-      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/stat_backend:latest \
-      -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
-    # DTCockpit Backend
-    - "gradle :examples:dtcockpit:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
-      -Djib.from.auth.username=$CI_REGISTRY_USER  \
-      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/dtcockpit_backend:latest \
-      -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
-    # DemoRec Application
-    - "gradle :products:demorec:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
-      -Djib.from.auth.username=$CI_REGISTRY_USER  \
-      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/demorec_backend:latest \
-      -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
-    # Vis-Lib Application
-    - "gradle :examples:vis-lib:backend:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-      -Djib.from.image=registry.git.rwth-aachen.de/monticore/container-registry/eclipse-temurin:11-jre \
-      -Djib.from.auth.username=$CI_REGISTRY_USER  \
-      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.to.image=$CI_REGISTRY_IMAGE/vis-lib_backend:latest \
-      -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
 
     # Frontends
-    - "gradle :examples:weather:frontend:deployImageCI :examples:sehub:frontend:deployImageCI :examples:dtcockpit:frontend:deployImageCI :products:demorec:frontend:deployImageCI :examples:vis-lib:frontend:deployImageCI -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle \
+      :examples:weather:frontend:deployImageCI \
+      :examples:sehub:frontend:deployImageCI \
+      :products:demorec:frontend:deployImageCI \
+      :examples:vis-lib:frontend:deployImageCI \
+      -P mavenPassword=$pass \
+      -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
   cache:
     paths:
       - .gradle/nodejs
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/build/app/node_modules
+      - examples/sehub/frontend/build/app/node_modules
+      - examples/dtcockpit/frontend/build/app/node_modules
+      - products/demorec/frontend/build/app/node_modules
   artifacts:
+    when: always
     paths:
-      - umlp-tool/build/distributions/**
+      - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
+      - ./**/build/reports/tests/test/**
+      - build.log
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -149,9 +182,12 @@ slowtest:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - "gradle --version"
-    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
+    - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
+    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
+    when: always
+    paths:
+      - build.log
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/slowtest/**/TEST-*.xml"
@@ -211,6 +247,42 @@ trigger-wirca-demonstrator:
   only:
     - dev
 
+trigger-montigem3-tutorial:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/montigem3-tutorial
+    branch: dev
+  only:
+    - dev
+
+trigger-artifacts:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/artifacts/artifacts
+    branch: dev
+  only:
+    - dev
+
+trigger-template:
+  stage: testDeployed
+  allow_failure: false # Failure is not an option
+  trigger:
+    project: monticore/umlp-anwendungen/montigem-templates/montigem-template
+    branch: main
+  only:
+    - dev
+
+trigger-digital-twin:
+  stage: testDeployed
+  allow_failure: false
+  trigger:
+    project: monticore/umlp-anwendungen/digital-twin
+    branch: main
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
@@ -222,16 +294,21 @@ checkMDLinks:
   only:
     - master
 
-buildNativeImage:
-  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-native-image
+deploy-python-package:
   stage: build
-  artifacts:
-    paths:
-      - ./examples/native-image/build/native/nativeCompile/*
-    expire_in: 1 week
+  image: python:3.11
   script:
-    - "gradle :examples:native-image:nativeBuild --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1"
-    - "gradle :examples:native-image:jib -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
-        -Djib.to.image=$CI_REGISTRY_IMAGE/native-image-demo:latest \
-        -Djib.to.auth.username=$CI_REGISTRY_USER  \
-        -Djib.to.auth.password=$CI_REGISTRY_PASSWORD "
+    - cd experiments/python-client/runtime-package
+    - pip install --upgrade hatch
+    - export HATCH_BUILD_METADATA="gitlab.${CI_PIPELINE_ID}"
+    - python -m hatch build
+    - python -m hatch publish
+  variables:
+    HATCH_INDEX_REPO: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi
+    HATCH_INDEX_AUTH: $CI_JOB_TOKEN
+    HATCH_INDEX_USER: gitlab-ci-token
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev" # only publish on dev
+      changes:
+        - experiments/python-client/runtime-package/**/* # and on changes to the runtime package dir
+

@@ -48,12 +48,16 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
     addConstructor(ast, classname, packageName);
     getCD4C().addMethod(ast, getDoRunTemplate(), classname,  getCorrectManager(domainType), domainPackage);
     getCD4C().addMethod(ast, getGeneralCheckAccessPolicyTemplate(), domainType.getName(), "Read");
-    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + classname + "AccessPolicy");
+    addClassImports(ast, origCD, domainType);
+
+    return ast;
+  }
+
+  protected void addClassImports(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDType domainType) {
+    getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+ "." + domainType.getName() + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTERequestPath("Request"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ListResult"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainType));
-
-    return ast;
   }
 
   protected String getGeneralCheckAccessPolicyTemplate() {
@@ -66,6 +70,7 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   protected void addConstructor(ASTCDClass ast, String classname, String packageName) {
     getCD4C().addConstructor(ast, getConstructorTemplate(), classname, "", SUFFIX, packageName);
+    getCD4C().addConstructor(ast, getConstructorWithFilterTemplate(), classname, "", SUFFIX, packageName);
   }
 
   protected String getDoRunTemplate() {
@@ -74,6 +79,10 @@ public class GetFilteredDecorator extends AbstractDeSerDecorator {
 
   protected String getConstructorTemplate() {
     return "umlp.commands.get_filtered.Constructor";
+  }
+
+  protected String getConstructorWithFilterTemplate() {
+    return "umlp.commands.get_filtered.ConstructorWithFilter";
   }
 
   protected ASTCDClass createDeSer(ASTCDCompilationUnit origCD, ASTCDType domainType) {

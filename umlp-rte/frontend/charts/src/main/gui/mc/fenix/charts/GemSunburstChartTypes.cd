@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+import java.util.List;
+
+<<pojoCD>>
+classdiagram GemSunburstChartTypes {
+  public class GemSunburstData {
+    GemSunburstEntry entry;
+    List<GemSunburstData> subEntries;
+  }
+
+  public class GemSunburstDataHelper {
+    GemSunburstEntry entry;
+    List<GemSunburstData> subEntries;
+    String color;
+  }
+
+  public class GemSunburstEntry {
+    String label;
+    Integer value;
+  }
+
+  // Deprecated
+  public class GemSDNshort {
+    List<String> c; // In the hwc typescript it was any[]
+    List<GemSDNshort> sN;
+  }
+
+}

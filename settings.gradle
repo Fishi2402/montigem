@@ -34,69 +34,80 @@ pluginManagement {
     // ALU here: jsweet was quickly mirrored to the se-nexus
   }
 }
-
+plugins {
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
 rootProject.name = 'umlp'
 includeBuild "umlp-tool"
-includeBuild "umlp-rte/umlp-jsweet"
+includeBuild "comment2doc"
 
 include ":umlp-rte"
-include ":umlp-rte:client"
-include ":umlp-rte:umlp-jsweet"
-include 'umlp-test-rte'
+include ":umlp-rte:frontend"
+include ":umlp-rte:frontend:arrange"
+include ":umlp-rte:frontend:basic"
+include ":umlp-rte:frontend:charts"
+include ":umlp-rte:frontend:common"
+include ":umlp-rte:frontend:commonj2ts"
+include ":umlp-rte:frontend:editor"
+include ":umlp-rte:frontend:fischertechnik"
+include ":umlp-rte:frontend:functiondisplay"
+include ":umlp-rte:frontend:input"
+include ":umlp-rte:frontend:navigation"
+include ":umlp-rte:frontend:networkgraph"
+include ":umlp-rte:frontend:table"
+include ":umlp-rte:frontend:theme"
+include ":umlp-rte:backend"
+include ":umlp-test-rte"
+include ":umlp-jsweet"
 
 include ":experiments"
 include ":experiments:dbPerformance"
 include ":experiments:dsl-ast-integration:dsl"
 include ":experiments:dsl-ast-integration:dsl2cd"
-include ":experiments:dsl-ast-integration:ebackend"
-include ":experiments:dsl-ast-integration:frontend"
+include ":experiments:dsl-ast-integration:backend"
+//include ":experiments:dsl-ast-integration:frontend"
+include ":experiments:python-client:backend"
 include ":experiments:statecharts-integration"
 include ":experiments:module-system:module-definition"
+include ":experiments:module-system:module-definition:backend"
 include ":experiments:module-system:routes-usage"
+include ':experiments:server-performance'
+include ':experiments:server-performance:backend'
 
 include ":examples"
-include ':examples:selib'
 include ':examples:stat'
-include ':examples:artifacts-test'
-include ':examples:artifacts-java:backend'
-include ':examples:artifacts-java:frontend'
 include ':examples:flensburg-test:backend'
-include ':examples:flensburg-test:frontend'
+//include ':examples:flensburg-test:frontend'
 include ':examples:weather:backend'
 include ':examples:weather:frontend'
 include ':examples:it-test'
-include ':examples:assistenzsystem'
-include ':examples:native-image'
+include ':examples:sehub'
 include ':examples:sehub:backend'
 include ':examples:sehub:frontend'
-include ':examples:sehub-cd2gui:backend'
-include ':examples:sehub-cd2gui:frontend'
 include ':examples:vis-lib:backend'
 include ':examples:vis-lib:frontend'
-include ':examples:dtcockpit:backend'
-include ':examples:dtcockpit:frontend'
+//include ':examples:dtcockpit:backend'
+//include ':examples:dtcockpit:frontend'
 include ':examples:jsweet-test:backend'
 include ':examples:jsweet-test:frontend'
-include ':examples:dtcockpit-jsweet:backend'
-include ':examples:dtcockpit-jsweet:frontend'
 include ':examples:kitchencompanion:backend'
 include ':examples:kitchencompanion:frontend'
-include ':examples:guidslpaper:backend'
-include ':examples:guidslpaper:frontend'
-include ':examples:finanzverwaltung-cd2gui:backend'
-include ':examples:finanzverwaltung-cd2gui:frontend'
 
 include ':examples:loading-test:backend'
 include ':examples:loading-test:frontend'
 
-include ':products:syse_functions:backend'
-include ':products:syse_functions:frontend'
-include ':products:syse_functions:automaton'
+// TODO: Fix once java version is decided
+//include ':products:syse_functions:frontend'
+//include ':products:syse_functions:backend'
+//include ':products:syse_functions:automaton'
+//findProject(':products:syse_functions:automaton')?.name = 'automaton'
+
 include ':products:demorec:backend'
 include ':products:demorec:frontend'
 include ':products:kizam:backend'
-include ':products:autotech_agil:backend'
-include ':products:autotech_agil:frontend'
+// TODO: Fix once java version is decided
+//include ':products:autotech_agil:backend'
+//include ':products:autotech_agil:frontend'
 
 include ':products:dev_process_cockpit:backend'
 include ':products:dev_process_cockpit:frontend'
@@ -104,11 +115,13 @@ include ':products:dev_process_cockpit:frontend'
 include ':modules'
 include ':modules:login'
 include ':modules:login:backend'
-include ':modules:login:frontendTS'
-include ':modules:login:frontendJSweet'
+include ':modules:login:frontend'
+include ':modules:login:frontend:login'
+
+include ':modules:comment'
+include ':modules:comment:backend'
+include 'modules:comment:frontend'
+include 'modules:comment:frontend:comment'
 
 include ':modules:sovd-gateway'
 include ':modules:sovd-gateway-it:backend'
-
-findProject(':products:syse_functions:automaton')?.name = 'automaton'
-

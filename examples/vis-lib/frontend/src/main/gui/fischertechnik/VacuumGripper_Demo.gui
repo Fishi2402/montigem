@@ -1,0 +1,80 @@
+package fischertechnik;
+
+import Domain.FischertechnikVacuumGripperState;
+
+import mc.fenix.fischertechnik.VacuumGripper;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+page VacuumGripper_Demo(FischertechnikVacuumGripperState state){
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemRangeInput(
+        id="rotation-degree",
+        labelText="Rotation: ",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=360,
+        value=state.rotationDeg
+      ),
+      @GemCheckBoxInput(
+        id="ref-rotation",
+        labelText="Rotations Anschlag erreicht",
+        checked=state.refSwitchRotation
+      ),
+      @GemRangeInput(
+        id="vertical-percentage",
+        labelText="Höhe:",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=100,
+        value=state.verticalPercentage
+      ),
+      @GemCheckBoxInput(
+        id="ref-vertical",
+        labelText="Höhe Anschlag erreicht",
+        checked=state.refSwitchVertical
+      ),
+      @GemRangeInput(
+        id="hotizontal-percentage",
+        labelText="Tiefe:",
+        vertical=false,
+        step=1,
+        minValue=1,
+        maxValue=100,
+        value=state.horizontalPercentage
+      ),
+      @GemCheckBoxInput(
+        id="ref-horizontal",
+        labelText="Tiefe Anschlag erreicht",
+        checked=state.refSwitchHorizontal
+      ),
+      @GemCheckBoxInput(
+        id="pump-running",
+        labelText="Pumpe läuft",
+        checked=state.pumpRunning
+      ),
+      @GemCheckBoxInput(
+        id="valve-enabled",
+        labelText="Ventil geöffnet",
+        checked=state.valveEnabled
+      )
+    ]
+  );
+
+  @VacuumGripper(
+    rotationDeg=state.rotationDeg,
+    refSwitchRotation=state.refSwitchRotation,
+    verticalPercentage=state.verticalPercentage,
+    refSwitchVertical=state.refSwitchVertical,
+    horizontalPercentage=state.horizontalPercentage,
+    refSwitchHorizontal=state.refSwitchHorizontal,
+    pumpRunning=state.pumpRunning,
+    valveEnabled=state.valveEnabled
+  );
+}
+

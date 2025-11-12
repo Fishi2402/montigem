@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.editor;
+import java.util.List;
+import java.util.Optional;
+
+<<pojoCD>>
+classdiagram MonacoEditorTypes {
+
+  public class InlineDecoration {
+    Range range;
+    String cssClass;
+  }
+
+  public class HoverContent {
+    Range range;
+    // Markdown and HTML possible
+    List<String> hoverContent;
+  }
+
+  public class Range {
+    int startLin;
+    int startCol;
+    int endLin;
+    int endCol;
+  }
+}

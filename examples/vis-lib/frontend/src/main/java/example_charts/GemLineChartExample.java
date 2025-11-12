@@ -63,7 +63,7 @@ public class GemLineChartExample extends GemLineChartExampleTOP {
     ageGroups.put("after 1998", after_1998);
 
     for (Map.Entry<String, List<Person>> entry : ageGroups.entrySet()) {
-      int[] stocks = {0, 0, 0, 0, 0};
+      double[] stocks = {0, 0, 0, 0, 0};
       for (Person person : entry.getValue()) {
         for (Stock stock : person.getStocksList()) {
           switch (stock.getDate().getDayOfMonth()) { // TODO GV
@@ -91,9 +91,9 @@ public class GemLineChartExample extends GemLineChartExampleTOP {
         }
       }
       String ageGroupname = entry.getKey();
-      List<Integer> list = new ArrayList<>();
-      for (int stock : stocks) {
-        Integer i = stock;
+      List<Double> list = new ArrayList<>();
+      for (double stock : stocks) {
+        Double i = stock;
         list.add(i);
       }
       Optional<GemLineChartEntry> chartEntry = new GemLineChartEntryBuilder().data(list).label("Stocks bought by people born " + ageGroupname).build();

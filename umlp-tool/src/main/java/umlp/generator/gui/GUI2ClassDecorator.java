@@ -1,24 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.generator.gui;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -30,6 +38,7 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class GUI2ClassDecorator extends AbstractDecorator {
 
@@ -111,6 +120,30 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, qType);
   }
 
+  protected ASTMCType getSimpleType(ASTMCType astmcType) {
+    if (astmcType instanceof ASTMCQualifiedType) {
+      List<String> nameList = ((ASTMCQualifiedType) astmcType).getNameList();
+      if (!nameList.isEmpty()) {
+        return MCTypeFacade.getInstance().createQualifiedType(nameList.get(nameList.size() - 1));
+      }
+    }
+    return astmcType;
+  }
+
+  protected String calcBaseArgName(ASTGUIComponent component, ASTGUINamedArg arg) {
+    return component.getId().getName() + StringTransformations.capitalize(arg.getName());
+  }
+
+  public List<ASTCDParameter> getIterationItemParameters(ASTNode node) {
+    List<VariableSymbol> iterateArgs = util.findIterationItemSymbols(node.getEnclosingScope());
+    List<ASTCDParameter> params = new ArrayList<>();
+    for (VariableSymbol vs : iterateArgs) {
+      ASTMCType paramType = getSimpleType(createTypeAndAddImports(vs.getType()));
+      params.add(CDParameterFacade.getInstance().createParameter(paramType, vs.getName()));
+    }
+    return params;
+  }
+
   /**
    * Transform a GUI type into a Java type and add all necessary imports for its usage. For example,
    * `Event<Person>` is transformed into `Consumer<Person>` and imports
@@ -120,6 +153,9 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
    * @return Java type that corresponds to the input GUI type
    */
   protected ASTMCType createTypeAndAddImports(SymTypeExpression ste) {
+    if (ste.isTypeVariable()) {
+      return MCTypeFacade.getInstance().createQualifiedType(ste.asTypeVariable().print());
+    }
     if (!ste.hasTypeInfo()) {
       Log.error("0x0001B Encountered a SymTypeExpression disconnected from a type symbol: "
           + ste.printFullName());
@@ -140,7 +176,7 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
         qType = Joiners.DOT.join(parts);
       }
       addImport(qType);
-      return MCTypeFacade.getInstance().createQualifiedType(type);
+      return MCTypeFacade.getInstance().createQualifiedType(qType);
     }
     else if (ste.isGenericType()) {
       SymTypeOfGenerics stog = ste.asGenericType();
@@ -174,6 +210,31 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
+  protected void importCommand(ASTMCType domainClass) {
+    String typeName = "";
+    String packageName = "";
+    if (domainClass instanceof ASTMCQualifiedType) {
+      List<String> nameList = ((ASTMCQualifiedType) domainClass).getNameList();
+      typeName = nameList.get(nameList.size() - 1);
+
+      if (nameList.size() > 1) {
+        List<String> packageNameList = nameList.subList(0, nameList.size() - 1);
+        packageName = packageNameList.stream().map(String::toLowerCase).collect(Collectors.joining("."));
+      }
+    }
+    if (!packageName.isEmpty()) {
+      Joiners.DOT.join(packageName.toLowerCase(), COMMAND_PACKAGE,
+          domainClass.printType() + ManagerSubscriptionDecorator.SUFFIX);
+    }
+
+    String commandQName = Joiners.DOT.join(packageName.toLowerCase(), COMMAND_PACKAGE,
+        typeName + ManagerSubscriptionDecorator.SUFFIX);
+
+    addImport(commandQName);
+  }
+
+  // Use method above which keeps the TypeInformation
+  @Deprecated
   protected void importCommand(String domainClassName) {
     if (util.getMainDomainModelSimpleName().isEmpty() || util.getMainDomainModelQName().isEmpty()) {
       Log.error("0x00007 Could not identify the manager name: domain class diagram is missing");

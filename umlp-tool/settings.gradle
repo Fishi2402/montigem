@@ -13,7 +13,9 @@ pluginManagement {
         mavenCentral()
     }
 }
-
+plugins {
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
 
 boolean isCi = System.getenv().containsKey("CI")
 
@@ -39,5 +41,8 @@ buildCache {
 
 
 rootProject.name = 'umlp-tool'
+if(("true").equals(getProperty('buildIntelliJPlugin'))){
+  include(":umlp-intellij-plugin")
+}
 
-include "gradle-plugin"
+include ":gradle-plugin"

@@ -15,6 +15,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
@@ -106,7 +107,8 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     if (GenService.isJavaType(type)) {
       addJavaImport(ast, type);
     } else if (needsImport) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ t);
+      getCD4C().addImport(ast, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(),
+          type.getTypeInfo().getName()));
     }
 
     return ast;

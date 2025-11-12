@@ -1,0 +1,5 @@
+package mc.fenix.fischertechnik;
+
+component Conveyor(boolean moveToFeed, boolean moveToSwap, boolean feedDetectorOn, boolean swapDetectorOn){
+
+}

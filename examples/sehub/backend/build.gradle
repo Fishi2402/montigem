@@ -1,39 +1,15 @@
 plugins {
-  id 'java'
-  id 'de.rwth.se.umlp-tool-backend-test'  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'de.rwth.se.montigem-backend'
 
-  id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
 }
 
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
-application {
-  mainClass = 'sehub.SehubServerApplication'
-}
-
 jib {
   container.mainClass = application.mainClass.get()
+  from.image = "$container_from_image"
+  to.image = "${container_target_image_base}sehub_backend:latest"
 }
 
 dependencies {
@@ -42,6 +18,8 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
+
+  implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -62,59 +40,4 @@ dependencies {
 
   implementation project(':umlp-rte')
   implementation "org.eclipse.jgit:org.eclipse.jgit:5.2.2.201904231744-r"
-
-  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
-  implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 }
-
-generateUmlpBackend {
-  input = file("../models/Sehub.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  useSpring.set(true)
-  useShell.set(true)
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
-}
-
-tasks.register('genTestGUI', UMLPGuiGenTask) {
-  dependsOn('generateUmlpBackend')
-  input = file("../models")
-  outputDir = file("$project.buildDir/testgui")
-  hwcDir = file("$projectDir/src/main/java")
-  modelDir = layout.projectDirectory.dir("../models")
-  symbolDir = files(
-      generateUmlpBackend.symbolOutDir,
-      project(":umlp-rte:client").tasks.createGuiSymbols.output,
-      project(":umlp-rte:client").tasks.createCDSymbols.output,
-      configurations.guiDefaultTypes.files
-  )
-  domainModels = ["Sehub"]
-  guiCreateModels = ["gui.UserCreate"]
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
-}
-
-sourceSets {
-  main {
-    //java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    //java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    // main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
-  }
-  test {
-    java {
-      exclude '**/gui/**'
-    }
-  }
-}
-
-compileJava.dependsOn(generateUmlpBackend, genTestGUI)
-//compileJava.dependsOn(generateUmlpBackend)

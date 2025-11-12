@@ -10,6 +10,8 @@ import dtcockpit.UserAccessPolicy;
 import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.common.NotificationScope;
 import umlp.backendrte.util.LogUtil;
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import javax.mail.MessagingException;
 
@@ -20,6 +22,7 @@ public class User_create extends User_createTOP {
     super(user);
   }
 
+  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   @Override
   public StatusResult doAction() {
     // Replace cleartext password with hashed password
@@ -35,6 +38,7 @@ public class User_create extends User_createTOP {
 
   }
 
+  @BackendOnly(value = BackendOnlyModes.THROW_ERROR)
   public StatusResult sendMail() {
     Log.trace("Sending Email to " + user.getEmail(), LogUtil.getLoggerName());
     MailService mailsender = new MailService();

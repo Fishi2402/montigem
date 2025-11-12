@@ -1,0 +1,5 @@
+package mc.fenix.fischertechnik;
+
+component Warehouse(int depthPercentage, int verticalPercentage, int horizontalPercentage){
+
+}

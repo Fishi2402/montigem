@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import mc.fenix.charts.GemBoxPlot;
+
+page GemBoxPlotExample()
+{
+
+  secondBoxplot@GemBoxPlot(
+    data = getSecondBoxPlotData(),
+    min = 0.0,
+    width = getSecondBoxPlotWidth(),
+    height = getSecondBoxPlotHeight(),
+    horizontal=false
+  );
+  boxplot@GemBoxPlot(
+    data = getBoxPlotData(),
+    min = -5.0,
+    width = getBoxPlotWidth(),
+    height = getBoxPlotHeight()
+  );
+}

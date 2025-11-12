@@ -1,0 +1,111 @@
+/* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDateTime;
+import mc.fenix.charts.GemBarChartTypes.GemBarChartData;
+import mc.fenix.charts.GemPieChartTypes.GemPieChartData;
+
+classdiagram Domain {
+
+  class Conversation {
+    String conversationid;
+  }
+
+  class Message {
+    String content;
+    Role sender;
+    Role receiver;
+    LocalDateTime timestamp;
+  }
+
+  enum Role {
+    SYSTEM, USER, ASSISTANT, TOOL;
+  }
+
+  class Person {
+    java.time.LocalDate birthday;
+    String name;
+    String aboutMe;
+    ?boolean employed;
+  }
+
+  class Address {
+    String street;
+    int house;
+  }
+
+  class Stock {
+    java.time.LocalDateTime date;
+    String name;
+    int price;
+  }
+
+  class Club {
+    String name;
+  }
+
+  <<singleton>>
+  class App {
+    Boolean isOld(Person p);
+    GemBarChartData getBarChart(List<Person> persons, String date);
+    GemPieChartData getPieChart(List<Person> persons, String date);
+  }
+
+  <<singleton>>
+  class FischertechnikSortingLineState{
+    boolean pumpRunning = false;
+    boolean pusherIndicator1On = false;
+    boolean pusherIndicator2On = false;
+    boolean pusherIndicator3On = false;
+    int speedIndicatorPercentage = 0;
+  }
+
+  <<singleton>>
+  class FischertechnikMultiProcessingStationState {
+    int positionIndicatorPercentage = 0;
+    int beltSpeedIndicatorPercentage = 0;
+    int drillSpeedIndicatorPercentage = 0;
+    int rotationIndicatorDeg = 0;
+    boolean lightBarrier = false;
+    boolean lightBarrierOven = false;
+    boolean pusher = false;
+    boolean gripper = false;
+    boolean pumpRunning = false;
+  }
+
+  <<singleton>>
+  class FischertechnikConveyorState{
+    int speedIndicatorPercentage = 0;
+    boolean rightDetectorOn = false;
+    boolean leftDetectorOn = false;
+  }
+
+  <<singleton>>
+  class FischertechnikVacuumGripperState {
+    int rotationDeg = 0;
+    int verticalPercentage = 0;
+    int horizontalPercentage = 0;
+    boolean pumpRunning = false;
+  }
+
+  <<singleton>>
+  class FischertechnikWarehouseState {
+    int depthPercentage = 0;
+    int verticalPercentage = 0;
+    int horizontalPercentage = 0;
+  }
+
+  <<singleton>>
+  class AiService {
+    Message answer(Message m);
+  }
+
+  association home [1] Person -> (address) Address [0..1];
+
+  association friends [*] Person -> (friends) Person [*];
+
+  association stocks [*] Person -> (stocks) Stock [*];
+
+  association [*] Club -> (members) Person [*];
+
+  association [1] Conversation -> (messages) Message[*];
+
+}

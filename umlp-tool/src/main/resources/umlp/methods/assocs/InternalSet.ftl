@@ -6,13 +6,17 @@ if(idx < 0){
   throw new IllegalStateException("idx must be 0 or higher");
 }
 if(idx > this._${name}.size()){
-  throw new IllegalStateException("idx must be at most owns.size");
+  throw new IllegalStateException("idx must be at most ${name}.size");
 }
 long oldValue;
 if(this._${name}.size() > idx){
   oldValue = this._${name}.getID(idx);
 } else {
   oldValue = -1;
+}
+
+if(oldValue == gemID){
+  return;
 }
 
 this._${name}._internal_set(idx, gemID);

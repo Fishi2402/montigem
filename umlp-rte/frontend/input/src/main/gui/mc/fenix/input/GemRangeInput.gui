@@ -1,0 +1,55 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+import mc.fenix.input.GemRangeInputTypes.Marker;
+
+/**
+  This component displays a label with a slider that allows users to select a value within a specified range.
+  This component can be used in forms and other interactive interfaces to allow users to select a range of values easily.
+*/
+component GemRangeInput(
+  /**
+    The component's id; used to configure the styles
+  */
+  String id,
+  /**
+    Label of the range input
+  */
+  String labelText,
+  /**
+    This boolean input allows you to specify whether the slider should be displayed vertically or horizontally, with the default appearance being horizontal. It is advisable to omit this input entirely rather than setting it to false when you desire a horizontal appearance.
+
+  */
+  Boolean vertical,
+  /**
+    Allows to specify a fixed increment for selecting values in the range slider.
+  */
+  Integer step,
+  /**
+    The slider's current number value. It is recommended that you bind it to a number variable so that the variable displays the current slider value.
+  */
+  ?Integer value,
+  /**
+    The slider's minimum value.
+  */
+  Integer minValue,
+  /**
+    The slider's maximum value.
+  */
+  Integer maxValue,
+  /**
+    Optional tick marks shown along the slider.
+    Each Marker provides a numeric value and an optional label.
+  */
+  List<Marker> ticks,
+  /**
+    Enable snapping to the nearest tick marker.
+    When true, the slider snaps to the closest ticks.value;
+    minValue and maxValue are also considered snap targets.
+  */
+  Boolean snapping = false,
+  /**
+    Width of the slider track as a valid CSS length (e.g., "320px", "100%", "20rem").
+  */
+  String size
+)

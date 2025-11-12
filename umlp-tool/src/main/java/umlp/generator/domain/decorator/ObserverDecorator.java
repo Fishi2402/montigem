@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GenService.createType;
@@ -76,9 +77,9 @@ public class ObserverDecorator extends AbstractDecorator {
     CD4C cd4C = getCD4C();
 
     // Add Notify for attributes
-    domainClass.getCDAttributeList().stream()
-        .filter(a -> !a.getModifier().isDerived())
-        .forEach(a -> {
+    List<ASTCDAttribute> attributes = domainClass.getCDAttributeList().stream()
+        .filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList());
+    attributes.forEach(a -> {
           String attributeName = a.getName();
           if (GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
@@ -105,7 +106,6 @@ public class ObserverDecorator extends AbstractDecorator {
           }
 
           String fullType = getCDPrinter().prettyprint(createType(a));
-          addImport(observerInterface, a);
           generationSummary.addSignature(cd4C.addMethod(observerInterface,
                                                         NOTIFY_TEMPLATE,
                                                         attributeName,
@@ -119,6 +119,7 @@ public class ObserverDecorator extends AbstractDecorator {
                                                         fullType,
                                                         false), MAYBE_NOTIFY_TEMPLATE);
         });
+    addImport(observerInterface, attributes);
 
     // Add Notify for list associations
     CDSymbolTables.getAssociations(domainClass).stream()
@@ -181,10 +182,10 @@ public class ObserverDecorator extends AbstractDecorator {
     return observerInterface;
   }
 
-  protected void addImport(ASTCDType observerType, ASTCDAttribute attr) {
+  protected void addImport(ASTCDType observerType, List<ASTCDAttribute> attributes) {
   }
 
-  private void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {
+  protected void addImportForImportedObservers(ASTCDType domainClass, ASTCDType observerType) {
     CDTypeSymbol symbol = domainClass.getSymbol();
     if (symbol.isPresentSuperClass()) {
       SymTypeExpression superclass = symbol.getSuperClass();

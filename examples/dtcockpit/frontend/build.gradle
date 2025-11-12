@@ -1,122 +1,111 @@
+import de.montigem.gradle.specific.CreateSymlinkTask
+import de.montigem.gradle.specific.GUI2Java2TSTask
+import de.montigem.gradle.specific.UMLPJava2TSTask
+
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
-  id "de.rwth.se.umlp-tool-frontend-test"  // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id "de.rwth.se.montigem-frontend"
 }
-
 
 dependencies {
-  umlpModules("umlp.modules:login:$version") // Load generator modifications
-//  umlpModulesGen("umlp.modules:login:$version") // Load generator modifications
-//  umlpModulesDomainSymbols("umlp.modules:login:$version") // frontend domain symbols
-//  umlpModulesModels("umlp.modules:login:$version") // and models itself
+  montigemModule project(":modules:login")
+  montigemModuleGeneratorExtension project(":modules:login")
+  montigemModuleUMLPModels project(":modules:login")
+  montigemModuleUMLPSymbols project(":modules:login")
+  montigemModuleImportMap project(":modules:login")
+  montigemModuleGUISymbols project(":modules:login")
+
+  montigemModule project(":modules:comment")
+  montigemModuleGeneratorExtension project(":modules:comment")
+  montigemModuleUMLPModels project(":modules:comment")
+  montigemModuleUMLPSymbols project(":modules:comment")
+  montigemModuleImportMap project(":modules:comment")
+
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+
+  testImplementation "de.monticore.lang:guidsl:${project.properties['mc_version']}"
+  testImplementation project(':umlp-test-rte')
 }
 
-// ALus local gradle is apparently unaware of these versions?
-// Explicitly use the local login module
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute module("umlp.modules:login") using project(":modules:login")
-    substitute module("umlp.modules.login:frontendTS") using project(":modules:login:frontendTS")
-  }
-}
-
-
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
-}
-
-createDomainSymbols {
-}
-
-genDomain {
-  // TODO: Gradle setup
-
-
-  // Alternative: Generate the module-frontend-domain too
-  input = file("../models/Dtcockpit.umlp")
-//  modelDir.from(configurations.umlpModulesModels) // TODO: Move this module logic into the plugin
-
-  // TODO: The module has to be added to the tsconfig path
-  /*
-      "paths": {
-      "@src/*": ["build/appdomain/*", "build/appgui/*", "src/app/*", "../../src/app/*",
-        "../../../../../modules/login/frontendsTS/build/frontendGen/build/appdomain/*",
-        "../../../../../modules/login/frontendsTS/src/app/*",
-      ],
-
-   */
-
-}
-
-genGUI {
-  domainModels = ["Dtcockpit"] // "LoginModule" is included via the modGen (or not required?)
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
+  verbose = false
   guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
 
+  symbolPath.from(configurations.named("montigemModuleUMLPSymbols"));
+
   // TODO: Gradle Setup for modules
-  symbolDir.from(() -> tasks.named("createDomainSymbols").get().outputs)
+  // symbolOutDir.from(() -> tasks.named("umlp2sym").get().outputs)
 
-  // Load the symbols from the .jars in the domain symbols path
-//  symbolDir.from(configurations.umlpModulesDomainSymbols) // TODO: Move this module logic into the plugin
-
-//  outputs.upToDateWhen { false }
   /*
   debug = true
   outputs.upToDateWhen { false }
   /**/
 }
-nodeSetup.dependsOn(frontendSetup)
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
 
-def prebuildTasks = [
-    npmInstall,
-    generate,  // Created from UMLP-Frontend Plugin.
-    providers.provider { project(":modules:login:frontendTS").tasks.named("generate")}
-]
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.named('buildApp') {
-  dependsOn {
-    project(':modules:login:frontendTS').tasks.named('generate').get()
-  }
+tasks.named("umlpJava2ts", UMLPJava2TSTask) {
+  verbose = false
 }
 
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
+tasks.named("createSymlink", CreateSymlinkTask) {
+  dependsOn project(':modules:login:frontend').tasks.named('build')
+  dependsOn project(':modules:comment:frontend').tasks.named('build')
 
-tasks.named('testApp') {
-  dependsOn {
-    project(':modules:login:frontendTS').tasks.named('generate').get()
-  }
-}
+  links.put(
+      file("$buildDir/app/libs/@montigem/login"),
+      project(':modules:login:frontend:login').layout.getProjectDirectory().getAsFile()
+  )
+  links.put(
+      file("$buildDir/app/prodlibs/@montigem/login"),
+      project(':modules:login:frontend').layout.getBuildDirectory().dir("dist/login").get().getAsFile()
+  )
 
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
+  links.put(
+      file("$buildDir/app/libs/@montigem/comment"),
+      project(':modules:comment:frontend:comment').layout.getProjectDirectory().getAsFile()
+  )
+  links.put(
+      file("$buildDir/app/prodlibs/@montigem/comment"),
+      project(':modules:comment:frontend').layout.getBuildDirectory().dir("dist/comment").get().getAsFile()
+  )
 }
 
 tasks.named('runApp') {
-  dependsOn {
-    project(':modules:login:frontendTS').tasks.named('generate').get()
-  }
+  dependsOn(project(':modules:login:frontend').tasks.named('build'))
 }
 
-tasks.register('run') {
-  dependsOn(runApp)
+// End 2 end testing using the build website + backend
+def installPlaywright = tasks.register('installPlaywright', NpxTask) {
+  dependsOn(npmInstall)
+  command = "playwright"
+  args = ["install"]
 }
 
-// Avoid a pesky org.gradle.api.InvalidUserDataException: Cannot expand ZIP 'bundle.jar' as it does not exist
-unpackModule {
-  dependsOn(":modules:login:frontendTS:packFrontendAsZip")
+// TODO: Let those tasks use a shared service, as to stop gradle from executing them in parallel
+tasks.register('e2eTestApp', NpmTask) {
+  dependsOn(
+      tasks.named("buildApp"),
+      installPlaywright,
+      project(":examples:dtcockpit:backend").tasks.named("e2eBootJar")
+  )
+  args = ["run", "e2e"]
+  enabled = false // TODO: ALu
+}
+
+tasks.register('e2eTestAppDebug', NpmTask) {
+  dependsOn(
+      tasks.named("buildApp"),
+      installPlaywright,
+      project(":examples:dtcockpit:backend").tasks.named("e2eBootJar")
+  )
+  args = ["run", "e2e", "--", "--debug"]
+  enabled = false // TODO: ALu
+}
+
+tasks.register('e2eRecordTest', NpmTask) {
+  // Note: Start a backend & frontend before running this command
+  dependsOn(installPlaywright)
+  args = ["run", "e2erecord"]
+  enabled = false // TODO: ALu
 }

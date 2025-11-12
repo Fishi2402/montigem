@@ -22,8 +22,16 @@ public class PackageRoute {
   protected Optional<PackageRoute> parent = Optional.empty();
   protected Optional<ComponentRoute> defaultRoute = Optional.empty();
 
+  protected final String from;
+
   public PackageRoute(List<String> packageParts) {
     this.packageParts = packageParts;
+    this.from = getImportDir() + "/" + getRoutingFileNameBase() + ROUTE_FILE_SUFFIX;
+  }
+
+  public PackageRoute(List<String> packageParts, String from) {
+    this.packageParts = packageParts;
+    this.from = from;
   }
 
   public void setExistsHW(boolean existsHW) {
@@ -95,7 +103,7 @@ public class PackageRoute {
   }
 
   public String getImportPath() {
-    return getImportDir() + "/" + getRoutingFileNameBase() + ROUTE_FILE_SUFFIX;
+    return from;
   }
 
   public String getPathFromRoot() {

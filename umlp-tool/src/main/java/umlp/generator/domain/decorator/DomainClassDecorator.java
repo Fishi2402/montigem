@@ -8,6 +8,7 @@ import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -35,6 +36,7 @@ import de.monticore.umlstereotype._ast.ASTStereotypeBuilder;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
+import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
 import umlp.generator.domain.decorator.commands.OwnCommands;
 import umlp.generator.util.PathUtil;
@@ -65,7 +67,9 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
     getNonDerivedDomainClasses(origCD).forEach(c -> astcdPackage.addCDElement(withOrigin(createClass(
         origCD,
-        c))));
+        decoratedCD,
+        c
+    ))));
 
     origCD.getCDDefinition().getCDEnumsList().stream().filter(c -> !c.getSymbol().isIsDerived())
         .forEach(c -> {
@@ -75,7 +79,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
         });
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDClass domainClass) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, ASTCDClass domainClass) {
     ASTCDInterfaceUsage implementsUsage = getInterfaceUsage(domainClass);
     ASTModifier modifier = domainClass.getModifier().isAbstract() ? PUBLIC_ABSTRACT.build() : PUBLIC.build();
     ASTCDClassBuilder builder = UMLPMill.cDClassBuilder()
@@ -87,49 +91,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
           .createCDExtendUsage(domainClass.getCDExtendUsage().getSuperclass(0).deepClone()));
     }
 
-    // Stereotype
-    ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
-    List<ASTCDAttribute> derivedAttribFields = filterDerivedAttributes(domainClass.getCDAttributeList(), true);
-    if (!derivedAttribFields.isEmpty()) {
-      String derivedAttribs = derivedAttribFields.stream()
-          .map(attr -> {
-            SourcePosition sourcePosition = attr.get_SourcePositionStart();
-            return String.format(
-                "%s in %s:%s:%s",
-                attr.getName(),
-                sourcePosition.getFileName().orElse("unknown"),
-                sourcePosition.getLine(),
-                sourcePosition.getColumn()
-            );
-          }).collect(Collectors.joining(", "));
-      stereotype.addValues(
-          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-              String.format("Custom implementation for class: %s required - use the TOP mechanism. Contains derived attribute(s): %s", "%s", derivedAttribs)
-          )
-      );
-    }
-    List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
-        .filter(GenService::isSymbolDerived)
-        .collect(Collectors.toList());
-    if (!derivedAssocs.isEmpty()) {
-      String derivedAssocsStr = derivedAssocs.stream()
-          .map(assoc -> {
-            SourcePosition sourcePosition = assoc.get_SourcePositionStart();
-            return String.format(
-                "%s in %s:%s:%s",
-                assoc.getName(),
-                sourcePosition.getFileName().orElse("unknown"),
-                sourcePosition.getLine(),
-                sourcePosition.getColumn()
-            );
-          }).collect(Collectors.joining(", "));
-      stereotype.addValues(
-          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
-              String.format("Custom implementation for class: %s required - use the TOP mechanism. Contains derived association(s): %s", "%s", derivedAssocsStr)
-          )
-      );
-    }
-    modifier.setStereotype(stereotype.build());
+    List<ASTCDAttribute> derivedAttribFields = addNeedsTopStereotypes(domainClass, modifier);
     //Build class
     ASTCDClass clazz = builder.build();
 
@@ -153,7 +115,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     addTransientModifier(attrObserver);
 
     // Add attributes to class
-    List<ASTCDAttribute> nonDerivedAttrs = filterDerivedAttributes(attributes.attrList, false);
+    List<ASTCDAttribute> nonDerivedAttrs = getNonDerivedAttributes(attributes.attrList);
     clazz.addAllCDMembers(nonDerivedAttrs);
     for (ASTCDAttribute attr : nonDerivedAttrs) {
       if (GenService.isGem(attr) && !GenService.isGemList(attr)) {
@@ -173,7 +135,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     createIsBuildableMethod(clazz);
 
     // Methods for class attributes
-    createGetterSetterForAttrs(domainClass, clazz, filterDerivedAttributes(attributes.attrFields, false), false);
+    createGetterSetterForAttrs(domainClass, clazz, getNonDerivedAttributes(attributes.attrFields), false);
     createGetterSetterForAttrs(domainClass, clazz, derivedAttribFields, true);
     createCheckMethods(domainClass, clazz);
 
@@ -187,6 +149,37 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
             .collect(Collectors.toList())
     );
 
+    // Derived but implemented(stereotype GenService.DERIVED_IMPL_TEMPLATE) attributes and assocs
+    List<ASTCDAttribute> derivedImplementedAttributes = getDerivedImplementedAttributes(attributes.attrFields);
+    for (ASTCDAttribute a : derivedImplementedAttributes) {
+      String tmpl = a.getModifier().getStereotype().getValue(GenService.DERIVED_IMPL_TEMPLATE);
+      ASTCDMethod m = (ASTCDMethod)  getCD4C().addMethod(clazz, tmpl,
+          origCD,
+          decoratedCD,
+          a, // ast with the stereotype
+          a.getMCType(), // return type of the method
+          List.of() // parameters of the method
+      );
+    }
+
+    List<ASTCDAssocSide> derivedImplementedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(GenService::isSymbolDerived)
+        .filter(GenService::hasImplTemplate)
+        .collect(Collectors.toList());
+
+    for (ASTCDAssocSide a : derivedImplementedAssocs) {
+      String tmpl =  a.getSymbol().getAssoc().getAssociation().getAstNode()
+          .getModifier().getStereotype().getValue(GenService.DERIVED_IMPL_TEMPLATE);
+
+      ASTCDMethod m = (ASTCDMethod) getCD4C().addMethod(clazz, tmpl,
+          origCD,
+          decoratedCD,
+          a, // ast with the stereotype
+          a.getMCQualifiedType(), // return type of the method
+          List.of() // parameters of the method
+      );
+    }
+
     if (TagLookUp.isSingleton(domainClass)) {
       domainClass.getCDMethodList().forEach(m -> createExeceuteCommandMethod(domainClass, clazz, m));
     }
@@ -196,6 +189,54 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     addExtendedImport(origCD, clazz);
     addImportsForCommands(domainClass, clazz);
     return clazz;
+  }
+
+  protected @NotNull List<ASTCDAttribute> addNeedsTopStereotypes(ASTCDClass domainClass, ASTModifier modifier) {
+    // Stereotype
+    ASTStereotypeBuilder stereotype = UMLPMill.stereotypeBuilder();
+    List<ASTCDAttribute> derivedAttribFields = getDerivedNonImplementedAttributes(domainClass.getCDAttributeList());
+    if (!derivedAttribFields.isEmpty()) {
+      String derivedAttribs = derivedAttribFields.stream()
+          .map(attr -> {
+            SourcePosition sourcePosition = attr.get_SourcePositionStart();
+            return String.format(
+                "%s in %s:%s:%s",
+                attr.getName(),
+                sourcePosition.getFileName().orElse("unknown"),
+                sourcePosition.getLine(),
+                sourcePosition.getColumn()
+            );
+          }).collect(Collectors.joining(", "));
+      stereotype.addValues(
+          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
+              String.format("Custom implementation for class: %s required - use the TOP mechanism. Contains derived attribute(s): %s", "%s", derivedAttribs)
+          )
+      );
+    }
+    List<ASTCDAssocSide> derivedAssocs = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(GenService::isSymbolDerived)
+        .filter(side -> !GenService.hasImplTemplate(side))
+        .collect(Collectors.toList());
+    if (!derivedAssocs.isEmpty()) {
+      String derivedAssocsStr = derivedAssocs.stream()
+          .map(assoc -> {
+            SourcePosition sourcePosition = assoc.get_SourcePositionStart();
+            return String.format(
+                "%s in %s:%s:%s",
+                assoc.getName(),
+                sourcePosition.getFileName().orElse("unknown"),
+                sourcePosition.getLine(),
+                sourcePosition.getColumn()
+            );
+          }).collect(Collectors.joining(", "));
+      stereotype.addValues(
+          TopDecorator.NEEDS_TOP_STEREO_BUILDER.apply(
+              String.format("Custom implementation for class: %s required - use the TOP mechanism. Contains derived association(s): %s", "%s", derivedAssocsStr)
+          )
+      );
+    }
+    modifier.setStereotype(stereotype.build());
+    return derivedAttribFields;
   }
 
   protected void createIsPresentForOptionalAssocs(ASTCDClass domainClass, ASTCDClass clazz, List<ASTCDAttribute> optionalAttrs) {
@@ -374,26 +415,37 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
 
   protected ASTCDParameter getAdjustedMethodParameter(ASTCDParameter param) {
     ASTCDParameter adjustedParam = param.deepClone();
-    if (isGem(param.getSymbol().getType())) {
+    if (isOptionalGem(param.getSymbol().getType())) {
+      adjustedParam.setName(param.getName() + "GemId");
+      adjustedParam.setMCType(MCTypeFacade.getInstance().createOptionalTypeOf("Long"));
+    } else if (isGem(param.getSymbol().getType())) {
       adjustedParam.setName(param.getName() + "GemId");
       adjustedParam.setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder()
                                   .setPrimitive(ASTConstantsMCBasicTypes.LONG).build());
-    }
-    if (isListOfGemIdentifiable(param.getSymbol().getType())) {
+    } else if (isListOfGemIdentifiable(param.getSymbol().getType())) {
       adjustedParam.setName(param.getName() + "GemId");
       adjustedParam.setMCType(MCTypeFacade.getInstance().createListTypeOf("Long"));
     }
     return adjustedParam;
   }
 
-  /**
-   * Filters the derived attributes from the list of attributes
-   *
-   * @param attributes list of attributes
-   * @param getDerived whether to return derived attributes or non-derived attributes
-   * @return list of attributes (only derived ones if getDerived is true else only non-derived ones)
-   */
-  protected List<ASTCDAttribute> filterDerivedAttributes(List<ASTCDAttribute> attributes, boolean getDerived) {
-    return attributes.stream().filter(attr -> !getDerived ^ attr.getModifier().isDerived()).collect(Collectors.toList());
+  protected List<ASTCDAttribute> getDerivedImplementedAttributes(List<ASTCDAttribute> attributes) {
+    return attributes.stream().filter(attr ->
+        attr.getModifier().isDerived()
+            && (attr.getModifier().isPresentStereotype() && attr.getModifier().getStereotype().contains(GenService.DERIVED_IMPL_TEMPLATE))
+    ).collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> getDerivedNonImplementedAttributes(List<ASTCDAttribute> attributes) {
+    return attributes.stream().filter(attr ->
+        attr.getModifier().isDerived()
+        && !(attr.getModifier().isPresentStereotype() && attr.getModifier().getStereotype().contains(GenService.DERIVED_IMPL_TEMPLATE))
+    ).collect(Collectors.toList());
+  }
+
+  protected List<ASTCDAttribute> getNonDerivedAttributes(List<ASTCDAttribute> attributes) {
+    return attributes.stream().filter(attr ->
+        !(attr.getModifier().isDerived())
+    ).collect(Collectors.toList());
   }
 }

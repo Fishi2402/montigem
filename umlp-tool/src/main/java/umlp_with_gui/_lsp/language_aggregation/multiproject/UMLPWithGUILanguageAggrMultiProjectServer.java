@@ -3,20 +3,24 @@ package umlp_with_gui._lsp.language_aggregation.multiproject;
 import de.mclsg.lsp.modelpath.ModelPathCache;
 import de.mclsg.lsp.modelpath.ModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLSPConfigModelPathCache;
-import de.mclsg.lsp.modelpath.multiproject.MultiProjectLanguageServerFileModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLanguageServerGradleModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLayout;
-import de.mclsg.lsp.util.AsyncUtil;
 import de.monticore.io.paths.MCPath;
+import org.eclipse.lsp4j.CompletionOptions;
+import org.eclipse.lsp4j.InitializeParams;
+import org.eclipse.lsp4j.InitializeResult;
+import org.eclipse.lsp4j.SignatureHelpOptions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILanguageAggrMultiProjectServerTOP {
   public UMLPWithGUILanguageAggrMultiProjectServer(MCPath modelPath) {
     super(modelPath);
+    getWorkspaceService().registerCommand("umlpwithgui.multiproject.getProjectLayout", executeCommandParams -> multiProjectLayout);
   }
 
   protected void initResolver() {
@@ -26,24 +30,39 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
         rootDir,
         List.of(
             new MultiProjectLanguageServerGradleModelPathResolver(rootDir) {
+              {
+                this.minimumJavaVersion = 17;
+                this.maximumJavaVersion = 21;
+              }
+
               @Override
               protected CompletableFuture<MultiProjectLayout> loadModelPaths() {
-                gradleVersion = "7.6";
-                gradleTaskName = ":aggregateAndProcessInfo";
+                gradleVersion = "8.5";
+                gradleTaskName = "aggregateAndProcessInfo";
                 return super.loadModelPaths();
               }
 
               @Override
               protected Path createTempInitScript() {
-                return createTempInitScript("/lsp/lsp_init.gradle");
+                return createTempInitScript("/lsp/lsp_init.gradle", DEFAULT_DATA_STRUCTURE_RESOURCE);
               }
-            },
-            new MultiProjectLanguageServerFileModelPathResolver(rootDir)
+            }
         ),
         new MultiProjectLSPConfigModelPathCache(ModelPathCache.getDefaultCacheDir(rootDir))
     );
-    resolver.addPathUpdatedListener(this::updateBasedOnConfig);
-    resolver.loadCachedModelPath();
-    AsyncUtil.runAsync(() -> resolver.refreshModelPaths());
+  }
+
+  @Override
+  public CompletableFuture<InitializeResult> initialize(InitializeParams initializeParams) {
+    try {
+      InitializeResult res = super.initialize(initializeParams).get();
+      res.getCapabilities().setSignatureHelpProvider(
+          new SignatureHelpOptions(List.of("("), List.of(","))
+      );
+      res.getCapabilities().setCompletionProvider(new CompletionOptions(false, List.of("@")));
+      return CompletableFuture.completedFuture(res);
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

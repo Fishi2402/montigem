@@ -1,0 +1,7 @@
+export * from "./src/main/gui/mc/fenix/basic/GemAudio";
+export * from "./src/main/gui/mc/fenix/basic/GemButton";
+export * from "./src/main/gui/mc/fenix/basic/GemIcon";
+export * from "./src/main/gui/mc/fenix/basic/GemImage";
+export * from "./src/main/gui/mc/fenix/basic/GemLink";
+export * from "./src/main/gui/mc/fenix/basic/GemText";
+export { GemVideo } from "./build/gui2java2ts/mc/fenix/basic/GemVideoComponent";

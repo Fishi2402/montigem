@@ -25,6 +25,7 @@ classdiagram Domain {
     String name;
     String aboutMe;
     ?boolean employed;
+    Optional<Role> role;
   }
 
   class Address {
@@ -47,6 +48,63 @@ classdiagram Domain {
     Boolean isOld(Person p);
     GemBarChartData getBarChart(List<Person> persons, String date);
     GemPieChartData getPieChart(List<Person> persons, String date);
+  }
+
+  <<singleton>>
+  class FischertechnikSortingLineState{
+      boolean pumpRunning = false;
+      boolean pusher1Extended = false;
+      boolean pusher2Extended = false;
+      boolean pusher3Extended = false;
+      boolean beltRunning = false;
+
+      boolean barrierIndicator1On = false;
+      boolean barrierIndicator2On = false;
+      boolean barrierIndicator3On = false;
+      boolean barrierIndicatorFeed1On = false;
+      boolean barrierIndicatorFeed2On = false;
+
+      String colorSensor = "white";
+  }
+
+  <<singleton>>
+  class FischertechnikMultiProcessingStationState {
+    int positionIndicatorPercentage = 0;
+    int beltSpeedIndicatorPercentage = 0;
+    int drillSpeedIndicatorPercentage = 0;
+    int rotationIndicatorDeg = 0;
+    boolean lightBarrier = false;
+    boolean lightBarrierOven = false;
+    boolean pusher = false;
+    boolean gripper = false;
+    boolean pumpRunning = false;
+  }
+
+  <<singleton>>
+  class FischertechnikConveyorState{
+    boolean moveToFeed = false;
+    boolean moveToSwap = false;
+    boolean feedDetectorOn = false;
+    boolean swapDetectorOn = false;
+  }
+
+  <<singleton>>
+  class FischertechnikVacuumGripperState {
+    int rotationDeg = 0;
+    boolean refSwitchRotation = false;
+    int verticalPercentage = 0;
+    boolean refSwitchVertical = false;
+    int horizontalPercentage = 0;
+    boolean refSwitchHorizontal = false;
+    boolean pumpRunning = false;
+    boolean valveEnabled = false;
+  }
+
+  <<singleton>>
+  class FischertechnikWarehouseState {
+    int depthPercentage = 0;
+    int verticalPercentage = 0;
+    int horizontalPercentage = 0;
   }
 
   <<singleton>>

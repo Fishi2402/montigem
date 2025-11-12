@@ -1,0 +1,60 @@
+package loadingtests.e2e;
+
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
+import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static loadingtests.e2e.E2EUtil.createDummyData;
+import static loadingtests.e2e.E2EUtil.isLoadedPersonFunction;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.test_rte.playwright.ComponentKind.GemButton;
+import static umlp.test_rte.playwright.ComponentKind.GemText;
+
+public class TestUpdateAfterDelete extends AbstractLoadingTestsE2ETest {
+
+  private List<Long> personGemIds;
+  private List<Long> animalGemIds;
+  private List<Long> foodGemIds;
+
+  @BeforeEach
+  void init(Page page) {
+    this.personGemIds= new ArrayList<>();
+    this.animalGemIds= new ArrayList<>();
+    this.foodGemIds= new ArrayList<>();
+    createDummyData(this.personGemIds, this.animalGemIds, this.foodGemIds);
+    page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
+  }
+
+  @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
+  @Test
+  void testUpdateOnOnePage(Page page) {
+    navAndWait(page, "/test_update_after_delete/PersonsDeleteButton"); //go to page we want to test
+    // We need this to ensure that all Client Request were answered from the Backend
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+    waitForAngular(page);
+
+    // PlayWright cannot handle long values as args
+    personGemIds.forEach(id ->
+        assertEquals(Boolean.TRUE,page.evaluate(isLoadedPersonFunction, id.intValue()))
+    );
+
+    // Assert that all person names are displayed on page
+    assertThat(page.locator(GemText.selector())).hasCount(personGemIds.size());
+
+    // Build person
+    page.locator(GemButton.selector()).first().click();
+
+    // Let frontend communicate with backend and wait for response
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+    // Assert that one more person is displayed
+    assertThat(page.locator(GemText.selector())).hasCount(personGemIds.size()-1);
+  }
+}

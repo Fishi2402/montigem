@@ -1,6 +1,9 @@
 package umlp.generator.test_infrastructure.domain.decorator;
 
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDElement;
@@ -57,6 +60,31 @@ public class E2ETestDecorator extends AbstractDecorator {
         .setCDExtendUsage(getExtendUsageFacade().createCDExtendUsage(PLAYWRIGHT_TEST_CLASS_NAME))
         .setName(className)
         .build();
+
+
+    getCD4C().addImport(res, "org.springframework.beans.factory.annotation.Autowired");
+    getCD4C().addImport(res, "org.junit.jupiter.api.AfterEach");
+    getCD4C().addImport(res, "umlp.backendrte.service.websocket.CommandWebSocketService");
+    getCD4C().addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
+    getCD4C().addImport(res, "org.springframework.beans.factory.annotation.Qualifier");
+    getCD4C().addImport(res, "com.microsoft.playwright.BrowserContext");
+    getCD4C().addImport(res, "com.microsoft.playwright.Page");
+
+    ASTCDAttribute websocketNoAuth = getCD4C().addAttribute(res, "public CommandWebSocketService noAuthWebsocketService;");
+    glex.replaceTemplate("cd2java.Annotations",websocketNoAuth, new StringHookPoint("@Autowired(required=false)" +
+        "@Qualifier(\"noAuthWebsocketService\")"));
+
+    ASTCDAttribute websocketAuth = getCD4C().addAttribute(res, "public CommandWebSocketService authWebsocketService;");
+    glex.replaceTemplate("cd2java.Annotations",websocketAuth, new StringHookPoint("@Autowired(required=false)"+
+        "@Qualifier(\"authWebsocketService\")"));
+
+    ASTCDMethodSignature m = getCD4C().addMethod(res, "umlp.test_infrastructure.e2e.CleanupAfterEach");
+    glex.replaceTemplate("cd2java.Annotations", m, new StringHookPoint("@AfterEach"));
+    glex.replaceTemplate(JAVADOC, m, new StringHookPoint(
+        "/**\n" +
+            "* Ensures that data gets wiped from the database between two test cases\n" +
+            "*/"
+    ));
 
     glex.replaceTemplate(JAVADOC, res, new StringHookPoint(
         //@formatter:off

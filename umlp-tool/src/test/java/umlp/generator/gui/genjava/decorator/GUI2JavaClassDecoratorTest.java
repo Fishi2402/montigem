@@ -82,7 +82,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertAll(
         () -> assertTrue(Log.getFindings().isEmpty()),
         () -> assertEquals(27, clazz.getCDAttributeList().size()),
-        () -> assertEquals(84, clazz.getCDMethodList().size()),
+        () -> assertEquals(87, clazz.getCDMethodList().size()),
         () -> assertEquals(1, clazz.getCDConstructorList().size()),
         () -> assertEquals(17, imports.size())
     );
@@ -171,8 +171,8 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     assertions.add(() -> assertEquals("Person", _person.getMCType().printType()));
     assertions.add(() -> assertEquals("Person", _$per$son.getMCType().printType()));
     assertions.add(() -> assertEquals("MaritalStatus", _status.getMCType().printType()));
-    assertions.add(() -> assertEquals("List<Address>", _la.getMCType().printType()));
-    assertions.add(() -> assertEquals("List<List<Address>>", _lla.getMCType().printType()));
+    assertions.add(() -> assertEquals("List<packaged.domain.Address>", _la.getMCType().printType()));
+    assertions.add(() -> assertEquals("List<List<packaged.domain.Address>>", _lla.getMCType().printType()));
     assertions.add(() -> assertTrue(
         "java.lang.String".equals(_s.getMCType().printType())
         || "String".equals(_s.getMCType().printType())
@@ -185,7 +185,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
         "java.lang.Integer".equals(_i.getMCType().printType())
         || "Integer".equals(_i.getMCType().printType())
     ));
-    assertions.add(() -> assertEquals("Consumer<Void>", _e.getMCType().printType()));
+    assertions.add(() -> assertEquals("Consumer<java.lang.Void>", _e.getMCType().printType()));
 
     List<ASTCDMethod> methods = clazz.getCDMethodList();
 

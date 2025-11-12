@@ -1,0 +1,34 @@
+package gui.editprocessmodels.graphicalview.wizard;
+
+import DemoRec.Task;
+import DemoRec.JoinConnection;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
+
+import gui.joinconnection.JoinConnectionCreate;
+import gui.staticcontainer.NavContainer;
+
+import gui.joinconnection.JoinConnectionCreateComplete;
+
+page CreateJoinConnectionForTask(Task task) {
+  @NavContainer(
+    content=[
+      @GemCard(
+        title = "Create Join Connection",
+        component = @GemColumn(
+            rowGap="5px",
+            wrap="nowrap",
+            components=[
+              //joinConnectionCreateComponent@JoinConnectionCreate(createJoinConnection=addNewJoinConnection()),
+              joinConnectionCreateComponent@JoinConnectionCreateComplete(processModel=task.processModel, createJoinConnection=addNewJoinConnection()),
+              backToDefineActionsButton@GemButton(width = "auto", label = "Back to Defining Actions", leftClick = backToDefineActions())
+          ])
+      )
+    ]
+  );
+}

@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDateTime;
 
 classdiagram Jsweettest {
   class A {
@@ -26,8 +27,8 @@ classdiagram Jsweettest {
     long hwGemId;
   }
 
-  association C1 -> (c2opt) C2 [0..1];
-  association C1 -> (c2mult) C2 [*];
+  association C1 (asOpt) -> (c2opt) C2 [0..1];
+  association C1 (asMult) -> (c2mult) C2 [*];
 
   class C2 {
     String string;
@@ -35,8 +36,8 @@ classdiagram Jsweettest {
     Integer int2;
   }
 
-  association C2 -> (c3opt) C3 [0..1];
-  association C2 -> (c3mult) C3 [*];
+  association C2 (asOpt) -> (c3opt) C3 [0..1];
+  association C2 (asMult) -> (c3mult) C3 [*];
 
   class C3 {
     String string;
@@ -44,4 +45,46 @@ classdiagram Jsweettest {
     Integer int2;
   }
 
+  class N0;
+  class N1;
+  class N2 {
+    String name;
+  }
+
+  association [1] N0 -> N1 [1];
+  association [1] N1 -> N2 [*];
+
+  class EnumTestClass;
+  enum EnumTestEnum {
+    A, B, C;
+  }
+  association [1] EnumTestClass -> EnumTestEnum [1];
+
+  <<singleton>>
+  class GlobalState {
+    -> (state) State [0..1];
+  }
+
+  class State {
+    String name;
+  }
+
+  class Types {
+    LocalDateTime timestamp;
+  }
+
+  // async propagation
+  class AsyncSuper;
+  /association AsyncSuper -> A [*];
+
+  class AsyncSubNonAsync extends AsyncSuper;
+
+  class AsyncSubAsync extends AsyncSuper; // In Java
+
+  // interface generation
+  class Reference;
+  interface ISource;
+  association [1] ISource -> Reference [*];
+
+  class ReferenceImpl implements ISource;
 }

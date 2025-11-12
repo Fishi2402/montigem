@@ -5,6 +5,7 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import loginmodule.LoginModuleManager;
+import loginmodule.LoginModuleUser;
 import loginmodule.LoginModuleUserBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -32,7 +34,7 @@ public class LoginModuleRestService {
   @PostMapping(value = "/loginmodule/public/reset_password", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @CrossOrigin
   public ResponseEntity<String> resetPassword(@RequestBody String raw) {
-    var json = JsonParser.parseJsonObject(raw);
+    JsonObject json = JsonParser.parseJsonObject(raw);
 
     if (json == null) {
       return ResponseEntity.badRequest().build();
@@ -53,7 +55,7 @@ public class LoginModuleRestService {
     }
 
     String email = json.getStringMember("email");
-    var user = LoginModuleManager.getLoginModuleUserList().stream().filter(u -> u.getEmail().equals(email)).findFirst();
+    Optional<LoginModuleUser> user = LoginModuleManager.getLoginModuleUserList().stream().filter(u -> u.getEmail().equals(email)).findFirst();
 
     if (user.isEmpty()) {
       // Return the "okay" response no matter what, to not leak the emails
@@ -75,7 +77,7 @@ public class LoginModuleRestService {
   @PostMapping(value = "/loginmodule/public/signup", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @CrossOrigin
   public ResponseEntity<String> publicSignup(@RequestBody String raw) {
-    var json = JsonParser.parseJsonObject(raw);
+    JsonObject json = JsonParser.parseJsonObject(raw);
 
     if (json == null || !json.hasStringMember("email") || !json.hasStringMember("password")) {
       return ResponseEntity.badRequest().build();
@@ -105,7 +107,7 @@ public class LoginModuleRestService {
       return ResponseEntity.badRequest().body("{\"error\":\"duplicate_username\"}");
     }
 
-    var builder = LoginModuleManager.loginModuleUserBuilder();
+    LoginModuleUserBuilder builder = LoginModuleManager.loginModuleUserBuilder();
     builder.email(json.getStringMember("email"));
     builder.password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(json.getStringMember("password")));
     builder.registrationDate(LocalDateTime.now());

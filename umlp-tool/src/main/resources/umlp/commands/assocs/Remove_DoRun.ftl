@@ -17,6 +17,12 @@ if(loaded${ctargetName} && loaded${csourceName}){
 <#if isTargetList>
   if(${targetName}Index == -1){
     ${targetName}Index = p._internal_get${ctargetName}GemList().indexOfId(${targetName}GemId);
+  } else if (p._internal_get${ctargetName}GemList().get(${targetName}Index).getGemId() != ${targetName}GemId) {
+    // The client appears to have a different state than the backend
+    // This error is unrecoverable!
+    Log.warn("Inconsistent state: " +  this.getParticipantId() + " tried to remove " + ${targetName}Index + "/" + p._internal_get${ctargetName}GemList().get(${targetName}Index).getGemId());
+    GeneralErrorCollector.reportSyncError();
+    return StatusResult.error(getId());
   }
   p.remove${ctargetName}(${targetName}Index, NotificationScope.MINIMAL);
 <#else>
@@ -48,6 +54,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
   if(loaded${ctargetName}){
     ${targetType} a = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
+    // TODO: Why do we use ${targetName}(targetName) instead of ${sourceName}(sourceName) here?
     if(${targetName}Index == -1){
       ${targetName}Index = a._internal_get${csourceName}GemList().indexOfId(${targetName}GemId);
     }

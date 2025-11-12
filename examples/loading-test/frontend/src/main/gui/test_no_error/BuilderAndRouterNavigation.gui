@@ -1,0 +1,15 @@
+package test_no_error;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+
+import LoadingTests.Animal;
+
+page BuilderAndRouterNavigation(Animal a) {
+
+  // Necessary Input Field so that the animal is really observed
+  @GemTextInput(labelText="Animal name", entry=a.name);
+
+  // Button with hwc behavior that allows us to use Router navigation which will call onDestroy
+  @GemButton(label="Router Navigation without a build.", leftClick=navigateToAnotherPage());
+}

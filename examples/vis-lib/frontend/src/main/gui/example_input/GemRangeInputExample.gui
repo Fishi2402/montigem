@@ -1,0 +1,101 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import mc.fenix.input.GemRangeInputTypes.Marker;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemDualRangeInput;
+
+page GemRangeInputExample() {
+
+  @GemRangeInput(
+    id = "satisfaction",
+    labelText = "Satisfaction:",
+    vertical = false,
+    step = 1,
+    minValue = 1,
+    maxValue = 5,
+    size = "300px",
+    ticks = [
+      Marker(1, "very bad"),
+      Marker(2, "bad"),
+      Marker(3, "neutral"),
+      Marker(4, "good"),
+      Marker(5, "very good")
+    ]
+  );
+
+  @GemRangeInput(
+    id = "priceFilter",
+    labelText = "price (€):",
+    vertical = false,
+    step = 50,
+    minValue = 0,
+    maxValue = 500,
+    size = "350px",
+    snapping = true
+  );
+
+  @GemRangeInput(
+      id = "projectPhase",
+      labelText = "Projectphase:",
+      vertical = true,
+      step = 1,
+      minValue = 1,
+      maxValue = 4,
+      size = "250px",
+      ticks = [
+        Marker(1, "planning"),
+        Marker(2, "development"),
+        Marker(3, "testing"),
+        Marker(4, "release")
+      ]
+    );
+
+  @GemRangeInput(
+    id = "volumeControlVertical",
+    labelText = "Volume:",
+    vertical = true,
+    step = 5,
+    minValue = 0,
+    maxValue = 100,
+    size = "200px",
+    ticks = [
+      Marker(0, "0%"),
+      Marker(25, "25%"),
+      Marker(50, "50%"),
+      Marker(75, "75%"),
+      Marker(100, "100%")
+    ]
+  );
+  @GemDualRangeInput(
+    id = "priceRange",
+    labelText = "Price Range (€):",
+    vertical = false,
+    step = 5,
+    minValue = 0,
+    maxValue = 200,
+    size = "300px",
+    ticks = [
+      Marker(0, "0€"),
+      Marker(50, "50€"),
+      Marker(100, "100€"),
+      Marker(150, "150€"),
+      Marker(200, "200€")
+    ]
+  );
+  @GemDualRangeInput(
+    id = "tempRange",
+    labelText = "Temperature (°C):",
+    vertical = true,
+    step = 1,
+    minValue = 5,
+    maxValue = 35,
+    size = "250px",
+    ticks = [
+      Marker(5, "5°C"),
+      Marker(15, "15°C"),
+      Marker(25, "25°C"),
+      Marker(35, "35°C")
+    ]
+  );
+}

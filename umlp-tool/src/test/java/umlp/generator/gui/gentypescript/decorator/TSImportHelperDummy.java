@@ -7,7 +7,7 @@ public class TSImportHelperDummy extends TSImportHelper {
   }
 
   @Override
-  public void addImport(String qType, String importerPackage) {
+  public void addImport(String importedQName, String importerPackage) {
   }
 
   @Override

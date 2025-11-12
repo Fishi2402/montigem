@@ -14,10 +14,13 @@ classdiagram LoadingTests {
 
   class Food {
     String name;
+    MyEnum eAttr = MyEnum.A;
   }
 
   association [*] Person (owner) <-> (pet) Animal [*];
+  association [0..1] Person (ownerOfFavAssoc) -> (favouritePet) Animal [0..1]; // once: unidirectional
   association [*] Animal -> Food [*];
+  association [0..1] Animal (animalOfFavAssoc) <-> (favouriteFood) Food [0..1]; // and twice: bidirectional
 
   <<singleton>>
   class UpdateListHelper {
@@ -49,10 +52,24 @@ classdiagram LoadingTests {
       + int currentTurn;
       + long currentPlayerIndex;
       + boolean votingPhase;
+
+      int gemIdForNav = -1;
     }
 
     composition [1] Game -> Player [*];
 
+   // A class causing Game -> Player * -> PlayerStat *;
+   public class PlayerStat {
+    + String statID;
+   }
+   composition [1] Player -> PlayerStat [*];
+   <<singleton>>
+   class PlayerStatsManager {
+     void addPlayerRemote(Game g);
+     void addStatRemote(Game g);
+     void reset(Game g);
+   }
+   association PlayerStatsManager -> Game [0..1];
 
   // And some tests for interfaces
 
@@ -64,5 +81,33 @@ classdiagram LoadingTests {
     String name;
   }
 
+  public class LeftSide {
+    String label;
+  }
+  public class RightSide {
+    String label;
+  }
+  association [0..1] LeftSide (connectedLeft) <-> (connectedRight) RightSide [0..1];
+  association [0..1] LeftSide (connectedLeftList) <-> (connectedRightList) RightSide [*];
+  public class Sides {
+    LeftSide left;
+  }
 
+  <<singleton>>
+  public class AssocCommandCollector {
+    // Create a new object & return it
+    LeftSide constructNewLeftSide(String leftLabel, String rightLabel);
+
+    // Create a new rightside to the connectedRight
+    RightSide addNewRightSideTo(LeftSide leftSide, boolean setAssocInBuilder);
+  }
+
+  //public interface MyBetterInterface extends MyInterface {}
+  //public class MyBetterInterfaceImpl implements MyBetterInterface {
+  //    String name;
+  //}
+
+  enum MyEnum {
+    A,B,C;
+  }
 }

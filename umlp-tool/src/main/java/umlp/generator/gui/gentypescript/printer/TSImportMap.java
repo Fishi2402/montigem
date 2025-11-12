@@ -1,58 +1,152 @@
 package umlp.generator.gui.gentypescript.printer;
 
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.MCPath;
+import de.monticore.symboltable.serialization.JsonParser;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.UMLPGeneratorConfig;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-// TODO AGe: move to frontend-rte
 public enum TSImportMap {
-  // vis libs
-  ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
-  BASIC("mc.fenix.basic", "@umlp/basic"),
-  CHARTS("mc.fenix.charts", "@umlp/charts"),
-  COMMON("mc.fenix.common", "@umlp/common"),
-  NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
-  INPUT("mc.fenix.input", "@umlp/input"),
-  TABLE("mc.fenix.table", "@umlp/table"),
-  FUNCTIONDISPLAY("mc.fenix.functiondisplay", "@umlp/functiondisplay"),
-  NETWORKGRAPH("mc.fenix.networkgraph", "@umlp/networkgraph"),
-  ARRANGE_DEPRECATED("arrange", "@umlp/arrange"),
-  BASIC_DEPRECATED("basic", "@umlp/basic"),
-  CHARTS_DEPRECATED("charts", "@umlp/charts"),
-  COMMON_DEPRECATED("common", "@umlp/common"),
-  NAVIGATION_DEPRECATED("navigation", "@umlp/navigation"),
-  INPUT_DEPRECATED("input", "@umlp/input"),
-  TABLE_DEPRECATED("table", "@umlp/table"),
-  BACKEND_RTE("umlp.backendrte", "@umlp/common");
+  INSTANCE;
 
-  private static final String JSWEET_RTE = "@umlp/commonj2ts";
+  // key: javaPackage, value: tsPackage
+  private final Map<String, String> importMap = new HashMap<>();
+  public static final String JSWEET_RTE = "@umlp/commonj2ts";
+  public static final String COMMON = "@umlp/common";
+  public static final String BACKEND_RTE = "umlp.backendrte";
 
-  private final String tsPackage;
-  private final String javaPackage;
-
-  TSImportMap(String javaPackage, String tsPackage) {
-    this.javaPackage = javaPackage;
-    this.tsPackage = tsPackage;
+  TSImportMap() {
   }
 
-  public String getJavaPackage() {
-    return javaPackage;
+  public void add(String javaPackage, String tsPackage) {
+    if (importMap.containsKey(javaPackage)) {
+      Log.warn("0x00028 Overwriting import mapping from\n"
+          + javaPackage + "->" + importMap.get(javaPackage)
+          + "\nto\n" + javaPackage + "->" + tsPackage
+      );
+    }
+    importMap.put(javaPackage, tsPackage);
   }
 
-  public String getTSPackage() {
-    return tsPackage;
-  }
-
-  public static Optional<String> getTSPackage(String javaPackage) {
-    for (TSImportMap type : TSImportMap.values()) {
-      if (javaPackage.startsWith(type.getJavaPackage())) {
-        if (type == BACKEND_RTE && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+  public Optional<String> getTSPackage(String javaPackage) {
+    for (String key : importMap.keySet()) {
+      if (javaPackage.toLowerCase().startsWith(key.toLowerCase())) {
+        if (key.startsWith(BACKEND_RTE)) {
           return Optional.of(JSWEET_RTE);
         }
-        return Optional.of(type.getTSPackage());
+        return Optional.of(importMap.get(key));
       }
     }
     return Optional.empty();
+  }
+
+  public boolean isTSPackageImport(String javaPackage) {
+    for (String key : importMap.keySet()) {
+      if (javaPackage.toLowerCase().startsWith(key.toLowerCase())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public void init(MCPath importedSymbolPath) {
+    // loaded from files
+    Log.info("Initializing qualified name to TypeScript import map",
+        TSImportMap.class.getSimpleName());
+    clear();
+
+    // default map
+    add("mc.fenix.common", COMMON);
+    add(BACKEND_RTE, "@umlp/common");
+
+    Set<File> mapFiles = importedSymbolPath.getEntries().stream()
+        .map(x -> x.toFile().listFiles(f -> f.getName().endsWith("import.map")))
+        .filter(Objects::nonNull)
+        .flatMap(Arrays::stream)
+        .peek(p -> Log.info("Found import map: " + p.getAbsolutePath(),
+            TSImportMap.class.getSimpleName()))
+        .collect(Collectors.toSet());
+
+    if (!mapFiles.isEmpty()) {
+      for (File f : mapFiles) {
+        try {
+          addFrom(Files.readString(f.toPath()));
+        } catch (IOException ex) {
+          Log.error("Failed to load import map file " + f.getName() + " :" + ex.getMessage(), ex);
+        }
+      }
+      Log.info("Finished initializing qualified name to TypeScript import map",
+          TSImportMap.class.getSimpleName());
+    }
+
+    for (Path p : importedSymbolPath.getEntries()) {
+      if (p.getFileName().toString().contains(".jar")) {
+        Reporting.reportOpenInputFile(p.toString());
+        try (ZipFile zipFile = new ZipFile(p.toFile())) {
+          Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+          while (zipEntries.hasMoreElements()) {
+            ZipEntry entry = zipEntries.nextElement();
+            if (entry.getName().endsWith("import.map")) {
+              try (InputStream is = zipFile.getInputStream(entry)) {
+                byte[] bytes = is.readAllBytes();
+                addFrom(new String(bytes, StandardCharsets.UTF_8).trim());
+                Log.debug("Loaded import maps from jar " + p + ":" + entry.getName(),
+                    TSImportMap.class.getSimpleName());
+              }
+            }
+          }
+        } catch (IOException e) {
+          Log.error("Failed to load tags from " + p, e);
+          throw new RuntimeException(e);
+        }
+      }
+    }
+  }
+
+  public void addFrom(String fileContent) {
+    JsonObject obj = JsonParser.parseJsonObject(fileContent);
+    for (String lib : obj.getMembers().keySet()) {
+      if (obj.hasArrayMember(lib)) {
+        for (JsonElement el : obj.getArrayMember(lib)) {
+          if (el.isJsonString()) {
+            add(el.getAsJsonString().getValue(), lib);
+            Log.debug("Added mapping: " + el.getAsJsonString().getValue() + " -> " + lib,
+                TSImportMap.class.getSimpleName());
+          }
+          else {
+            Log.debug("Ignoring non-string member: " + el,
+                TSImportMap.class.getSimpleName());
+          }
+        }
+      }
+      else {
+        Log.debug("Ignoring non-array member: " + obj.getMember(lib).toString(),
+            TSImportMap.class.getSimpleName());
+      }
+    }
+  }
+
+  public void clear() {
+    importMap.clear();
   }
 
 }

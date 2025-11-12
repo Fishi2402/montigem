@@ -9,6 +9,7 @@ public class PathUtil {
   private static final String COMMAND_POSTFIX = "command";
   private static final String COMMON_POSTFIX = "common";
   private static final String GUI_POSTFIX = "gui";
+  private static final String OCL_POSTFIX = "ocl";
   private static final String REQUEST_POSTFIX = "request";
   private static final String ERROR_POSTFIX = "error";
   private static final String UTIL_POSTFIX = "util";
@@ -44,6 +45,14 @@ public class PathUtil {
 
   public static String getBackendRTEGUIPath(String... furtherPaths) {
     return Joiners.DOT.join(getBackendRTEGUIPath(), String.join(".", furtherPaths));
+  }
+
+  public static String getBackendRTEOCLPath() {
+    return getBackendRTEPath(OCL_POSTFIX);
+  }
+
+  public static String getBackendRTEOCLPath(String... furtherPaths) {
+    return Joiners.DOT.join(getBackendRTEOCLPath(), String.join(".", furtherPaths));
   }
 
   public static String getBackendRTERequestPath() {

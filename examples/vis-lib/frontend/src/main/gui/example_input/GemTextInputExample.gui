@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import Domain.Person;
+
+import mc.fenix.input.GemTextInput;
+
+page GemTextInputExample(List<Person> persons) {
+  @iterate(Person p : persons) {
+    @GemTextInput(
+      id = "name",
+      labelText = "Name:",
+      entry = p.name
+    );
+    @GemTextInput(
+      inputType = "date",
+      labelText = "Date of birth:",
+      entry = p.birthday
+    );
+  }
+}

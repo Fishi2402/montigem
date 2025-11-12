@@ -6,6 +6,7 @@ import dtcockpit.DtcockpitManager;
 import dtcockpit.Group;
 import dtcockpit.PipelineStatistic;
 import dtcockpit.Project;
+import jsweet.lang.Erased;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.Pager;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Erased
 public class PipelineInformationExtractor {
 
   private String gitApiAccessToken;

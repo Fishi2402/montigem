@@ -50,26 +50,33 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
                  "new " + name + "CommandResultDeSer()");
 
     // extended CDs
-    List<String> commandDeSerNames = new ArrayList<>();
     DiagramSymbol currentDiagram = origCD.getCDDefinition().getSymbol();
     var superDiagrams = UMLPSymbolTables.getExtensionDiamond(currentDiagram).get(currentDiagram);
+
+    List<String> commandDeSerNames = new ArrayList<>();
+    List<String> commandResultDeSerNames = new ArrayList<>();
     for (DiagramSymbol superDiagram : superDiagrams) {
       String diagramName = superDiagram.getName();
-      String deSerName = diagramName + "CommandDeSer";
-      ASTCDAttribute attr = addAttribute(mapperClass,
-                                         "protected " + deSerName + " " + uncapitalize(deSerName),
-                                         "new " + deSerName + "()");
-      commandDeSerNames.add(attr.getName());
+      String commandDeSerName = diagramName + "CommandDeSer";
+      String commandResultDeSerName =  diagramName + "CommandResultDeSer";
+      ASTCDAttribute commandDeSer = addAttribute(mapperClass,
+                                         "protected " + commandDeSerName + " " + uncapitalize(commandDeSerName),
+                                         "new " + commandDeSerName + "()");
+      ASTCDAttribute commandResultDeSer = addAttribute(mapperClass,
+          "protected " + commandResultDeSerName + " " + uncapitalize(commandResultDeSerName),
+          "new " + commandResultDeSerName + "()");
+      commandDeSerNames.add(commandDeSer.getName());
+      commandResultDeSerNames.add(commandResultDeSer.getName());
 
-      getCD4C().addImport(mapperClass, getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + deSerName);
+      addImportsDeSer(mapperClass, superDiagram, commandDeSerName, commandResultDeSerName);
     }
 
     // add methods
     getCD4C().addMethod(mapperClass, getInitTemplate(), name);
     getCD4C().addMethod(mapperClass, getSerializeCommandTemplate(), commandDeSerNames);
     getCD4C().addMethod(mapperClass, getDeserializeCommandTemplate(), commandDeSerNames);
-    getCD4C().addMethod(mapperClass, getSerializeResponseTemplate());
-    getCD4C().addMethod(mapperClass, getDeserializeResponseTemplate());
+    getCD4C().addMethod(mapperClass, getSerializeResponseTemplate(), commandResultDeSerNames);
+    getCD4C().addMethod(mapperClass, getDeserializeResponseTemplate(), commandResultDeSerNames);
 
     addImports(mapperClass);
 
@@ -94,6 +101,16 @@ public class CommandObjectMapperDecorator extends AbstractDecorator {
 
   protected String getDeserializeResponseTemplate() {
     return "umlp.commandobjectmapper.DeserializeResponse";
+  }
+
+  protected void addImportsDeSer(
+      ASTCDType mapperClass, DiagramSymbol superDiagram,
+      String commandDeSerName, String commandResultDeSerName
+  ) {
+    getCD4C().addImport(mapperClass,
+        getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + commandDeSerName);
+    getCD4C().addImport(mapperClass,
+        getPackageName(superDiagram, DEFAULT_PACKAGE) + "." + commandResultDeSerName);
   }
 
   protected void addImports(ASTCDType clazz) {

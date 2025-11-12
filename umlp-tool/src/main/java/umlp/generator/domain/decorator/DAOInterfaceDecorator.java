@@ -67,6 +67,7 @@ public class DAOInterfaceDecorator extends AbstractDecorator {
   private void domainClassDAOMethods(ASTCDInterface daoInterface, ASTCDClass domainClass, Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssoc) {
     selectMethod(daoInterface, domainClass);
     selectAllIdsMethod(daoInterface, domainClass);
+    selectFilteredMethod(daoInterface, domainClass);
     unpackMethod(daoInterface, domainClass);
     insertMethods(daoInterface, domainClass);
     deleteMethod(daoInterface, domainClass);
@@ -93,6 +94,10 @@ public class DAOInterfaceDecorator extends AbstractDecorator {
 
   protected void selectAllIdsMethod(ASTCDInterface daoInterface, ASTCDClass domainClass){
     getCD4C().addMethod(daoInterface, "umlp.daointerface.SelectAllIds", domainClass.getName());
+  }
+
+  protected void selectFilteredMethod(ASTCDInterface daoInterface, ASTCDClass domainClass){
+    getCD4C().addMethod(daoInterface, "umlp.daointerface.SelectFiltered", domainClass.getName());
   }
 
   protected void updateAttrMethod(ASTCDInterface daoInterface, ASTCDClass domainClass) {
@@ -185,24 +190,6 @@ public class DAOInterfaceDecorator extends AbstractDecorator {
     getCD4C().addMethod(daoInterface, "umlp.daointerface.associations.RemoveForAssocDAO", assoc);
   }
 
-
-  // Helper Methods
-
-  protected List<ASTCDAttribute> getOptionalAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isOptional(a)).collect(Collectors.toList());
-  }
-
-  protected List<ASTCDAttribute> getListAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() && GenService.isList(a)).collect(Collectors.toList());
-  }
-
-  protected List<ASTCDAttribute> getNormalAttributes(ASTCDClass domainClass) {
-    return CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
-        .filter(a -> !a.getModifier().isDerived() &&
-            !GenService.isList(a) && !GenService.isOptional(a)).collect(Collectors.toList());
-  }
 
   private void addStaticImports(ASTCDType clazz) {
     // UMLP RTE

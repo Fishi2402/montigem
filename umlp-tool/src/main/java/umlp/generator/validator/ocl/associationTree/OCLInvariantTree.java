@@ -5,11 +5,11 @@ import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
 import de.monticore.ocl.ocl._ast.ASTOCLParamDeclaration;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import org.gradle.internal.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -98,29 +98,29 @@ public class OCLInvariantTree {
     return branches;
   }
 
-  public Pair<OCLInvariantTree, OCLInvariantTree> splitTreeByDomainClass(ASTCDType domainClass) {
+  public Map.Entry<OCLInvariantTree, OCLInvariantTree> splitTreeByDomainClass(ASTCDType domainClass) {
     OCLInvariantTree leftTree = new OCLInvariantTree(this.invariant);
     OCLInvariantTree rightTree = new OCLInvariantTree(this.invariant);
     List<OCLInvariantTreeNode> relevantBranches = getBranchesRelatedToDomainClass(domainClass);
     relevantBranches.forEach(branch -> {
-      Pair<OCLInvariantTreeNode, List<OCLInvariantTreeNode>> splitResult = splitBranchByDomainClass(branch, domainClass, branch.shallowClone());
-      leftTree.addRootNode(Objects.requireNonNull(splitResult.getLeft()));
-      Objects.requireNonNull(splitResult.getRight()).forEach(rightTree::addRootNode);
+      Map.Entry<OCLInvariantTreeNode, List<OCLInvariantTreeNode>> splitResult = splitBranchByDomainClass(branch, domainClass, branch.shallowClone());
+      leftTree.addRootNode(Objects.requireNonNull(splitResult.getKey()));
+      Objects.requireNonNull(splitResult.getValue()).forEach(rightTree::addRootNode);
     });
-    return Pair.of(leftTree, rightTree);
+    return Map.entry(leftTree, rightTree);
   }
 
-  private Pair<OCLInvariantTreeNode, List<OCLInvariantTreeNode>> splitBranchByDomainClass(OCLInvariantTreeNode relevantBranch, ASTCDType domainClass, OCLInvariantTreeNode leftBranch) {
+  private Map.Entry<OCLInvariantTreeNode, List<OCLInvariantTreeNode>> splitBranchByDomainClass(OCLInvariantTreeNode relevantBranch, ASTCDType domainClass, OCLInvariantTreeNode leftBranch) {
     List<OCLInvariantTreeNode> rightNodes = new ArrayList<>();
     if(relevantBranch.isRelatedToDomainClass(domainClass)) {
-      return Pair.of(leftBranch, relevantBranch.getChildren());
+      return Map.entry(leftBranch, relevantBranch.getChildren());
     }
     for(OCLInvariantTreeNode child : relevantBranch.getChildren()) {
-      Pair<OCLInvariantTreeNode, List<OCLInvariantTreeNode>> splitResult = splitBranchByDomainClass(child, domainClass, child.shallowClone());
-      leftBranch.addChild(splitResult.getLeft());
-      rightNodes.addAll(Objects.requireNonNull(splitResult.getRight()));
+      Map.Entry<OCLInvariantTreeNode, List<OCLInvariantTreeNode>> splitResult = splitBranchByDomainClass(child, domainClass, child.shallowClone());
+      leftBranch.addChild(splitResult.getKey());
+      rightNodes.addAll(Objects.requireNonNull(splitResult.getValue()));
     }
-    return Pair.of(leftBranch, rightNodes);
+    return Map.entry(leftBranch, rightNodes);
   }
 
   public void addNode(OCLInvariantTreeNode node) {

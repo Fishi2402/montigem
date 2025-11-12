@@ -14,8 +14,6 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.monticore.ocl.util.SymbolTableUtil;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -50,6 +48,11 @@ public abstract class AbstractUMLPTest {
     UMLPMill.reset();
     UMLPMill.init();
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope(), false);
+    _setup();
+  }
+
+  public void _setup() {
+    //override this method if needed
   }
 
   public ASTCDCompilationUnit parse(String model) {
@@ -96,9 +99,6 @@ public abstract class AbstractUMLPTest {
   }
 
   public IUMLPArtifactScope createSymTab(ASTCDCompilationUnit ast) {
-    ASTMCQualifiedName pck = ast.isPresentMCPackageDeclaration()
-        ? ast.getMCPackageDeclaration().getMCQualifiedName()
-        : MCBasicTypesMill.mCQualifiedNameBuilder().build();
     IUMLPArtifactScope as = UMLPMill.scopesGenitorDelegator().createFromAST(ast);
     CD4CodeSymbolTableCompleter c = new CD4CodeSymbolTableCompleter(ast);
     ast.accept(c.getTraverser());

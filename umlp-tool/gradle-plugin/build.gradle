@@ -16,17 +16,29 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version // for json
   implementation ('org.yaml:snakeyaml:2.2')
 
+  // to setup the gradle-node-plugin
+  implementation "com.github.node-gradle:gradle-node-plugin:5.0.0"
+
   // The following dependencies will be present during compilation & loaded into a separated classloa
   umlpTool group: 'de.monticore.lang', name: 'od', version: mc_version
   umlpTool group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   umlpTool "umlp:umlp-tool:$version"
-  umlpTool group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'
+  umlpTool(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.1-UMLP-SNAPSHOT'){
+    exclude(group: "com.kohlschutter.jdk", module: "standalone-home") // conflict with standalone-jdk21
+    exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21
+  }
 
+
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
 }
 
 sourceSets {
   main.compileClasspath += configurations.umlpTool
   test.compileClasspath += configurations.umlpTool
+}
+
+test {
+  useJUnitPlatform()
 }
 
 group = 'umlp'
@@ -40,50 +52,52 @@ repositories {
     url repo
   }
   mavenCentral()
+  maven {
+    url = "https://repo.gradle.org/gradle/libs-releases/"
+  }
+  maven {
+    url = "https://plugins.gradle.org/m2/"
+  }
 }
 
 
 gradlePlugin {
   plugins {
     umlpplugin {
-      id = "de.rwth.se.umlp-tool"
-      implementationClass = "gradle.UMLPPluginBase"
+      id = "de.rwth.se.montigem"
+      implementationClass = "de.montigem.gradle.MGBasePlugin"
     }
     umlpplugin_dependencies {
-      id = "de.rwth.se.umlp-tool-dependencies"
-      implementationClass = "gradle.UMLPPluginDep"
+      id = "de.rwth.se.montigem-dependencies"
+      implementationClass = "de.montigem.gradle.DependencyPlugin"
     }
     umlpplugin_backend {
-      id = "de.rwth.se.umlp-tool-backend"
-      implementationClass = "gradle.UMLPPluginBackend"
+      id = "de.rwth.se.montigem-backend"
+      implementationClass = "de.montigem.gradle.BackendPlugin"
     }
     umlpplugin_backend_test {
-      id = "de.rwth.se.umlp-tool-backend-test"
-      implementationClass = "gradle.UMLPPluginBackendTest"
+      id = "de.rwth.se.montigem-backend-test"
+      implementationClass = "de.montigem.gradle.BackendTestPlugin"
     }
     umlpplugin_testing {
-      id = "de.rwth.se.umlp-tool-testing"
-      implementationClass = "gradle.UMLPPluginTestInfrastructure"
+      id = "de.rwth.se.montigem-testing"
+      implementationClass = "de.montigem.gradle.TestInfrastructurePlugin"
     }
     umlpplugin_frontend {
-      id = "de.rwth.se.umlp-tool-frontend"
-      implementationClass = "gradle.UMLPPluginFrontend"
+      id = "de.rwth.se.montigem-frontend"
+      implementationClass = "de.montigem.gradle.FrontendPlugin"
     }
     umlpplugin_frontend_test {
-      id = "de.rwth.se.umlp-tool-frontend-test"
-      implementationClass = "gradle.UMLPPluginFrontendTest"
+      id = "de.rwth.se.montigem-frontend-test"
+      implementationClass = "de.montigem.gradle.FrontendTestPlugin"
     }
-    umlpplugin_module_models {
-      id = "de.rwth.se.umlp-tool-module-models"
-      implementationClass = "gradle.module.UMLPPluginModule"
+    umlpplugin_module {
+      id = "de.rwth.se.montigem-module"
+      implementationClass = "de.montigem.gradle.module.ModulePlugin"
     }
-    umlpplugin_module_backend {
-      id = "de.rwth.se.umlp-tool-module-backend"
-      implementationClass = "gradle.module.UMLPPluginModuleBackend"
-    }
-    umlpplugin_module_jsfrontend {
-      id = "de.rwth.se.umlp-tool-module-jsfrontend"
-      implementationClass = "gradle.module.UMLPPluginModuleJSFrontend"
+    umlpplugin_module_frontend {
+      id = "de.rwth.se.montigem-module-frontend"
+      implementationClass = "de.montigem.gradle.module.ModuleFrontendPlugin"
     }
   }
 }

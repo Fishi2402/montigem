@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.arrange;
+
+/**
+  Combine multiple tree nodes to a tree. A tree displays hierarchical data. It provides a visual representation of
+  parent-child relationships, allowing users to navigate and interact with a hierarchical dataset.
+*/
+component GemTreeNode(
+  /**
+    Whether subtree of this node is expanded
+  */
+  boolean isExpanded = false,
+  /**
+    Content of this node.
+    If not set, the node is expected to be the root of the tree.
+  */
+  GUIViewElement content,
+  /**
+    Tree nodes. Each node defines a root of a subtree and its children.
+    Normally set to a list of `GemTreeNode`.
+    If not set or empty, the node is expected to be a leaf of the tree.
+  */
+  List<GUIViewElement> children,
+  /**
+    Callback that is executed when the node is clicked.
+  */
+  Event<Void> onClick,
+  /**
+    Callback that is executed when the expand/collapse icon is clicked.
+    Returns `true` if the subtree is expanded, otherwise `false`.
+  */
+  Event<boolean> onToggle
+)

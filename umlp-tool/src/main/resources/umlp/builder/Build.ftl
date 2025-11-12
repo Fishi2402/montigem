@@ -14,12 +14,18 @@ if (!buildFinished) {
     <#if genService.isList(assoc)>
       this._${assoc.getName()}.build();
     <#else>
-      //at the time of writing we assume that every non-list association is a Gem on something which implements GemBuildable
-      if (this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED && this._${assoc.getName()}.get().build().isEmpty()) {
-        //let the build fail
-        ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
-        return Optional.empty();
+    {
+      boolean needsBuild = this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED
+                            && !this._${assoc.getName()}.get().isBuildFinished();
+      if (needsBuild) {
+        boolean buildFailed = this._${assoc.getName()}.get().build().isEmpty();
+        if(buildFailed){
+          //let the build fail
+          ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
+          return Optional.empty();
+        }
       }
+    }
     </#if>
 </#list>
 
@@ -47,14 +53,14 @@ if (!buildFinished) {
       if (this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED) {
       <#if genService.isList(otherSide)>
         if (!this._${assoc.getName()}.get().get${otherSide.getName()?cap_first}List().contains(this)) {
-          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+          this._${assoc.getName()}.get().add${otherSide.getName()?cap_first}(this, NotificationScope.GLOBAL);
         }
       <#else>
-        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.MINIMAL);
+        this._${assoc.getName()}.get().set${otherSide.getName()?cap_first}(this, NotificationScope.GLOBAL);
       </#if>
       }
+      </#if>
     </#if>
-  </#if>
 </#list>
 }
 ${name?uncap_first}Observers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification

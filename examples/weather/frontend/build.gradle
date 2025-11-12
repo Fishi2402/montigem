@@ -1,26 +1,11 @@
+import de.montigem.gradle.specific.GUI2Java2TSTask
+
 /* (c) https://github.com/MontiCore/monticore */
-
-import java.nio.file.Paths
-
-
 plugins {
-  id "com.github.node-gradle.node" version "5.0.0"
-  id "de.rwth.se.umlp-tool-frontend"
+  id "de.rwth.se.montigem-frontend"
 }
 
-node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
-}
-nodeSetup.dependsOn(frontendSetup)
-
-// TODO AGe: don't know if that is needed
-/*task generateCDTOGUI(type: UMLPCdToGuiTask) {
-  input = file("../models/Weather.umlp")
-  outputDir = layout.buildDirectory.dir("cd2gui")
-}*/
-
-genGUI {
-  domainModels = ["Weather"]
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
   guiCreateModels = ["gui.ForecastCreate"]
 
   /*
@@ -29,41 +14,7 @@ genGUI {
   /**/
 }
 
-/*task genGUI2(type: UMLPGuiGenTask) {
-  dependsOn(genGUI, generateCDTOGUI)
-  input = file(layout.buildDirectory.dir("cd2gui/models"))
-  symbolDir = files(file(symPath), configurations.guiLib.files, configurations.guiDefaultTypes.files)
-  symbolOutDir = layout.buildDirectory.dir("umlp/fe2/symbols")
-  outputDir = layout.buildDirectory.dir("umlp/fe2")
-  domainModels = ["Weather"]
-}*/
-
-npmInstall.dependsOn(':umlp-rte:client:npmInstall')
-
-def prebuildTasks = [
-    npmInstall,
-    generate
-]
-
-tasks.register('buildApp', NpxTask) {
-  dependsOn(prebuildTasks)
+tasks.register('buildAppNoGen', NpxTask) {
   command = "ng"
   args = ["build"]
-}
-assemble.dependsOn(buildApp)
-
-tasks.register('testApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-tasks.register('runApp', NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
-
-tasks.register('run') {
-  dependsOn(runApp)
 }

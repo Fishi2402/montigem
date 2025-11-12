@@ -1,5 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature()}
-${cd4c.method("public String _serializeResponse(CommandResult<?> result)")}
+${tc.signature("superCdResultDeSers")}
+${cd4c.method("protected Optional<CommandResult<?>> _deserializeResponse(String responseStr)")}
 
-return resultDeSer.serialize(result);
+return resultDeSer.deserialize(responseStr)
+<#list superCdResultDeSers as tmp>
+  .or(() -> ${tmp}.deserialize(responseStr))
+</#list>
+;

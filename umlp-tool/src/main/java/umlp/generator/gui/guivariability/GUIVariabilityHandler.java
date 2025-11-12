@@ -1,9 +1,18 @@
 package umlp.generator.gui.guivariability;
 
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.*;
+import de.monticore.guidsl._ast.ASTGUIAdapt;
+import de.monticore.guidsl._ast.ASTGUIBlock;
+import de.monticore.guidsl._ast.ASTGUIBlockContent;
+import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
+import de.monticore.guidsl._ast.ASTGUIRemove;
+import de.monticore.guidsl._util.IGUIDSLTypeDispatcher;
 import de.monticore.guidsl._visitor.GUIDSLHandler;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
+import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
+import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
+import de.monticore.ocl.setexpressions._ast.ASTSetValueItem;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,7 +25,7 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
     private GUIDSLTraverser traverser;
 
     private final ASTGUICompilationUnit adaptedAST;
-    private ASTGUIArgValue argValueToAdd = null; //stores the new ArgValue to insert
+    private ASTSetValueItem argValueToAdd = null; //stores the new ArgValue to insert
     private String componentNameToChange = null; //the Name of the Component needs to change with the current GUIVariability statement
 
     private AdaptionOptions adaptionOptions = null; //stores which operation to perform
@@ -111,7 +120,7 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
                 break;
         }
 
-        argValueToAdd = node.getGUIArgValue();
+        argValueToAdd = GUIDSLMill.setValueItemBuilder().setExpression(node.getExpression()).build();
 
         adaptedAST.accept(getTraverser());
 
@@ -147,44 +156,48 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
      * The factor to differentiate the two ASTs is the variable componentNameToChange as it is set before the adapted ast is traversed and reset to null right after
      * @param node the current node in the AST
      */
-    public void handle(ASTGUIList node){
+    public void handle(ASTSetEnumeration node){
         if(componentNameToChange != null) {  //otherwise traversing GUIVariability AST
+          IGUIDSLTypeDispatcher typeDispatcher = GUIDSLMill.typeDispatcher();
+            for (ASTSetCollectionItem item : node.getSetCollectionItemList()) {
+                if (typeDispatcher.isSetExpressionsASTSetValueItem(item)) {
+                  ASTSetValueItem argValue = typeDispatcher.asSetExpressionsASTSetValueItem(item);
 
-            for (ASTGUIArgValue argValue : node.getGUIArgValueList()) {
-                if ((argValue.isPresentGUIComponent()
-                        && argValue.getGUIComponent().isPresentId()
-                        && argValue.getGUIComponent().getId().getName().equals(componentNameToChange)) ||
-                    (argValue.isPresentGUIGuard()
-                        && argValue.getGUIGuard().isPresentId()
-                        && argValue.getGUIGuard().getId().getName().equals(componentNameToChange)) ||
-                    (argValue.isPresentGUIIterate()
-                        && argValue.getGUIIterate().isPresentId()
-                        && argValue.getGUIIterate().getId().getName().equals(componentNameToChange))
-                ) {
-                    int index = node.indexOfGUIArgValue(argValue);
+                  if ((typeDispatcher.isGUIDSLASTGUIComponent(argValue)
+                      &&typeDispatcher.asGUIDSLASTGUIComponent(argValue).isPresentId()
+                      && typeDispatcher.asGUIDSLASTGUIComponent(argValue).getId().getName().equals(componentNameToChange)) ||
+                      (typeDispatcher.isGUIDSLASTGUIGuard(argValue)
+                          && typeDispatcher.asGUIDSLASTGUIGuard(argValue).isPresentId()
+                          && typeDispatcher.asGUIDSLASTGUIGuard(argValue).getId().getName().equals(componentNameToChange)) ||
+                      (typeDispatcher.isGUIDSLASTGUIIterate(argValue)
+                          &&typeDispatcher.asGUIDSLASTGUIIterate(argValue).isPresentId()
+                          && typeDispatcher.asGUIDSLASTGUIIterate(argValue).getId().getName().equals(componentNameToChange))
+                  ) {
+                    int index = node.indexOfSetCollectionItem(argValue);
                     switch (adaptionOptions) {
-                        case BEFORE:
-                            node.addAllGUIArgValues(index, flatMapGUIArgValue(argValueToAdd));
-                            return;
-                        case AFTER:
-                            node.addAllGUIArgValues(index + 1, flatMapGUIArgValue(argValueToAdd));
-                            return;
-                        case REMOVE:
-                            node.removeGUIArgValue(index);
-                            return;
-                        case REPLACE:
-                            node.removeGUIArgValue(index);
-                            node.addAllGUIArgValues(index, flatMapGUIArgValue(argValueToAdd));
-                            return;
-                        case NONE:
-                            Log.error("0x45c0000 Error when selecting delta Options, this is probably the result of a grammar alteration");
+                      case BEFORE:
+                        node.addAllSetCollectionItems(index, flatMapGUIArgValue(argValueToAdd));
+                        return;
+                      case AFTER:
+                        node.addAllSetCollectionItems(index + 1, flatMapGUIArgValue(argValueToAdd));
+                        return;
+                      case REMOVE:
+                        node.removeSetCollectionItem(index);
+                        return;
+                      case REPLACE:
+                        node.removeSetCollectionItem(index);
+                        node.addAllSetCollectionItems(index, flatMapGUIArgValue(argValueToAdd));
+                        return;
+                      case NONE:
+                        Log.error("0x45c0000 Error when selecting delta Options, this is probably the result of a grammar alteration");
                     }
+                  }
                 }
             }
         }
 
         //variable not in List or GUIVariability AST
-        node.forEachGUIArgValues(v -> v.accept(getTraverser()));
+        node.forEachSetCollectionItems(v -> v.accept(getTraverser()));
     }
 
     /**
@@ -204,9 +217,10 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
             }
 
             for (ASTGUIBlockContent blockContent : blockContents) {
-                if ((blockContent.isPresentGUIComponent()
-                        && blockContent.getGUIComponent().isPresentId()
-                        && blockContent.getGUIComponent().getId().getName().equals(componentNameToChange)) ||
+                if ((blockContent.isPresentExpression()
+                        && GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(blockContent.getExpression())
+                        && ((ASTGUIComponent) blockContent.getExpression()).isPresentId()
+                        && ((ASTGUIComponent) blockContent.getExpression()).getId().getName().equals(componentNameToChange)) ||
                     (blockContent.isPresentGUIGuard()
                         && blockContent.getGUIGuard().isPresentId()
                         && blockContent.getGUIGuard().getId().getName().equals(componentNameToChange)) ||
@@ -247,7 +261,7 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
      * @param argValues the argValues to be wrapped, non should be a GUIList
      * @return a List of the Wrapped ArgValues
      */
-    private List<ASTGUIBlockContent> mapToBlockContent(List<ASTGUIArgValue> argValues){
+    private List<ASTGUIBlockContent> mapToBlockContent(List<ASTSetCollectionItem> argValues){
         return argValues.stream().map(this::buildGUIBlockContext).collect(Collectors.toList());
     }
 
@@ -257,34 +271,33 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
      * @param argValue the argValue to wrap in a GUIBlockContext, should not be a GUIList
      * @return the GUIBlockContext containing the parameter
      */
-    private ASTGUIBlockContent buildGUIBlockContext(ASTGUIArgValue argValue){
-        if(argValue.isPresentGUIComponent()){
-            return GUIDSLMill.gUIBlockContentBuilder()
-                    .setGUIComponent(argValue.getGUIComponent())
-                    .build();
+    private ASTGUIBlockContent buildGUIBlockContext(ASTSetCollectionItem argValue){
+      if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetValueItem(argValue)) {
+        ASTSetValueItem val = GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(argValue);
+        if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(val.getExpression())) {
+          return GUIDSLMill.gUIBlockContentBuilder()
+              .setExpression(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIComponent(val.getExpression()))
+              .build();
         }
-        if(argValue.isPresentGUIIterate()){
-            return GUIDSLMill.gUIBlockContentBuilder()
-                    .setGUIIterate(argValue.getGUIIterate())
-                    .build();
+        if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIIterate(val.getExpression())) {
+          return GUIDSLMill.gUIBlockContentBuilder()
+              .setGUIIterate(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIIterate(val.getExpression()))
+              .build();
         }
-        if(argValue.isPresentExpression()){
-            return GUIDSLMill.gUIBlockContentBuilder()
-                    .setExpression(argValue.getExpression())
-                    .build();
+        if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIGuard(val.getExpression())) {
+          return GUIDSLMill.gUIBlockContentBuilder()
+              .setGUIGuard(GUIDSLMill.typeDispatcher().asGUIDSLASTGUIGuard(val.getExpression()))
+              .build();
         }
-        if(argValue.isPresentGUIGuard()){
-            return GUIDSLMill.gUIBlockContentBuilder()
-                    .setGUIGuard(argValue.getGUIGuard())
-                    .build();
+        if (GUIDSLMill.typeDispatcher().isExpressionsBasisASTExpression(val.getExpression())) {
+          return GUIDSLMill.gUIBlockContentBuilder()
+              .setExpression(GUIDSLMill.typeDispatcher().asExpressionsBasisASTExpression(val.getExpression()))
+              .build();
         }
-        if(argValue.isPresentGUIList()){
-            Log.error("0x45c0002 cannot build guiBlockContext from GuiList");
-        }
-        else{
-            Log.error("0x45c0003 encountered unknown type of guiArgValue, this is likely due to grammar changes");
-        }
-        return null;
+      }
+      Log.error("0x45c0003 encountered unknown type of guiArgValue, this is likely due to grammar changes");
+
+      return null;
     }
 
     /**
@@ -293,18 +306,18 @@ public class GUIVariabilityHandler implements GUIDSLHandler {
      * @param argValue the Arg value to map
      * @return a List of all ArgValues contained in the parameter
      */
-    private List<ASTGUIArgValue> flatMapGUIArgValue(ASTGUIArgValue argValue){
-        LinkedList<ASTGUIArgValue> result = new LinkedList<>();
-        if(argValue.isPresentExpression()){
-            Log.warn("0x45c0101 Trying to add Expression with GUIVariability. This is most likely not wanted.");
+    private List<ASTSetCollectionItem> flatMapGUIArgValue(ASTSetValueItem argValue){
+      LinkedList<ASTSetCollectionItem> result = new LinkedList<>();
+      if(GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(argValue.getExpression())) { //Lists need to be mapped to a single list
+        for (ASTSetCollectionItem argValueFromList : GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(argValue.getExpression()).getSetCollectionItemList()) {
+          if (GUIDSLMill.typeDispatcher().isSetExpressionsASTSetValueItem(argValueFromList)) {
+            result.addAll(flatMapGUIArgValue(GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(argValueFromList)));
+          }
         }
-        if(argValue.isPresentGUIList()) { //Lists need to be mapped to a single list
-            for(ASTGUIArgValue argValueFromList : argValue.getGUIList().getGUIArgValueList()){
-                result.addAll(flatMapGUIArgValue(argValueFromList));
-            }
-        }
-        else result.add(argValue);
-
-        return result;
+      }
+      else {
+        result.add(argValue);
+      }
+      return result;
     }
 }

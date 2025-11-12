@@ -7,16 +7,31 @@ umlp DerivedAttributesAndAssocs{
     / String b;
     / List<java.lang.String> c;
     / Optional<java.lang.String> d;
+
+    <<implTemplate="implTemplate.derivedIntAttr">>
+    / int e;
+    <<implTemplate="implTemplate.derivedStringAttr">>
+    / String f;
+    <<implTemplate="implTemplate.derivedStringListAttr">>
+    / List<java.lang.String> g;
+    <<implTemplate="implTemplate.derivedOptStringAttr">>
+    / Optional<java.lang.String> h;
   }
 
   class Bar;
 
-  / association Foo -> (bar1) Bar [*];
-  / association Foo -> (bar2) Bar [0..1];
-  / association Foo -> (bar3) Bar [1];
+  / association Foo (foo1) -> (bar1) Bar [*];
+  / association Foo (foo2) -> (bar2) Bar [0..1];
+  / association Foo (foo3) -> (bar3) Bar [1];
 
-  / association Foo -> (str1) String [*];
-  / association Foo -> (str2) String [0..1];
-  / association Foo -> (str3) String [1];
+  / association Foo (foo1) -> (str1) String [*];
+  / association Foo (foo2) -> (str2) String [0..1];
+  / association Foo (foo3) -> (str3) String [1];
 
+  <<implTemplate="implTemplate.derivedStarAssoc">>
+  / association Foo (foo4) -> (bar4) Bar [*];
+  <<implTemplate="implTemplate.derivedOptAssoc">>
+  / association Foo (foo5) -> (bar5) Bar [0..1];
+  <<implTemplate="implTemplate.derivedMandAssoc">>
+  / association Foo (foo6) -> (bar6) Bar [1];
 }

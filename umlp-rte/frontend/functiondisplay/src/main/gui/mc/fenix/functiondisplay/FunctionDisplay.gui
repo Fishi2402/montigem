@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.functiondisplay;
+
+//import mc.fenix.functiondisplay.FunctionDisplayTypes.Function;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
+
+
+component FunctionDisplay(
+  Function4Display data,
+  Event<Function4Display> functionClick,
+  Event<Function4Display> functionMouseover,
+  Event<Function4Display> functionMouseout,
+  Event<Channel4Display> channelClick,
+  Event<Channel4Display> channelMouseover,
+  Event<Channel4Display> channelMouseout,
+  Event<Void> outsideClick,
+  Event<Port4Display> portClick,
+  Event<Port4Display> portMouseover,
+  Event<Port4Display> portMouseout,
+  List<Function4Display> selectedFunctions,
+  List<Channel4Display> selectedChannels,
+  List<Port4Display> selectedPorts
+)

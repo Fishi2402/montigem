@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import java.util.Optional;
+import java.time.LocalDateTime;
+
+classdiagram GemTimeSeriesChartTypes {
+  class TimeSeriesData {
+    -> (series) TimeSeries [*];
+    -> (events) TimeSeriesEvent [*];
+  }
+
+  class TimeSeries {
+    Long identifier;
+    String name;
+    Optional<String> color;
+    boolean hidden;
+    boolean deactivated;
+    -> (datapoints) TimeSeriesDataPoint [*];
+  }
+
+  class TimeSeriesDataPoint {
+    LocalDateTime timestamp;
+    Double value;
+  }
+
+  class TimeSeriesEvent {
+    LocalDateTime timestamp;
+    String name;
+    Optional<String> textColor;
+    Optional<String> backgroundColor;
+    boolean show;
+  }
+}

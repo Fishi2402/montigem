@@ -44,10 +44,10 @@ public class ManagerImplDecorator extends AbstractDecorator {
 
   public final void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astcdPackage = getPackage(origCD, decoratedCD, DEFAULT_PACKAGE);
-    astcdPackage.addCDElement(withOrigin(createClass(origCD)));
+    astcdPackage.addCDElement(withOrigin(createClass(origCD, astcdPackage.getName())));
   }
 
-  protected ASTCDClass createClass(ASTCDCompilationUnit origCD) {
+  protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String astcdPackage) {
     String name = origCD.getCDDefinition().getName();
 
     ASTCDClass managerClass = UMLPMill.cDClassBuilder()
@@ -63,16 +63,18 @@ public class ManagerImplDecorator extends AbstractDecorator {
     // Build manager adaper/delegators
     List<String> superDelegateManagerNames = new ArrayList<>();
     for (var ex : this.getExtendedDefinitions(origCD)) {
-      List<String> exFQN = new ArrayList<>(ex.getCDPackageList());
-      exFQN.add(ex.getCDDefinition().getName().toLowerCase());
+      List<String> exFQN = new ArrayList<>();
+      exFQN.add(astcdPackage);
       exFQN.add(ex.getCDDefinition().getName() + "4" + origCD.getCDDefinition().getName() +ManagerDecorator.SUFFIX + "Impl");
-      superDelegateManagerNames.add(String.join(".", exFQN));
+      String superManager = String.join(".", exFQN);
+      superDelegateManagerNames.add(superManager);
+      getCD4C().addImport(managerClass, superManager);
     }
 
     // methods
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Constructor", name + SUFFIX, name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.Init", name, name + ManagerDecorator.SUFFIX + "Impl", superDelegateManagerNames);
-    getCD4C().addMethod(managerClass, "umlp.managerimpl.InitNeo4J", name, name + ManagerDecorator.SUFFIX + "Impl");
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.InitNeo4J", name, name + ManagerDecorator.SUFFIX + "Impl", superDelegateManagerNames);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFreeGemId");
     getCD4C().addMethod(managerClass, "umlp.managerimpl.ErrorNotificationScope");
 
@@ -137,11 +139,13 @@ public class ManagerImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSingletonElement", origCD.getCDDefinition().getName(), name, managerName);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOptSingletonElement", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetListSingletonElement", name);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFilteredListSingletonElement", name);
     }else {
       Set<ASTCDType> collectConcreteSubclassesInclSelf = UMLPSymbolTables.collectConcreteSubclassesInclSelf(origCD, domainClass);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
+      getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFilteredList", origCD.getCDDefinition().getName(), name, collectConcreteSubclassesInclSelf);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, collectConcreteSubclassesInclSelf);
     }
 
@@ -171,6 +175,7 @@ public class ManagerImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoOpt", origCD.getCDDefinition().getName(),name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetList", origCD.getCDDefinition().getName(), name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetFilteredList", origCD.getCDDefinition().getName(), name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesInclSelf);
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));

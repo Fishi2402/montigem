@@ -11,9 +11,10 @@ import util.I;
 import util.V;
 import util.packaged.L;
 import util.E;
+import util.G;
 
 // init
-page GUI2JavaClassDecorator(
+page GUI2JavaClassDecorator<T>(
   // get + set + init()
   Person person,
   // get + set + init()
@@ -135,4 +136,7 @@ page GUI2JavaClassDecorator(
       r@L(lp = []);
     }
   }
+  s@G<Person>(
+    g = person
+  );
 }

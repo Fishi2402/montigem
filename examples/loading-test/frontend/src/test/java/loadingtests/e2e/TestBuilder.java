@@ -40,8 +40,7 @@ public class TestBuilder extends AbstractLoadingTestsE2ETest {
   @Test
   void testUpdateWithBuilder(Page page) {
     navAndWait(page, "/test_update_of_builder/AnimalCreate"); //go to page we want to test
-
-   testUpdateOfPage(page);
+    testUpdateOfPage(page);
   }
 
   @Disabled

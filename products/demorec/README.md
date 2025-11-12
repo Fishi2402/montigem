@@ -80,3 +80,9 @@ scp "{localPath}\DemoRec\240313Update.sql" demorec:/../back_up/{currentDate}.sql
 15. Run `docker compose down` and `docker compose up -d` and check again if everything works as expected. If not, use **{CurrentDate}** to restore the state of the Database to the backUp of your changes beforehand  
 
 16. Commit and push your Update SQL file to GIT with the name schema {CurrentDate}Update.sql
+
+
+⚠️ **<span style="background-color: yellow;">Important Remarks:</span>** <br>
+If you happen to insert tables into the SQL dump from your current database, please pay attention to these details:
+* Declare tables in the right schema (typically: `public`).
+* The limit of characters for table names in PostgreSQL is **63 characters**. Thus, PostgreSQL will cut off everything going beyond that limit.

@@ -1,0 +1,43 @@
+package fischertechnik;
+
+import Domain.FischertechnikConveyorState;
+
+import mc.fenix.fischertechnik.Conveyor;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemRangeInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+page Conveyor_Demo(FischertechnikConveyorState state){
+  @GemColumn(
+    rowGap = "15px",
+    components = [
+      @GemCheckBoxInput(
+        id="move-to-feed",
+        labelText="Bewegung zum Einzug",
+        checked=state.moveToFeed
+      ),
+      @GemCheckBoxInput(
+        id="move-to-swap",
+        labelText="Bewegung zum Tausch",
+        checked=state.moveToSwap
+      ),
+      @GemCheckBoxInput(
+        id="feed-detector",
+        labelText="Einzug Lichtschranke unterbrochen",
+        checked=state.feedDetectorOn
+      ),
+      @GemCheckBoxInput(
+        id="swap-detector",
+        labelText="Tausch Lichtschranke unterbrochen",
+        checked=state.swapDetectorOn
+      )
+    ]
+  );
+  @Conveyor(
+    moveToFeed=state.moveToFeed,
+    moveToSwap=state.moveToSwap,
+    feedDetectorOn=state.feedDetectorOn,
+    swapDetectorOn=state.swapDetectorOn
+  );
+}
+

@@ -1,27 +1,30 @@
 package loadingtests.e2e;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import de.se_rwth.commons.logging.Log;
 import loadingtests.LoadingTestsManager;
+import loadingtests.Person;
 import loadingtests.commands.Animal_create;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import umlp.backendrte.command.CommandManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static loadingtests.e2e.E2EUtil.createDummyData;
 import static loadingtests.e2e.E2EUtil.isLoadedAnimalFunction;
 import static loadingtests.e2e.E2EUtil.isLoadedFoodFunction;
 import static loadingtests.e2e.E2EUtil.isLoadedPersonFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static umlp.test_rte.playwright.ComponentKind.GemButton;
+import static umlp.test_rte.playwright.ComponentKind.GemText;
 
 public class TestLoading extends AbstractLoadingTestsE2ETest {
 
@@ -40,7 +43,7 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
 
 
   // Test fails currently as our infrastructure does not lazy load
-  @Disabled
+  @Disabled("Investigate: Works locally, fails in pipeline")
   @Test
   void testLoadingAllPersonsAndNothingElse(Page page) {
     navAndWait(page, "/test_load_all/LoadOnlyPersons"); //go to page we want to test
@@ -118,6 +121,57 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     assertEquals(Boolean.TRUE,page.evaluate(isLoadedAnimalFunction,gemId.intValue()));
   }
 
+  @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4805
+  void testRemoveWithReload(Page page) {
+    Person person = LoadingTestsManager.personBuilder().age(0).name("P").build().get();
+    person.addPet(LoadingTestsManager.animalBuilder().name("aA").legs(4).build().get());
+    person.addPet(LoadingTestsManager.animalBuilder().name("aB").legs(4).build().get());
+    person.addPet(LoadingTestsManager.animalBuilder().name("aC").legs(4).build().get());
+    person.setFavouritePet(person.getPet(0));
+    navAndWait(page, "/test_load_all/AnimalsRemove/"+person.getGemId());
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+
+    // The list is, apparently, inverted
+    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aA");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aB");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    page.reload();
+    // Is the page the same after a reload?
+    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aA");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aB");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    // Ensure the first/favourite pet is the one we expect
+    Assertions.assertEquals("aA", person.getFavouritePet().getName());
+    Assertions.assertEquals("aA", person.getPet(0).getName());
+    Assertions.assertEquals("aB", person.getPet(1).getName());
+    // Remove the first/favourite pet, which should be aA
+    page.locator(GemButton.selector()).click();
+    // And assert, that we have removed the correct element
+    Assertions.assertEquals("aB", person.getPet(0).getName()); // <--- fails here currently
+    // TODO: No guarantee for the tests after this point
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aB");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    // Prepare next removal
+    person.setFavouritePet(person.getPet(0));
+    Assertions.assertEquals("aB", person.getFavouritePet().getName()); // ensure it really is correct
+    // and add new element
+    person.addPet(LoadingTestsManager.animalBuilder().name("aD").legs(4).build().get());
+    // Assert, that the new element is in the correct order
+    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aB");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC"); // TODO: index 1&0 might be inverted - that should be a bug!
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aD");
+    page.locator(GemButton.selector()).click(); // remove aB
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aD");
+    // final check
+    page.reload();
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aD");
+
+  }
+
   /**
    * Given a page that gets a Person as input and displays all its pets.
    * This is done by using another page that gets a List<Animal>, which loads all objects of a type
@@ -175,5 +229,19 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     foodGemIds.forEach(id -> {
       assertEquals(Boolean.FALSE,page.evaluate(isLoadedPersonFunction,id.intValue()));
     });
+  }
+
+  @Test
+  void testInit(Page page) {
+    // go to page to load persons
+    navAndWait(page, "/test_load_all/InitPersons");
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+    navAndWait(page, "/test_load_all/InitPersonsAndTextValue");
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+    // check text value initialized
+    assertEquals(1, page.getByText("foo").all().size());
+    assertEquals(1, page.getByText("bar").all().size());
   }
 }
