@@ -150,7 +150,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
     // Lifecycle task "runServer" which depends on Backend-Creation
     project.getTasks().register("runServer", task -> {
       task.setGroup("application");
-      task.dependsOn(project.getTasks().named("bootRun"));
+      task.dependsOn(project.provider(() -> project.getTasks().named("bootRun")));
     });
 
     // Lifecycle task "continuous". Intended use is with "--continuous" flag of gradle & HotReload
