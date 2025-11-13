@@ -131,7 +131,7 @@ packUMLPWithGUILanguageServer{
 
 if(shouldBuildVscodePlugin) {
   runUMLPWithGUIVscodePluginAttached {
-    def lspWorkDir = project.getProjectDir().toPath().getParent().resolve("examples").toAbsolutePath().toString()
+    def lspWorkDir = project.getProjectDir().toPath().getParent().toAbsolutePath().toString()
     getModelProjectDir().set(lspWorkDir)
     getArgumentProviders().add({["-mup"]} as CommandLineArgumentProvider)
   }
