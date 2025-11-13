@@ -227,7 +227,9 @@ public abstract class FrontendPlugin implements Plugin<Project> {
 
       // add domain-sources to the to-be-transpiled
       task.getInput().from(project.getConfigurations().named(SRC_UMLP_CONFIG));
-      task.getInput4RelativePathCalculation().from(srcGUI);
+      task.getInput4RelativePathCalculation().from(srcGUI.getAsFileTree().matching(
+          patternFilter -> patternFilter.include("**/*.ts")
+      ));
       task.getJSweetClassPath().from(project.getConfigurations().named(JSWEET_CONFIG));
 
       for (String s : defaultExcludedSources) {
