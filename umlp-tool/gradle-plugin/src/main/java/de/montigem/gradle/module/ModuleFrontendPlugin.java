@@ -264,7 +264,9 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
 
           // add domain-sources to the to-be-transpiled
           task.getInput().from(subproject.getConfigurations().named(SRC_UMLP_CONFIG));
-          task.getInput4RelativePathCalculation().from(srcGUI);
+          task.getInput4RelativePathCalculation().from(srcGUI.getAsFileTree().matching(
+              patternFilter -> patternFilter.include("**/*.ts")
+          ));
           task.getJSweetClassPath().from(subproject.getConfigurations().named(JSWEET_CONFIG));
 
           for (String s : defaultExcludedSources) {
