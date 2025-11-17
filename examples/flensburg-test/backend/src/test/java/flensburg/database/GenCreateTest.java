@@ -42,21 +42,6 @@ public class GenCreateTest extends GenAbstractDBTest {
     super(ClientSetup.of(1));
   }
 
-  @Disabled
-  @Test
-  public void insertManyPersons(){
-
-    Stopwatch watch = Stopwatch.createStarted();
-    for(int i = 0; i < 20000; i++){
-      Address a1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
-      Person p1 = FlensburgManager.personBuilder().age(20).nickname("Jane").mainResidence(a1).build().get();
-    }
-    watch.stop();
-    Long time = watch.elapsed(TimeUnit.MILLISECONDS);
-
-    assert(2000 > time);
-  }
-
   @Test
   public void testCarDAO() {
 

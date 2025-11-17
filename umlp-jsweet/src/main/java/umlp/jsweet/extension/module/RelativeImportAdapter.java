@@ -87,9 +87,16 @@ public class RelativeImportAdapter extends PrinterAdapter {
     String relativePath = importedQName.replace('.', '/') + ".ts";
     Path importer = Paths.get(importerPath);
     for (String path : getLocalPaths()) {
-      Path p = Paths.get(path).resolve(relativePath);
+      Path srcPath = Paths.get(path);
+      Path p = srcPath.resolve(relativePath);
       if (Files.exists(p)) {
         return Optional.of("./" + importer.relativize(p).normalize()
+            .toString()
+            .replaceAll("\\\\", "/")
+            .replaceAll("\\.ts", "")
+        );
+      } else if(srcPath.isAbsolute() && srcPath.endsWith(relativePath)) { // We assume the srcPath is the file we want to import
+        return Optional.of("./" + importer.relativize(srcPath).normalize()
             .toString()
             .replaceAll("\\\\", "/")
             .replaceAll("\\.ts", "")

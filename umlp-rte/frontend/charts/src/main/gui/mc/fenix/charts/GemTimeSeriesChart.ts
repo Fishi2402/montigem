@@ -79,30 +79,8 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
         }
       },
       annotations: {
-        yaxis: [{
-          y: 30,
-          borderColor: '#999',
-          label: {
-            show: true,
-            text: 'Support',
-            style: {
-              color: "#fff",
-              background: '#00E396'
-            }
-          }
-        }],
-        xaxis: [{
-          borderColor: '#999',
-          yAxisIndex: 0,
-          label: {
-            show: true,
-            text: 'Rally',
-            style: {
-              color: "#fff",
-              background: '#775DD0'
-            }
-          }
-        }]
+        yaxis: [],
+        xaxis: []
       },
 
       dataLabels: {
@@ -163,6 +141,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     }
 
     let events = await this.transformEvent2Annotation(data);
+    this.chart.clearAnnotations();
     for await (const event of events) {
       this.chart.addXaxisAnnotation(event);
     }
