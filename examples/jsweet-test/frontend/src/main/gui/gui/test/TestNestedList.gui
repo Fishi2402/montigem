@@ -1,0 +1,19 @@
+package gui.test;
+
+import JsweetTest.A;
+import JsweetTest.B;
+import JsweetTest.D;
+
+import mc.fenix.basic.GemText;
+
+page TestNestedList(List<A> aList){
+  @iterate(A a : aList){
+    @GemText(value=a.value);
+    @iterate(B b : a.b){
+      @GemText(value=b.value);
+      @iterate(D d : b.d){
+        @GemText(value=d.value);
+      }
+    }
+  }
+}
