@@ -2,12 +2,7 @@
 ${tc.signature("name", "managerName", "assocs", "assocsSideToManager")}
 ${cd4c.method("protected void _doAddWithScope${name}(${name} o, NotificationScope scope)")}
   known${name}s.put(o.getGemId(), o);
-  if(!o.containsObserver(the${name}DbObserver)){
-    o.addObserver(the${name}DbObserver);
-  }
-  if(!o.containsObserver(the${name}CommandSendingObserver)){
-    o.addObserver(the${name}CommandSendingObserver);
-  }
+  _doAddRequiredObserver${name}(o);
 
 
 <#list assocs as assoc>
