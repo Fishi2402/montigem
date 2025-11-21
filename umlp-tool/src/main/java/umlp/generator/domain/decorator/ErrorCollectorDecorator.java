@@ -70,7 +70,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
                       getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalidWithMessage", a.getName(), domainClass.getName());
                     }
                     getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
-                    getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+                    getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName(), false);
                 });
         if(hasOCL) {
           getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalidWithMessage", "thisObjectRelated", domainClass.getName());
@@ -82,7 +82,7 @@ public class ErrorCollectorDecorator extends AbstractDecorator {
                 .forEach(a -> {
                     getCD4C().addMethod(collectorClass, "umlp.errorcollector.ReportInvalid", a.getName(), domainClass.getName());
                     getCD4C().addMethod(collectorClass, "umlp.errorcollector._ReportInvalid", a.getName(), domainClass.getName());
-                    getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName());
+                    getCD4C().addMethod(collectorClass, "umlp.errorcollector._BuildInvalidMsg", a.getName(), domainClass.getName(), true);
                 });
         // Imports
         addImports(origCD, collectorClass);
