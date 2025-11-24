@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.backendrte.common;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -43,25 +45,21 @@ public class GemIdManager4SQL {
   }
 
   private void refillReservedGemIds() {
-    try {
-      Optional<ResultSet> res = DatabaseAccessManager.executeQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");;
+    try(Connection connection = DatabaseAccessManager.getConnection();
+        Statement st = connection.createStatement()) {
+      ResultSet rs = st.executeQuery("SELECT value_bigint FROM __internal_key_value__ WHERE k = 'gemid';");;
 
-      if(res.isPresent()){
-        ResultSet rs = res.get();
-        rs.next();
-        Long startGemId = rs.getLong(1);
+      rs.next();
+      Long startGemId = rs.getLong(1);
 
-        // fill the queue with BATCH_SIZE amount of gemIds
-        for(long i = startGemId; i < startGemId + BATCH_SIZE; i++){
-          reservedGemIds.add(i);
-        }
-
-        // add BATCH_SIZE to the highest GemID in the DB to indicate the range for future use
-        DatabaseAccessManager.executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint +" + BATCH_SIZE + " WHERE k = 'gemid';");
-
-      }else{
-        throw new RuntimeException("No GemId inside DB!");
+      // fill the queue with BATCH_SIZE amount of gemIds
+      for(long i = startGemId; i < startGemId + BATCH_SIZE; i++){
+        reservedGemIds.add(i);
       }
+
+      // add BATCH_SIZE to the highest GemID in the DB to indicate the range for future use
+      DatabaseAccessManager.executeStatement("UPDATE __internal_key_value__ SET value_bigint = value_bigint +" + BATCH_SIZE + " WHERE k = 'gemid';");
+
     } catch (SQLException e) {
       e.printStackTrace();
     }

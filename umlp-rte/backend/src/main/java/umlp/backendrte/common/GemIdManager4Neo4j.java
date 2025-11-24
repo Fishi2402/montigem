@@ -2,6 +2,7 @@
 package umlp.backendrte.common;
 import de.se_rwth.commons.logging.Log;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,7 +47,7 @@ public class GemIdManager4Neo4j {
   }
 
   private void refillReservedGemIds() {
-    try (Statement stmt = DatabaseAccessManager.getConnection().createStatement()) {
+    try (Connection c = DatabaseAccessManager.getConnection(); Statement stmt = c.createStatement()) {
       try(ResultSet resPossibleNull = stmt.executeQuery("MATCH(n:METANODE) return n.gemIdCounter")) {
         Optional<ResultSet> res = Optional.ofNullable(resPossibleNull);
         if (!res.isPresent()) {
@@ -64,7 +65,7 @@ public class GemIdManager4Neo4j {
     } catch (SQLException var2) {
       Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);
     }
-    try(Statement stmt2 = DatabaseAccessManager.getConnection().createStatement()) {
+    try(Connection c = DatabaseAccessManager.getConnection(); Statement stmt2 = c.createStatement()) {
       stmt2.execute("MATCH(n:METANODE) SET n.gemIdCounter = n.gemIdCounter+10000");
     } catch (SQLException var2) {
       Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);

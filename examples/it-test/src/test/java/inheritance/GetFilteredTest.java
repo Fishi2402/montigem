@@ -62,6 +62,10 @@ public class GetFilteredTest {
       backend = InheritanceTestContext.fromCurrentContext();
       setupFrontend();
     }
+    @Override
+    void cleanup() throws Exception {
+      DatabaseAccessManager.closeConnection();
+    }
   }
 
 

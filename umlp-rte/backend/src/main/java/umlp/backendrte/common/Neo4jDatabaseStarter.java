@@ -8,9 +8,7 @@ import org.neo4j.harness.Neo4j;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -37,10 +35,11 @@ public class Neo4jDatabaseStarter {
           .withConfig(GraphDatabaseSettings.udc_enabled, false)
           .withConfig(GraphDatabaseSettings.procedure_allowlist, List.of("apoc.*"))
           .withConfig(GraphDatabaseSettings.procedure_unrestricted, List.of("apoc.*"))
+          .withConfig(GraphDatabaseSettings.log_queries, GraphDatabaseSettings.LogQueryLevel.INFO)
           // You can add custom procedures using .withProcedure()
           // .withProcedure(SampleProcedure.class)
           .build();
-    //  embeddedDatabaseServer.printLogs(System.out);
+      embeddedDatabaseServer.printLogs(System.out);
     }
     return port;
   }

@@ -3,13 +3,12 @@ ${tc.signature("assocSideName", "startSideSQLName", "endSideSQLName", "sqlTable"
 ${cd4c.method("public void ensureUpdate${assocSideName?cap_first}Created()")}
 if(update${assocSideName?cap_first} == null) {
   // Updates the existing row or inserts a new row if non exists
-  update${assocSideName?cap_first} = DatabaseAccessManager.prepareStatement(
+  update${assocSideName?cap_first} = 
     "MERGE INTO ${sqlTable} " +
     "USING ( VALUES (?, ?, ?, ?) ) as src (previous_start_id, previous_end_id, new_start_id, new_end_id) " +
     "ON (${sqlTable}.${startSideSQLName}_id = src.previous_start_id AND ${sqlTable}.${endSideSQLName}_id = src.previous_end_id) " +
     "WHEN MATCHED THEN " +
     "  UPDATE SET ${startSideSQLName}_id = src.new_start_id, ${endSideSQLName}_id = src.new_end_id " +
     "WHEN NOT MATCHED THEN " +
-    "  INSERT (${startSideSQLName}_id, ${endSideSQLName}_id) VALUES (src.new_start_id, src.new_end_id);"
-  );
+    "  INSERT (${startSideSQLName}_id, ${endSideSQLName}_id) VALUES (src.new_start_id, src.new_end_id);";
 }

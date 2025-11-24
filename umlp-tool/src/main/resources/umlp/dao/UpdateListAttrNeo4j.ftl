@@ -4,23 +4,25 @@ ${tc.signature("typeName", "tableName","attr", "innerType", "dbName")}
 ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${attrName?uncap_first})")}
 
   if(remove${attrName}Statement == null) {
-    remove${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${typeName} {gemId: ?}) SET n.${attrName} = []");
+    remove${attrName}Statement = "MATCH(n:${typeName} {gemId: $1}) SET n.${attrName} = []";
   }
   if(update${attrName}Statement == null) {
-    update${attrName}Statement = DatabaseAccessManager.prepareStatement("match(n:${typeName} {gemId: ?}) SET n.${attrName} = n.${attrName} + ?");
+    update${attrName}Statement = "MATCH(n:${typeName} {gemId: $1}) SET n.${attrName} = n.${attrName} + $2";
   }
-  try{
-    remove${attrName}Statement.clearParameters();
-    remove${attrName}Statement.setLong(1, gemId);
-    remove${attrName}Statement.executeUpdate();
+  try(Connection connection = DatabaseAccessManager.getConnection();
+    PreparedStatement removeSt = connection.prepareStatement(remove${attrName?cap_first}Statement);
+    PreparedStatement st = connection.prepareStatement(update${attrName?cap_first}Statement);){
+    removeSt.clearParameters();
+    removeSt.setLong(1, gemId);
+    removeSt.executeUpdate();
 
     long index = 0;
     for(${innerType} element : ${attrName?uncap_first}) {
-      update${attrName}Statement.clearParameters();
-      update${attrName}Statement.setLong(1, gemId);
-      ${includeArgs("umlp.dao.Set", "update"+attrName+"Statement", 2, dbName, "element", false,"_Neo4j")};
+      st.clearParameters();
+      st.setLong(1, gemId);
+      ${includeArgs("umlp.dao.Set", "st", 2, dbName, "element", false,"_Neo4j")};
       // TODO there is no index currently -> need to use neo4j map? update${attrName}Statement.setLong(3, index++);
-      update${attrName}Statement.executeUpdate();
+      st.executeUpdate();
     }
 
   } catch (SQLException e){

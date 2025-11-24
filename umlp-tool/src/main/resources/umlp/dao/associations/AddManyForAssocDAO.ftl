@@ -8,26 +8,25 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
   if(${association.getName()?cap_first}s.values().stream().allMatch(v -> v.isEmpty())) {
     return true;
   }
-  synchronized(add${association.getName()?cap_first}){
-    try {
-      DatabaseAccessManager.getConnection().setAutoCommit(false);
-      add${association.getName()?cap_first}.clearBatch();
+  try(Connection c = DatabaseAccessManager.getConnection()){
+    try(PreparedStatement st = c.prepareStatement(add${association.getName()?cap_first})) {
+c.setAutoCommit(false);
+      st.clearBatch();
       for (Map.Entry<Long, List<Long>> entry : ${association.getName()?cap_first}s.entrySet()) {
         for (Long rightHandSide : entry.getValue()) {
-          add${association.getName()?cap_first}.clearParameters();
-          add${association.getName()?cap_first}.setLong(1, entry.getKey());
-          add${association.getName()?cap_first}.setLong(2, rightHandSide);
-          add${association.getName()?cap_first}.addBatch();
+          st.clearParameters();
+          st.setLong(1, entry.getKey());
+          st.setLong(2, rightHandSide);
+          st.addBatch();
         }
       }
-      add${association.getName()?cap_first}.executeBatch();
-      DatabaseAccessManager.getConnection().commit();
-      DatabaseAccessManager.getConnection().setAutoCommit(true);
+      st.executeBatch();
+      c.commit();
+      c.setAutoCommit(true);
       return true;
-
     } catch (SQLException e){
       try {
-        DatabaseAccessManager.getConnection().rollback();
+        c.rollback();
       } catch (SQLException ex) {
         Log.error("Error rolling back transaction", ex);
       }
@@ -37,9 +36,12 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
 
     finally{
       try {
-        DatabaseAccessManager.getConnection().setAutoCommit(true);
+        c.setAutoCommit(true);
       } catch (SQLException e) {
         Log.error("Error while enabling autocommit in addMany${association.getName()?cap_first}", e);
       }
     }
+  } catch(SQLException e) {
+    Log.error("Error in addMany${association.getName()?cap_first}", e);
+    return false;
   }

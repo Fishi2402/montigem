@@ -125,17 +125,17 @@ public class DAODecorator extends AbstractDecorator {
         .filter(a -> !a.getModifier().isDerived()).collect(Collectors.toList())) {
       if (GenService.isList(attr)) {
         ASTCDAttribute removePrepStatement = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "remove"));
+            createAttributeType("String"), getStatementAttributeName(attr, "remove"));
         attributesList.add(removePrepStatement);
         ASTCDAttribute updatePrepStatement = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "update"));
+            createAttributeType("String"), getStatementAttributeName(attr, "update"));
         attributesList.add(updatePrepStatement);
         ASTCDAttribute selectPrepStatement = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "select"));
+            createAttributeType("String"), getStatementAttributeName(attr, "select"));
         attributesList.add(selectPrepStatement);
       } else {
         ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PRIVATE.build(),
-            createAttributeType("PreparedStatement"), getStatementAttributeName(attr, "update"));
+            createAttributeType("String"), getStatementAttributeName(attr, "update"));
         attributesList.add(attribute);
       }
     }
@@ -148,7 +148,7 @@ public class DAODecorator extends AbstractDecorator {
 
   private ASTCDAttribute createPreparedStatementAttrForMethod(String domainClassName, String methodName, String suffix) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(),
-        createAttributeType("PreparedStatement"), methodName + domainClassName + suffix);
+        createAttributeType("String"), methodName + domainClassName + suffix);
   }
 
   private List<ASTCDAttribute> createAttributesForAssociationDAOs(ASTCDAssociation association) {
@@ -178,18 +178,18 @@ public class DAODecorator extends AbstractDecorator {
   }
 
   private ASTCDAttribute createPreparedStatementAttrForMethod(String method, ASTCDAssociation association) {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), createAttributeType("PreparedStatement"),
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), createAttributeType("String"),
         method + StringTransformations.capitalize(association.getName()));
   }
 
   private ASTCDAttribute createPreparedStatementAttrForMethodOfSide(String method, ASTCDAssocSide assocSide) {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(), createAttributeType("PreparedStatement"),
+    return getCDAttributeFacade().createAttribute(PRIVATE.build(), createAttributeType("String"),
         method + StringTransformations.capitalize(assocSide.getName()));
   }
 
   private ASTCDAttribute createPreparedStatementForSelect(String requested, String given, String requestedNumerus) {
     return getCDAttributeFacade().createAttribute(PRIVATE.build(),
-        createAttributeType("PreparedStatement"),
+        createAttributeType("String"),
         "select" + StringTransformations.capitalize(requested) + "Id" + requestedNumerus + "For" + StringTransformations.capitalize(given));
   }
 
@@ -233,7 +233,6 @@ public class DAODecorator extends AbstractDecorator {
 
   protected void assocDAOMethods(ASTCDClass daoClass, ASTCDAssociation association) {
     addMethodsForAssociationDAO(daoClass, association);
-
     removeMethodForAssociationDAO(daoClass, association);
     if (association.getCDAssocDir().isDefinitiveNavigableRight()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getLeft(), association.getRight());
@@ -454,6 +453,9 @@ public class DAODecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "java.sql.ResultSet");
     getCD4C().addImport(clazz, "java.sql.SQLException");
     getCD4C().addImport(clazz, "java.io.IOException");
+    getCD4C().addImport(clazz, "java.sql.Statement");
+    getCD4C().addImport(clazz,"java.sql.BatchUpdateException");
+    getCD4C().addImport(clazz,"java.sql.Connection");
 
     // Java
     getCD4C().addImport(clazz, "java.util.List");

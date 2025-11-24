@@ -6,12 +6,14 @@ package flensburg.database;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
+import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.Properties;
 
 public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
 
@@ -26,7 +28,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
       // In memory db
       // DB_CLOSE_DELAY=0 -> In memory db is deleted after connection is closed
       DriverManager.registerDriver(new org.h2.Driver());
-      connection = DriverManager.getConnection("jdbc:h2:mem:test_flensburg;DB_CLOSE_DELAY=0");
+      createDataSource("jdbc:h2:mem:test_flensburg;DB_CLOSE_DELAY=0", new Properties());
 
       String schemaFileName = "Flensburg.sql";
       Optional<URL> optionalURL = FileReaderWriter.getResource(this.getClass().getClassLoader(), schemaFileName);
@@ -41,13 +43,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
   }
 
   protected static void close(){
-    try {
-      if(connection != null && !connection.isClosed()){
-        connection.close();
-      }
-    } catch (SQLException e) {
-      Log.error("Error closing db", e);
-    }
+    DatabaseAccessManager.closeDataSource();
   }
 
   /*
@@ -57,7 +53,7 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
    */
   protected static void openWebServer() {
     try {
-      Server.startWebServer(connection);
+      Server.startWebServer(getConnection());
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

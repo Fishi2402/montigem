@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -47,7 +48,7 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
         Class<?> c = Class.forName(databaseProperties.getProperty(JDBC_DRIVER));
         DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
       }
-      connection = DriverManager.getConnection(DB_URL, databaseProperties);
+      createDataSource(DB_URL,  databaseProperties);
       Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
              InvocationTargetException | NoSuchMethodException e) {
@@ -64,18 +65,15 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
     boolean initialized = false;
 
     executeStatement("CREATE TABLE IF NOT EXISTS __internal_key_value__ (k VARCHAR, value_bigint BIGINT, value_varchar VARCHAR);");
-    Optional<ResultSet> res = executeQuery("SELECT k, value_varchar from __internal_key_value__ WHERE k = 'initialized';");
-    if(res.isPresent()){
-      ResultSet resultSet = res.get();
-      try {
-        if(resultSet.next()){
-          if(resultSet.getString(2).equals("true")){
-            initialized = true;
-          }
+    try(Connection c = DatabaseAccessManager.getConnection(); Statement st = c.createStatement()){
+      ResultSet resultSet = st.executeQuery("SELECT k, value_varchar from __internal_key_value__ WHERE k = 'initialized';");
+      if(resultSet.next()){
+        if(resultSet.getString(2).equals("true")){
+          initialized = true;
         }
-      } catch (SQLException e) {
-        Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
       }
+    } catch (SQLException e){
+      Log.error("0xDB002: Could not init schem.", e);
     }
 
     if(initialized){

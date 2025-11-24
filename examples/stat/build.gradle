@@ -39,7 +39,7 @@ dependencies {
 
     runtimeOnly group: 'org.neo4j', name: 'neo4j-jdbc', version: neo4j_jdbc_version
 
-    testImplementation "org.neo4j.test:neo4j-harness:5.26.12" exclude module: "commons-text"
+    testImplementation "org.neo4j.test:neo4j-harness:${neo4j_embedded_test}" exclude module: "commons-text"
 
     testImplementation project(':umlp-test-rte')
 }

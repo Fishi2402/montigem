@@ -1,10 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "assocsToDefinitionDiagramMap", "neo4j")}
 ${cd4c.method("public void insert${typeName}(${typeName} o)")}
-  <#assign statement="insert"+typeName>
+  <#assign statement="st">
   ensureInsert${typeName}Created();
-  synchronized(${statement}){
-    try{
+    try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st = connection.prepareStatement(insert${typeName}); ){
       ${statement}.clearParameters();
       ${statement}.setLong(1, o.getGemId());
       <#assign index = 1>
@@ -42,4 +41,4 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
     } catch (SQLException e){
       throw new RuntimeException(e);
     }
-  }
+

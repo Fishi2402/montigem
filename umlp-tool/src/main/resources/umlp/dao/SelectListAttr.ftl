@@ -3,14 +3,14 @@ ${tc.signature("tableName", "attr", "innerType", "dbType")}
 <#assign attrName=attr.getName()?cap_first>
 ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
   if(select${attrName}Statement == null) {
-    select${attrName}Statement = DatabaseAccessManager.prepareStatement("SELECT _value FROM ${tableName} WHERE id = ? ORDER BY index ASC");
+    select${attrName}Statement = "SELECT _value FROM ${tableName} WHERE id = ? ORDER BY index ASC";
   }
-  synchronized(select${attrName}Statement){
-    try {
-      select${attrName}Statement.clearParameters();
-      select${attrName}Statement.setLong(1, gemId);
+
+    try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st = connection.prepareStatement(select${attrName}Statement); ) {
+      st.clearParameters();
+      st.setLong(1, gemId);
       List<${innerType}> res = new ArrayList<>();
-      try(ResultSet rs = select${attrName}Statement.executeQuery()) {
+      try(ResultSet rs = st.executeQuery()) {
         while(rs.next()){
           res.add(${includeArgs("umlp.dao.Get", "rs", attr, 1,"")});
         }
@@ -21,4 +21,4 @@ ${cd4c.method("public List<${innerType}> select${attrName}(long gemId)")}
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
-  }
+

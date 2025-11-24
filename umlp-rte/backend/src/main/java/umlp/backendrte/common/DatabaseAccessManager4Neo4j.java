@@ -4,12 +4,14 @@ package umlp.backendrte.common;
 import de.se_rwth.commons.logging.Log;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
+import java.util.Properties;
 
 public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
 
@@ -33,7 +35,7 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
         Class<?> c = Class.forName(databaseProperties.getProperty(JDBC_DRIVER));
         DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
       }
-      connection = DriverManager.getConnection(DB_URL, databaseProperties);
+      createDataSource(DB_URL, databaseProperties);
       Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
         InvocationTargetException | NoSuchMethodException e) {
@@ -48,14 +50,14 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
    */
   protected void createMetaNodeSingleton() {
     boolean createMetaNode = false;
-    try(Statement stmt = connection.createStatement()) {
-      ResultSet resultSet= stmt.executeQuery("MATCH(n:METANODE) return n");
+    try(Connection c = DatabaseAccessManager.getConnection(); Statement stmt = c.createStatement();
+        ResultSet resultSet= stmt.executeQuery("MATCH(n:METANODE) return n");) {
       createMetaNode = !resultSet.next();
     } catch (SQLException var2) {
       Log.error("0xadakfjjflsd: Could not create MetaNode necessary for GemId Counter.", var2);
     }
     if(createMetaNode) {
-      try (Statement stmt2 = connection.createStatement()) {
+      try (Connection c = DatabaseAccessManager.getConnection(); Statement stmt2 = c.createStatement()) {
         stmt2.executeUpdate("CREATE (n:METANODE {gemIdCounter: 0})");
       } catch (SQLException var2) {
         Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);
@@ -77,11 +79,15 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
   }
 
   protected void _setupBoltLocalhost(int port, String user, String password) {
+    loadDBPropertiesFromStandardFileLocation();
     try {
       Class<?> c = Class.forName("org.neo4j.jdbc.Neo4jDriver");
       DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
 
-      connection = DriverManager.getConnection("jdbc:neo4j://localhost:"+port, user, password);
+      databaseProperties.put("user", user);
+      databaseProperties.put("password", password);
+      databaseProperties.put("jdbc_driver","org.neo4j.jdbc.Neo4jDriver");
+      createDataSource("jdbc:neo4j://localhost:"+port, databaseProperties);
       Log.warn("New DB Connection created");
     } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
         InvocationTargetException | NoSuchMethodException e) {

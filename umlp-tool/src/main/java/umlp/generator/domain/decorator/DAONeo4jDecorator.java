@@ -47,6 +47,7 @@ public class DAONeo4jDecorator extends DAODecorator {
     updateMethodsForAssociationDAO(daoClass, association);
 
     removeMethodForAssociationDAO(daoClass, association);
+
     if(association.getCDAssocDir().isDefinitiveNavigableRight()) {
       selectMethodForAssocDAO(daoClass, association.getName(), association.getLeft(), association.getRight());
       removeAllMethodForAssocDAO(daoClass, association.getLeft().getName(), association.getRight().getName(),
