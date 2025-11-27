@@ -450,7 +450,7 @@ public class GenService {
 
   public static boolean isCDType(SymTypeExpression type) {
     // TODO: Bessere Lösung?
-    return type.getTypeInfo() instanceof CDTypeSymbol;
+    return type.hasTypeInfo() && type.getTypeInfo() instanceof CDTypeSymbol;
   }
 
   public static boolean isCDEnum(SymTypeExpression type) {
