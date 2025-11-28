@@ -2,16 +2,17 @@
 package umlp.backendrte.common;
 
 import de.se_rwth.commons.logging.Log;
+import org.neo4j.driver.Config;
+import org.neo4j.driver.NotificationClassification;
+import org.neo4j.driver.NotificationSeverity;
+import org.neo4j.driver.Session;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Optional;
-import java.util.Properties;
+import org.neo4j.driver.SessionConfig;
+import org.neo4j.driver.Value;
+import org.neo4j.driver.async.AsyncSession;
+import org.neo4j.driver.async.AsyncTransaction;
+
+import java.util.Set;
 
 public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
 
@@ -27,21 +28,102 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
     idManager4Neo4j.clear();
   }
 
+  public static org.neo4j.driver.Driver driver;
+
   @Override
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
-    try {
-      if(databaseProperties.getProperty(JDBC_DRIVER) != null){
-        Class<?> c = Class.forName(databaseProperties.getProperty(JDBC_DRIVER));
-        DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
-      }
-      createDataSource(DB_URL, databaseProperties);
-      Log.warn("New DB Connection created");
-    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
-        InvocationTargetException | NoSuchMethodException e) {
-      throw new RuntimeException(e);
-    }
+    String NEO4J_URI = databaseProperties.get("NEO4J_URI") != null? databaseProperties.get("NEO4J_URI").toString() : "bolt://localhost:7687";
+    String NEO4J_USER = databaseProperties.get("NEO4J_USER") != null? databaseProperties.get("NEO4J_USER").toString() : "neo4j";
+    String NEO4J_PASSWORD = databaseProperties.get("NEO4J_PASSWORD") != null? databaseProperties.get("NEO4J_PASSWORD").toString() : "";
+    driver = org.neo4j.driver.GraphDatabase.driver(NEO4J_URI,
+        org.neo4j.driver.AuthTokens.basic(
+            NEO4J_USER, NEO4J_PASSWORD),
+        Config.builder()
+            .withMinimumNotificationSeverity(NotificationSeverity.OFF)  // NotificationSeverity.OFF to disable entirely
+            .withDisabledNotificationClassifications(Set.of(NotificationClassification.HINT, NotificationClassification.GENERIC))  // filters categories as well
+            .withoutEncryption()
+            .withTelemetryDisabled(true)
+            .build()
+        );
+    registerShutdownHook();
+    Log.warn("New DB Connection created");
     createMetaNodeSingleton();
+  }
+
+  // Get a Read Session
+  public static Session getSession() {
+    // Commit all ongoing writes before doing a read
+    synchronized (writeFireAndForgetTransaction) {
+      writeFireAndForgetTransaction.closeTransaction();
+      return driver.session(SessionConfig.forDatabase("neo4j"));
+    }
+  }
+
+  static final class TransactionHolder {
+    AsyncTransaction fireAndForgetTransaction = null;
+    int batchSize;
+    int queryCounter = 0;
+
+    TransactionHolder(int batchSize) {
+      this.batchSize = batchSize;
+    }
+
+    synchronized void executeFireAndForget(String query) {
+      ensureExistingTransaction();
+      queryCounter++;
+      fireAndForgetTransaction.runAsync(query);
+      if(queryCounter == batchSize) {
+        closeTransaction();
+      }
+    }
+
+    synchronized void executeFireAndForget(String query, Value vals) {
+      ensureExistingTransaction();
+      queryCounter++;
+      fireAndForgetTransaction.runAsync(query, vals);
+      if(queryCounter == batchSize) {
+        closeTransaction();
+      }
+    }
+
+    synchronized void ensureExistingTransaction() {
+      if(fireAndForgetTransaction == null) {
+        fireAndForgetTransaction = driver.session(AsyncSession.class).beginTransactionAsync()
+            .toCompletableFuture().join();
+      }
+    }
+
+    synchronized void closeTransaction() {
+      if(fireAndForgetTransaction != null) {
+        this.close();
+        fireAndForgetTransaction = driver.session(AsyncSession.class).beginTransactionAsync()
+            .toCompletableFuture().join();
+      }
+    }
+
+    synchronized void close() {
+      if(fireAndForgetTransaction != null) {
+        fireAndForgetTransaction.commitAsync().exceptionally(ex -> {
+          System.err.println("Transaction rolled back due to: " + ex.getMessage());
+          return null;
+        }).toCompletableFuture().join();
+      }
+    }
+  }
+
+  static final TransactionHolder writeFireAndForgetTransaction = new TransactionHolder(2000);
+
+  public static void executeWrite(String cypherQuery, Value values) {
+    synchronized (writeFireAndForgetTransaction) {
+      writeFireAndForgetTransaction.executeFireAndForget(cypherQuery, values);
+    }
+  }
+
+  public static void executeWrite(String cypherQuery) {
+    synchronized (writeFireAndForgetTransaction) {
+      writeFireAndForgetTransaction.executeFireAndForget(cypherQuery);
+    }
   }
 
   /**
@@ -50,18 +132,17 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
    */
   protected void createMetaNodeSingleton() {
     boolean createMetaNode = false;
-    try(Connection c = DatabaseAccessManager.getConnection(); Statement stmt = c.createStatement();
-        ResultSet resultSet= stmt.executeQuery("MATCH(n:METANODE) return n");) {
-      createMetaNode = !resultSet.next();
-    } catch (SQLException var2) {
-      Log.error("0xadakfjjflsd: Could not create MetaNode necessary for GemId Counter.", var2);
+    try(Session session = DatabaseAccessManager4Neo4j.getSession()) {
+      createMetaNode = !session.run("MATCH(n:METANODE) return n").hasNext();
     }
     if(createMetaNode) {
-      try (Connection c = DatabaseAccessManager.getConnection(); Statement stmt2 = c.createStatement()) {
-        stmt2.executeUpdate("CREATE (n:METANODE {gemIdCounter: 0})");
-      } catch (SQLException var2) {
-        Log.error("JDBC DB Connection Issue: " + var2.getMessage(), var2);
-      }
+      executeWrite("CREATE (n:METANODE {gemIdCounter: 0})");
+    }
+  }
+
+  public static void executeStatement(String cypher){
+    try(Session session = getSession()){
+      session.run(cypher);
     }
   }
 
@@ -79,21 +160,25 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
   }
 
   protected void _setupBoltLocalhost(int port, String user, String password) {
-    loadDBPropertiesFromStandardFileLocation();
-    try {
-      Class<?> c = Class.forName("org.neo4j.jdbc.Neo4jDriver");
-      DriverManager.registerDriver((Driver) c.getDeclaredConstructor().newInstance());
-
-      databaseProperties.put("user", user);
-      databaseProperties.put("password", password);
-      databaseProperties.put("jdbc_driver","org.neo4j.jdbc.Neo4jDriver");
-      createDataSource("jdbc:neo4j://localhost:"+port, databaseProperties);
-      Log.warn("New DB Connection created");
-    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException |
-        InvocationTargetException | NoSuchMethodException e) {
-      throw new RuntimeException(e);
-    }
+    driver = org.neo4j.driver.GraphDatabase.driver("bolt://localhost:"+port,
+          org.neo4j.driver.AuthTokens.basic(
+              user, password));
+    registerShutdownHook();
+    Log.warn("New DB Connection created");
     createMetaNodeSingleton();
+  }
+
+  protected void registerShutdownHook(){
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      System.out.println("Shutdown hook triggered - closing database connection");
+      DatabaseAccessManager.closeConnection();
+    }));
+  }
+
+  @Override
+  public void _closeConnection(){
+    writeFireAndForgetTransaction.close();
+    driver.close();
   }
 
 }

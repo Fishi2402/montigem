@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package assocsfromandtointerface;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.aC1ImplBuilder;
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.aC2ImplBuilder;
@@ -34,16 +37,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssociationsFromAndToInterfacesTest {
 
-  public static List<AdaptedTestSetup> getSetups() {
-    return List.of(
-        new AdaptedTestSetup.MockTestSetup(0),
-        new AdaptedTestSetup.DbTestSetup(0),
-        new AdaptedTestSetup.MockTestSetup(1)
-    );
+  static class TestSetupProvider implements ArgumentsProvider {
+    @Override
+    public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+      return Stream.of(
+          Arguments.of(new AdaptedTestSetup.MockTestSetup(0)),
+          Arguments.of(new AdaptedTestSetup.DbTestSetup(0)),
+          Arguments.of(new AdaptedTestSetup.MockTestSetup(1))
+      );
+    }
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testClassToInterfaceDuringSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     I1 i1 = i1ImplBuilder().build().get();
@@ -61,7 +67,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testClassToInterfaceAfterSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     I1 i1 = i1ImplBuilder().build().get();
@@ -82,7 +88,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testInterfaceToClassDuringSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     C2 c2 = c2Builder().build().get();
@@ -100,7 +106,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testInterfaceToClassAfterSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     C2 c2 = c2Builder().build().get();
@@ -122,7 +128,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testInterfaceToInterfaceDuringSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     I4 i4 = i4ImplBuilder().build().get();
@@ -140,7 +146,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testInterfaceToInterfaceAfterSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     I4 i4 = i4ImplBuilder().build().get();
@@ -163,7 +169,7 @@ public class AssociationsFromAndToInterfacesTest {
 
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testClassToAbstractClassDuringSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     AC1 aC1 = aC1ImplBuilder().build().get();
@@ -181,7 +187,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testClassToAbstractClassAfterSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     AC1 aC1 = aC1ImplBuilder().build().get();
@@ -202,7 +208,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testAbstractClassToClassDuringSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     C4 c4 = c4Builder().build().get();
@@ -220,7 +226,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testAbstractClassToClassAfterSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     C4 c4 = c4Builder().build().get();
@@ -242,7 +248,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testAbstractClassToAbstractClassDuringSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     AC4 aC4 = aC4ImplBuilder().build().get();
@@ -260,7 +266,7 @@ public class AssociationsFromAndToInterfacesTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
+  @ArgumentsSource(TestSetupProvider.class)
   public void testAbstractClassToAbstractClassAfterSetup(AdaptedTestSetup setup) throws Exception {
     setup.init();
     AC4 aC4 = aC4ImplBuilder().build().get();

@@ -7,7 +7,6 @@ plugins {
 description 'Syse Functions'
 
 umlp2java {
-  //configTemplate = "umlp.UMLP2JavaNeo4j"
   modelDir.from(file("../models"))
 }
 

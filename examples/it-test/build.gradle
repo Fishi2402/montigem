@@ -4,14 +4,17 @@ import de.montigem.gradle.specific.UMLP2JavaTask
 
 plugins {
   id 'de.rwth.se.montigem-backend'
+
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
 }
 description 'it tests'
 
 dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
-  testRuntimeOnly group: 'org.neo4j', name: 'neo4j-jdbc', version: neo4j_jdbc_version
-  testImplementation group: "org.neo4j.test", name: "neo4j-harness", version: neo4j_embedded_test exclude module: "commons-text"
+  implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
+  testRuntimeOnly "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
 
   testImplementation project(':umlp-test-rte')
 }
@@ -23,4 +26,5 @@ tasks.named("umlp2java", UMLP2JavaTask) {
       file("$projectDir/src/test/java")
   )
   useSpring = false
+  genNeo4j = true
 }

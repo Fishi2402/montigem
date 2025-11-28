@@ -2,6 +2,7 @@
 package umlp.generator.util;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -24,9 +25,11 @@ import umlp.UMLPMill;
 import umlp._symboltable.CDRoleSymbol2VariableSymbolAdapterDeSer;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp._visitor.UMLPTraverser;
+import umlp.generator.domain.decorator.GenService;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -205,5 +208,17 @@ public class UMLPSymbolTables {
       }
     });
     return extendedCDs;
+  }
+
+  public static Map<ASTCDAssocSide, ASTCDAssociation> getOppositeSideToAssociationMap(ASTCDClass domainClass) {
+    List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(GenService::isVisible)
+        .toList();
+    Map<ASTCDAssocSide, ASTCDAssociation> assocSideToAssociation = new LinkedHashMap<>();
+    for (ASTCDAssocSide assocSide : assocSides) {
+      ASTCDAssociation assocOfAssocSide = assocSide.getSymbol().getAssoc().getAssociation().getAstNode();
+      assocSideToAssociation.put(assocSide, assocOfAssocSide);
+    }
+    return assocSideToAssociation;
   }
 }

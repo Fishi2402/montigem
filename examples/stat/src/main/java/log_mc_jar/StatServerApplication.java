@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package log_mc_jar;
 
-import de.monticore.io.FileReaderWriter;
-import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,12 +8,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
-import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import javax.annotation.PreDestroy;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.Set;
 
 
@@ -35,7 +30,7 @@ public class StatServerApplication {
 
   @PreDestroy
   public void onExit() {
-    try { DatabaseAccessManager.closeConnection();} catch (SQLException ignored) {}
+    DatabaseAccessManager.closeConnection();
     for (Server server : servers) {
       server.stop();
     }

@@ -10,7 +10,7 @@ ${cd4c.method("public Boolean addMany${association.getName()?cap_first}(Map<Long
   }
   try(Connection c = DatabaseAccessManager.getConnection()){
     try(PreparedStatement st = c.prepareStatement(add${association.getName()?cap_first})) {
-c.setAutoCommit(false);
+      c.setAutoCommit(false);
       st.clearBatch();
       for (Map.Entry<Long, List<Long>> entry : ${association.getName()?cap_first}s.entrySet()) {
         for (Long rightHandSide : entry.getValue()) {

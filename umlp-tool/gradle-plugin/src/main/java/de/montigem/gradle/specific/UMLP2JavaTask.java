@@ -47,6 +47,14 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUseShell();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getUseNeo4j();
+
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGenNeo4j();
+
   /**
    * @deprecated in favor of {@link UMLP2TestInfrastructureTask#getUsePlaywright()}
    */
@@ -66,6 +74,8 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
     getUseSpring().convention(true);
     getUseShell().convention(false);
     getUsePlaywright().convention(false);
+    getUseNeo4j().convention(false);
+    getGenNeo4j().convention(false);
 
     getModelDir().from(getModules());
   }
@@ -123,6 +133,14 @@ public abstract class UMLP2JavaTask extends MGSingleFileTask {
 
     if (this.getUseShell().get()) {
       result.add("-" + UMLPToolOptions.USE_SHELL.getCMD());
+    }
+
+    if (this.getGenNeo4j().get()) {
+      result.add("-" + UMLPToolOptions.GEN_NEO4J.getCMD());
+    }
+
+    if (this.getUseNeo4j().get()) {
+      result.add("-" + UMLPToolOptions.USE_NEO4J.getCMD());
     }
 
     return result;

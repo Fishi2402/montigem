@@ -6,7 +6,6 @@ package flensburg.database;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import org.h2.tools.Server;
-import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.DatabaseAccessManager4SQL;
 
 import java.net.URL;
@@ -40,10 +39,6 @@ public class TestDatabaseAccessManager extends DatabaseAccessManager4SQL {
     } catch (SQLException e) {
       Log.error("Error while initializing db", e);
     }
-  }
-
-  protected static void close(){
-    DatabaseAccessManager.closeDataSource();
   }
 
   /*

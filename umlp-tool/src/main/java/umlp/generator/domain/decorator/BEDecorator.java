@@ -18,7 +18,8 @@ import java.util.Set;
 
 public class BEDecorator extends AbstractDecorator {
 
-  boolean neo4j = false;
+  boolean neo4j_as_default_database = false;
+  boolean generate_neo4j_daos = false;
 
   boolean spring = false;
   boolean shell = false;
@@ -36,12 +37,13 @@ public class BEDecorator extends AbstractDecorator {
     if(glex.hasGlobalVar("UMLPGeneratorConfig")){
       spring = UMLPGeneratorConfig.getInstance().isUseSpring();
       shell = UMLPGeneratorConfig.getInstance().isUseShell();
-    }
-  }
+      generate_neo4j_daos = UMLPGeneratorConfig.getInstance().isGenNeo4j();
+      neo4j_as_default_database = UMLPGeneratorConfig.getInstance().isUseNeo4j();
 
-  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath, boolean neo4j) {
-    this(glex, hwPath);
-    this.neo4j = neo4j;
+      if(neo4j_as_default_database & !generate_neo4j_daos) {
+        Log.error("If you want to use neo4j as default database, then neo4j generation has to be activated.");
+      }
+    }
   }
 
   private void initExtraDeSers() {
@@ -72,7 +74,7 @@ public class BEDecorator extends AbstractDecorator {
     domainInterfaceDecorator.transform(cdAST, decoratedAST);
     Log.debug("After decorator: CreateDecorator", BEDecorator.class.getName());
 
-    DAOFactoryDecorator daoFactoryDecorator = new DAOFactoryDecorator(glex);
+    DAOFactoryDecorator daoFactoryDecorator = new DAOFactoryDecorator(glex, generate_neo4j_daos);
     daoFactoryDecorator.transform(cdAST, decoratedAST);
     Log.debug("After decorator: DAOFactoryDecorator", BEDecorator.class.getName());
 
@@ -89,9 +91,11 @@ public class BEDecorator extends AbstractDecorator {
     daoDecorator.transform(cdAST, decoratedAST);
     Log.debug("After decorator: DAODecorator", BEDecorator.class.getName());
 
-    DAONeo4jDecorator daoNeo4jDecorator = new DAONeo4jDecorator(glex);
-    daoNeo4jDecorator.transform(cdAST, decoratedAST);
-    Log.debug("After decorator: DAONeo4jDecorator", BEDecorator.class.getName());
+    if(this.generate_neo4j_daos) {
+      DAONeo4jDecorator daoNeo4jDecorator = new DAONeo4jDecorator(glex);
+      daoNeo4jDecorator.transform(cdAST, decoratedAST);
+      Log.debug("After decorator: DAONeo4jDecorator", BEDecorator.class.getName());
+    }
 
     // Generate DeSer
     DeSerDecorator deSerDecorator = new DeSerDecorator(glex, hwPath, supportedDesers);
@@ -218,7 +222,7 @@ public class BEDecorator extends AbstractDecorator {
     }
 
     if (spring) {
-      ServerApplicationDecorator serverApplicationDecorator = new ServerApplicationDecorator(glex, neo4j);
+      ServerApplicationDecorator serverApplicationDecorator = new ServerApplicationDecorator(glex, neo4j_as_default_database);
       serverApplicationDecorator.transform(cdAST, decoratedAST);
       Log.debug("After decorator: ServerApplicationDecorator", BEDecorator.class.getName());
 
@@ -249,8 +253,15 @@ public class BEDecorator extends AbstractDecorator {
     this.supportedDesers.addAll(Arrays.asList(deSers));
   }
 
-  public void setNeo4j(boolean neo4j) {
-    this.neo4j = neo4j;
+  public void setNeo4j(boolean neo4j_as_default_database) {
+    this.neo4j_as_default_database = neo4j_as_default_database;
+    if (neo4j_as_default_database) {
+      this.setGenerateNeo4jDaos(true);
+    }
+  }
+
+  public void setGenerateNeo4jDaos(boolean generate_neo4j_daos) {
+    this.generate_neo4j_daos = generate_neo4j_daos;
   }
 
   public void setSpring(boolean spring) {

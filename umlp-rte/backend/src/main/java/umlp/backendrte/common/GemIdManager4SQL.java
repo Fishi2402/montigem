@@ -62,6 +62,7 @@ public class GemIdManager4SQL {
 
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new RuntimeException("No GemId inside DB!");
     }
   }
 }

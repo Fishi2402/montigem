@@ -3,6 +3,6 @@ ${tc.signature("oneSideName", "otherSideName", "oneSideType","assocName", "numer
 <#assign methodName = otherSideName?cap_first+"Id"+numerusOfId+"For"+oneSideName?cap_first>
 ${cd4c.method("public void ensureSelect${methodName}Created()")}
 
-    select${methodName} = "MATCH (n:${oneSideType} {gemId: $1}) <#t>
+    select${methodName} = "MATCH (n:${oneSideType} {gemId: $p1}) <#t>
     <#lt>-[:${otherSideName}]->(m) RETURN m.gemId";
 

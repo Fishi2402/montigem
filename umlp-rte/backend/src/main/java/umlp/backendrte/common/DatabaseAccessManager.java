@@ -124,24 +124,11 @@ public abstract class DatabaseAccessManager {
     instance = databaseAccessManager;
   }
 
-  public static void closeDataSource(){
-    if (dataSource != null) {
-      dataSource.close();
-    }
+  public static void closeConnection() {
+    getSingleton()._closeConnection();
   }
 
-  public static void closeConnection() throws SQLException {
-    if (dataSource == null) {
-      Log.warn("Can not close DB connection, since it is null");
-      return;
-    }
-
-    if (!dataSource.isClosed()) {
-      getSingleton()._closeConnection();
-    }
-  }
-
-  public void _closeConnection() throws SQLException {
+  public void _closeConnection() {
    if (dataSource == null) {
       Log.warn("Can not close DB connection, since it is null");
       return;

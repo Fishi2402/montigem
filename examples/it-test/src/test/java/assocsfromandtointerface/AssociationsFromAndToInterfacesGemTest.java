@@ -2,10 +2,8 @@
 package assocsfromandtointerface;
 
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import umlp.backendrte.common.LoadingState;
-
-import java.util.List;
 
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.aC5ImplBuilder;
 import static assocsfromandtointerface.AssocsFromAndToInterfaceManager.aC6ImplBuilder;
@@ -37,18 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssociationsFromAndToInterfacesGemTest {
 
-  public static List<AdaptedTestSetup> getSetups() {
-    return List.of(
-        new AdaptedTestSetup.MockTestSetup(0),
-        // TODO: Ticket #3442
-        //new AdaptedTestSetup.DbTestSetup(0),
-        new AdaptedTestSetup.MockTestSetup(1)
-    );
-  }
-
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testClassToInterfaceDuringSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testClassToInterfaceDuringSetup(int clients) throws Exception {
+    // TODO: Ticket #3442
+    //new AdaptedTestSetup.DbTestSetup(0),
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       I5 i5 = i5ImplBuilder().build().get();
@@ -68,8 +60,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testClassToInterfaceAfterSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testClassToInterfaceAfterSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       I5 i5 = i5ImplBuilder().build().get();
@@ -91,8 +84,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testInterfaceToClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testInterfaceToClassDuringSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       C6 c6 = c6Builder().build().get();
@@ -111,8 +105,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testInterfaceToClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testInterfaceToClassAfterSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       C6 c6 = c6Builder().build().get();
@@ -135,8 +130,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testInterfaceToInterfaceDuringSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testInterfaceToInterfaceDuringSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       I8 i8 = i8ImplBuilder().build().get();
@@ -155,8 +151,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testInterfaceToInterfaceAfterSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testInterfaceToInterfaceAfterSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       I8 i8 = i8ImplBuilder().build().get();
@@ -180,8 +177,9 @@ public class AssociationsFromAndToInterfacesGemTest {
 
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testClassToAbstractClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testClassToAbstractClassDuringSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       AC5 aC5 = aC5ImplBuilder().build().get();
@@ -200,8 +198,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testClassToAbstractClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testClassToAbstractClassAfterSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       AC5 aC5 = aC5ImplBuilder().build().get();
@@ -223,8 +222,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testAbstractClassToClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testAbstractClassToClassDuringSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       C8 c8 = c8Builder().build().get();
@@ -243,8 +243,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testAbstractClassToClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testAbstractClassToClassAfterSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       C8 c8 = c8Builder().build().get();
@@ -267,8 +268,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testAbstractClassToAbstractClassDuringSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testAbstractClassToAbstractClassDuringSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       AC8 aC8 = aC8ImplBuilder().build().get();
@@ -287,8 +289,9 @@ public class AssociationsFromAndToInterfacesGemTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getSetups")
-  public void testAbstractClassToAbstractClassAfterSetup(AdaptedTestSetup setup) throws Exception {
+  @ValueSource(ints = {0, 1})
+  public void testAbstractClassToAbstractClassAfterSetup(int clients) throws Exception {
+    AdaptedTestSetup setup = new AdaptedTestSetup.MockTestSetup(clients);
     setup.init();
     try {
       AC8 aC8 = aC8ImplBuilder().build().get();

@@ -22,6 +22,7 @@ dependencies {
   }
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   api 'com.h2database:h2:2.1.214'
+  implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
 
   // Spring Boot Dependencies
   compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging

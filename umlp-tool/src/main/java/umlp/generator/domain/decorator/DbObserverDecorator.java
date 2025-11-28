@@ -83,7 +83,7 @@ public class DbObserverDecorator extends AbstractDecorator {
         });
 
     Set<String> daoFactoryImports = new HashSet<>();
-    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : DAODecorator.getOppositeSideToAssociationMap(domainClass).entrySet()) {
+    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : UMLPSymbolTables.getOppositeSideToAssociationMap(domainClass).entrySet()) {
       if (!e.getValue().getModifier().isDerived()) {
         CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
 

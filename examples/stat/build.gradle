@@ -23,25 +23,23 @@ jib {
 }
 
 dependencies {
-    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+  implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
 
-    // Spring Boot Dependencies
-    def withoutSpringLogging = {
-        exclude module: 'spring-boot-starter-logging'
-        exclude module: 'logback-classic'
-    }
-    developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
-    implementation "com.h2database:h2:${h2_database}"
+  // Spring Boot Dependencies
+  def withoutSpringLogging = {
+      exclude module: 'spring-boot-starter-logging'
+      exclude module: 'logback-classic'
+  }
+  developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  implementation "com.h2database:h2:${h2_database}"
 
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+  implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
+  testRuntimeOnly "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
 
-    runtimeOnly group: 'org.neo4j', name: 'neo4j-jdbc', version: neo4j_jdbc_version
-
-    testImplementation "org.neo4j.test:neo4j-harness:${neo4j_embedded_test}" exclude module: "commons-text"
-
-    testImplementation project(':umlp-test-rte')
+  testImplementation project(':umlp-test-rte')
 }
 
 String diff_location = "diff_store"
@@ -53,8 +51,9 @@ tasks.register('copyGeneratedFiles', Sync) {
 
 def umlp2java = tasks.named("umlp2java", UMLP2JavaTask) {
   input = file("./src/models")
-  configTemplate = "umlp.UMLP2JavaNeo4j"
   useSpring = false
+  genNeo4j = true
+  useNeo4j = true
 }
 
 

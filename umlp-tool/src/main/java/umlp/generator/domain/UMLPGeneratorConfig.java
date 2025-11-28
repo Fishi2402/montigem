@@ -5,9 +5,11 @@ import org.apache.commons.cli.CommandLine;
 
 import java.util.Optional;
 
+import static umlp.UMLPToolOptions.GEN_NEO4J;
 import static umlp.UMLPToolOptions.GUI_GEN_FOR_TS_LIB;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
 import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
+import static umlp.UMLPToolOptions.USE_NEO4J;
 import static umlp.UMLPToolOptions.USE_PLAYWRIGHT;
 import static umlp.UMLPToolOptions.USE_SHELL;
 import static umlp.UMLPToolOptions.USE_SPRING;
@@ -17,6 +19,8 @@ public class UMLPGeneratorConfig {
   private boolean useSpring;
   private boolean usePlaywright;
   private boolean useShell;
+  private boolean genNeo4j;
+  private boolean useNeo4j;
 
   private String tslib;
 
@@ -41,6 +45,24 @@ public class UMLPGeneratorConfig {
 
   public UMLPGeneratorConfig setUseSpring(boolean useSpring) {
     this.useSpring = useSpring;
+    return this;
+  }
+
+  public boolean isGenNeo4j() {
+    return genNeo4j;
+  }
+
+  public UMLPGeneratorConfig setGenNeo4j(boolean genNeo4j){
+    this.genNeo4j = genNeo4j;
+    return this;
+  }
+
+  public boolean isUseNeo4j() {
+    return useNeo4j;
+  }
+
+  public UMLPGeneratorConfig setUseNeo4j(boolean useNeo4j){
+    this.useNeo4j = useNeo4j;
     return this;
   }
 
@@ -81,6 +103,8 @@ public class UMLPGeneratorConfig {
     }
     return this.setUseSpring(USE_SPRING.isSelected(cmd))
         .setUseShell(USE_SHELL.isSelected(cmd))
-        .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd));
+        .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd))
+        .setGenNeo4j(GEN_NEO4J.isSelected(cmd))
+        .setUseNeo4j(USE_NEO4J.isSelected(cmd));
   }
 }

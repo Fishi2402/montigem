@@ -1,2 +1,2 @@
 ${signature("statement", "columnName")}
-java.time.Duration.of(${statement}.getLong(${columnName}), java.time.temporal.ChronoUnit.NANOS)
+${statement}.get(${columnName}).isNull()? null : java.time.Duration.of(${statement}.get(${columnName}).asLong(), java.time.temporal.ChronoUnit.NANOS)

@@ -43,10 +43,10 @@ public class InheritanceManagerImplTest {
     assertTrue(DatabaseAccessManager4SQL.initSchema(schema));
   }
 
-  @AfterEach
+  /*@AfterEach
   public void cleanup() throws SQLException {
     DatabaseAccessManager.closeConnection();
-  }
+  }*/
 
   @Test
   public void testSubclassesOfConcreteClass(){

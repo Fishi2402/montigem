@@ -3,14 +3,19 @@ package flensburg.database;
 import com.google.common.base.Stopwatch;
 import de.se_rwth.commons.logging.Log;
 import hardy.flensburg.Address;
+import hardy.flensburg.FlensburgDAOFactory;
 import hardy.flensburg.FlensburgManager;
+import hardy.flensburg.FlensburgManagerImpl;
+import hardy.flensburg.FlensburgTestContext;
 import hardy.flensburg.Person;
+import hardy.flensburg.test_infrastructure.FlensburgDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgNeo4JDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgSQLDBTestSetup;
 import hardy.flensburg.test_infrastructure.FlensburgTestSetup;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +36,7 @@ public interface DBConnectionSpeedTest extends FlensburgTestSetup {
     }
   }
 
-  @Disabled("Not to be executed in Pipeline")
+  //@Disabled("Not to be executed in Pipeline")
   @Test
   default void insertManyPersons(){
 

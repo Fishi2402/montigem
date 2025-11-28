@@ -29,18 +29,6 @@ jib {
   to.image = "${container_target_image_base}demorec_backend:latest"
 }
 
-/*repositories {
-  flatDir {
-    dirs 'C:\\Users\\Margarita\\Documents\\bpmn\\bpmn-dsl\\WorkflowDSL\\target\\libs\\'
-  }
-}
-
-repositories {
-  flatDir {
-    dirs 'C:\\Users\\Margarita\\Documents\\bpmn\\bpmn-dsl\\TimeExpressions\\target\\libs\\'
-  }
-}*/
-
 dependencies {
   //implementation name: 'WorkflowDSL-7.7.0-SNAPSHOT'
   //implementation name: 'TimeExpressions-7.7.0-SNAPSHOT'

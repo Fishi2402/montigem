@@ -2,8 +2,11 @@
 package inheritance;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import umlp.backendrte.command.CommandDirectCommunication;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.TestClientCommandManager;
@@ -14,6 +17,7 @@ import umlp.backendrte.common.GemList;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,6 +43,7 @@ public class GetFilteredTest {
   }
 
   static class WithMockBackend extends Setup {
+    @Override
     void setup() throws Exception {
       InheritanceTestContext.clear();
       InheritanceMock.init();
@@ -48,11 +53,12 @@ public class GetFilteredTest {
 
     @Override
     void cleanup() throws Exception {
-      DatabaseAccessManager.closeConnection();
+
     }
   }
 
   static class WithDBBackend extends Setup {
+    @Override
     void setup() throws Exception {
       InheritanceTestContext.clear();
       DatabaseAccessManager4SQL.init();
@@ -68,13 +74,18 @@ public class GetFilteredTest {
     }
   }
 
-
-  public static List<Setup> setups(){
-    return List.of(new WithMockBackend(), new WithDBBackend());
+  static class SetupProvider implements ArgumentsProvider {
+    @Override
+    public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+      return Stream.of(
+          Arguments.of(new WithMockBackend()),
+          Arguments.of(new WithDBBackend())
+      );
+    }
   }
 
   @ParameterizedTest
-  @MethodSource("setups")
+  @ArgumentsSource(SetupProvider.class)
   public void testAllInstancesOfConcreteSubclassReturned(Setup setup) throws Exception {
     setup.setup();
     try {
@@ -97,7 +108,7 @@ public class GetFilteredTest {
 
 
   @ParameterizedTest
-  @MethodSource("setups")
+  @ArgumentsSource(SetupProvider.class)
   public void testAllInstancesWithSubclassReturned(Setup setup) throws Exception {
     setup.setup();
     try {
