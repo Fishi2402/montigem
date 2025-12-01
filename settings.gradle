@@ -43,6 +43,7 @@ includeBuild "comment2doc"
 
 include ":umlp-rte"
 include ":umlp-rte:frontend"
+include ":umlp-rte:frontend:cad"
 include ":umlp-rte:frontend:arrange"
 include ":umlp-rte:frontend:basic"
 include ":umlp-rte:frontend:charts"

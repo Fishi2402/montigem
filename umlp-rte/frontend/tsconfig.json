@@ -24,6 +24,9 @@
       "@umlp/input": [
         "./input"
       ],
+      "@umlp/cad": [
+        "./cad"
+      ],
       "@umlp/table": [
         "./table"
       ],

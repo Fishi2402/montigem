@@ -1,0 +1,18 @@
+package example_cad;
+
+import mc.fenix.cad.GemCAD;
+import mc.fenix.cad.GemCADTypes.Marker;
+
+page GemCADExample() {
+  @GemCAD(
+    height = "300px",
+    width = "800px",
+    filePath = "assets/cad/test.gltf",
+    markers = [
+      Marker("", "red"),
+            Marker("Blue Label", "blue"),
+            Marker("Green Label", "green")
+    ],
+    onNodeClick = handleNodeClick()
+  );
+}

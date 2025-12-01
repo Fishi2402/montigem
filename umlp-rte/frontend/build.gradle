@@ -6,19 +6,20 @@ plugins {
 
 montigem {
   libs.addAll(
-      project(":umlp-rte:frontend:arrange"),
-      project(":umlp-rte:frontend:basic"),
-      project(":umlp-rte:frontend:charts"),
-      project(":umlp-rte:frontend:common"),
-      project(":umlp-rte:frontend:commonj2ts"),
-      project(":umlp-rte:frontend:editor"),
-      project(":umlp-rte:frontend:fischertechnik"),
-      project(":umlp-rte:frontend:functiondisplay"),
-      project(":umlp-rte:frontend:input"),
-      project(":umlp-rte:frontend:navigation"),
-      project(":umlp-rte:frontend:networkgraph"),
-      project(":umlp-rte:frontend:table"),
-      project(":umlp-rte:frontend:theme")
+    project(":umlp-rte:frontend:arrange"),
+    project(":umlp-rte:frontend:basic"),
+    project(":umlp-rte:frontend:cad"),
+    project(":umlp-rte:frontend:charts"),
+    project(":umlp-rte:frontend:common"),
+    project(":umlp-rte:frontend:commonj2ts"),
+    project(":umlp-rte:frontend:editor"),
+    project(":umlp-rte:frontend:fischertechnik"),
+    project(":umlp-rte:frontend:functiondisplay"),
+    project(":umlp-rte:frontend:input"),
+    project(":umlp-rte:frontend:navigation"),
+    project(":umlp-rte:frontend:networkgraph"),
+    project(":umlp-rte:frontend:table"),
+    project(":umlp-rte:frontend:theme")
   )
   libScope = "@umlp"
 }
@@ -26,6 +27,7 @@ montigem {
 project(":umlp-rte:frontend").afterEvaluate {
   def arrange = project(":umlp-rte:frontend:arrange").tasks.named("buildLib")
   def basic = project(":umlp-rte:frontend:basic").tasks.named("buildLib")
+  def cad = project(":umlp-rte:frontend:cad").tasks.named("buildLib")
   def charts = project(":umlp-rte:frontend:charts").tasks.named("buildLib")
   def common = project(":umlp-rte:frontend:common").tasks.named("buildLib")
   def commonj2ts = project(":umlp-rte:frontend:commonj2ts").tasks.named("buildLib")
@@ -58,6 +60,8 @@ project(":umlp-rte:frontend").afterEvaluate {
   aNeedsB(navigation, commonj2ts)
   aNeedsB(networkgraph, commonj2ts)
   aNeedsB(table, commonj2ts)
+  aNeedsB(cad, common)
+  aNeedsB(cad, commonj2ts)
 
   def aAfterB = { TaskProvider a, TaskProvider b ->
     a.configure { t ->
@@ -77,6 +81,8 @@ project(":umlp-rte:frontend").afterEvaluate {
   aAfterB(navigation, commonj2tsNPMRC4Publish)
   aAfterB(networkgraph, commonj2tsNPMRC4Publish)
   aAfterB(table, commonj2tsNPMRC4Publish)
+  aAfterB(cad, commonNPMRC4Publish)
+  aAfterB(cad, commonj2tsNPMRC4Publish)
 
 }
 

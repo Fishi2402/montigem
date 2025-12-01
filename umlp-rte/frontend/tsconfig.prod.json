@@ -4,6 +4,9 @@
   "compilerOptions": {
     "declarationMap": false,
     "paths": {
+      "@umlp/cad": [
+        "./build/dist/cad"
+      ],
       "@umlp/arrange": [
         "./build/dist/arrange"
       ],

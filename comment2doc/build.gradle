@@ -69,7 +69,8 @@ def libs = [
     'input',
     'navigation',
     'networkgraph',
-    'table'
+    'table',
+    'cad'
 ]
 
 tasks.register('md', JavaExec) {

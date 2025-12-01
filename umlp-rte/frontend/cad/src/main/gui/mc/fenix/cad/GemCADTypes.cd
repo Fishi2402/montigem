@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.cad;
+
+/**
+  Types used in the GemCAD component to define visualization markers relative to a CAD model.
+*/
+classdiagram GemCADTypes {
+
+  /**
+    A data container representing a specific point of interest within the 3D CAD model.
+  */
+  public class Marker {
+    /**
+      The human-readable text label displayed at the marker position.
+    */
+    String label;
+
+    /**
+      The unique identifier of the target node within the hierarchical structure of the CAD model.
+      This identifier corresponds to the specific name assigned to a geometric object or group
+      within the source CAD file (e.g., the object name in an .obj or .stl file structure).
+    */
+    String nodeName;
+
+    +Marker(String label, String nodeName);
+  }
+}
