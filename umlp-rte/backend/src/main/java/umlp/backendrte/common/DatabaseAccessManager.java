@@ -75,15 +75,13 @@ public abstract class DatabaseAccessManager {
   /**
    * Only use for queries without parameters. If you ever use parameterized queries especially
    * ones with user input, please use getConnection and acquire a PreparedStatement on this connection.
-   * @param sql
+   * @param query
    */
-  public static void executeStatement(String sql){
-    try(Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()){
-      stmt.execute(sql);
-    }catch (SQLException e){
-      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
-    }
+  public static void executeStatement(String query){
+    getSingleton()._executeStatement(query);
   }
+
+  protected abstract void _executeStatement(String query);
 
   /**
    * Make sure to always call close on the connection and any PreparedStatement executed on the

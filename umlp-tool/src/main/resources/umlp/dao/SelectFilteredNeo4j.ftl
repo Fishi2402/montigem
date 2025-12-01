@@ -10,7 +10,7 @@ ${cd4c.method("public List<Long> selectFiltered${typeName}List(String filter)")}
       ${query}
     );
     while(res.hasNext()){
-      result.add(res.next().get(1).asLong());
+      result.add(res.next().get(0).asLong());
     }
   }
   return result;

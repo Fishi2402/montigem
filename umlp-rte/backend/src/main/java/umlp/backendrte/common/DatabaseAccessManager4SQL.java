@@ -42,6 +42,15 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
   }
 
   @Override
+  protected void _executeStatement(String query) {
+    try(Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()){
+      stmt.execute(query);
+    }catch (SQLException e){
+      Log.error("JDBC DB Connection Issue: "+e.getMessage(),e);
+    }
+  }
+
+  @Override
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
     try {

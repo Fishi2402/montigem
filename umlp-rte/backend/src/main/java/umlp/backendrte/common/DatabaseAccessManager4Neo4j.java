@@ -12,6 +12,9 @@ import org.neo4j.driver.Value;
 import org.neo4j.driver.async.AsyncSession;
 import org.neo4j.driver.async.AsyncTransaction;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Set;
 
 public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
@@ -124,6 +127,11 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
     synchronized (writeFireAndForgetTransaction) {
       writeFireAndForgetTransaction.executeFireAndForget(cypherQuery);
     }
+  }
+
+  @Override
+  protected void _executeStatement(String query) {
+    executeWrite(query);
   }
 
   /**
