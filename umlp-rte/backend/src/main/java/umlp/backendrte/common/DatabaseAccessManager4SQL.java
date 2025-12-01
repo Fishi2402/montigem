@@ -51,6 +51,19 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
   }
 
   @Override
+  public void _closeConnection() {
+    if (dataSource == null) {
+      Log.warn("Can not close DB connection, since it is null");
+      return;
+    }
+
+    if (!dataSource.isClosed()) {
+      dataSource.close();
+      Log.warn("Closed DB Connection");
+    }
+  }
+
+  @Override
   protected void _setup() {
     loadDBPropertiesFromStandardFileLocation();
     try {

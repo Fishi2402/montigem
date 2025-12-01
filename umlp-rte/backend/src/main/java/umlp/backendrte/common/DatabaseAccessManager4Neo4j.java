@@ -58,7 +58,8 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
   public static Session getSession() {
     // Commit all ongoing writes before doing a read
     synchronized (writeFireAndForgetTransaction) {
-      writeFireAndForgetTransaction.closeTransaction();
+      // Before reading we want to be sure to have commited all open write queries
+      writeFireAndForgetTransaction.close();
       return driver.session(SessionConfig.forDatabase("neo4j"));
     }
   }
@@ -77,7 +78,7 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
       queryCounter++;
       fireAndForgetTransaction.runAsync(query);
       if(queryCounter == batchSize) {
-        closeTransaction();
+        close();
       }
     }
 
@@ -86,20 +87,12 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
       queryCounter++;
       fireAndForgetTransaction.runAsync(query, vals);
       if(queryCounter == batchSize) {
-        closeTransaction();
+        close();
       }
     }
 
     synchronized void ensureExistingTransaction() {
       if(fireAndForgetTransaction == null) {
-        fireAndForgetTransaction = driver.session(AsyncSession.class).beginTransactionAsync()
-            .toCompletableFuture().join();
-      }
-    }
-
-    synchronized void closeTransaction() {
-      if(fireAndForgetTransaction != null) {
-        this.close();
         fireAndForgetTransaction = driver.session(AsyncSession.class).beginTransactionAsync()
             .toCompletableFuture().join();
       }
@@ -111,6 +104,7 @@ public class DatabaseAccessManager4Neo4j extends DatabaseAccessManager {
           System.err.println("Transaction rolled back due to: " + ex.getMessage());
           return null;
         }).toCompletableFuture().join();
+        fireAndForgetTransaction = null;
       }
     }
   }

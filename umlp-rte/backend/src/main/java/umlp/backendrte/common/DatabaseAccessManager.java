@@ -126,17 +126,7 @@ public abstract class DatabaseAccessManager {
     getSingleton()._closeConnection();
   }
 
-  public void _closeConnection() {
-   if (dataSource == null) {
-      Log.warn("Can not close DB connection, since it is null");
-      return;
-    }
-
-    if (!dataSource.isClosed()) {
-      dataSource.close();
-      Log.warn("Closed DB Connection");
-    }
-  }
+  public abstract void _closeConnection();
 
   protected void loadDBPropertiesFromStandardFileLocation() {
     databaseProperties = new Properties();
