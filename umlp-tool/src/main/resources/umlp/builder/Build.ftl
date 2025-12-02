@@ -6,6 +6,7 @@ ${tc.signature("name", "managerName", "assocList", "isSingleton")}
 ${cd4c.method("public Optional<${name}> build()")}
 
 if (!buildFinished) {
+  buildFinished = true;
   if (!isBuildable()) {
     return Optional.empty();
   }
@@ -64,7 +65,6 @@ if (!buildFinished) {
 </#list>
 }
 ${name?uncap_first}Observers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
-buildFinished = true;
 }
 return Optional.of(this);
 
