@@ -1,10 +1,14 @@
 package umlp.pytest;
 
+import de.se_rwth.commons.logging.Log;
 import mydomain.MyDomainManager;
 import mydomain.MyEnum;
 import mydomain.TestAssoc_1_A;
 import mydomain.TestAssoc_1_B;
 import mydomain.TestAssoc_1_BBuilder;
+import mydomain.TestAssoc_2_A;
+import mydomain.TestAssoc_2_BBuilder;
+import mydomain.TestAssoc_2_CBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -172,6 +176,74 @@ public class PyExecTest extends AbstractPyTest {
     Thread.sleep(500);
     assertEquals("0", handler.sendCommand("print(len(a1.listB))").get());
 
+
+  }
+
+
+  @Test
+  public void testDirAssocBiDirectional() throws Exception {
+    TestAssoc_2_BBuilder b1;
+    TestAssoc_2_CBuilder c1;
+    var a1Builder = MyDomainManager.testAssoc_2_ABuilder()
+//        .test((b1 = MyDomainManager.testAssoc_2_BBuilder()))
+        .single((c1 = MyDomainManager.testAssoc_2_CBuilder()))
+        ;
+
+
+    System.err.println(a1Builder.isBuildable());
+
+
+    TestAssoc_2_A a1 = a1Builder.build().get();
+
+    // Fetch A & C
+    assertEquals(Long.toString(a1.getGemId()), getAndStore("a1", "TestAssoc_2_A", a1.getGemId()));
+    assertEquals(Long.toString(c1.getGemId()), getAndStore("c1", "TestAssoc_2_C", c1.getGemId()));
+
+    // Ensure gemIds are correct
+    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(a1.gemId)").get());
+    assertEquals(Long.toString(c1.getGemId()), handler.sendCommand("print(c1.gemId)").get());
+
+    assertEquals(c1.getGemId(), a1.getSingleGem().getGemId());
+    assertEquals(Long.toString(c1.getGemId()), handler.sendCommand("print(a1.single.gemId)").get());
+    assertEquals(a1.getGemId(), c1.getSingleAGem().getGemId());
+    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(c1.singleA.gemId)").get());
+
+    // opt (TestAssoc_2_D)
+    var d1 = MyDomainManager.testAssoc_2_DBuilder().build().get();
+
+    assertEquals(Long.toString(d1.getGemId()), getAndStore("d1", "TestAssoc_2_D", d1.getGemId()));
+    assertEquals(Long.toString(d1.getGemId()), handler.sendCommand("print(d1.gemId)").get());
+
+    d1.setOptA(a1);
+    Thread.sleep(500);
+    assertEquals(a1.getOptGem().getGemId(), d1.getGemId()); // correct on server?
+    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(d1.optA.gemId)").get()); // correct on client?
+    assertEquals(Long.toString(a1.getOptGem().getGemId()), handler.sendCommand("print(a1.opt.gemId)").get()); // correct on client?
+
+    assertEquals("", handler.sendCommand("await d1.setOptA(-1)").get()); // check that the client is able to send the correct command
+    assertEquals(-1, a1.getOptGem().getGemId());
+    assertEquals(Long.toString(-1), handler.sendCommand("print(a1.opt.gemId)").get());
+    assertEquals(Long.toString(-1), handler.sendCommand("print(d1.optA.gemId)").get());
+
+    assertEquals("", handler.sendCommand("await d1.setOptA(" + a1.getGemId() +")").get());
+    assertEquals(a1.getOptGem().getGemId(), d1.getGemId());
+    assertEquals(Long.toString(a1.getOptGem().getGemId()), handler.sendCommand("print(a1.opt.gemId)").get());
+
+    // And now: The reverse (because associations are finicky)
+    assertEquals("", handler.sendCommand("await a1.setOpt(-1)").get()); // check that the client is able to send the correct command
+    assertEquals(-1, a1.getOptGem().getGemId());
+    assertEquals(-1, d1.getOptAGem().getGemId());
+    assertEquals(Long.toString(-1), handler.sendCommand("print(a1.opt.gemId)").get());
+    assertEquals(Long.toString(-1), handler.sendCommand("print(d1.optA.gemId)").get());
+
+    assertEquals("", handler.sendCommand("await a1.setOpt(" + d1.getGemId() +")").get());
+    assertEquals(d1.getOptAGem().getGemId(), a1.getGemId());
+    assertEquals(Long.toString(d1.getOptAGem().getGemId()), handler.sendCommand("print(d1.optA.gemId)").get());
+
+
+    // [*]   <-> TestAssoc_2_E [*];
+
+    // TODO
 
   }
 

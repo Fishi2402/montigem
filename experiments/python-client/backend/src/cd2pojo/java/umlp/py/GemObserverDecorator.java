@@ -1,6 +1,5 @@
 package umlp.py;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import de.monticore.cd.codegen.decorators.IDecorator;
 import de.monticore.cd.codegen.decorators.data.AbstractDecorator;
@@ -16,10 +15,8 @@ import de.monticore.cdbasis.CDBasisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.MCTypeFacade;
@@ -29,11 +26,12 @@ import umlp.py.utily.Pyutils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
-public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.NoData>
+public class GemObserverDecorator extends AbstractDecorator<GemObserverDecorator.GemObserverDecData>
     implements CDBasisVisitor2 {
 
   public static final String SUFFIX = "Observer";
@@ -62,12 +60,7 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
         CD4CodeMill.nameExpressionBuilder().setName(
                 domainName+"." + node.getName() + GemCommandObserverDecorator.SUFFIX + "." + node.getName() + GemCommandObserverDecorator.SUFFIX)
             .build()).setName("INSTANCE").build();
-//    observerAttr.setInitial(CommonExpressionsMill.callExpressionBuilder().setExpression(
-//            CommonExpressionsMill.nameExpressionBuilder().setName("list").build())
-//                                .setArguments(
-//                                    CommonExpressionsMill.argumentsBuilder()
-//                                        .addExpression(xxInstance).build())
-//                                .build());
+    // Wild workaround for python?
     observerAttr.setInitial(CommonExpressionsMill.arrayAccessExpressionBuilder().setExpression(
             CommonExpressionsMill.nameExpressionBuilder().setName("").build())
                                 .setIndexExpression(
@@ -91,6 +84,9 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
         .createMethod(CDBasisMill.modifierBuilder().build(), CdPyUtilsPrinter.NotificationScope,
                       "getScope");
     observerClass.addCDMember(getScopeFunction);
+
+  getData().decoratorData.computeIfAbsent(node,
+        astcdClass -> new GemObserverData(observerClass,observerAttr));
 
 //    GlobalExtensionManagement glex = glexOpt.get();
 
@@ -151,7 +147,7 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
     addToClass(observerDecClass, rem_set);
     addToClass(observerDecClass, createMaybeNotifyMethod(rem_set));
 
-    for (var setter : getData(GemSetterDecorator.class).getMethods(node)) {
+    for (var setter : decoratorData.getDecoratorData(GemSetterDecorator.class).getMethods(node)) {
       if (setter.getKind() == GemSetterDecorator.SetterMethodKind.ADD_LIST) {
         glexOpt.ifPresent(glex -> glex.addAfterTemplate("Setter:After", setter.getSetMethod(),
                                                         new TemplateHookPoint(
@@ -191,7 +187,7 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
     addToClass(observerDecClass, maybe);
 
 
-    for (var setter : getData(GemSetterDecorator.class).getMethods(node)) {
+    for (var setter : decoratorData.getDecoratorData(GemSetterDecorator.class).getMethods(node)) {
       if (info.getTypeClass() == UmlpAttrHelper.RealType.BUILD_IN ||
           info.getTypeClass() == UmlpAttrHelper.RealType.ENUM) {
         glexOpt.ifPresent(glex -> glex.addBeforeTemplate("Setter:Before", setter.getSetMethod(),
@@ -249,8 +245,24 @@ public class GemObserverDecorator extends AbstractDecorator<AbstractDecorator.No
     return Iterables.concat(super.getMustRunAfter(), Arrays.asList(GemSetterDecorator.class));
   }
 
-  // TODO: Backport
-  public <D> D getData(Class<? extends IDecorator<D>> decorator) {
-    return  Preconditions.checkNotNull(this.decoratorData.getData(decorator), "No data for " + decorator);
+  public GemObserverDecData getData() {
+    return (GemObserverDecData) decoratorData.decoratorDataMap.computeIfAbsent(getClass(),
+        aClass -> new GemObserverDecData());
+  }
+
+  public class GemObserverDecData {
+    protected Map<ASTCDClass, GemObserverData> decoratorData = new HashMap<>();
+    public GemObserverData getObserverData(ASTCDClass originalClass) {
+      return decoratorData.get(originalClass);
+    }
+  }
+  public class  GemObserverData {
+    public final ASTCDClass observerClass;
+    public final ASTCDAttribute initialObserver;
+
+    public GemObserverData(ASTCDClass observerClass, ASTCDAttribute initialObserver) {
+      this.observerClass = observerClass;
+      this.initialObserver = initialObserver;
+    }
   }
 }

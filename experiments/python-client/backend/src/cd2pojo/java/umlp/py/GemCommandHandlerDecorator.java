@@ -35,7 +35,7 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
 
   protected Stack<String> classNameStack = new Stack<>();
 
-  protected List<Map<String, String>> commandList = new ArrayList<>();
+  protected List<Map<String, Object>> commandList = new ArrayList<>();
   protected ASTCDClass commandObserverClass;
   protected String domainName;
 
@@ -84,6 +84,9 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
     var info = UmlpAttrHelper.getFromSymTypeExpr(node.getSymbol().getType());
 
     String clazzName = classNameStack.peek();
+
+    var role = decoratorData.fieldToRoles.get(node.getSymbol());
+    boolean isBidirectional = role != null && role.isIsDefinitiveNavigable() && role.getOtherSide().isIsDefinitiveNavigable();
 
     switch (info.getMultiplicity()) {
       case MANDATORY:
@@ -137,18 +140,32 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
             Log.warn("Unknown multiplicity: " + info.getMultiplicity(), node.get_SourcePositionStart());
         }
       case OPTIONAL:
+        String cmdName = domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(node.getName());
+        if (isBidirectional) {
+          String assocName = role.getAssoc().getRight().getEnclosingScope().getName() + "_" + role.getAssoc().getLeft().getName() + "_" + role.getAssoc().getRight().getName() + "_" + StringTransformations.uncapitalize(role.getAssoc().getLeft().getEnclosingScope().getName());
+          cmdName = domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_set";
+        }
+
         switch (info.getTypeClass()) {
           case GEM:
-            addCommand(
-                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
-                    node.getName()),
-                "cd2python.commandconsumer.handleSetGem", node.getName());
+            if (isBidirectional) {
+              addCommand(cmdName, "cd2python.commandconsumer.handleSetGemBi", Arrays.asList(
+                  // clazzL", "attrL", "classR", "attrR", "domain
+                  role.getAssoc().getRight().getEnclosingScope().getName(),
+                  role.getAssoc().getRight().getName(),
+                  role.getAssoc().getLeft().getEnclosingScope().getName(),
+                  role.getAssoc().getLeft().getName(),
+                  domainName
+                                                                                           ));
+            } else {
+              addCommand(cmdName, "cd2python.commandconsumer.handleSetGem", node.getName());
+            }
             break;
           case BUILD_IN:
-            addCommand(
-                domainName.toLowerCase() + ".commands." + clazzName + "_set" + StringTransformations.capitalize(
-                    node.getName()),
-                "cd2python.commandconsumer.handleSet", node.getName());
+            if (isBidirectional) {
+              Log.error("0xTODO: Bidirectional assoc with built-in " + info.getSymTypeExpression().printFullName() + " not supported", node.get_SourcePositionStart());
+            }
+            addCommand(cmdName, "cd2python.commandconsumer.handleSet", node.getName());
             break;
         }
         break;
@@ -164,13 +181,14 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
 
 
   protected void addCommand(String command, String template, String attr, String type) {
-    var m = new HashMap<String, String>();
+    addCommand(command, template, Arrays.asList(classNameStack.peek(), attr, domainName, type));
+  }
+
+  protected void addCommand(String command, String template, List<Object> data) {
+    var m = new HashMap<String, Object>();
     m.put("command", command);
     m.put("template", template);
-    m.put("clazz", classNameStack.peek());
-    m.put("attr", attr);
-    m.put("domain", domainName);
-    m.put("type", type);
+    m.put("data", data);
     this.commandList.add(m);
   }
 
