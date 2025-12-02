@@ -101,6 +101,11 @@ class GlobalGemList(GemList):
   def get(self, gem_id: int) -> DataT:
     return self._cache[gem_id]
 
+class GemProtocolException(Exception):
+  def __init__(self, message, command: typing.Optional[Command], resp:Any):
+    self.message = message
+    super().__init__(self.message)
+
 class DomainManager:
   global_state: typing.MutableMapping[typing.Type[GemBase], GlobalGemList]
   domain_name: str
@@ -119,17 +124,20 @@ class DomainManager:
     return await self.command_manager.send(
       Command(commandType=f"{domaintype.PACKAGE}.commands.{domaintype.TYPE}_get_filtered"))
 
+  def is_loaded_locally(self, domaintype: typing.Type[G], gem_id: GEM_ID) -> bool:
+    return self.get_global_list(domaintype).is_loaded(gem_id)
+
   async def get(self, domaintype: typing.Type[G], gem_id: int) -> G:
     # todo: future for multiple calls?
     glist = self.get_global_list(domaintype)
     if glist.is_loaded(gem_id):
       return glist.get(gem_id)
 
-    resp = await self.command_manager.send(
-      Command(commandType=f"{domaintype.PACKAGE}.commands.{domaintype.TYPE}_get",
-                             gemId=gem_id))
+    command = Command(commandType=f"{domaintype.PACKAGE}.commands.{domaintype.TYPE}_get",
+            gemId=gem_id)
+    resp = await self.command_manager.send(command)
     if not resp['successful']:
-      raise "Not successful"
+      raise GemProtocolException(f"Get of {domaintype}#{gem_id} not successful", command=command, resp=resp)
     r = domaintype.model_validate(resp["value"])
     glist.set(gem_id, r)
     return r
@@ -141,16 +149,15 @@ class DomainManager:
   async def find_all(self, domaintype: typing.Type[G]) -> typing.List[G]:
     r = await self.list_filtered(domaintype)
     if not r["successful"]:
-      raise "Not successful"
+      raise GemProtocolException(f"Find all of {domaintype} not successful", command=None, resp=r)
     results = await asyncio.gather(*(self.get(domaintype, gem_id) for gem_id in r['list']))
     return list(results)
 
   async def create(self, obj: G) -> G:
-    msg = {"commandType": f"{obj.PACKAGE}.commands." + obj.TYPE + "_create", uncap(obj.TYPE): obj}
-    r = await self.command_manager.send(
-      Command(commandType=f"{obj.PACKAGE}.commands.{obj.TYPE}_create",
-                             **{uncap(obj.TYPE): obj}))
+    cmd = Command(commandType=f"{obj.PACKAGE}.commands.{obj.TYPE}_create",
+           **{uncap(obj.TYPE): obj})
+    r = await self.command_manager.send(cmd)
     if not r["successful"]:
-      raise "Not successful"
+      raise GemProtocolException(f"Create not successful", command=cmd, resp=r)
     return await self.get(type(obj), obj.gemId)
 
