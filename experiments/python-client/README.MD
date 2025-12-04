@@ -7,6 +7,8 @@ This experiments demonstrates the capabilities of a python client
   * **Note:** GraalPy is _really_ flaky on windows and requires Java17,
     which is why this project is not run by default
 
+In case your IDE is continuously re-indexing: Congrats on finding `IDEA-381693`: Update to 2025.3 RC or newer.
+
 Feature Set:
   * [X] domain classes
   * [X] domain attributes
@@ -62,7 +64,10 @@ inputs: Annotated[gembase.GemList, BeforeValidator(
 
 * `typing.Optional[str] = None`
 
-### Node on imports
+
+### Note on Python Generation:
+
+#### imports
 
 In python, files represent modules and not classes.
 
@@ -70,6 +75,14 @@ This results in the module `MyDomain.MyClass` defining
 the class `MyDomain.MyClass.MyClass`.
 
 We apologize for the cursed imports you will have to deal with!
+
+#### expressions
+
+The Expressions shipped with CD4A do not follow python syntax.
+For generic types, we have overriden the `PythonMYSimpleGenericTypesPrinter` pretty printer.
+
+For other initial values, we just abuse the fact that a NameExpression can hold any String:
+E.g., myList = `[1,2,3]` is an ArrayIndexAccessExpr with the Name `1,2,3` as the index-expression.
 
 ### Running locally
 
