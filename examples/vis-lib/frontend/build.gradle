@@ -28,6 +28,14 @@ test {
   dependsOn buildApp
   useJUnitPlatform() {
     excludeTags "SlowTest"
+    excludeTags "Screenshot"
+  }
+}
+
+tasks.register("screenshot", Test) {
+  dependsOn buildApp
+  useJUnitPlatform() {
+    includeTags "Screenshot"
   }
 }
 

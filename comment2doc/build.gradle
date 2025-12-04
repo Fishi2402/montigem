@@ -83,7 +83,7 @@ tasks.register('md', JavaExec) {
   args += [
       "--md", "$projectDir/../docs/gendoc_components",
       "--examples", "$projectDir/../examples/vis-lib/frontend/src/main/gui",
-      "--images", "$projectDir/../docs/img/components",
+      "--images", "$projectDir/../docs/gendoc_img",
       "--hwc", "$projectDir/../examples/vis-lib/frontend/src/main/java",
   ]
 }
