@@ -116,6 +116,10 @@ export class GemGaugeChart extends GemGaugeChartComponent {
 
     this.legendLabels = labels;
     this.legendColors = colors;
+    this.colorScheme = {
+      ...this.colorScheme,
+      domain: this.colors
+    };
 
     let t = this;
 
