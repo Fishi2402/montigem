@@ -100,8 +100,6 @@ public class GemObserverDecorator extends AbstractDecorator<GemObserverDecorator
 
     var observerDecClass = observerClassStack.peek();
 
-    // TODO: hook into setter
-
     switch (info.getMultiplicity()) {
       case MANDATORY:
         case OPTIONAL:

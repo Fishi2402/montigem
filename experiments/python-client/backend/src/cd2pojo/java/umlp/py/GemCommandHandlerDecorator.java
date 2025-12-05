@@ -117,14 +117,22 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
       case SET:
         switch (info.getTypeClass()) {
           case GEM:
-            addCommand(
-                domainName.toLowerCase() + ".commands." + clazzName + "_add" + StringTransformations.capitalize(
-                    node.getName()),
-                "cd2python.commandconsumer.handleAddGem", node.getName());
-            addCommand(
-                domainName.toLowerCase() + ".commands." + clazzName + "_remove" + StringTransformations.capitalize(
-                    node.getName()),
-                "cd2python.commandconsumer.handleRemGem", node.getName());
+            if (isBidirectional) {
+              String assocName = role.getAssoc().getRight().getEnclosingScope().getName() + "_" + role.getAssoc().getLeft().getName() + "_" + role.getAssoc().getRight().getName() + "_" + StringTransformations.uncapitalize(role.getAssoc().getLeft().getEnclosingScope().getName());
+              List<Object> data = Arrays.asList(role.getAssoc().getRight().getEnclosingScope().getName(),
+                  role.getAssoc().getRight().getName(),
+                  role.getAssoc().getLeft().getEnclosingScope().getName(),
+                  role.getAssoc().getLeft().getName(),
+                  domainName,
+                  role.getAssoc().getRight().isPresentCardinality() && role.getAssoc().getRight().getCardinality().isMult(),
+                  role.getAssoc().getLeft().isPresentCardinality() && role.getAssoc().getLeft().getCardinality().isMult()
+                  );
+              addCommand(domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_add", "cd2python.commandconsumer.handleAddGemBi", data );
+              addCommand(domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_remove", "cd2python.commandconsumer.handleRemGemBi", data);
+            } else {
+              addCommand(domainName.toLowerCase() + ".commands." + clazzName + "_add" + StringTransformations.capitalize(node.getName()), "cd2python.commandconsumer.handleAddGem", node.getName());
+              addCommand(domainName.toLowerCase() + ".commands." + clazzName + "_remove" + StringTransformations.capitalize(node.getName()), "cd2python.commandconsumer.handleRemGem", node.getName());
+            }
             break;
           case BUILD_IN:
             addCommand(
@@ -155,7 +163,9 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
                   role.getAssoc().getRight().getName(),
                   role.getAssoc().getLeft().getEnclosingScope().getName(),
                   role.getAssoc().getLeft().getName(),
-                  domainName
+                  domainName,
+                  role.getAssoc().getRight().isPresentCardinality() && role.getAssoc().getRight().getCardinality().isMult(),
+                  role.getAssoc().getLeft().isPresentCardinality() && role.getAssoc().getLeft().getCardinality().isMult()
                                                                                            ));
             } else {
               addCommand(cmdName, "cd2python.commandconsumer.handleSetGem", node.getName());

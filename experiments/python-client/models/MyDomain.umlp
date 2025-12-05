@@ -43,8 +43,8 @@ classdiagram MyDomain { //b
   //association TestAssoc_2_A (singleA)     <-> (single) TestAssoc_2_C; //TODO: =>recursive loop
   association [0..1] TestAssoc_2_A (singleA)<-> (single) TestAssoc_2_C; // note, the back reference is opt!
   association [0..1] TestAssoc_2_A (optA) <-> (opt) TestAssoc_2_D [0..1];
-  association [*] TestAssoc_2_A (listA)   <-> (listB) TestAssoc_2_E [*];
-  association [0..1] TestAssoc_2_A (listA)<-> (listC) TestAssoc_2_F [*];
+  association [*] TestAssoc_2_A (listA)   <-> (listE) TestAssoc_2_E [*];
+  association [0..1] TestAssoc_2_A (optA )<-> (listF) TestAssoc_2_F [*];
 
 
 

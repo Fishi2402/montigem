@@ -19,7 +19,7 @@ Feature Set:
   * Assocs:
     * [X] basic support (`list.get_gem_id()` - requires manual manager calling to retrieve objects)
     * [X] of domain objects
-      * [ ] bidirectional (associations package)
+      * [X] bidirectional (associations command package)
     * [X] of built-tin objects (String, Integer)
     * Cap:
       * [X] mandatory
@@ -37,6 +37,8 @@ Feature Set:
         traceGemId=cachedExec.gemId))
     ````
 
+__Warning:__ The GemProtocol is untested itself,
+ and the Python implementation is similarly untested!
 
 ### Domain
 ## Class

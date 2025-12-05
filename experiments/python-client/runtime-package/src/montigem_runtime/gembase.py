@@ -78,13 +78,16 @@ class GemList(BaseModel, typing.Generic[DataT]):
   def add(self, index_in_list: int, gem_id: int):
     self.indexes.insert(index_in_list, gem_id)
 
-  def get_gem_id(self, index_in_list: int):
+  def get_gem_id(self, index_in_list: int) -> GEM_ID:
     return self.indexes[index_in_list]
+
+  def get_index_of_gem_id(self, gem_id: GEM_ID) -> int:
+    return self.indexes.index(gem_id)
 
   def pop(self, index_in_list: int) -> GEM_ID:
     return self.indexes.pop(index_in_list)
 
-  def __len__(self):
+  def __len__(self) -> int:
     return len(self.indexes)
 
 class GlobalGemList(GemList):

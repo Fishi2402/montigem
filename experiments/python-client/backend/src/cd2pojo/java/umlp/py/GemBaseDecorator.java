@@ -216,7 +216,6 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
             .setName(name)
             .build();
         expr.setExpression(fae2);
-        System.err.println(expr);
       }
     } else {
       Log.error("Unhandled type kind " + info.getTypeClass(), originalNode.get_SourcePositionStart());

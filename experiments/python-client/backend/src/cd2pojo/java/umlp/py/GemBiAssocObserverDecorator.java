@@ -77,12 +77,12 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
       return;
     }
 
-    handleAssoc(node.getLeft());
-    handleAssoc(node.getRight());
+    handleAssoc(node.getLeft(), node.getRight());
+    handleAssoc(node.getRight(), node.getLeft());
 
   }
 
-  protected void handleAssoc(ASTCDAssocSide side) {
+  protected void handleAssoc(ASTCDAssocSide side, ASTCDAssocSide otherSide) {
     var thisSideClass = side.getMCQualifiedType().getDefiningSymbol();
     if (thisSideClass.isEmpty()) {
       Log.error("Failed to resolve " + side.getMCQualifiedType().printType(), side.get_SourcePositionStart());
@@ -100,9 +100,9 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
         side.getSymbol().getOtherSide().getType().print() + "." +
         side.getSymbol().getOtherSide().getType().print();
 
-    if (!side.isPresentCDCardinality() || side.getCDCardinality().isOne() || side.getCDCardinality().isOpt()) {
+    if (!otherSide.isPresentCDCardinality() || otherSide.getCDCardinality().isOne() || otherSide.getCDCardinality().isOpt()) {
       // mandatory or opt
-      String methodName = "Set" + side.getSymbol().getOtherSide().getName();
+      String methodName = "Set" + otherSide.getName();
 
 
 
@@ -114,16 +114,64 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
               CDParameterFacade.getInstance().createParameter("montigem_runtime.gembase.GEM_ID", "_new_value")
                        );
       Pyutils.markAsAsync(notify);
+      Pyutils.markAsOverride(glexOpt, notify);
       glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
           notify,
           new TemplateHookPoint(
               "cd2python.biobserver.NotifyMan",
               managerPath,
               otherSideClassName,
-              side.getName())));
+              side.getName(),
+              side.isPresentCDCardinality() && side.getCDCardinality().isMult()
+          )));
       addToClass(biObserverClass, notify);
     } else { // mult
-      Log.warn("0xTODO: Bidirectional lists NYI", side.get_SourcePositionStart()); // TODO
+      {
+        String methodName = "Add" + otherSide.getName();
+
+        var notify = CDMethodFacade.getInstance()
+            .createMethod(CDBasisMill.modifierBuilder().PUBLIC()
+                    .build(), "notify" + methodName,
+                CDParameterFacade.getInstance().createParameter("typing.Any", "_update_obj"),
+                CDParameterFacade.getInstance().createParameter("montigem_runtime.gembase.GEM_ID", "new_gem_id"),
+                CDParameterFacade.getInstance().createParameter("int", "index_in_list")
+                         );
+        Pyutils.markAsAsync(notify);
+        Pyutils.markAsOverride(glexOpt, notify);
+        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
+            notify,
+            new TemplateHookPoint(
+                "cd2python.biobserver.NotifyAdd",
+                managerPath,
+                otherSideClassName,
+                side.getName(),
+                side.isPresentCDCardinality() && side.getCDCardinality().isMult()
+            )));
+        addToClass(biObserverClass, notify);
+      }
+      {
+        String methodName = "Remove" + otherSide.getName();
+
+        var notify = CDMethodFacade.getInstance()
+            .createMethod(CDBasisMill.modifierBuilder().PUBLIC()
+                    .build(), "notify" + methodName,
+                CDParameterFacade.getInstance().createParameter("typing.Any", "_update_obj"),
+                CDParameterFacade.getInstance().createParameter("montigem_runtime.gembase.GEM_ID", "removed_gem_id"),
+                CDParameterFacade.getInstance().createParameter("int", "index_in_list")
+                         );
+        Pyutils.markAsAsync(notify);
+        Pyutils.markAsOverride(glexOpt, notify);
+        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
+            notify,
+            new TemplateHookPoint(
+                "cd2python.biobserver.NotifyRem",
+                managerPath,
+                otherSideClassName,
+                side.getName(),
+                side.isPresentCDCardinality() && side.getCDCardinality().isMult()
+            )));
+        addToClass(biObserverClass, notify);
+      }
     }
   }
 
