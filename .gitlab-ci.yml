@@ -21,7 +21,8 @@ stages:
   - testDeployed
 
 genimg:
-  stage: check
+  stage: build
+  needs: ["build_with_deploy"]
   variables:
     PUPPETEER_SKIP_DOWNLOAD: "true"
     CHROME_BIN: "/usr/bin/google-chrome-stable"
@@ -40,7 +41,7 @@ genimg:
     - if: $CI_COMMIT_BRANCH == "dev"
 
 gendoc:
-  stage: check
+  stage: build
   needs: ["genimg"]
   script:
     - gradle comment2doc:md --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user
@@ -52,7 +53,7 @@ gendoc:
     - if: $CI_COMMIT_BRANCH == "dev"
 
 pages:
-  stage: check
+  stage: build
   needs: ["gendoc"]
   image: python:alpine
   rules:
