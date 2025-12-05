@@ -1,5 +1,6 @@
 package umlp.pytest;
 
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -34,6 +35,7 @@ public class AbstractPyTest extends AbstractE2ETest {
 
   @BeforeEach
   public void setup() throws Exception {
+    LogStub.initPlusLog();
     workingDir = new File(new File("build"), "venv");
     if (!workingDir.exists()) {
       workingDir.mkdirs();

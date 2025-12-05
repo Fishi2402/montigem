@@ -18,10 +18,12 @@ ${decConfig.withCopyCreator().defaultApply()}
 <#--${decConfig.withGetters().ignoreOnName("noGetter").defaultApply()}-->
 
 ${decConfig.withDecorator("umlp.py.GemBaseDecorator").applyOnName("pygem")}
+${decConfig.withDecorator("umlp.py.GemManagerDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemSetterDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemObserverDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemCommandObserverDecorator").applyOnName("pygem")}
 ${decConfig.withDecorator("umlp.py.GemCommandHandlerDecorator").applyOnName("pygem")}
+${decConfig.withDecorator("umlp.py.GemBiAssocObserverDecorator").applyOnName("pygem")}
 <#-- workaround for HWC -->
 ${decConfig.withDecorator("umlp.py.GemHWDecorator").applyOnName("pygem")}
 

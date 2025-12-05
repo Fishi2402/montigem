@@ -31,12 +31,20 @@ classdiagram MyDomain { //b
   association TestAssoc_1_A -> (optB) TestAssoc_1_B [0..1];
   association TestAssoc_1_A -> (listB) TestAssoc_1_B [*];
 
+  // Note: bidirectional builders are not possible with 2+ mandatory assocs between classes
   class TestAssoc_2_A {}
   class TestAssoc_2_B {}
-  association TestAssoc_2_A               <-> TestAssoc_2_B;
-  association TestAssoc_2_A (singleA)     <-> (singleB) TestAssoc_2_B;
-  association [0..1] TestAssoc_2_A (optA) <-> (optB) TestAssoc_2_B [0..1];
-  association [*] TestAssoc_2_A (listA)   <-> (listB) TestAssoc_2_B [*];
+  class TestAssoc_2_C {}
+  class TestAssoc_2_D {}
+  class TestAssoc_2_E {}
+  class TestAssoc_2_F {}
+  // TODO: bidirectional mandatory assocs are just plainly broken?
+  //association TestAssoc_2_A               <-> TestAssoc_2_B;
+  //association TestAssoc_2_A (singleA)     <-> (single) TestAssoc_2_C; //TODO: =>recursive loop
+  association [0..1] TestAssoc_2_A (singleA)<-> (single) TestAssoc_2_C; // note, the back reference is opt!
+  association [0..1] TestAssoc_2_A (optA) <-> (opt) TestAssoc_2_D [0..1];
+  association [*] TestAssoc_2_A (listA)   <-> (listE) TestAssoc_2_E [*];
+  association [0..1] TestAssoc_2_A (optA )<-> (listF) TestAssoc_2_F [*];
 
 
 

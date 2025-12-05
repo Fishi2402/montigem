@@ -26,7 +26,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
   }
   p.remove${ctargetName}(${targetName}Index, NotificationScope.MINIMAL);
 <#else>
-  // TODO
+  p._internal_set${ctargetName}(-1, NotificationScope.MINIMAL);
 </#if>
 
 <#if isSourceList>
@@ -35,7 +35,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
   }
   a.remove${csourceName}(${sourceName}Index, NotificationScope.MINIMAL);
 <#else>
-  // TODO
+  a._internal_set${csourceName}(-1, NotificationScope.MINIMAL);
 </#if>
   <#if hasOCL>
   ${sourceType}Validator sourceValidator = new ${sourceType}Validator();
@@ -60,7 +60,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     }
     a.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
 <#else>
-    // TODO
+  a._internal_set${csourceName}(-1, NotificationScope.MINIMAL);
 </#if>
   <#if hasOCL>
     ${targetType}Validator targetValidator = new ${targetType}Validator();
@@ -77,7 +77,7 @@ if(loaded${ctargetName} && loaded${csourceName}){
     }
     p.remove${ctargetName}(${sourceName}Index, NotificationScope.MINIMAL);
 <#else>
-  // TODO
+  p._internal_set${ctargetName}(-1, NotificationScope.MINIMAL);
 </#if>
   <#if hasOCL>
     ${sourceType}Validator sourceValidator = new ${sourceType}Validator();

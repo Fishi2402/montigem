@@ -4,16 +4,13 @@ sys.path.append('runtime-package/src')
 
 from MyDomain import A
 from MyDomain import B
+from MyDomain import MyDomainManager
 
-from montigem_runtime.gembase import DomainManager
 from montigem_runtime.commandmanager import CommandManager, ainput
 
-class MyDomainManager(DomainManager):
-  def __init__(self, command_manager: CommandManager):
-    super().__init__("mydomain", command_manager)
 
 command_manager: CommandManager = CommandManager()
-my_domain_manager = MyDomainManager(command_manager)
+my_domain_manager = MyDomainManager.MyDomainManager(command_manager)
 
 
 import asyncio

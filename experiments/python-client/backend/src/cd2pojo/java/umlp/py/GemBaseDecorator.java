@@ -1,13 +1,14 @@
 package umlp.py;
 
-import de.monticore.cd.codegen.CDGenService;
 import de.monticore.cd.codegen.decorators.data.AbstractDecorator;
 import de.monticore.cd.codegen.decorators.data.DecoratorData;
 import de.monticore.cd.facade.CDAttributeFacade;
-import de.monticore.cd.facade.CDTypeFacade;
+import de.monticore.cd.facade.CDMethodFacade;
+import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis.CDBasisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -17,27 +18,21 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.MCBasicTypesHelper;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
+import umlp.py.utily.Pyutils;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -109,6 +104,18 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
                                              createClassVar("str"), "PACKAGE",
                                              stringLiteralExpr(domainName.toLowerCase()))); // TODO
 
+    var initFunction = CDMethodFacade.getInstance().createMethod(CDBasisMill.modifierBuilder().build(),
+        "__init__",
+        CDParameterFacade.getInstance().createParameter("typing.Any", "*args"),
+        CDParameterFacade.getInstance().createParameter("typing.Any", "**kwargs")
+        );
+    decNode.addCDMember(initFunction);
+
+    glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
+        initFunction,
+        new TemplateHookPoint("cd2python.gem.Init")));
+
+    data.origClass2Init.put(node, initFunction);
   }
 
   @Override
@@ -209,7 +216,6 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
             .setName(name)
             .build();
         expr.setExpression(fae2);
-        System.err.println(expr);
       }
     } else {
       Log.error("Unhandled type kind " + info.getTypeClass(), originalNode.get_SourcePositionStart());
@@ -275,9 +281,14 @@ public class GemBaseDecorator extends AbstractDecorator<GemBaseDecorator.Data> i
 
   public static class Data {
     protected final Map<ASTCDAttribute, AttrData>  attrDataMap = new HashMap<>();
+    protected final Map<ASTCDClass, ASTCDMethod>  origClass2Init = new HashMap<>();
 
     public AttrData getData(ASTCDAttribute astcdAttribute) {
       return attrDataMap.get(astcdAttribute);
+    }
+
+    public ASTCDMethod getInitMethod(ASTCDClass origClass) {
+      return origClass2Init.get(origClass);
     }
   }
 

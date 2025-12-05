@@ -83,6 +83,9 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
 
     var observerDecClass = observerClassStack.peek();
 
+    var role = decoratorData.fieldToRoles.get(node.getSymbol());
+    boolean isBidirectional = role != null && role.isIsDefinitiveNavigable() && role.getOtherSide().isIsDefinitiveNavigable();
+
     String methodName;
     switch (info.getMultiplicity()) {
       case MANDATORY:
@@ -102,15 +105,22 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
                               .createParameter("typing.Any", node.getName())
                          );
         Pyutils.markAsAsync(notify);
-        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
-                                                       notify,
-                                                       new TemplateHookPoint(
-                                                           info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.SetGem" :
-                                                               "cd2python.gemcommandobserver.SetBuiltIn",
-                                                           domainName.toLowerCase(),
-                                                           StringTransformations.uncapitalize(
-                                                               classNameStack.peek()),
-                                                           node.getName())));
+        Pyutils.markAsOverride(glexOpt, notify);
+        if (isBidirectional) {
+          if (info.getTypeClass() != UmlpAttrHelper.RealType.GEM)
+            Log.error("Bidirectional only supported to gem objects");
+          String assocName = role.getAssoc().getRight().getEnclosingScope().getName() + "_" + role.getAssoc().getLeft().getName() + "_" + role.getAssoc().getRight().getName() + "_" + StringTransformations.uncapitalize(role.getAssoc().getLeft().getEnclosingScope().getName());
+          String cmdName = domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_set";
+
+
+          glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, notify, new TemplateHookPoint( "cd2python.gemcommandobserver.SetGemBi",
+              cmdName,
+              StringTransformations.uncapitalize(classNameStack.peek()),
+              role.getOtherSide().getName(),
+              role.getName())));
+        } else {
+          glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, notify, new TemplateHookPoint(info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.SetGem" : "cd2python.gemcommandobserver.SetBuiltIn", domainName.toLowerCase(), StringTransformations.uncapitalize(classNameStack.peek()), node.getName())));
+        }
         addToClass(observerDecClass, notify);
         break;
       case SET:
@@ -130,15 +140,22 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
                     .createParameter("typing.Any", "index_in_list")
             );
         Pyutils.markAsAsync(notifyAdd);
-        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
-            notifyAdd,
-            new TemplateHookPoint(
-                info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.AddGem" :
-                    "cd2python.gemcommandobserver.AddBuiltIn",
-                domainName.toLowerCase(),
-                StringTransformations.uncapitalize(
-                    classNameStack.peek()),
-                node.getName())));
+        Pyutils.markAsOverride(glexOpt, notifyAdd);
+        if (isBidirectional) {
+          if (info.getTypeClass() != UmlpAttrHelper.RealType.GEM)
+            Log.error("Bidirectional only supported to gem objects");
+          String assocName = role.getAssoc().getRight().getEnclosingScope().getName() + "_" + role.getAssoc().getLeft().getName() + "_" + role.getAssoc().getRight().getName() + "_" + StringTransformations.uncapitalize(role.getAssoc().getLeft().getEnclosingScope().getName());
+          String cmdName = domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_add";
+
+
+          glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, notifyAdd, new TemplateHookPoint( "cd2python.gemcommandobserver.AddGemBi",
+              cmdName,
+              StringTransformations.uncapitalize(classNameStack.peek()),
+              role.getOtherSide().getName(),
+              role.getName())));
+        } else {
+          glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, notifyAdd, new TemplateHookPoint(info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.AddGem" : "cd2python.gemcommandobserver.AddBuiltIn", domainName.toLowerCase(), StringTransformations.uncapitalize(classNameStack.peek()), node.getName())));
+        }
         addToClass(observerDecClass, notifyAdd);
       }
       {
@@ -156,15 +173,22 @@ public class GemCommandObserverDecorator extends AbstractDecorator<AbstractDecor
                     .createParameter("typing.Any", "index_in_list")
             );
         Pyutils.markAsAsync(notifyAdd);
-        glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE,
-            notifyAdd,
-            new TemplateHookPoint(
-                info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.RemGem" :
-                    "cd2python.gemcommandobserver.RemBuiltIn",
-                domainName.toLowerCase(),
-                StringTransformations.uncapitalize(
-                    classNameStack.peek()),
-                node.getName())));
+        Pyutils.markAsOverride(glexOpt, notifyAdd);
+        if (isBidirectional) {
+          if (info.getTypeClass() != UmlpAttrHelper.RealType.GEM)
+            Log.error("Bidirectional only supported to gem objects");
+          String assocName = role.getAssoc().getRight().getEnclosingScope().getName() + "_" + role.getAssoc().getLeft().getName() + "_" + role.getAssoc().getRight().getName() + "_" + StringTransformations.uncapitalize(role.getAssoc().getLeft().getEnclosingScope().getName());
+          String cmdName = domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_remove";
+
+
+          glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, notifyAdd, new TemplateHookPoint( "cd2python.gemcommandobserver.RemGemBi",
+              cmdName,
+              StringTransformations.uncapitalize(classNameStack.peek()),
+              role.getOtherSide().getName(),
+              role.getName())));
+        } else {
+          glexOpt.ifPresent(glex -> glex.replaceTemplate(Pyutils.EMPTY_TEMPLATE, notifyAdd, new TemplateHookPoint(info.getTypeClass() == UmlpAttrHelper.RealType.GEM ? "cd2python.gemcommandobserver.RemGem" : "cd2python.gemcommandobserver.RemBuiltIn", domainName.toLowerCase(), StringTransformations.uncapitalize(classNameStack.peek()), node.getName())));
+        }
         addToClass(observerDecClass, notifyAdd);
       }
 
