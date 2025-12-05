@@ -49,6 +49,7 @@ gendoc:
   artifacts:
     paths:
       - docs/gendoc_components
+      - docs/gendoc_img
     expire_in: 1 hour
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
