@@ -29,7 +29,7 @@ genimg:
     PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
     - export CHROME_BIN=/usr/bin/google-chrome-stable
-    - gradle :examples:vis-lib:frontend:screenshot
+    - gradle :examples:vis-lib:frontend:screenshot -P mavenPassword=$pass -P mavenUser=$user
   cache:
     key: vis-lib-cache-$CI_COMMIT_REF_NAME
     policy: pull
@@ -183,6 +183,8 @@ build_with_deploy:
       paths:
         - examples/vis-lib/frontend/build
         - examples/vis-lib/backend/build
+        - umlp-tool/build
+        - umlp-rte/frontend/node_modules
         - .gradle
   artifacts:
     when: always
