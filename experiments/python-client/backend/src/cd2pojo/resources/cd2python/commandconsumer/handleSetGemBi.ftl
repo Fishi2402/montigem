@@ -36,7 +36,9 @@ ${tc.signature("clazzL", "attrL", "clazzR", "attrR", "domain", "listL", "listR" 
     </@indent>
     else:
     <@indent>
-      raise Exception("BIDirectional Set failed?")
+      import sys
+      print(f"Received unnecessary update message? ", file=sys.stderr)
+      #raise Exception("BIDirectional Set failed?")
     </@indent>
 <#--  </@indent>-->
 

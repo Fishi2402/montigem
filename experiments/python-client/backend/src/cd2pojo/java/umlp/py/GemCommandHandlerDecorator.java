@@ -118,6 +118,10 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
         switch (info.getTypeClass()) {
           case GEM:
             if (isBidirectional) {
+              if (role.getAssoc().getLeft() == role){
+                return; // do not add duplicate
+              }
+
               String assocName = role.getAssoc().getRight().getEnclosingScope().getName() + "_" + role.getAssoc().getLeft().getName() + "_" + role.getAssoc().getRight().getName() + "_" + StringTransformations.uncapitalize(role.getAssoc().getLeft().getEnclosingScope().getName());
               List<Object> data = Arrays.asList(role.getAssoc().getRight().getEnclosingScope().getName(),
                   role.getAssoc().getRight().getName(),
@@ -157,6 +161,9 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
         switch (info.getTypeClass()) {
           case GEM:
             if (isBidirectional) {
+              if (role.getAssoc().getLeft() == role){
+                return; // do not add duplicate
+              }
               addCommand(cmdName, "cd2python.commandconsumer.handleSetGemBi", Arrays.asList(
                   // clazzL", "attrL", "classR", "attrR", "domain
                   role.getAssoc().getRight().getEnclosingScope().getName(),
