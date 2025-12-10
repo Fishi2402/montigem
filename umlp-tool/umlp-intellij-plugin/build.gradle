@@ -4,6 +4,8 @@ plugins {
   id "org.jetbrains.intellij.platform" version "2.6.0"
 }
 
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 def shouldBuildIntelliJPlugin = ("true").equals(getProperty('buildIntelliJPlugin'))
 
 java {
@@ -42,10 +44,21 @@ def languageServerJarFile = parent.tasks.packUMLPWithGUILanguageServer.getArchiv
 
 dependencies {
   implementation "de.monticore.language-server.plugin:monticore-language-server-runtime-intellij:$mclsg_version"
+
+  // Standard JUnit 5 dependencies
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+
   intellijPlatform {
     intellijIdeaCommunity("2024.2")
     plugins(["com.redhat.devtools.lsp4ij:0.7.0"])
+    testFramework(TestFrameworkType.Platform.INSTANCE)
+    testFramework(TestFrameworkType.Plugin.Java.INSTANCE)
   }
+}
+
+test {
+  useJUnitPlatform()
 }
 
 task initializeIntelliJPlugin(){
