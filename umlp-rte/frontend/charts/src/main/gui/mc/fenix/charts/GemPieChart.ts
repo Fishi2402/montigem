@@ -75,9 +75,13 @@ export class GemPieChart extends GemPieChartComponent {
       colors.push(bgrColor);
     }
 
+    const hoverColors = colors.map(c => this.lightenColor(c, 20));
+
     this.dataSets = [{
       data: data.getEntriesList().map(entry => entry.getValue()),
-      backgroundColor: colors
+      backgroundColor: colors,
+      hoverBackgroundColor: hoverColors,
+      hoverBorderColor: hoverColors
     }];
 
     this.legendLabels = labels;
@@ -107,6 +111,28 @@ export class GemPieChart extends GemPieChartComponent {
   }
 
   /**
+   * Helper function to lighten a hex color by a percentage
+   * @param color The hex color string (e.g. #FF0000)
+   * @param percent The percentage to lighten (e.g. 20)
+   */
+  private lightenColor(color: string, percent: number): string {
+    if (!color || !color.startsWith('#')) {
+      return color; // Return original if not a valid hex code
+    }
+    const num = parseInt(color.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = ((num >> 8) & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+
+    return '#' + (0x1000000 +
+      (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+      (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+      (B < 255 ? (B < 1 ? 0 : B) : 255)
+    ).toString(16).slice(1);
+  }
+
+  /**
    * saves all unchanged settings of the chart when one specific setting is changed
    */
   saveAllOptionsChanges() {
@@ -119,8 +145,7 @@ export class GemPieChart extends GemPieChartComponent {
         tooltip: {
           callbacks: {
             label: function (tooltipItem) {
-              let data = tooltipItem.dataset;
-              return data['labels'][tooltipItem['index']] + ': ' + data['datasets'][0]['data'][tooltipItem['index']];
+              return tooltipItem.label + ': ' + tooltipItem.raw;
             }
           }
         },
