@@ -118,7 +118,7 @@ build_intellij_plugin:
   stage: build
   script:
     - "cd umlp-tool"
-    - "gradle buildPlugin -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :umlp-intellij-plugin:build -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
     when: always
     paths:
