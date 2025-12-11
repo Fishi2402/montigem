@@ -39,8 +39,8 @@ public class SampleTest {
   @Test
   void testSomethingInEditor() {
     // Example: create a file in the in-memory project
-    String fileText = "class A { void m() { int x = 1; } }";
-    myFixture.configureByText("A.java", fileText);
+    String fileText = "classdiagram TestDiagram { class A; }";
+    myFixture.configureByText("TestDiagram.umlp", fileText);
 
     // Do something with PSI / plugin logic
     // e.g. find classes / methods
