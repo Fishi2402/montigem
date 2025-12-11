@@ -31,6 +31,16 @@ public abstract class DatabaseAccessManager {
   protected abstract long _getFreeGemId();
   protected abstract void _clearLocalGemIds();
 
+  private Map<String, String> mockEnvironment;
+
+  protected DatabaseAccessManager(){
+    this.mockEnvironment = null;
+  }
+
+  protected DatabaseAccessManager(Map<String, String> mockEnvironment){
+    this.mockEnvironment = mockEnvironment;
+  }
+
   public static void createDataSource(String jdbcurl, Properties databaseProperties){
     HikariDataSource ds = new HikariDataSource();
     ds.setJdbcUrl(jdbcurl);
@@ -143,9 +153,12 @@ public abstract class DatabaseAccessManager {
     // Can be used to select a different DB on production server
     // Environment Properties have priority!
     // TODO: Workaround for #3358
-    for (Map.Entry<String, String> envVar : System.getenv().entrySet()) {
+    for (Map.Entry<String, String> envVar : getEnv().entrySet()) {
       if(!envVar.getKey().equalsIgnoreCase("user")) {
         databaseProperties.put(envVar.getKey(), envVar.getValue());
+      }
+      if(envVar.getKey().equalsIgnoreCase("db_user")) {
+        databaseProperties.put("user", envVar.getValue());
       }
     }
 
@@ -165,5 +178,13 @@ public abstract class DatabaseAccessManager {
     properties.setProperty("dataSource.enableSQLTranslation", "false");
     properties.setProperty("dataSource.autoCommit", "true"); // Neo4j supports auto-commit
     properties.setProperty("dataSource.fetchSize", "1000"); // for large queries
+  }
+
+  protected Map<String,String> getEnv() {
+    if(this.mockEnvironment == null) {
+      return System.getenv();
+    } else {
+      return this.mockEnvironment;
+    }
   }
 }

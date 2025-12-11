@@ -25,6 +25,10 @@ public class DatabaseAccessManager4SQL extends DatabaseAccessManager {
   protected DatabaseAccessManager4SQL() {
   }
 
+  protected DatabaseAccessManager4SQL(Map<String, String> mockEnvironment){
+    super(mockEnvironment);
+  }
+
   public static void init () {
     DatabaseAccessManager4SQL impl = new DatabaseAccessManager4SQL();
     DatabaseAccessManager.setInstance(impl);
