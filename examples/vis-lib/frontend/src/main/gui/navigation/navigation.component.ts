@@ -16,7 +16,8 @@ export class Navigation {
   }
 
   readonly items: { url: string, title: string }[] = [
-    { url: '/example_cad/GemCADExample', title: 'CAD' },
+    { url: '/example_basic/GemLoadingSpinnerExample', title: 'LoadingSpinner' },
+    { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemChatExample', title: 'Chat' },
     { url: '/person/SimpleOverview', title: 'Overview' },
     { url: '/example_basic/GemAudioExample', title: 'Audio' },
@@ -42,6 +43,7 @@ export class Navigation {
     { url: '/example_input/GemCheckBoxInputExample', title: 'CheckBoxInput' },
     { url: '/example_input/GemRangeInputExample', title: 'RangeInput' },
     { url: '/example_input/GemRadioInputExample', title: 'RadioInput' },
+
     { url: '/example_charts/GemBarChartExample', title: 'BarChart' },
     { url: '/example_charts/GemBoxPlotExample', title: 'BoxPlot' },
     { url: '/example_charts/GemBulletChartExample', title: 'BulletChart' },
