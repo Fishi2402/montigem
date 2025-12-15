@@ -2,8 +2,6 @@
 
 plugins {
   id 'java'
-
-  id 'monticore' version "$mc_version"
   id 'maven-publish'
   id 'org.jetbrains.intellij' version '1.13.3' apply(false)
   id "io.github.themrmilchmann.ecj" version "0.2.0"
@@ -104,7 +102,6 @@ tasks.register('latex', JavaExec) {
 }
 
 compileJava {
-  dependsOn project.collect { it.tasks.withType(MCTask) }
   options.warnings = false
 }
 
