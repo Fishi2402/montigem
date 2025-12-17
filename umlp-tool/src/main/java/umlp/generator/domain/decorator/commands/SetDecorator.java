@@ -207,7 +207,9 @@ public class SetDecorator extends AbstractDeSerDecorator {
     addCorrectMangerImportForTargetType(origCD.getCDDefinition(), ast, type);
     if (GenService.isOptional(type)) {
       if (GenService.isInnerCDEnum(type)) {
-        getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + GenService.getInnerType(attr.getMCType()));
+        ASTCDCompilationUnit compilationUnit = UMLPSymbolTables
+            .getDiagramFor(type.asGenericType().getArgument(0).getTypeInfo().getAstNode());
+        getCD4C().addImport(ast, getPackageName(compilationUnit, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
       }
       else if (GenService.isJavaType(((SymTypeOfGenerics) type).getArgument(0))) {
         getCD4C().addImport(ast, ((SymTypeOfGenerics) type).getArgument(0).printFullName());
@@ -215,8 +217,8 @@ public class SetDecorator extends AbstractDeSerDecorator {
     }
     else {
       if (GenService.isCDEnum(type)) {
-        ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-        getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
+        ASTCDCompilationUnit compilationUnit = UMLPSymbolTables.getDiagramFor(type.getTypeInfo().getAstNode());
+        getCD4C().addImport(ast,getPackageName(compilationUnit, DEFAULT_PACKAGE)+"."+ type.print());
       }
       else if (GenService.isJavaType(type)) {
         getCD4C().addImport(ast, type.printFullName());
@@ -244,11 +246,13 @@ public class SetDecorator extends AbstractDeSerDecorator {
     }
     String jsonStr;
     String typeName;
+    String packageName;
     boolean isOptional = false;
     boolean isCDEnum;
     if (GenService.isOptional(type)) {
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) type).getArgument(0));
       typeName = ((SymTypeOfGenerics) type).getArgument(0).printFullName();
+      packageName = ((SymTypeOfGenerics) type).getArgument(0).getTypeInfo().getPackageName().toLowerCase();
       isOptional = true;
       isCDEnum = GenService.isInnerCDEnum(type);
     }
@@ -256,6 +260,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
       jsonStr = GenService.calculateJSon(type);
       typeName = type.printFullName();
       isCDEnum = GenService.isCDEnum(type);
+      packageName = type.getTypeInfo().getPackageName().toLowerCase();
       if (GenService.isJavaType(type)) {
         addDeSerJavaImport(ast, typeName);
       }
@@ -266,7 +271,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
     getCD4C().addMethod(ast, getSet_FromJsonObjectTemplate(), cmdName, name, typeName, isOptional, isCDEnum, jsonStr, useDeSer, baseClassDecorator, makeAbstract);
     getCD4C().addMethod(ast, getSet_BuildJsonTemplate(), cmdName, name, typeName, isCDEnum, GenService.getGetterName(name, type), useDeSer, baseClassDecorator, makeAbstract, isOptional);
 
-    addDeSerImport(ast, origCD, useDeSer, isCDEnum, baseClassDecorator, typeName, cmdName);
+    addDeSerImport(ast, origCD, useDeSer, isCDEnum, baseClassDecorator, typeName, packageName);
 
     if (makeAbstract) {
       ast.setModifier(PUBLIC_ABSTRACT.build());
@@ -277,12 +282,12 @@ public class SetDecorator extends AbstractDeSerDecorator {
   }
 
   protected void addDeSerImport(ASTCDClass ast, ASTCDCompilationUnit origCD, boolean useDeSer,
-      boolean isCDEnum, String baseClassDecorator, String typeName, String cmdName) {
+      boolean isCDEnum, String baseClassDecorator, String typeName, String packageName) {
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.JsonPrinter");
     getCD4C().addImport(ast, "de.monticore.symboltable.serialization.json.JsonObject");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     if (isCDEnum) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + Names.getSimpleName(typeName));
+      getCD4C().addImport(ast, packageName + "." + Names.getSimpleName(typeName));
     }
     if (useDeSer) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);

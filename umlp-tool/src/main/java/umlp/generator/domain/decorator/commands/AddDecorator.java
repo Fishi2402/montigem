@@ -258,7 +258,9 @@ public class AddDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("CommandDeSer"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainClass.getName());
     if (GenService.isCDEnum(innerType)) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
+      ASTCDCompilationUnit compilationUnit = UMLPSymbolTables
+          .getDiagramFor(type.asGenericType().getArgument(0).getTypeInfo().getAstNode());
+      getCD4C().addImport(ast, getPackageName(compilationUnit, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
     }
     else if (GenService.isJavaType(innerType)) {
       getCD4C().addImport(ast, innerType.printFullName());

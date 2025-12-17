@@ -20,6 +20,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Optional;
 import java.util.Set;
@@ -130,7 +131,8 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
 
     addImports(origCD, domainClass, ast);
     if (GenService.isCDEnum(type)) {
-      getCD4C().addImport(ast,getPackageName(origCD, DEFAULT_PACKAGE)+"."+ type.print());
+      ASTCDCompilationUnit compilationUnit = UMLPSymbolTables.getDiagramFor(type.getTypeInfo().getAstNode());
+      getCD4C().addImport(ast,getPackageName(compilationUnit, DEFAULT_PACKAGE)+"."+ type.print());
     } else if (GenService.isJavaType(type)) {
       addJavaImport(ast, type);
     }
@@ -230,7 +232,9 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + baseClassDecorator);
     }
     if (GenService.isCDEnum(innerType)) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
+      ASTCDCompilationUnit compilationUnit = UMLPSymbolTables
+          .getDiagramFor(type.asGenericType().getArgument(0).getTypeInfo().getAstNode());
+      getCD4C().addImport(ast, getPackageName(compilationUnit, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
     } else if (GenService.isJavaType(innerType)) {
       getCD4C().addImport(ast, innerType.printFullName());
     }

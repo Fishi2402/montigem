@@ -21,6 +21,7 @@ dependencies {
 
 tasks.named("umlp2java", UMLP2JavaTask) {
   input = file("./src/models")
+  modelDir.from(file("./src/models/Enums.umlp"))
   handWrittenCodeDir.from(
       file("$projectDir/src/main/java"),
       file("$projectDir/src/test/java")

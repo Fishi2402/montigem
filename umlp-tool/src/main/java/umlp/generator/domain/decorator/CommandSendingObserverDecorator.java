@@ -12,6 +12,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
 import umlp.generator.AbstractDecorator;
@@ -53,6 +54,13 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
               ASTCDAttribute a = e.getKey();
               ASTCDType t = e.getValue();
               if (GenService.isList(a)) {
+
+                ASTCDCompilationUnit relevantCompunit = origCD;
+                if(GenService.isCDEnum(a.getSymbol().getType().asGenericType().getArgument(0))) {
+                  relevantCompunit = UMLPSymbolTables.getDiagramFor((ASTCDType) a.getSymbol().getType()
+                      .asGenericType().getArgument(0).getTypeInfo().getAstNode());
+                }
+
                 ASTCDMethodSignature add = getCD4C().addMethod(ast, addAttributeTmplt(),
                     t.getName(), a.getName(), GenService.getInnerType(a.getMCType()),
                     a.getName(), false, false, t.getName());
@@ -63,9 +71,9 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                 setOverrideAnnotation(add);
                 setOverrideAnnotation(remove);
 
-                getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
+                getCD4C().addImport(ast, getPackageName(relevantCompunit, COMMAND_PACKAGE)+"."+
                     t.getName() + "_add" + StringTransformations.capitalize(a.getName()));
-                getCD4C().addImport(ast, getPackageName(origCD, COMMAND_PACKAGE)+"."+
+                getCD4C().addImport(ast, getPackageName(relevantCompunit, COMMAND_PACKAGE)+"."+
                     t.getName() + "_remove" + StringTransformations.capitalize(a.getName()));
               } else {
                 ASTCDMethodSignature set = getCD4C().addMethod(ast, setAttributeTmplt(),
@@ -78,12 +86,13 @@ public class CommandSendingObserverDecorator extends AbstractDecorator {
                     domainClass.getName() + "_set" + StringTransformations.capitalize(a.getName()));
               }
               if (GenService.isCDEnum(a.getSymbol().getType())) {
-                getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
-                        a.getSymbol().getType().print());
+                getCD4C().addImport(ast, Joiners.DOT.join(a.getSymbol().getType().getTypeInfo().getPackageName().toLowerCase(),
+                        a.getSymbol().getType().print()));
               }
               if (GenService.isInnerCDEnum(a.getSymbol().getType())) {
-                getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+
-                    (((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0)).print());
+                getCD4C().addImport(ast,  Joiners.DOT.join(a.getSymbol().getType().asGenericType()
+                        .getArgument(0).getTypeInfo().getPackageName().toLowerCase(),
+                    (((SymTypeOfGenerics) a.getSymbol().getType()).getArgument(0)).print()));
               }
             });
 
