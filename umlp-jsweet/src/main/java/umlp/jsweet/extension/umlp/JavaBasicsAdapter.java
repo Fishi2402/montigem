@@ -220,6 +220,13 @@ public class JavaBasicsAdapter extends AbstractAdapter {
       case "minusMinutes":
       case "minusSeconds":
       case "atStartOfDay":
+      case "withYear":
+      case "withMonth":
+      case "withDayOfMonth":
+      case "withDayOfYear":
+      case "withHour":
+      case "withMinute":
+      case "withSecond":
         print("LocalDateTimeHelper." + invocation.getMethodName() + "(")
             .print(invocation.getTargetExpression()).print(", ")
             .printArgList(invocation.getArguments()).print(")");

@@ -145,3 +145,14 @@ export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeS
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesEventBuilder";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesEventDeSer";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/GemTimeSeriesChartTypesDeSer";
+
+export * from "./src/main/gui/mc/fenix/charts/GemTimelineChart";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/Timeline";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineBlock";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineBlockBuilder";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineBlockDeSer";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineBuilder";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineData";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineDataBuilder";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineDataDeSer";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/GemTimelineChartTypesDeSer";

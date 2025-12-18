@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemTimelineChartTypes.TimelineData;
+import mc.fenix.charts.GemTimelineChartTypes.TimelineBlock;
+import mc.fenix.charts.GemTimelineChartTypes.Timeline;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+component GemTimelineChart (
+  TimelineData data,
+  Optional<LocalDateTime> showAfter,
+  Optional<LocalDateTime> showUntil,
+  Boolean hideLegend,
+  Event<TimelineBlock> blockClick
+)

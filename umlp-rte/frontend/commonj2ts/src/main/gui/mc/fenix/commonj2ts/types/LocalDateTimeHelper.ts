@@ -101,4 +101,35 @@ export class LocalDateTimeHelper {
   static atEndOfDay(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
   }
+
+  static withYear(date: Date, n: number): Date {
+    return new Date(n, date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  }
+
+  static withMonth(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  }
+
+  static withDayOfYear(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), 0, n, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  }
+
+
+  static withDayOfMonth(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), n, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  }
+
+
+  static withHour(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDay(), n, date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  }
+
+  static withMinute(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDay(), date.getHours(), n, date.getSeconds(), date.getMilliseconds());
+  }
+
+  static withSecond(date: Date, n: number): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes(), n, date.getMilliseconds());
+  }
+
 }

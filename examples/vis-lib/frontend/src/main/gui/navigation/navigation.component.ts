@@ -51,6 +51,7 @@ export class Navigation {
     { url: '/example_charts/GemGaugeChartExample', title: 'GaugeChart' },
     { url: '/example_charts/GemLineChartExample', title: 'LineChart' },
     { url: '/example_charts/GemTimeSeriesChartExmaple', title: 'GemTimeSeriesChart' },
+    { url: '/example_charts/GemTimelineChartExample', title: 'GemTimelineChart' },
     { url: '/example_charts/GemHeatmapChartExample', title: 'HeatmapChart' },
     { url: '/example_charts/GemPieChartExample', title: 'PieChart' },
     { url: '/example_charts/GemRadarChartExample', title: 'RadarChart' },
