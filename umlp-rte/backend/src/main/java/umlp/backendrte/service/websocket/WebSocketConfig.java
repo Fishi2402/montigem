@@ -11,6 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 @Configuration
@@ -39,6 +40,21 @@ public class WebSocketConfig implements WebSocketConfigurer {
   @Bean
   public TextWebSocketHandler customWebSocketHandler() {
     return (TextWebSocketHandler) webSocketHandlerService;
+  }
+
+  /**
+   * Configure the receive buffer size for WebSocket sessions
+   */
+  @Bean
+  public ServletServerContainerFactoryBean createWebSocketContainer() {
+    ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+
+    // Increase receive buffer to 64 KB (adjust if needed)
+    container.setMaxTextMessageBufferSize(64 * 1024);
+    container.setMaxBinaryMessageBufferSize(64 * 1024);
+
+    logger.info("Configured WebSocket container with 64 KB receive buffer for text and binary messages");
+    return container;
   }
 
 }
