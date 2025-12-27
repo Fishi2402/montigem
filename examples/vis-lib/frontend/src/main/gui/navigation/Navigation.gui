@@ -1,0 +1,85 @@
+/* (c) https://github.com/MontiCore/monticore */
+package navigation;
+
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+
+component Navigation(String activeCategory = "Basic") {
+  @GemColumn(components = [
+
+    // 1. Row: Categories
+    @GemRow(wrap = "wrap", vAlign = "center", components = [
+      @GemButton(label = "Basic", leftClick = setCategoryBasic()),
+      @GemButton(label = "Input", leftClick = setCategoryInput()),
+      @GemButton(label = "Arrange", leftClick = setCategoryArrange()),
+      @GemButton(label = "Charts", leftClick = setCategoryCharts()),
+      @GemButton(label = "Other", leftClick = setCategoryOther())
+    ]),
+
+    // 2. Row: Items (guarded by activeCategory)
+    @GemRow(wrap = "wrap", vAlign = "center", components = [
+
+      @guard(activeCategory == "Basic") {
+        @GemNavItem(title = "LoadingSpinner", target = "/example_basic/GemLoadingSpinnerExample");
+        @GemNavItem(title = "Audio", target = "/example_basic/GemAudioExample");
+        @GemNavItem(title = "Button", target = "/example_basic/GemButtonExample");
+        @GemNavItem(title = "Icon", target = "/example_basic/GemIconExample");
+        @GemNavItem(title = "Image", target = "/example_basic/GemImageExample");
+        @GemNavItem(title = "Link", target = "/example_basic/GemLinkExample");
+        @GemNavItem(title = "Text", target = "/example_basic/GemTextExample");
+        @GemNavItem(title = "Video", target = "/example_basic/GemVideoExample");
+      },
+
+      @guard(activeCategory == "Input") {
+        @GemNavItem(title = "RangeInput", target = "/example_input/GemRangeInputExample");
+        @GemNavItem(title = "Chat", target = "/example_input/GemChatExample");
+        @GemNavItem(title = "TextInput", target = "/example_input/GemTextInputExample");
+        @GemNavItem(title = "DropdownInput", target = "/example_input/GemDropdownInputExample");
+        @GemNavItem(title = "AutocompleteInput", target = "/example_input/GemAutocompleteInputExample");
+        @GemNavItem(title = "TextareaInput", target = "/example_input/GemTextareaInputExample");
+        @GemNavItem(title = "CheckBoxInput", target = "/example_input/GemCheckBoxInputExample");
+        @GemNavItem(title = "RadioInput", target = "/example_input/GemRadioInputExample");
+      },
+
+      @guard(activeCategory == "Arrange") {
+        @GemNavItem(title = "Table", target = "/example_table/GemTableExample");
+        @GemNavItem(title = "TreeNode", target = "/example_arrange/GemTreeNodeExample");
+        @GemNavItem(title = "Dialog", target = "/example_arrange/GemDialogExample");
+        @GemNavItem(title = "Card", target = "/example_arrange/GemCardExample");
+        @GemNavItem(title = "Column", target = "/example_arrange/GemColumnExample");
+        @GemNavItem(title = "Column2", target = "/example_arrange/GemColumnExample2");
+        @GemNavItem(title = "Row", target = "/example_arrange/GemRowExample");
+        @GemNavItem(title = "Row2", target = "/example_arrange/GemRowExample2");
+        @GemNavItem(title = "Grid", target = "/example_arrange/GemGridExample");
+      },
+
+      @guard(activeCategory == "Charts") {
+        @GemNavItem(title = "BarChart", target = "/example_charts/GemBarChartExample");
+        @GemNavItem(title = "BoxPlot", target = "/example_charts/GemBoxPlotExample");
+        @GemNavItem(title = "BulletChart", target = "/example_charts/GemBulletChartExample");
+        @GemNavItem(title = "CandlestickChart", target = "/example_charts/GemCandlestickChartExample");
+        @GemNavItem(title = "GaugeChart", target = "/example_charts/GemGaugeChartExample");
+        @GemNavItem(title = "LineChart", target = "/example_charts/GemLineChartExample");
+        @GemNavItem(title = "GemTimeSeriesChart", target = "/example_charts/GemTimeSeriesChartExmaple");
+        @GemNavItem(title = "GemTimelineChart", target = "/example_charts/GemTimelineChartExample");
+        @GemNavItem(title = "HeatmapChart", target = "/example_charts/GemHeatmapChartExample");
+        @GemNavItem(title = "PieChart", target = "/example_charts/GemPieChartExample");
+        @GemNavItem(title = "RadarChart", target = "/example_charts/GemRadarChartExample");
+        @GemNavItem(title = "SunburstChart", target = "/example_charts/GemSunburstChartExample");
+        @GemNavItem(title = "VennDiagram", target = "/example_charts/GemVennDiagramExample");
+        @GemNavItem(title = "NetworkChart", target = "/example_charts/GemGraphChartExample");
+        @GemNavItem(title = "NewNetworkChart", target = "/example_network/NetworkChartExample/");
+        @GemNavItem(title = "GemScatterPlot", target = "/example_charts/GemScatterPlotExample");
+      },
+
+      @guard(activeCategory == "Other") {
+        @GemNavItem(title = "Overview", target = "/person/SimpleOverview");
+        @GemNavItem(title = "MonacoEditor", target = "/example_monaco/ExampleFromLib/3");
+        @GemNavItem(title = "Fischertechnik", target = "/fischertechnik/FischertechnikExample");
+      }
+
+    ])
+  ]);
+}

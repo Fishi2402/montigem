@@ -1,0 +1,66 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+:host {
+  display: block;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 5px 10px;
+}
+
+:host ::ng-deep {
+
+  /* Target the category rows */
+  .gem-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  /* Style the category headers */
+  .categoryLabel {
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+    white-space: nowrap; /* Prevent label from wrapping */
+    display: inline-flex; /* Use flex to align internal text */
+    align-items: center;
+  }
+
+  /* Force internal GemText structure to be inline */
+  .categoryLabel .gem-text,
+  .categoryLabel p,
+  .categoryLabel div {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Navigation Items */
+  gem-nav-item {
+    width: auto;
+    display: inline-block;
+    margin: 2px;
+  }
+
+  .gem-nav-item {
+    width: auto;
+    font-size: 0.9rem;
+    padding: 6px 12px; /* Increased padding for wider/taller buttons */
+    border-radius: 4px;
+    min-width: 100px; /* Ensure a minimum width */
+    text-align: center; /* Center text */
+  }
+
+  .gem-nav-item:hover {
+    background-color: #e9ecef;
+    text-decoration: none;
+  }
+
+  /* Style for Category Buttons (GemButton) */
+  .gem-button {
+    min-width: 120px; /* Make category buttons wider */
+    margin: 2px;
+    font-weight: 500;
+  }
+}
