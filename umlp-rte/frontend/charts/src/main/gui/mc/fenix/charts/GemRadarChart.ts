@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostBinding } from '@angular/core';
 import { config, GemRadarChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemRadarChartComponent';
 import { ChartEvent, ChartOptions } from "chart.js";
 import { NgChartsModule } from 'ng2-charts';
@@ -19,12 +19,20 @@ import { GemChartOptions } from './GemChartOptions';
 })
 export class GemRadarChart extends GemRadarChartComponent {
 
+  @HostBinding('style.display') display = 'block';
+  @HostBinding('style.width') get hostWidth() { return this.width; }
+  @HostBinding('style.height') get hostHeight() { return this.height; }
+
   public _dataSets: any; // {data: number[], label: string}
   public _labels: (string | string[])[];
 
   public _maxLabelLength: number = 20;
+  public _opacity: number = 0.4; // Default opacity
+  private _rawData: GemRadarChartData; // Store raw data to re-process on opacity change
 
   public options: ChartOptions<'radar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
     elements: {
       line: {
         borderWidth: 3
@@ -38,7 +46,10 @@ export class GemRadarChart extends GemRadarChartComponent {
     scales: {
       r: {
         ticks: {
-
+          display: true // Default show labels
+        },
+        pointLabels: {
+          display: true // Default show point labels
         }
       }
     }
@@ -49,16 +60,29 @@ export class GemRadarChart extends GemRadarChartComponent {
     if (!data) {
       return;
     }
+    this._rawData = data;
+    this.processData();
+  }
+
+  private processData() {
+    if (!this._rawData) return;
+
     let autocolors = this.getColors();
     this.legendLabels = [];
     this.legendColors = [];
 
-    this._dataSets = data.getDataSetsList().map((ds: GemRadarChartDataSet, index: number) => {
+    this._dataSets = this._rawData.getDataSetsList().map((ds: GemRadarChartDataSet, index: number) => {
       let label = ds.getLabel();
       let backgroundColor = autoColors[index];
       if (ds.getBackgroundColor() !== null) {
         backgroundColor = ds.getBackgroundColor();
       }
+
+      // Apply opacity if backgroundColor is a hex string or rgb string without alpha
+      if (this._opacity !== undefined && this._opacity !== null) {
+         backgroundColor = this.applyOpacity(backgroundColor, this._opacity);
+      }
+
 
       let res = {
         data: ds.getDataList(),
@@ -80,7 +104,7 @@ export class GemRadarChart extends GemRadarChartComponent {
     });
     this._labels = [];
 
-    for (const label of data.getLabelsList()) {
+    for (const label of this._rawData.getLabelsList()) {
       // split the label into maximum 15 character long chunks
       let words = label.split(' ');
       let labels = [];
@@ -127,6 +151,43 @@ export class GemRadarChart extends GemRadarChartComponent {
   public set maxLabelLength(maxLabelLength: number) {
     this._maxLabelLength = maxLabelLength;
   }
+
+  @Input()
+  public set showLegend(show: boolean) {
+    this.displayLegend = show;
+  }
+
+  @Input()
+  public set showLabels(show: boolean) {
+    if (this.options.scales['r']) {
+        this.options.scales['r'].ticks.display = show;
+        this.options.scales['r'].pointLabels = { display: show };
+        // Force chart update by creating a new options object reference
+        this.options = { ...this.options };
+    }
+  }
+
+  @Input()
+  public set opacity(opacity: number) {
+    this._opacity = opacity;
+    this.processData();
+  }
+
+  private applyOpacity(color: string, opacity: number): string {
+      if (color.startsWith('#')) {
+          let r = parseInt(color.slice(1, 3), 16);
+          let g = parseInt(color.slice(3, 5), 16);
+          let b = parseInt(color.slice(5, 7), 16);
+          return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+      } else if (color.startsWith('rgb(')) {
+          return color.replace('rgb(', 'rgba(').replace(')', `, ${opacity})`);
+      } else if (color.startsWith('rgba(')) {
+          // Replace the alpha value
+          return color.replace(/[^,]+(?=\))/, `${opacity}`);
+      }
+      return color;
+  }
+
 
   chartHovered($event: { event: ChartEvent; active: {}[] }) {
 

@@ -14,5 +14,10 @@ component GemRadarChart(
     Optional<Double> max,
     Optional<Double> stepSize,
     Optional<Integer> maxLabelLength,
-    Boolean showConfig = true
+    Boolean showConfig = true,
+    String width = "500px",
+    String height = "auto",
+    Boolean showLegend = true,
+    Boolean showLabels = true,
+    Optional<Double> opacity
 )
