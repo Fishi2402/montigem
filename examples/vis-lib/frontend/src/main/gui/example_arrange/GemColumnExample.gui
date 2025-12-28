@@ -3,14 +3,19 @@ package example_arrange;
 
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
+import common.ExamplePage;
 
 page GemColumnExample() {
-  @GemColumn(
-    rowGap = "15px",
-    components = [
-      @GemText(value = "First row"),
-      @GemText(value = "Second row"),
-      @GemText(value = "Third row")
-    ]
+  @ExamplePage(
+    component = @GemColumn(
+      rowGap = "15px",
+      components = [
+        @GemText(value = "First row"),
+        @GemText(value = "Second row"),
+        @GemText(value = "Third row")
+      ]
+    ),
+    basePath = "example_arrange",
+    componentName = "GemColumnExample"
   );
 }

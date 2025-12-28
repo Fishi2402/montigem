@@ -3,14 +3,18 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemGaugeChart;
+import common.ExamplePage;
 
 page GemGaugeChartExample(List<Person> persons) {
-  @GemGaugeChart(
-    data = null,
-    min = 0,
-    max = 50,
-    unit = "#friends",
-    textValue = "average number of friends for age group"
+  @ExamplePage(
+    component = @GemGaugeChart(
+      data = getData(),
+      min = 0,
+      max = 50,
+      unit = "#friends",
+      textValue = "average number of friends for age group"
+    ),
+    basePath = "example_charts",
+    componentName = "GemGaugeChartExample"
   );
 }
-

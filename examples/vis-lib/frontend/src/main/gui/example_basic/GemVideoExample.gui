@@ -2,7 +2,12 @@
 package example_basic;
 
 import mc.fenix.basic.GemVideo;
+import common.ExamplePage;
 
 page GemVideoExample() {
-  @GemVideo(source = "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4");
+  @ExamplePage(
+    component = @GemVideo(source = "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"),
+    basePath = "example_basic",
+    componentName = "GemVideoExample"
+  );
 }

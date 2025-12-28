@@ -2,10 +2,15 @@
 package example_basic;
 
 import mc.fenix.basic.GemAudio;
+import common.ExamplePage;
 
 page GemAudioExample() {
-  @GemAudio(
-    width = "300px",
-    source = "assets/audio/audio.mp3"
+  @ExamplePage(
+    component = @GemAudio(
+      width = "300px",
+      source = "assets/audio/audio.mp3"
+    ),
+    basePath = "example_basic",
+    componentName = "GemAudioExample"
   );
 }

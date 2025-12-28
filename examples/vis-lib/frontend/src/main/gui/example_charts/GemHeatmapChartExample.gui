@@ -4,12 +4,17 @@ package example_charts;
 import Domain.Person;
 import mc.fenix.charts.GemHeatmapChart;
 import mc.fenix.charts.GemHeatmapChartTypes.GemHeatmapChartData;
+import common.ExamplePage;
 
 page GemHeatmapChartExample(List<Person> persons) {
-  @GemHeatmapChart(
-    data = null,
-    timestampdata = false,
-    xLabel = "amount of money spent for stocks",
-    yLabel = "age groups"
+  @ExamplePage(
+    component = @GemHeatmapChart(
+      data = getData(),
+      timestampdata = false,
+      xLabel = "amount of money spent for stocks",
+      yLabel = "age groups"
+    ),
+    basePath = "example_charts",
+    componentName = "GemHeatmapChartExample"
   );
 }

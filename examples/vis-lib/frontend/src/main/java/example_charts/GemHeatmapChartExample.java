@@ -15,7 +15,7 @@ import java.util.List;
 public class GemHeatmapChartExample extends GemHeatmapChartExampleTOP {
 
   @Override
-  public GemHeatmapChartData getGemHeatmapChart0Data() {
+  public GemHeatmapChartData getData() {
     if (this.getPersons() == null) {
       return null;
     }

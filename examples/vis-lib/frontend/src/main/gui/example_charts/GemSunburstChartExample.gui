@@ -5,14 +5,19 @@ import Domain.Person;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.charts.GemSunburstChart;
+import common.ExamplePage;
 
 page GemSunburstChartExample(List<Person> persons) {
-  @GemRow(width = "513px", height = "620px", components = [
-    @GemColumn(rowGap = "10px", width = "100%", components = [
-      @GemSunburstChart(
-        data = null,
-        ignoreError = true
-      )
-    ])
-  ]);
+  @ExamplePage(
+    component = @GemRow(width = "513px", height = "620px", components = [
+      @GemColumn(rowGap = "10px", width = "100%", components = [
+        @GemSunburstChart(
+          data = getData(),
+          ignoreError = true
+        )
+      ])
+    ]),
+    basePath = "example_charts",
+    componentName = "GemSunburstChartExample"
+  );
 }

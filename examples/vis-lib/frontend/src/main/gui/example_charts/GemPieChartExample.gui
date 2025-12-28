@@ -3,10 +3,15 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemPieChart;
+import common.ExamplePage;
 
 page GemPieChartExample(List<Person> persons) {
-  chart@GemPieChart(
-    data = null,
-    innerRadius = 10
+  @ExamplePage(
+    component = chart@GemPieChart(
+      data = null,
+      innerRadius = 10
+    ),
+    basePath = "example_charts",
+    componentName = "GemPieChartExample"
   );
 }

@@ -3,9 +3,14 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemVennDiagram;
+import common.ExamplePage;
 
 page GemVennDiagramExample(List<Person> persons) {
-  venndiagramm@GemVennDiagram(
-    data = null
+  @ExamplePage(
+    component = venndiagramm@GemVennDiagram(
+      data = null
+    ),
+    basePath = "example_charts",
+    componentName = "GemVennDiagramExample"
   );
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class GemSunburstChartExample extends GemSunburstChartExampleTOP {
 
   @Override
-  public GemSunburstData getGemSunburstChart2Data() {
+  public GemSunburstData getData() {
     if (this.getPersons() == null) {
       return null;
     }

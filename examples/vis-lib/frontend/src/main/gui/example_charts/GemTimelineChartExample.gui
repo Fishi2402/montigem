@@ -3,10 +3,16 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemTimelineChart;
+import common.ExamplePage;
 
 page GemTimelineChartExample (List<Person> persons) {
-  @GemTimelineChart(
-    data = computeDate(persons),
-    blockClick = getBlockClick()
+  @ExamplePage(
+    component = @GemTimelineChart(
+      data = computeDate(persons),
+      blockClick = getBlockClick()
+    ),
+    basePath = "example_charts",
+    componentName = "GemTimelineChartExample",
+    position = "bottom"
   );
 }

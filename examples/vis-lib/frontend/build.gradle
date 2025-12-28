@@ -56,3 +56,27 @@ tasks.register("runAppNoBuild", NpxTask) {
   command = "ng"
   args = ["serve"]
 }
+
+// Task to copy source code to assets for CodeViewer
+tasks.register("copySourceCodeToAssets", Copy) {
+  group = "build"
+  description = "Copies source code (.gui, .java, .scss) to assets for the CodeViewer component"
+
+  from("src/main/gui") {
+    include "**/*.gui"
+    include "**/*.scss"
+  }
+  from("src/main/java") {
+    include "**/*.java"
+  }
+  
+  into layout.buildDirectory.dir("app/src/assets/source-code")
+  
+  // Ensure the app directory structure exists
+  dependsOn "setupFrontend"
+}
+
+// Ensure source code is copied when GUI models are synced/generated
+tasks.named("sync_gui2java2ts") {
+  dependsOn "copySourceCodeToAssets"
+}

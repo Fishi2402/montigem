@@ -3,9 +3,14 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemNetworkGraph;
+import common.ExamplePage;
 
 page GemGraphChartExample(List<Person> persons) {
-  networkgraph@GemNetworkGraph(
-    data = null
+  @ExamplePage(
+    component = networkgraph@GemNetworkGraph(
+      data = null
+    ),
+    basePath = "example_charts",
+    componentName = "GemGraphChartExample"
   );
 }

@@ -7,49 +7,57 @@ import mc.fenix.basic.GemText;
 
 import Domain.Role;
 import Domain.Person;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
 
 page GemRadioInputExample(List<Person> persons) {
-  @iterate(Person p : persons) {
-    @GemText(value = getPersonRoleInfo(p));
-    @iterate(Role r : getRoles()) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @iterate(Person p : persons) {
+        @GemText(value = getPersonRoleInfo(p));
+        @iterate(Role r : getRoles()) {
+          @GemRadioInput(
+            labelText = r,
+            value = r,
+            selectedValue = p.role,
+            group = getGroupName(p)
+          );
+        }
+      },
+      @GemText(value="Group 1"),
       @GemRadioInput(
-        labelText = r,
-        value = r,
-        selectedValue = p.role,
-        group = getGroupName(p)
-      );
-    }
-  }
-  @GemText(value="Group 1");
-  @GemRadioInput(
-    id = "genderMale",
-    labelText = "Male",
-    value = "male",
-    group = "first"
-  );
-  @GemRadioInput(
-    id = "genderFemale",
-    labelText = "Female",
-    value = "female",
-    group = "first"
-  );
-  @GemRadioInput(
-    id = "genderOther",
-    labelText = "Other",
-    value = "other",
-    group = "first"
-  );
-  @GemText(value="Group 2");
-  @GemRadioInput(
-    id = "a",
-    labelText = "A",
-    value = "valueA",
-    group = "second"
-  );
-  @GemRadioInput(
-    id = "b",
-    labelText = "B",
-    value = "valueB",
-    group = "second"
+        id = "genderMale",
+        labelText = "Male",
+        value = "male",
+        group = "first"
+      ),
+      @GemRadioInput(
+        id = "genderFemale",
+        labelText = "Female",
+        value = "female",
+        group = "first"
+      ),
+      @GemRadioInput(
+        id = "genderOther",
+        labelText = "Other",
+        value = "other",
+        group = "first"
+      ),
+      @GemText(value="Group 2"),
+      @GemRadioInput(
+        id = "a",
+        labelText = "A",
+        value = "valueA",
+        group = "second"
+      ),
+      @GemRadioInput(
+        id = "b",
+        labelText = "B",
+        value = "valueB",
+        group = "second"
+      )
+    ]),
+    basePath = "example_input",
+    componentName = "GemRadioInputExample"
   );
 }

@@ -1,0 +1,116 @@
+/* (c) https://github.com/MontiCore/monticore */
+package common;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.editor.MonacoEditor;
+import mc.fenix.basic.GemText;
+
+component CodeViewer(
+  String basePath,
+  String componentName,
+
+  // State for expansion
+  boolean isExpanded = false,
+
+  // State for visibility (all false by default)
+  boolean isGuiVisible = false,
+  boolean isJavaVisible = false,
+  boolean isScssVisible = false,
+
+  // Content
+  String guiCode = "",
+  String javaCode = "",
+  String scssCode = ""
+) {
+  @guard(!isExpanded) {
+      // Minimal button without card for compact view
+      @GemButton(label = "Show Source Code", leftClick = toggleExpanded());
+  }
+
+  @guard(isExpanded) {
+      @GemCard(title = "Source Code", component =
+        @GemColumn(components = [
+
+          // Header Row with Hide Button
+          @GemRow(components = [
+            @GemButton(label = "Hide Source Code", leftClick = toggleExpanded())
+          ]),
+
+          // Toggle Buttons for Files
+          @GemRow(components = [
+            @guard(isGuiVisible) {
+                activeGuiBtn@GemButton(label = "Hide GUI", leftClick = toggleGui());
+            } else {
+                inactiveGuiBtn@GemButton(label = "Show GUI", leftClick = toggleGui());
+            },
+
+            @guard(isJavaVisible) {
+                activeJavaBtn@GemButton(label = "Hide Java", leftClick = toggleJava());
+            } else {
+                inactiveJavaBtn@GemButton(label = "Show Java", leftClick = toggleJava());
+            },
+
+            @guard(isScssVisible) {
+                activeScssBtn@GemButton(label = "Hide SCSS", leftClick = toggleScss());
+            } else {
+                inactiveScssBtn@GemButton(label = "Show SCSS", leftClick = toggleScss());
+            }
+          ]),
+
+          // Editors Container
+          editorsRow@GemRow(wrap = "wrap", components = [
+
+            @guard(isGuiVisible) {
+                guiContainer@GemColumn(components = [
+                    @GemText(value = "GUI Model:"),
+                    @GemColumn(components = [
+                        @MonacoEditor(
+                            entry = guiCode,
+                            language = "java",
+                            disabled = true,
+                            theme = "vs",
+                            glyphMargin = false
+                        )
+                    ])
+                ]);
+            },
+
+            @guard(isJavaVisible) {
+                javaContainer@GemColumn(components = [
+                    @GemText(value = "Java Logic:"),
+                    @GemColumn(components = [
+                        @MonacoEditor(
+                            entry = javaCode,
+                            language = "java",
+                            disabled = true,
+                            theme = "vs",
+                            glyphMargin = false
+                        )
+                    ])
+                ]);
+            },
+
+            @guard(isScssVisible) {
+                scssContainer@GemColumn(components = [
+                    @GemText(value = "SCSS Style:"),
+                    @GemColumn(components = [
+                        @MonacoEditor(
+                            entry = scssCode,
+                            language = "scss",
+                            disabled = true,
+                            theme = "vs",
+                            glyphMargin = false
+                        )
+                    ])
+                ]);
+            }
+
+          ])
+
+        ])
+      );
+  }
+}

@@ -3,6 +3,8 @@ package example_arrange;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemColumn;
+import common.ExamplePage;
 
 /**
   Following example shows a `200 x 300` row. The vertical alignment of
@@ -15,23 +17,29 @@ import mc.fenix.basic.GemText;
   to `"5px"` which creates a gap between the "First col" and "Second col".
 */
 page GemRowExample2() {
-  outer@GemRow(
-    width = "200px",
-    height = "300px",
-    vAlign = "space-evenly",
-    wrap = "wrap",
-    components = [
-      inner@GemRow(
-        width = "100%",
-        height = "30%",
-        hAlign = "right",
-        colGap = "5px",
+  @ExamplePage(
+    component = @GemColumn(components = [
+      outer@GemRow(
+        width = "200px",
+        height = "300px",
+        vAlign = "space-evenly",
+        wrap = "wrap",
         components = [
-          @GemText(value = "First col"),
-          @GemText(value = "Second col")
+          inner@GemRow(
+            width = "100%",
+            height = "30%",
+            hAlign = "right",
+            colGap = "5px",
+            components = [
+              @GemText(value = "First col"),
+              @GemText(value = "Second col")
+            ]
+          ),
+          @GemText(value = "Third col")
         ]
-      ),
-      @GemText(value = "Third col")
-    ]
+      )
+    ]),
+    basePath = "example_arrange",
+    componentName = "GemRowExample2"
   );
 }

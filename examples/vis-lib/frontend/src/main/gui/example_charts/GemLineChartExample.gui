@@ -3,13 +3,17 @@ package example_charts;
 
 import Domain.Person;
 import mc.fenix.charts.GemLineChart;
+import common.ExamplePage;
 
 page GemLineChartExample(List<Person> persons) {
-  linechart@GemLineChart(
-    data = null,
-    enableBackgroundColor = true,
-    maxValue = null,
-    minValue = null
+  @ExamplePage(
+    component = linechart@GemLineChart(
+      data = null,
+      enableBackgroundColor = true,
+      maxValue = null,
+      minValue = null
+    ),
+    basePath = "example_charts",
+    componentName = "GemLineChartExample"
   );
 }
-

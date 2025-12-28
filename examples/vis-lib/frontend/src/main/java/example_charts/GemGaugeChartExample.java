@@ -18,7 +18,7 @@ import java.util.List;
 public class GemGaugeChartExample extends GemGaugeChartExampleTOP {
 
   @Override
-  public GemGaugeChartData getGemGaugeChart0Data() {
+  public GemGaugeChartData getData() {
     List<GemGaugeChartEntry> entries = Arrays.asList(
         new GemGaugeChartEntryBuilder()
             .name("People born before 1993")

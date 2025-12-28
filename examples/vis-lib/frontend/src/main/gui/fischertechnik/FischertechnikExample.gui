@@ -7,11 +7,19 @@ import fischertechnik.VacuumGripper_Demo;
 import fischertechnik.Warehouse_Demo;
 
 import mc.fenix.arrange.GemCard;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
 
 page FischertechnikExample(){
-  @GemCard(title="Conveyor", component=@Conveyor_Demo());
-  @GemCard(title="MultiProcessingStation", component=@MultiProcessingStation_Demo());
-  @GemCard(title="SortingLine", component=@SortingLine_Demo());
-  @GemCard(title="VacuumGripper", component=@VacuumGripper_Demo());
-  @GemCard(title="Warehouse", component=@Warehouse_Demo());
+  @ExamplePage(
+    component = @GemColumn(width = "50%", components = [
+      @GemCard(title="Conveyor", component=@Conveyor_Demo()),
+      @GemCard(title="MultiProcessingStation", component=@MultiProcessingStation_Demo()),
+      @GemCard(title="SortingLine", component=@SortingLine_Demo()),
+      @GemCard(title="VacuumGripper", component=@VacuumGripper_Demo()),
+      @GemCard(title="Warehouse", component=@Warehouse_Demo())
+    ]),
+    basePath = "fischertechnik",
+    componentName = "FischertechnikExample"
+  );
 }

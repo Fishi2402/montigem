@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+:host ::ng-deep {
+
+  /* Active State (Hide Button) - Darker Blue */
+  .activeGuiBtn .gem-button,
+  .activeJavaBtn .gem-button,
+  .activeScssBtn .gem-button {
+    background-color: #0056b3;
+    color: white;
+  }
+
+  /* Inactive State (Show Button) - Grey */
+  .inactiveGuiBtn .gem-button,
+  .inactiveJavaBtn .gem-button,
+  .inactiveScssBtn .gem-button {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .gem-button {
+    margin-right: 10px;
+    min-width: 100px;
+  }
+}

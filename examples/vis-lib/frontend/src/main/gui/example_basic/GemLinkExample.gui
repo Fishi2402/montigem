@@ -2,10 +2,15 @@
 package example_basic;
 
 import mc.fenix.basic.GemLink;
+import common.ExamplePage;
 
 page GemLinkExample() {
-  @GemLink(
-    url = "https://www.google.com/",
-    text = "click here for Google"
+  @ExamplePage(
+    component = @GemLink(
+      url = "https://www.google.com/",
+      text = "click here for Google"
+    ),
+    basePath = "example_basic",
+    componentName = "GemLinkExample"
   );
 }

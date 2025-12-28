@@ -6,14 +6,21 @@ import mc.fenix.arrange.GemDialog;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemLink;
+import mc.fenix.arrange.GemColumn;
+import common.ExamplePage;
 
 page GemDialogExample(?boolean dialogOpen = false) {
-  @GemButton(label = "Click Me!", leftClick = openDialog());
-  dialog@GemDialog(isOpen = dialogOpen, component =
-    @GemCard(
-      title = "Info Text",
-      component = @GemText(value = "Some Text")
-    )
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @GemButton(label = "Click Me!", leftClick = openDialog()),
+      dialog@GemDialog(isOpen = dialogOpen, component =
+        @GemCard(
+          title = "Info Text",
+          component = @GemText(value = "Some Text")
+        )
+      )
+    ]),
+    basePath = "example_arrange",
+    componentName = "GemDialogExample"
   );
-
 }
