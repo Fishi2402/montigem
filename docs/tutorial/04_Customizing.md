@@ -54,27 +54,6 @@ The Manager is available both in the backend and frontend. Both are synchronized
 via a websocket connection. Note that synchronization is ensured between all 
 clients and also the database.
 
-!!! note 
-    While the java code looks synchronized, it locks in the background until
-    synchronization finished.  
-    For the same reason and technical restrictions the TypeScript code looks
-    slightly different and returns asynchronous
-    promises instead of actual objects.
-    
-    Example Java:
-
-    ```java
-    Customer c = CarrentalManager.getCustomerSure(4); 
-    
-    ```
-    Example TypeScript:
-
-    ```ts
-    CarrentalManager.getCustomerSure(4).then((c: Customer) => {
-      console.log(c); 
-    });
-    ```
-
 Altering the objects happens by editing the objects directly. Synchronization
 with the manager and therefore also the server, all clients and the database 
 happens automatically in the background. Each domain object offers the methods
@@ -91,7 +70,32 @@ commands are exchanged between server and clients via a websocket endpoint.
 Then on the other end, the command is executed. The logic for each command
 can be overriden within its `CommandResult<T> doAction()` method.
 The server is then responsible to broadcast changes to all clients and the
-database.  
+database.
+
+### Synchronization Example
+
+Consider a scenario with a Database, a Server, and two Clients (A and B). All have loaded the same `Foo` object (ID: 1).
+
+1.  **Initial State:**
+    *   Database: `Foo(1).bar = "initial"`
+    *   Server: `Foo(1).bar = "initial"`
+    *   Client A: `Foo(1).bar = "initial"`
+    *   Client B: `Foo(1).bar = "initial"`
+
+2.  **Action:** Client A executes `foo.setBar("updated")`.
+
+3.  **Propagation:**
+    *   **Client A:** Sends a `Foo_setBar(1, "updated")` command to the Server via WebSocket.
+    *   **Server:** Receives the command.
+        *   Executes it: Updates the in-memory object `Foo(1).bar = "updated"`.
+        *   Persists it: Updates the Database `Foo(1).bar = "updated"`.
+        *   Broadcasts: Sends the command to all *other* connected clients (Client B).
+    *   **Client B:** Receives `Foo_setBar(1, "updated")`.
+        *   Executes it: Updates its local object `Foo(1).bar = "updated"`.
+        *   The UI (if bound to `foo.bar`) updates automatically via the Observer pattern.
+
+This ensures that all participants eventually hold the same state.
+
 Commands can be send manually by calling the singleton class `CommandManager`,
 e.g., `CommandManager.executeCommand(new Car_SetModelCommand(4, "DeLorean DMC-12");`
 

@@ -104,13 +104,13 @@ page PackCreate(BatteryPack pack) {
 }
 ```
 
-```typescript
-  public createNewBatteryPack () {
-    return () => {
-      if(this.pack.isBuildable()) {
-        this.pack.build()
+```java
+  public Consumer<Void> createNewBatteryPack() {
+    return v -> {
+      if (getPack().isBuildable()) {
+        getPack().build();
       }
-    }
+    };
   }
 ``` 
 
@@ -136,13 +136,13 @@ page PackCreate(BatteryPack pack, Event<BatteryPack> newPack) {
 We furthermore have to specify when the event is emitted in the handwritten code of the `PackCreate`
 component. For this we simply adapt the `createNewBatteryPack` method.
 
-```typescript
-  public createNewBatteryPack () {
-    return () => {
-      if(this.pack.isBuildable()) {
-        this.newPack.emit(this.pack.build())
+```java
+  public Consumer<Void> createNewBatteryPack() {
+    return v -> {
+      if (getPack().isBuildable()) {
+        getNewPack().emit(getPack().build());
       }
-    }
+    };
   }
 ```
 
@@ -157,12 +157,12 @@ page UsingPackCreate() {
 
 ```
 
-```typescript
-  public addNewBatteryPack () {
-    return (pack) => {
+```java
+  public Consumer<BatteryPack> addNewBatteryPack() {
+    return pack -> {
       // This is triggered when newPack emits a new event
-      // Do something with the pack e.g. add it to already existing options 
-    }
+      // Do something with the pack e.g. add it to already existing options
+    };
   }
 ```
 
@@ -247,14 +247,12 @@ page PackEdit(BatteryPack pack) {
 
 ```
 
-```typescript
-
-public override changePackType() {
-  return (type) => {
-    this.getPack().setType1(type)
-  }
+```java
+public Consumer<BatteryPackType> changePackType() {
+  return type -> {
+    getPack().setType1(type);
+  };
 }
-
 ```
 
 What makes this pattern so beautiful is that the `BatteryPackTypeChoose` component only depends on 

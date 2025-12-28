@@ -13,6 +13,7 @@ If you find any errors or outdated information please let us know.
 * [Instantiating Runtime Data with Object Diagrams](./unstructured/OD2Data.md)
 * [Tagging in UMLP Models](./unstructured/Tags.md)
 * [Testing in MontiGem](./unstructured/Testing.md)
+* [GUI Patterns](./designpatterns/GUIPatterns.md)
 
 # Development configuration
 

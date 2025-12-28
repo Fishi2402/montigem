@@ -88,6 +88,12 @@ Simpler: given a GUI component `myapp.SomePage`, if you create a file
 `myapp/SomePage.java` in source root of hand-written frontend code, the
 generator will produce `myapp/SomePageTOP.java` file.
 
+**Important:** When overriding the `init()` method in a Java component, 
+always call `super.init()` first to ensure the initialization logic of 
+the generated `...TOP` class is executed.
+
+For more information on JSweet, see the [JSweet User Guide](../JSweetUserGuide.md).
+
 ### TOP Frontend TypeScript Classes from GUI Models
 
 Frontend TypeScript classes generated from GUI models can be extended by

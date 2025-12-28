@@ -46,13 +46,48 @@ the singleton above.
 
 The singleton can then be used in the frontend and backend code. The example `RentItem`
 command is sent using a `CommandManager`:
-```ts
+```java
 CommandManager.executeCommand(new RentItem(car.getGemId()));
 ```
 
 The result of a command is a
 `CommandResult` that contains whatever result is set as a return type of the
 command method.
-```ts
+```java
 CommandResult<RentalTransaction> res = CommandManager.executeCommand(new RentItem(car.getGemId()));
 ```
+
+## Global State Management
+
+Singletons are also useful for managing global state in the frontend. You can define a singleton class to hold the state of your application.
+
+```java
+umlp Carrental {
+
+  <<singleton>>
+  class App {
+    String selectedTopic;
+    // other state variables
+  }
+
+}
+```
+
+This `App` singleton can be passed to pages and components to share state.
+
+1.  **Pass `App` to the page:**
+    ```java
+    page MyPage(App app) { ... }
+    ```
+2.  **Pass it to child components:**
+    ```java
+    @MyChildComponent(app = app);
+    ```
+3.  **Modify state:**
+    ```java
+    getApp().setSelectedTopic("New Topic");
+    ```
+4.  **React to changes:**
+    Components that use `app.selectedTopic` (e.g., in `@guard` or as a parameter) will automatically update when the value changes.
+
+This approach provides a "Single Source of Truth" and avoids manually passing callbacks through many layers of components.

@@ -309,3 +309,42 @@ the file if it doesn't exist). The location is
 }
 ```
 
+### Styling with Identifiers
+
+If you want to style a specific instance of a component, you can assign it an identifier in the GUI model. This identifier acts as a CSS class.
+
+**Model:**
+```ts
+primaryButton@GemButton(label="Save");
+```
+
+**SCSS:**
+```scss
+.primaryButton .gem-button {
+  background-color: green;
+  color: white;
+}
+```
+
+### Conditional Styling
+
+To change the style of a component based on a condition (e.g., "selected" vs "unselected"), you can use a `@guard` to switch between two instances with different identifiers.
+
+**Model:**
+```ts
+@guard(isSelected()) {
+  selectedItem@GemButton(label=item.name);
+} else {
+  unselectedItem@GemButton(label=item.name);
+}
+```
+
+**SCSS:**
+```scss
+.selectedItem .gem-button {
+  background-color: blue;
+}
+.unselectedItem .gem-button {
+  background-color: grey;
+}
+```

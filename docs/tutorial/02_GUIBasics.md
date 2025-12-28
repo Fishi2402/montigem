@@ -287,6 +287,10 @@ Besides usual compontent usages we have `iterate` and `guard..else` constructs.
   components should be shown depending on the condition. `else` block is
   optional.
 
+!!! note
+    Control statements like `@iterate` and `@guard` must end with a semicolon `;` 
+    if they are used inside a list of components (e.g., `components = [...]`).
+
 ![simple car list page](./SimpleCarList.png)
 
 !!! note
