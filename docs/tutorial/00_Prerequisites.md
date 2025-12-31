@@ -3,6 +3,10 @@
 This document describes what you need to install in order to run a MontiGem app,
 and commands defined for a standard app setup.
 
+!!! warning
+    The tutorial is based on a pre-built example application. Currently, you
+    need to ask a MontiGem developer to get access to it.
+
 ## Installation
 
 ### Install Java 21
@@ -20,10 +24,10 @@ and commands defined for a standard app setup.
 Download [Gradle 8.14.3](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
 
 !!! note
-    You may try later versions or other version with major version number 8.
+    You may try later versions or other version with the major version number 8,
+    they might work, but it is not guaranteed.
 
 Create a `gradle.properties` file in `%userprofile%/.gradle` folder with content:
-
 
 ```properties title="gradle.properties"
 mavenUser=my_user
@@ -45,7 +49,6 @@ Replace `my_user` and `my_password` with your Nexus account name and password.
   - VSCode: [https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix)
 
 ## Commands
-Clone the project and build it.
 
 ### Build
 
@@ -122,14 +125,44 @@ sudo ./killfe.sh
 
 ### Good to know
 
-```sh
-  gradle :frontend:run
-```
-
-Starts a local node server. The startup time is quite slow. If you are only 
-changing FrontEnd code or GUI models, you can simply let the taks run and 
-instead use the following task to serve the new code in much less time.
+After starting the frontend:
 
 ```sh
-  gradle :frontend:SYNC_genGUI
+gradle :frontend:run
 ```
+
+If you are only changing frontend code or GUI models, you can let the task run
+and execute the following task in a new console window to serve the new code in
+less time:
+
+```sh
+gradle :frontend:sync_gui2java2ts
+```
+
+For example, open `Start.gui` and update the `@GemText`:
+
+```ts title="frontend/src/main/gui/gui/Start.gui"
+page Start() {
+  /* component usages, control statements, etc. */
+  @GemText(value="Hello, World!");
+}
+```
+
+Then run 
+
+```sh
+gradle :frontend:sync_gui2java2ts
+```
+
+First time you execute this command, it may take a bit. When it's done, the
+console where you ran `gradle :frontend:run` will show:
+
+```
+Page reload sent to client(s).
+```
+
+!!! note
+    If your changes are invalid, e.g., the updated GUI model has errors,
+    the console running `gradle :frontend:sync_gui2java2ts` will display the
+    error, and the page will not reload. In that case, fix the error and rerun
+    the command.
