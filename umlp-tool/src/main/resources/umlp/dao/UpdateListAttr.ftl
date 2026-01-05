@@ -9,24 +9,25 @@ ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${at
   if(update${attrName}Statement == null) {
     update${attrName}Statement = "INSERT INTO ${tableName} (id, _value, index) VALUES (?, ?, ?)";
   }
-  try(Connection connection1 = DatabaseAccessManager.getConnection(); PreparedStatement st1 = connection1.prepareStatement(remove${attrName}Statement);
-      Connection connection2 = DatabaseAccessManager.getConnection(); PreparedStatement st2 = connection2.prepareStatement(update${attrName}Statement);){
-    synchronized(st1){
-      st1.clearParameters();
-      st1.setLong(1, gemId);
-      st1.executeUpdate();
-    }
+  try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st1 = connection.prepareStatement(remove${attrName}Statement);
+      PreparedStatement st2 = connection.prepareStatement(update${attrName}Statement);){
 
-    synchronized(st2){
-      long index = 0;
-      for(${innerType} element : ${attrName?uncap_first}) {
-        st2.clearParameters();
-        st2.setLong(1, gemId);
-        ${includeArgs("umlp.dao.Set", "st2", 2, dbName, "element", false,"")};
-        st2.setLong(3, index++);
-        st2.executeUpdate();
-      }
+    connection.setAutoCommit(false);
+    st1.clearParameters();
+    st1.setLong(1, gemId);
+    st1.executeUpdate();
+
+    long index = 0;
+    for(${innerType} element : ${attrName?uncap_first}) {
+      st2.clearParameters();
+      st2.setLong(1, gemId);
+      ${includeArgs("umlp.dao.Set", "st2", 2, dbName, "element", false,"")};
+      st2.setLong(3, index++);
+      st2.addBatch();
     }
+    st2.executeBatch();
+    connection.commit();
+    connection.setAutoCommit(true);
   } catch (SQLException e){
     throw new RuntimeException(e);
   }
