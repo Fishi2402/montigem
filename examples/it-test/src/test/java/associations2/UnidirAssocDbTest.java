@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public interface UnidirAssocDbTest extends Associations2TestSetup {
@@ -26,6 +27,24 @@ public interface UnidirAssocDbTest extends Associations2TestSetup {
     SQLTestSuite() {
       super(1);
     }
+  }
+
+  @Test
+  default void testClientAssocUpdateIsSynchronized() {
+    getBackend().activate();
+    var cLeftToRight = Associations2Manager.cleftToRightBuilder().build().get();
+    Associations2Manager.dleftToRightBuilder().build().get();
+
+    getClients(0).activate();
+    var clientCLeftToRight = Associations2Manager.getCleftToRightList().get(0);
+    assertNotEquals(cLeftToRight.cleftToRightObservers, clientCLeftToRight.cleftToRightObservers);
+    clientCLeftToRight.addDleftToRight(Associations2Manager.getDleftToRightList().get(0));
+
+    getBackend().activate();
+    var dao = Associations2DAOFactory.getCleftToRightDAO();
+    var clone = dao.selectCleftToRight(cLeftToRight.gemId).get();
+
+    assertEquals(clone.getDleftToRightList(), cLeftToRight.getDleftToRightList());
   }
 
   @Test

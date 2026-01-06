@@ -25,17 +25,18 @@ if(loaded${ctargetName} && loaded${csourceName}){
   }
 </#if>
 
+// LOCAL scope so the bidirectional association is synchronized and
 <#if isSourceList>
-  target.add${csourceName}(${sourceName}Index, source, NotificationScope.MINIMAL);
+  target.add${csourceName}(${sourceName}Index, source, NotificationScope.LOCAL);
 <#else>
-  target.set${csourceName}(source, NotificationScope.MINIMAL);
+  target.set${csourceName}(source, NotificationScope.LOCAL);
 </#if>
 
-<#if isTargetList>
+<#--<#if isTargetList>
   source.add${ctargetName}(${targetName}Index, target, NotificationScope.MINIMAL);
 <#else>
   source.set${ctargetName}(target, NotificationScope.MINIMAL);
-</#if>
+</#if>-->
   <#if hasOCL>
   ${sourceType}Validator sourceValidator = new ${sourceType}Validator();
   ${sourceType}ValidationResult sourceValidationResult = sourceValidator.validate(source);
