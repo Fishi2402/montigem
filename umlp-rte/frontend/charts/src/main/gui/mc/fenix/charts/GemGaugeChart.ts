@@ -67,6 +67,9 @@ export class GemGaugeChart extends GemGaugeChartComponent {
     domain: this.getColors()
   };
 
+  /** defines the position of the text value */
+  public _textPosition: string = "center";
+
   ngOnInit(): void {
     this.recalcBigTicks();
   }
@@ -79,6 +82,15 @@ export class GemGaugeChart extends GemGaugeChartComponent {
   @Input()
   public set unit(unit: string) {
     this._unit = unit;
+  }
+
+  @Input()
+  public set textPosition(position: string) {
+    this._textPosition = position;
+  }
+
+  public get textPosition(): string {
+    return this._textPosition;
   }
 
   /**
@@ -116,6 +128,7 @@ export class GemGaugeChart extends GemGaugeChartComponent {
 
     this.legendLabels = labels;
     this.legendColors = colors;
+    this.colors = colors;
     this.colorScheme = {
       ...this.colorScheme,
       domain: this.colors
@@ -213,7 +226,7 @@ export class GemGaugeChart extends GemGaugeChartComponent {
 
   /** returns wether to show a when a text is set or don't show it when no text is set */
   public get showText(): boolean {
-    return !!this._textValue;
+    return !!this._textValue && this._textPosition === 'center';
   }
 
   /** changes the axis visibility and resets the slider */

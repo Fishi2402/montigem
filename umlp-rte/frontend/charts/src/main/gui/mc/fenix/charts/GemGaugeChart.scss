@@ -2,7 +2,20 @@
 
 .wholeChartContainer {
   width: auto;
-  height: 100%;
+  /* Use flex-grow to fill available space, but allow shrinking */
+  flex: 1;
+  min-height: 0;
+  /* height: 100%;  <-- Removed fixed height */
+  display: flex; /* Ensure content (ngx-charts) fills this container */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ensure ngx-charts fills the container */
+:host ::ng-deep ngx-charts-gauge {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 .wholeChartWithLegendLeftContainer {
@@ -51,4 +64,31 @@
   opacity: 0.5;
   filter: alpha(opacity = 50);
   pointer-events: none;
+}
+
+/* Reduce font size of the gauge value text (internal) */
+:host ::ng-deep .text-value {
+  font-size: 60px !important;
+}
+
+/* Style for external text value (top/bottom) */
+.external-text-value {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  margin: 5px 0;
+  flex-shrink: 0; /* Prevent text from shrinking */
+}
+
+.unit-text {
+  font-size: 0.8em;
+  font-weight: normal;
+  color: #666;
+  margin-left: 5px;
+}
+
+/* Ensure legend doesn't shrink too much */
+gem-chart-legend {
+    flex-shrink: 0;
 }

@@ -12,7 +12,8 @@ page GemGaugeChartExample(List<Person> persons) {
       min = 0,
       max = 50,
       unit = "#friends",
-      textValue = "average number of friends for age group"
+      textValue = "average number of friends for age group",
+      textPosition = "bottom"
     ),
     basePath = "example_charts",
     componentName = "GemGaugeChartExample"

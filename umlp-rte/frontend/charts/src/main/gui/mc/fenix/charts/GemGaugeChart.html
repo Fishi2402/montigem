@@ -51,6 +51,12 @@
 </div>
 
 <div [ngClass]="changeContainer()" *ngIf="dataSets != null && dataSets.length > 0; else elseBlock">
+
+  <!-- Top Text -->
+  <div *ngIf="_textPosition === 'top'" class="external-text-value">
+    {{ _textValue }} <span *ngIf="_unit" class="unit-text">{{ _unit }}</span>
+  </div>
+
   <div class="wholeChartContainer">
     <ngx-charts-gauge
       [scheme]="colorScheme"
@@ -66,6 +72,12 @@
       >
     </ngx-charts-gauge>
   </div>
+
+  <!-- Bottom Text -->
+  <div *ngIf="_textPosition === 'bottom'" class="external-text-value">
+    {{ _textValue }} <span *ngIf="_unit" class="unit-text">{{ _unit }}</span>
+  </div>
+
   <gem-chart-legend
     [labels]="legendLabels"
     [colors]="legendColors"
