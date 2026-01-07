@@ -24,5 +24,8 @@ component MonacoEditor(
   int initialScrollToLine,
   List<InlineDecoration> highlighting,
 
-  List<HoverContent> hoverContents
+  List<HoverContent> hoverContents,
+
+  String width = "100%",
+  String height = "100%"
 )

@@ -1,4 +1,6 @@
 <ngx-monaco-editor
+  [style.width]="getWidth()"
+  [style.height]="getHeight()"
   [options]="_options"
   [ngModel]="entry"
   (ngModelChange)="onEntryChange($event)"

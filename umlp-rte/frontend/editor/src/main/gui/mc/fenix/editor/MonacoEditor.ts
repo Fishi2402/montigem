@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { config, MonacoEditorComponent } from '../../../../../../build/gui2java2ts/mc/fenix/editor/MonacoEditorComponent';
-import {EventEmitter, Output, Provider} from '@angular/core';
+import {EventEmitter, Output, Provider, ElementRef, AfterViewInit, OnDestroy} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 import * as monacoTypes from "monaco-editor";
@@ -38,11 +38,12 @@ import {HoverContent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/
   styleUrls: ["MonacoEditor.scss"]
 })
 
-export class MonacoEditor extends MonacoEditorComponent  {
+export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit, OnDestroy {
 
   protected editor: monacoTypes.editor.ICodeEditor;
   protected cacheCheck : string = "";
   protected highlightingCache;
+  private resizeObserver: ResizeObserver;
 
   /**
    * Adapt the component here if you want to add any options
@@ -53,7 +54,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
     theme: this._theme,
     readOnly: this._disabled,
     glyphMargin: this._glyphMargin,
-    automaticLayout: this._automaticLayout,
+    automaticLayout: false,
     hover: {
       enabled: true,
       sticky: true,
@@ -61,7 +62,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
     }
   };
 
-  public constructor() {
+  public constructor(private elementRef: ElementRef) {
     setTimeout( () =>
       monaco.languages.registerHoverProvider("*", {
         provideHover: (model,position) =>  {
@@ -93,10 +94,26 @@ export class MonacoEditor extends MonacoEditorComponent  {
     super();
   }
 
+  ngAfterViewInit() {
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.editor) {
+        this.editor.layout();
+      }
+    });
+    this.resizeObserver.observe(this.elementRef.nativeElement);
+  }
+
+  ngOnDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+    super.ngOnDestroy();
+  }
+
   @Output() public entryChange = new EventEmitter<string>();
 
   onEntryChange(event: string) {
-    console.warn("Entry change")
+    // console.warn("Entry change")
     this.entryChange.emit(event);
     if(this.editor) {
       this.highlightInitialization(this.editor)
@@ -110,15 +127,17 @@ export class MonacoEditor extends MonacoEditorComponent  {
       this.highlightInitialization(editorInstance)
       this.scrollToLine(this.editor)
     }
+    // Initial layout
+    setTimeout(() => this.editor.layout(), 0);
   }
 
   public highlightInitialization(editor: monacoTypes.editor.ICodeEditor): void {
-    console.warn("Highlighting now", this.getHighlighting())
+    // console.warn("Highlighting now", this.getHighlighting())
     if(!this.getHighlighting()) {
       return;
     }
     const highlighting = this.getHighlighting().map(inlineHighlight => {
-      console.warn("Highlighting now! ",  inlineHighlight.getCssClass())
+      // console.warn("Highlighting now! ",  inlineHighlight.getCssClass())
       return {
         range: {
           startLineNumber: inlineHighlight.getRange().getStartLin(),
@@ -137,7 +156,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
     if(cache === this.highlightingCache) {
       return;
     } {
-      console.warn("This is called ", highlighting)
+      // console.warn("This is called ", highlighting)
       this.cacheCheck = cache;
       this.highlightingCache = highlighting;
       editor.createDecorationsCollection(this.highlightingCache);
@@ -145,7 +164,7 @@ export class MonacoEditor extends MonacoEditorComponent  {
   }
 
   public scrollToLine(editor: monacoTypes.editor.ICodeEditor): void {
-    console.warn("Scroll to line now", this.getInitialScrollToLine())
+    // console.warn("Scroll to line now", this.getInitialScrollToLine())
     if(!this.getInitialScrollToLine()) {
       return;
     }
@@ -153,25 +172,25 @@ export class MonacoEditor extends MonacoEditorComponent  {
   }
 
   public override setLanguage(val: string) {
-    console.warn("Setting language", val)
+    // console.warn("Setting language", val)
     super.setLanguage(val);
     this.updateOptions();
   }
 
   public override setTheme(val: string) {
-    console.warn("Setting theme")
+    // console.warn("Setting theme")
     super.setTheme(val);
     this.updateOptions();
   }
 
   public override setDisabled(val: boolean) {
-    console.warn("Setting disabled")
+    // console.warn("Setting disabled")
     super.setDisabled(val);
     this.updateOptions();
   }
 
   public override setHoverContents(val: HoverContent[]) {
-    console.warn("Trying to set hover : ",val)
+    // console.warn("Trying to set hover : ",val)
     super.setHoverContents(val)
     if(!val) {
       return;
@@ -179,24 +198,24 @@ export class MonacoEditor extends MonacoEditorComponent  {
   }
 
   public override setHighlighting(val: InlineDecoration[]) {
-    console.warn("Setting highlighting")
+    // console.warn("Setting highlighting")
     super.setHighlighting(val);
     if(this.editor) {
       this.highlightInitialization(this.editor);
     } else {
-      console.warn("Highlighting initialization not possible due to editor not set.")
+      // console.warn("Highlighting initialization not possible due to editor not set.")
     }
   }
 
   public updateOptions() : void {
-    console.warn("Updating options")
+    // console.warn("Updating options")
     this._options = {
       value: this._entry,
       language: this._language,
       theme: this._theme,
       readOnly: this._disabled,
       glyphMargin: this._glyphMargin,
-      automaticLayout: this._automaticLayout,
+      automaticLayout: false,
       hover: {
         enabled: true,
         sticky: true,
