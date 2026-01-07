@@ -1,0 +1,35 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+
+page LocalDataTime() {
+  @GemButton(label = "Current Time (toString)", leftClick = currentTime());
+
+  @GemButton(label = "Get Hour", leftClick = testGetHour());
+  @GemButton(label = "Get Minute", leftClick = testGetMinute());
+  @GemButton(label = "Get Second", leftClick = testGetSecond());
+  @GemButton(label = "Get Year", leftClick = testGetYear());
+  @GemButton(label = "Get Day of Month", leftClick = testGetDayOfMonth());
+
+  @GemButton(label = "Get Month Value (int)", leftClick = testGetMonthValue());
+  @GemButton(label = "Get Month (Enum)", leftClick = testGetMonth());
+  @GemButton(label = "Get Day of Week (Enum)", leftClick = testGetDayOfWeek());
+  @GemButton(label = "Get Day of Year (int)", leftClick = testGetDayOfYear());
+
+  @GemButton(label = "Get Nano", leftClick = testGetNano());
+  @GemButton(label = "Get Millis (Calculated from Nano)", leftClick = testGetMillisFromNano());
+
+  @GemButton(label = "Method of", leftClick = testOf());
+  @GemButton(label = "Method plus", leftClick = testPlus());
+  @GemButton(label = "Method minus", leftClick = testMinus());
+  @GemButton(label = "Method isAfter", leftClick = testIsAfter());
+  @GemButton(label = "Method isBefore", leftClick = testIsBefore());
+  @GemButton(label = "Method isEqual", leftClick = testIsEqual());
+
+  @GemButton(label = "Method toEpochSecond", leftClick = testToEpochSecond());
+  @GemButton(label = "Method ofEpochSecond", leftClick = testOfEpochSecond());
+  // Snippet for LocalDataTime.gui
+  @GemButton(label = "Test LocalDate Now", leftClick = testLocalDateNow());
+  @GemButton(label = "Test LocalDate Of", leftClick = testLocalDateOf());
+  @GemButton(label = "Test LocalDate Calc", leftClick = testLocalDateManipulation());
+}

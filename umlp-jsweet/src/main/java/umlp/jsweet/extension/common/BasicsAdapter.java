@@ -89,7 +89,7 @@ public class BasicsAdapter extends AbstractAdapter {
 
   // Replace with JSON.parse
   private boolean substituteJsonParserMethods(MethodInvocationElement invocation,
-      String methodName) {
+                                              String methodName) {
     switch (methodName) {
       case "parseJsonObject":
       case "parse":
@@ -101,7 +101,7 @@ public class BasicsAdapter extends AbstractAdapter {
 
   // Replace with the TS access operator "[x]"
   private boolean substituteJsonElementMethods(MethodInvocationElement invocation,
-      String methodName) {
+                                               String methodName) {
     switch (methodName) {
       case "isJsonObject":
         adapterUtils.printMacroName(methodName);
@@ -304,7 +304,7 @@ public class BasicsAdapter extends AbstractAdapter {
         && !getContext().isInterface(type)) {
       boolean hasTOP = type.getSuperclass() == null ? false :
           types().asElement(type.getSuperclass()).getSimpleName().toString().equals(
-          type.getSimpleName().toString() + "TOP");
+              type.getSimpleName().toString() + "TOP");
       String override = hasTOP ? "override" : "";
       printIndent().print("public " + override + " __className: string = \"").print(
           adapterUtils.getTypeNameWithoutBuilderAndTOP(type,
