@@ -22,6 +22,7 @@ umlp Commands {
     Optional<User> getOptionalType(long userId);
     int getBoxingType();
     String getJavaType();
+    String getStringContainingQuotationMarks();
     ActivationStatus getEnumType();
     Set<String> getNotListGenericType();
     List<Integer> getJavaTypeList();

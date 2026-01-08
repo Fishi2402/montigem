@@ -112,7 +112,7 @@ class BaseClassObjectMapperTest {
 
   @Test
   public void testStringDeser(){
-     assertEquals("Test", BaseClassObjectMapper.<Double>deserialize("Test", "java.lang.String").get());
-     assertEquals("", BaseClassObjectMapper.<Double>deserialize("\"\"", "java.lang.String").get());
+     assertEquals("Test", BaseClassObjectMapper.<String>deserialize("Test", "java.lang.String").get());
+     assertEquals("", BaseClassObjectMapper.<String>deserialize("", "java.lang.String").get());
   }
 }
