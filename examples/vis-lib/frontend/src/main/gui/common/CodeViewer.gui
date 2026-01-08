@@ -66,8 +66,9 @@ component CodeViewer(
             @guard(isGuiVisible) {
                 guiContainer@GemColumn(components = [
                     @GemText(value = "GUI Model:"),
-                    @GemColumn(components = [
+                    @GemRow(height = "25vh", components = [
                         @MonacoEditor(
+                            height = "100%",
                             entry = guiCode,
                             language = "java",
                             disabled = true,
@@ -81,8 +82,9 @@ component CodeViewer(
             @guard(isJavaVisible) {
                 javaContainer@GemColumn(components = [
                     @GemText(value = "Java Logic:"),
-                    @GemColumn(components = [
+                    @GemRow(height = "25vh", components = [
                         @MonacoEditor(
+                            height = "100%",
                             entry = javaCode,
                             language = "java",
                             disabled = true,
@@ -96,8 +98,9 @@ component CodeViewer(
             @guard(isScssVisible) {
                 scssContainer@GemColumn(components = [
                     @GemText(value = "SCSS Style:"),
-                    @GemColumn(components = [
+                    @GemRow(height = "25vh", components = [
                         @MonacoEditor(
+                            height = "100%",
                             entry = scssCode,
                             language = "scss",
                             disabled = true,
