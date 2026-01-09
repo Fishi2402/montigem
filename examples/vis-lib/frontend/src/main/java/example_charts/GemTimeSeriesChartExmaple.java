@@ -7,6 +7,7 @@ import mc.fenix.charts.gemtimeseriescharttypes.TimeSeriesData;
 import mc.fenix.charts.gemtimeseriescharttypes.TimeSeriesDataBuilder;
 import mc.fenix.charts.gemtimeseriescharttypes.TimeSeriesDataPointBuilder;
 import mc.fenix.charts.gemtimeseriescharttypes.TimeSeriesEventBuilder;
+import umlp.jsweet.extension.annotation.Component;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class GemTimeSeriesChartExmaple extends GemTimeSeriesChartExmapleTOP {
 
   @Override

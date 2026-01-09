@@ -19,7 +19,6 @@ page GemTimeSeriesChartExmaple (List<Person> persons) {
       )
     ]),
     basePath = "example_charts",
-    componentName = "GemTimeSeriesChartExmaple",
-    position = "bottom"
+    componentName = "GemTimeSeriesChartExmaple"
   );
 }

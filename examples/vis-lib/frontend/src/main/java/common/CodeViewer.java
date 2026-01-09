@@ -8,15 +8,6 @@ import java.util.function.Consumer;
 @Component
 public class CodeViewer extends CodeViewerTOP {
 
-  // --- Expansion Logic ---
-
-  public Consumer<Void> toggleExpanded() {
-    return v -> {
-        boolean newState = !isIsExpanded();
-        setIsExpanded(newState);
-    };
-  }
-
   // --- Toggle Logic ---
 
   public Consumer<Void> toggleGui() {

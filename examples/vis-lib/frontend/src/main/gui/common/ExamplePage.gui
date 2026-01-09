@@ -3,28 +3,53 @@ package common;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemText;
 
 component ExamplePage(
   GUIViewElement component,
   String basePath,
   String componentName,
-  String position = "right"
-) {
-  @guard(position == "right") {
-    @GemRow(wrap = "wrap", components = [
-      @GemColumn(width = "50%", components = [
-        component
-      ]),
-      @GemColumn(width = "48%", components = [
-        @CodeViewer(basePath = basePath, componentName = componentName)
-      ])
-    ]);
-  };
 
-  @guard(position == "bottom") {
-    @GemColumn(components = [
-      component,
-      @CodeViewer(basePath = basePath, componentName = componentName)
-    ]);
+  // Internal state
+  ?String layoutMode = "hidden" // "fullscreen", "right", "bottom", "hidden"
+) {
+
+  // Toolbar
+  @GemRow(hAlign = "right", vAlign = "center", components = [
+    @GemText(value = "Show/Hide Code:", width = "auto", height = "auto"),
+    @GemRow(components = [
+      @GemButton(width = "40px", content = [@GemIcon(name = "code")], leftClick = setLayoutFullscreen()),
+      @GemButton(width = "40px", content = [@GemIcon(name = "vertical_split")], leftClick = setLayoutRight()),
+      @GemButton(width = "40px", content = [@GemIcon(name = "horizontal_split")], leftClick = setLayoutBottom()),
+      @GemButton(width = "40px", content = [@GemIcon(name = "visibility_off")], leftClick = setLayoutHidden())
+    ])
+  ]);
+
+  // Content
+  @guard(layoutMode == "fullscreen") {
+      @CodeViewer(basePath = basePath, componentName = componentName, height = "100%", vertical = false);
+  } else {
+      @guard(layoutMode == "right") {
+        @GemRow(wrap = "wrap", vAlign = "stretch", components = [
+          @GemColumn(width = "50%", components = [
+            component
+          ]),
+          @GemColumn(width = "48%", height = "100%", components = [
+            @CodeViewer(basePath = basePath, componentName = componentName, height = "100%", vertical = true)
+          ])
+        ]);
+      } else {
+          @guard(layoutMode == "bottom") {
+            @GemColumn(components = [
+              component,
+              @CodeViewer(basePath = basePath, componentName = componentName, vertical = false)
+            ]);
+          } else {
+              // hidden
+              component;
+          };
+      };
   };
 }

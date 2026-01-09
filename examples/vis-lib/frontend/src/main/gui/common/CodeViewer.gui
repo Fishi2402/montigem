@@ -12,9 +12,6 @@ component CodeViewer(
   String basePath,
   String componentName,
 
-  // State for expansion
-  boolean isExpanded = false,
-
   // State for visibility (all false by default)
   boolean isGuiVisible = false,
   boolean isJavaVisible = false,
@@ -23,21 +20,14 @@ component CodeViewer(
   // Content
   String guiCode = "",
   String javaCode = "",
-  String scssCode = ""
+  String scssCode = "",
+
+  // Layout
+  boolean vertical = false,
+  String height = "auto"
 ) {
-  @guard(!isExpanded) {
-      // Minimal button without card for compact view
-      @GemButton(label = "Show Source Code", leftClick = toggleExpanded());
-  }
-
-  @guard(isExpanded) {
-      @GemCard(title = "Source Code", component =
-        @GemColumn(components = [
-
-          // Header Row with Hide Button
-          @GemRow(components = [
-            @GemButton(label = "Hide Source Code", leftClick = toggleExpanded())
-          ]),
+      @GemCard(title = "Source Code", height = height, component =
+        @GemColumn(height = "100%", components = [
 
           // Toggle Buttons for Files
           @GemRow(components = [
@@ -61,59 +51,50 @@ component CodeViewer(
           ]),
 
           // Editors Container
-          editorsRow@GemRow(wrap = "wrap", components = [
-
-            @guard(isGuiVisible) {
-                guiContainer@GemColumn(components = [
-                    @GemText(value = "GUI Model:"),
-                    @GemRow(height = "25vh", components = [
-                        @MonacoEditor(
-                            height = "100%",
-                            entry = guiCode,
-                            language = "java",
-                            disabled = true,
-                            theme = "vs",
-                            glyphMargin = false
-                        )
-                    ])
-                ]);
-            },
-
-            @guard(isJavaVisible) {
-                javaContainer@GemColumn(components = [
-                    @GemText(value = "Java Logic:"),
-                    @GemRow(height = "25vh", components = [
-                        @MonacoEditor(
-                            height = "100%",
-                            entry = javaCode,
-                            language = "java",
-                            disabled = true,
-                            theme = "vs",
-                            glyphMargin = false
-                        )
-                    ])
-                ]);
-            },
-
-            @guard(isScssVisible) {
-                scssContainer@GemColumn(components = [
-                    @GemText(value = "SCSS Style:"),
-                    @GemRow(height = "25vh", components = [
-                        @MonacoEditor(
-                            height = "100%",
-                            entry = scssCode,
-                            language = "scss",
-                            disabled = true,
-                            theme = "vs",
-                            glyphMargin = false
-                        )
-                    ])
-                ]);
-            }
-
-          ])
+          @guard(vertical) {
+              editorsCol@GemColumn(height = "100%", components = [
+                @guard(isGuiVisible) {
+                    guiContainerVert@GemColumn(height = "300px", components = [
+                        @GemText(value = "GUI Model:", height = "auto"),
+                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                    ]);
+                },
+                @guard(isJavaVisible) {
+                    javaContainerVert@GemColumn(height = "300px", components = [
+                        @GemText(value = "Java Logic:", height = "auto"),
+                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                    ]);
+                },
+                @guard(isScssVisible) {
+                    scssContainerVert@GemColumn(height = "300px", components = [
+                        @GemText(value = "SCSS Style:", height = "auto"),
+                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false)
+                    ]);
+                }
+              ]);
+          } else {
+              editorsRow@GemRow(wrap = "wrap", height = "100%", components = [
+                @guard(isGuiVisible) {
+                    guiContainerHoriz@GemColumn(height = "400px", components = [
+                        @GemText(value = "GUI Model:", height = "auto"),
+                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                    ]);
+                },
+                @guard(isJavaVisible) {
+                    javaContainerHoriz@GemColumn(height = "400px", components = [
+                        @GemText(value = "Java Logic:", height = "auto"),
+                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                    ]);
+                },
+                @guard(isScssVisible) {
+                    scssContainerHoriz@GemColumn(height = "400px", components = [
+                        @GemText(value = "SCSS Style:", height = "auto"),
+                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false)
+                    ]);
+                }
+              ]);
+          }
 
         ])
       );
-  }
 }

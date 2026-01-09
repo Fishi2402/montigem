@@ -12,7 +12,6 @@ page GemTimelineChartExample (List<Person> persons) {
       blockClick = getBlockClick()
     ),
     basePath = "example_charts",
-    componentName = "GemTimelineChartExample",
-    position = "bottom"
+    componentName = "GemTimelineChartExample"
   );
 }

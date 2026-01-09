@@ -7,12 +7,13 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 import common.ExamplePage;
 
-page GemDropdownInputExample() {
+page GemDropdownInputExample(String degreeEntry, String hobbyEntry, String hobbyFrequencyEntry) {
   @ExamplePage(
     component = @GemColumn(components = [
       @GemRow(
         components = [
           @GemDropdownInput(
+            entry = degreeEntry,
             width = "50%",
             labelText = "Academic degree:",
             options = [
@@ -29,6 +30,7 @@ page GemDropdownInputExample() {
           @GemRow(
             components = [
               @GemDropdownInput(
+                entry = hobbyEntry,
                 width = "50%",
                 labelText = "Hobby:",
                 options = [
@@ -64,6 +66,7 @@ page GemDropdownInputExample() {
           @GemRow(
             components = [
               @GemDropdownInput(
+                entry = hobbyFrequencyEntry,
                 width = "50%",
                 labelText = "How often do you attend your Hobby?",
                 options = [
