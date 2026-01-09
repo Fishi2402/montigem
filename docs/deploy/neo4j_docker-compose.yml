@@ -5,10 +5,9 @@
 #
 # Also see "deploy.md"
 #
-version: "2.1"
 services:
   db:
-    image: neo4j:5.10.0-community
+    image: neo4j:5.28.0-community
     environment:
       - NEO4J_AUTH=<ChangeThisPassword_PLEASE>
     restart: "unless-stopped"
@@ -18,7 +17,7 @@ services:
       timeout: 10s
       retries: 20
     expose:
-      - 7474
+      - 7687
 # CHANGE ME: Comment in!
 #    volumes:
 #      - './db_data:/var/lib/neo4j/data/'      # Persist Data
@@ -27,12 +26,10 @@ services:
     image: registry.git.rwth-aachen.de/monticore/umlp/corerequirements # CHANGE ME: use your own backend-image
     environment:
       # CHANGE ME: your own domain, where the website should be available from
-      # - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
-
-      - jdbc_driver=org.neo4j.jdbc.bolt.BoltDriver
-      - database_url=jdbc:neo4j:bolt://db:7687/?flatten=1
-      - password=<ChangeThisPassword_PLEASE>    # CHANGE ME: !!!!
-      - user=neo4j
+      - UMLP_DEPLOYED_DOMAIN=https://<DOMAIN>  # Required for Allowed Origins
+      - NEO4J_URI=bolt://db:7687
+      - NEO4J_PASSWORD=<ChangeThisPassword_PLEASE>    # CHANGE ME: !!!!
+      - NEO4J_USER=neo4j
     restart: "unless-stopped"
     links:
       - db

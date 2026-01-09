@@ -6,6 +6,7 @@ ${tc.signature("sublibs", "outputPath", "util")}
 
 **GUI Components** are the elements of web pages.
 This document lists MontiGem GUI library components.
+To see a live demonstration of most components see the [demo page](https://montigem.demos.se.rwth-aachen.de).
 
 Each component description includes:
 
