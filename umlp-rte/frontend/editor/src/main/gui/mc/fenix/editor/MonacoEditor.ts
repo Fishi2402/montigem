@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { config, MonacoEditorComponent } from '../../../../../../build/gui2java2ts/mc/fenix/editor/MonacoEditorComponent';
-import {EventEmitter, Output, Provider, ElementRef, AfterViewInit, OnDestroy} from '@angular/core';
+import {EventEmitter, Output, Provider, ElementRef, AfterViewInit, OnDestroy, HostBinding} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 import * as monacoTypes from "monaco-editor";
@@ -39,6 +39,9 @@ import {HoverContent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/
 })
 
 export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit, OnDestroy {
+
+  @HostBinding('style.width') get styleWidth() { return this.getWidth(); }
+  @HostBinding('style.height') get styleHeight() { return this.getHeight(); }
 
   protected editor: monacoTypes.editor.ICodeEditor;
   protected cacheCheck : string = "";
@@ -113,7 +116,6 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   @Output() public entryChange = new EventEmitter<string>();
 
   onEntryChange(event: string) {
-    // console.warn("Entry change")
     this.entryChange.emit(event);
     if(this.editor) {
       this.highlightInitialization(this.editor)
@@ -132,12 +134,10 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   }
 
   public highlightInitialization(editor: monacoTypes.editor.ICodeEditor): void {
-    // console.warn("Highlighting now", this.getHighlighting())
     if(!this.getHighlighting()) {
       return;
     }
     const highlighting = this.getHighlighting().map(inlineHighlight => {
-      // console.warn("Highlighting now! ",  inlineHighlight.getCssClass())
       return {
         range: {
           startLineNumber: inlineHighlight.getRange().getStartLin(),
@@ -156,7 +156,6 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
     if(cache === this.highlightingCache) {
       return;
     } {
-      // console.warn("This is called ", highlighting)
       this.cacheCheck = cache;
       this.highlightingCache = highlighting;
       editor.createDecorationsCollection(this.highlightingCache);
@@ -164,7 +163,6 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   }
 
   public scrollToLine(editor: monacoTypes.editor.ICodeEditor): void {
-    // console.warn("Scroll to line now", this.getInitialScrollToLine())
     if(!this.getInitialScrollToLine()) {
       return;
     }
@@ -172,25 +170,21 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   }
 
   public override setLanguage(val: string) {
-    // console.warn("Setting language", val)
     super.setLanguage(val);
     this.updateOptions();
   }
 
   public override setTheme(val: string) {
-    // console.warn("Setting theme")
     super.setTheme(val);
     this.updateOptions();
   }
 
   public override setDisabled(val: boolean) {
-    // console.warn("Setting disabled")
     super.setDisabled(val);
     this.updateOptions();
   }
 
   public override setHoverContents(val: HoverContent[]) {
-    // console.warn("Trying to set hover : ",val)
     super.setHoverContents(val)
     if(!val) {
       return;
@@ -198,17 +192,13 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   }
 
   public override setHighlighting(val: InlineDecoration[]) {
-    // console.warn("Setting highlighting")
     super.setHighlighting(val);
     if(this.editor) {
       this.highlightInitialization(this.editor);
-    } else {
-      // console.warn("Highlighting initialization not possible due to editor not set.")
     }
   }
 
   public updateOptions() : void {
-    // console.warn("Updating options")
     this._options = {
       value: this._entry,
       language: this._language,
