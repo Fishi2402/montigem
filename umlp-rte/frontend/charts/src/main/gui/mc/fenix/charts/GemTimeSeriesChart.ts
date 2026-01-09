@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, HostBinding, Input} from '@angular/core';
 import {GemTimeSeriesChartComponent, config} from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemTimeSeriesChartComponent';
-import {OnDestroy} from '@angular/core';
 import ApexCharts from 'apexcharts';
 import { TimeSeriesData } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeriesData';
 import { TimeSeries } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimeseriescharttypes/TimeSeries';
@@ -15,50 +14,37 @@ import { TimeSeriesDataPoint } from '../../../../../../build/gui2java2ts/mc/feni
   styles: config.styles,
   styleUrls: [...config.styleUrls]
 })
-export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements OnDestroy {
+export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements OnDestroy, AfterViewInit {
+
+  @HostBinding('style.height') get styleHeight() { return this.getHeight(); }
+  @HostBinding('style.width') get styleWidth() { return this.getWidth(); }
 
   options: any;
-  //targetElement: any;
   chart: ApexCharts;
   @ViewChild('tSChart') targetElement! : ElementRef<HTMLDivElement>;
   private liveData: boolean = true;
+  private resizeObserver: ResizeObserver;
+
+  // Data Range (for external control)
+  public dataMinTime: number = 0;
+  public dataMaxTime: number = 0;
+
+  constructor(private hostElement: ElementRef) {
+    super();
+  }
 
   public async init() {
     await super.init();
 
     this.options = {
-      animations: {
-        enabled: false,
-        speed: 800,
-        animateGradually: {
-          enabled: true,
-          delay: 150
-        },
-        dynamicAnimation: {
-          enabled: true,
-          speed: 350
-        }
-      },
-      noData: {
-        text: true ? "Loading...":"No Data present in the graph!",
-        align: 'center',
-        verticalAlign: 'middle',
-        offsetX: 0,
-        offsetY: 0,
-        style: {
-          color: "#000000",
-          fontSize: '14px',
-          fontFamily: "Helvetica"
-        }
-      },
+      animations: { enabled: false },
+      noData: { text: "Loading...", align: 'center', verticalAlign: 'middle', style: { color: "#000000", fontSize: '14px' } },
       chart: {
         id: 'area-datetime',
         type: 'area',
-        height: 350,
-        width: '75%',/**/
-        zoom: {
-          autoScaleYaxis: true
-        },
+        height: '100%',
+        width: '100%',
+        zoom: { autoScaleYaxis: true },
         events: {
           legendClick: function(chartContext, seriesIndex, opts) {
             this.options.series[seriesIndex].hidden = !this.options.series[seriesIndex].hidden;
@@ -68,37 +54,18 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       series: [],
       xaxis: {
         type: 'datetime',
-        // min: new Date('01 Mar 2012').getTime(),
         tickAmount: 6,
-        lables: {
-          format: 'dd MMM yyyy HH:mm:ss',
-          formatter: (value) => {
-            const date: Date = new Date(value);
-            return date.toLocaleDateString("de-DE", {timeZone: "Europe/Berlin"})
+        labels: {
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
           }
         }
       },
-      annotations: {
-        yaxis: [],
-        xaxis: []
-      },
-
-      dataLabels: {
-        enabled: false
-      },
-      markers: {
-        size: 0,
-        style: 'hollow',
-      },
-      tooltip: {
-        x: {
-          format: 'dd MMM yyyy HH:mm:ss',
-          formatter: (value) => {
-            const date = new Date(value);
-            return date.toLocaleString("de-DE", { timeZone: "Europe/Berlin" });
-          }
-        }
-      },
+      dataLabels: { enabled: false },
+      markers: { size: 0, style: 'hollow' },
       fill: {
         type: 'gradient',
         gradient: {
@@ -111,11 +78,23 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     };
 
     if (this.targetElement) {
-      this.chart = new ApexCharts(this.targetElement.nativeElement, this.options); // Neues ApexChart-Objekt instanziieren
-      this.chart.render(); // Rendern des Charts
-    } else {
-      console.error("Konnte das Element mit der ID 'apx-chart' nicht finden.");
+      this.chart = new ApexCharts(this.targetElement.nativeElement, this.options);
+      this.chart.render();
     }
+  }
+
+  ngAfterViewInit() {
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.chart) {
+        this.chart.updateOptions({ chart: { height: '100%', width: '100%' } }, false, false);
+      }
+    });
+    this.resizeObserver.observe(this.hostElement.nativeElement);
+  }
+
+  ngOnDestroy() {
+    if (this.resizeObserver) this.resizeObserver.disconnect();
+    if (this.chart) this.chart.destroy();
   }
 
   public setData(val: TimeSeriesData) {
@@ -126,6 +105,10 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   id2TimeSeriesIndex: Map<number, number> = new Map();
 
   private async processNewData(data: TimeSeriesData): Promise<void> {
+    let min = Number.MAX_VALUE;
+    let max = Number.MIN_VALUE;
+    let hasData = false;
+
     for await (const series of data.getSeriesList()) {
       if (this.id2TimeSeriesIndex.has(series.getIdentifier())) {
         this.options.series[this.id2TimeSeriesIndex.get(series.getIdentifier())] = await this.transformData2Series(series);
@@ -133,13 +116,24 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
         this.id2TimeSeriesIndex.set(series.getIdentifier(), this.options.series.length);
         this.options.series.push(await this.transformData2Series(series));
       }
+
+      for await (const dp of series.getDatapointsList()) {
+          const t = dp.getTimestamp().getTime();
+          if (t < min) min = t;
+          if (t > max) max = t;
+          hasData = true;
+      }
+    }
+
+    if (hasData) {
+        this.dataMinTime = min;
+        this.dataMaxTime = max;
     }
 
     if (this.liveData) {
-      console.log("updateSeries");
       this.chart.updateSeries(this.options.series, false);
     }
-
+    
     let events = await this.transformEvent2Annotation(data);
     this.chart.clearAnnotations();
     for await (const event of events) {
@@ -152,41 +146,33 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     for await (const dataPoint of data.getDatapointsList()) {
       seriesData.push([dataPoint.getTimestamp(), dataPoint.getValue()]);
     }
-
-    let newSeries: {name: string, data: any[], color?: string, hidden?: boolean};
-    if (data.getColor() == null) {
-      newSeries = {name: data.getName(), data: seriesData, hidden: data.isHidden()};
-    } else {
-      newSeries = {name: data.getName(), data: seriesData, color: data.getColor(), hidden: data.isHidden()};
-    }
-    return newSeries;
+    return {
+        name: data.getName(), 
+        data: seriesData, 
+        color: data.getColor() || undefined, 
+        hidden: data.isHidden()
+    };
   }
 
   private async transformEvent2Annotation(data: TimeSeriesData){
     let eventData = [];
     for await (const event of data.getEventsList()){
-      let bgcolor = event.getBackgroundColor();
-      if (bgcolor == null) bgcolor="#000"
-      let textColor = event.getTextColor();
-      if (textColor == null) textColor = "#fff"
-      let annotation = {x: event.getTimestamp().getTime(),
+      let bgcolor = event.getBackgroundColor() || "#000";
+      let textColor = event.getTextColor() || "#fff";
+      eventData.push({
+        x: event.getTimestamp().getTime(),
         borderColor: bgcolor,
-        yAxisIndex: 0,
         label: {
           show: event.isShow(),
           text: event.getName(),
-          style: {
-            color: textColor,
-            background: bgcolor
-          }
-        }}
-      eventData.push(annotation);
+          style: { color: textColor, background: bgcolor }
+        }
+      });
     }
-    return eventData
+    return eventData;
   }
 
   public toggleLiveData(event: any) {
-    console.log("toggleLiveData", this.liveData);
     this.liveData = !this.liveData;
   }
 
@@ -194,99 +180,27 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     return this.liveData ? "Data is live" : "Data is paused";
   }
 
-  public setShowAfter(event: any) {
-    console.log("setShowAfter", event);
-
-    if (event && event instanceof Date) {
-      const date: Date = event;
-      this.options.xaxis.min = date.getTime();
-      this.chart.updateOptions({
-        xaxis: this.options.xaxis
-      })
-    } else {
-      this.options.xaxis.min = null;
-      this.chart.updateOptions({
-        xaxis: this.options.xaxis
-      })
-    }
-  }
-
-  // Eigenschaften für showBefore
-  beforeDateEntry: string = ''; // Vorheriges Datum
-  beforeTimeEntry: string = '0:00'; // Vorherige Uhrzeit
-
-  // Eigenschaften für showAfter (bereits vorhanden)
-  afterDateEntry: string = '';
-  afterTimeEntry: string = '0:00';
-
-
-  // Methoden für showBefore
-  onBeforeDateInputChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.beforeDateEntry = input.value;
-
-    this.updateChartWithSelectedDateTime();
-  }
-
-  onBeforeTimeInputChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.beforeTimeEntry = input.value;
-
-    this.updateChartWithSelectedDateTime();
-  }
-
-  // Methoden für showAfter (bereits implementiert)
-  onAfterDateInputChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.afterDateEntry = input.value;
-
-    this.updateChartWithSelectedDateTime();
-  }
-
-  onAfterTimeInputChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.afterTimeEntry = input.value;
-
-    this.updateChartWithSelectedDateTime();
-  }
-
-  // Aktualisiert das Diagramm basierend auf kombiniertem Datum und Uhrzeit
-  private updateChartWithSelectedDateTime(): void {
-    if (this.afterDateEntry && this.afterTimeEntry) {
-      // Datum und Uhrzeit kombinieren
-      const [year, month, day] = this.afterDateEntry.split('-').map(Number);
-      const [hours, minutes] = this.afterTimeEntry.split(':').map(Number);
-
-      const selectedDateTime = new Date(year, month - 1, day, hours, minutes);
-      this.options.xaxis.min = selectedDateTime.getTime();
-
-      // Optional: Diagramm neu rendern, wenn die Optionen geändert wurden
-      if (this.chart) {
-        this.chart.updateOptions(this.options, true, true);
+  // API for external control
+  @Input()
+  public set showAfter(val: any) {
+      if (this.chart && val) {
+          let time = val;
+          if (val instanceof Date) {
+              time = val.getTime();
+          }
+          this.chart.updateOptions({ xaxis: { min: time } }, false, false);
       }
-    } else {
-      console.warn('Ungültige Eingaben. Datum oder Uhrzeit fehlt.');
-    }
-
-    if (this.beforeDateEntry && this.beforeTimeEntry) {
-      // Datum und Uhrzeit kombinieren
-      const [year, month, day] = this.beforeDateEntry.split('-').map(Number);
-      const [hours, minutes] = this.beforeTimeEntry.split(':').map(Number);
-
-      const selectedDateTime = new Date(year, month - 1, day, hours, minutes);
-      this.options.xaxis.max = selectedDateTime.getTime();
-
-      // Optional: Diagramm neu rendern, wenn die Optionen geändert wurden
-      if (this.chart) {
-        this.chart.updateOptions(this.options, true, true);
-      }
-    } else {
-      console.warn('Ungültige Eingaben. Datum oder Uhrzeit fehlt.');
-    }
   }
 
-  constructor() {
-    super();
+  @Input()
+  public set showUntil(val: any) {
+      if (this.chart && val) {
+          let time = val;
+          if (val instanceof Date) {
+              time = val.getTime();
+          }
+          this.chart.updateOptions({ xaxis: { max: time } }, false, false);
+      }
   }
 }
 

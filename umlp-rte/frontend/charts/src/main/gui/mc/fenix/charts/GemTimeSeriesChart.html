@@ -2,64 +2,9 @@
 
 <div class="buttons-and-inputs-container">
   <!-- Button -->
-  <ng-template #button1>
-    <button class="toggleLiveDataButton" (click)="toggleLiveData.bind(this)($event)" *ngIf="!isHideLiveDataToggle()">
-      {{ getToggleLiveDataButtonLabel() }}
-    </button>
-  </ng-template>
-  <ng-container *ngTemplateOutlet="button1"></ng-container>
-
-  <!-- showBefore -->
-  <ng-template #showBefore>
-    <div class="date-time-inputs" *ngIf="!isHideShowUntilInput()">
-      <!-- Datum-Eingabe -->
-      <label class="gem-label-text-input" for="beforeDateInput">Show until</label>
-      <input
-        class="gem-text-input"
-        type="date"
-        id="beforeDateInput"
-        [value]="beforeDateEntry"
-        (input)="onBeforeDateInputChange($event)"
-      />
-
-      <!-- Uhrzeit-Eingabe -->
-      <input
-        class="gem-text-input"
-        type="time"
-        id="beforeTimeInput"
-        [value]="beforeTimeEntry"
-        (input)="onBeforeTimeInputChange($event)"
-      />
-    </div>
-  </ng-template>
-  <ng-container *ngTemplateOutlet="showBefore"></ng-container>
-
-  <!-- showAfter -->
-  <ng-template #showAfter>
-    <div class="date-time-inputs" *ngIf="!isHideShowAfterInput()">
-      <!-- Datum-Eingabe -->
-      <label class="gem-label-text-input" for="afterDateInput">Show after</label>
-      <input
-        class="gem-text-input"
-        type="date"
-        id="afterDateInput"
-        [value]="afterDateEntry"
-        (input)="onAfterDateInputChange($event)"
-      />
-
-      <!-- Uhrzeit-Eingabe -->
-      <input
-        class="gem-text-input"
-        type="time"
-        id="afterTimeInput"
-        [value]="afterTimeEntry"
-        (input)="onAfterTimeInputChange($event)"
-      />
-    </div>
-  </ng-template>
-  <ng-container *ngTemplateOutlet="showAfter"></ng-container>
+  <button class="toggleLiveDataButton" (click)="toggleLiveData($event)" *ngIf="!isHideLiveDataToggle()">
+    {{ getToggleLiveDataButtonLabel() }}
+  </button>
 </div>
 
-<div #tSChart></div>
-
-
+<div #tSChart class="chart-container"></div>

@@ -2,16 +2,38 @@
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemTimeSeriesChartTypes.TimeSeriesData;
-
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-component GemTimeSeriesChart (
+/**
+  A time series chart is a data visualization tool that plots data points at successive intervals of time.
+  It is used to show how data changes over time.
+*/
+component GemTimeSeriesChart(
+  /**
+    The data to be displayed in the chart.
+    Contains series of data points (timestamp, value) and events.
+  */
   TimeSeriesData data,
-  Optional<LocalDateTime> showAfter,
-  Optional<LocalDateTime> showUntil,
-  Boolean hideShowAfterInput,
-  Boolean hideShowUntilInput,
-  Boolean hideLiveDataToggle,
-  Boolean hideLegend
+  /**
+    If true, the button to toggle live data updates is hidden.
+  */
+  boolean hideLiveDataToggle = false,
+  /**
+    Width of the chart container as a valid CSS length (e.g., "100%", "500px").
+  */
+  String width = "100%",
+  /**
+    Height of the chart container as a valid CSS length (e.g., "350px", "50vh").
+  */
+  String height = "350px",
+  /**
+    Optional start time for the visible range (zoom).
+    If set, the chart will zoom to show data after this time.
+  */
+  LocalDateTime showAfter,
+  /**
+    Optional end time for the visible range (zoom).
+    If set, the chart will zoom to show data until this time.
+  */
+  LocalDateTime showUntil
 )
