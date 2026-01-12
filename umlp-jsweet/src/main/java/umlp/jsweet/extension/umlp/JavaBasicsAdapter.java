@@ -369,21 +369,27 @@ public class JavaBasicsAdapter extends AbstractAdapter {
 
       case "toString":
         printMacroName(methodName);
-        // Manually build ISO string. Standard Java toString() includes nanos/millis if present.
-        // Check if millis > 0 and append them to match Java's behavior.
         this.print("((d) => { ");
         this.print("  const pad = (n) => ('0' + n).slice(-2); ");
+
+        // 1. Build ISO Date part (YYYY-MM-DD)
         this.print("  let s = d.getUTCFullYear() + '-' + ");
         this.print("         pad(d.getUTCMonth() + 1) + '-' + ");
-        this.print("         pad(d.getUTCDate()) + 'T' + ");
-        this.print("         pad(d.getUTCHours()) + ':' + ");
-        this.print("         pad(d.getUTCMinutes()) + ':' + ");
-        this.print("         pad(d.getUTCSeconds()); ");
+        this.print("         pad(d.getUTCDate()); ");
 
-        // Check if milliseconds exist. If so, append them (3 digits) to string.
-        this.print("  if (d.getUTCMilliseconds() > 0) { ");
-        this.print("    s += '.' + ('00' + d.getUTCMilliseconds()).slice(-3); ");
-        this.print("  } ");
+        // 2. Append Time part ONLY if it is NOT a LocalDate
+        // (LocalDate should just be YYYY-MM-DD for HTML5 input compatibility)
+        if (!targetType.equals("java.time.LocalDate")) {
+          this.print("  s += 'T' + ");
+          this.print("         pad(d.getUTCHours()) + ':' + ");
+          this.print("         pad(d.getUTCMinutes()) + ':' + ");
+          this.print("         pad(d.getUTCSeconds()); ");
+
+          // Append milliseconds if present
+          this.print("  if (d.getUTCMilliseconds() > 0) { ");
+          this.print("    s += '.' + ('00' + d.getUTCMilliseconds()).slice(-3); ");
+          this.print("  } ");
+        }
 
         this.print("  return s; ");
         this.print("})(");
