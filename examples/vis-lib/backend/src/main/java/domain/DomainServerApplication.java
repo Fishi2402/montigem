@@ -16,7 +16,7 @@ import java.util.Random;
 
 @SpringBootApplication(
     exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},
-    scanBasePackages = {"umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "service"}
+    scanBasePackages = {"umlp.frontend","umlp.backendrte.service.websocket", "umlp.backendrte.service.rest", "service"}
 )
 public class DomainServerApplication extends DomainServerApplicationTOP {
 

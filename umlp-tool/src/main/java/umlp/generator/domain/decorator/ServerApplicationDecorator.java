@@ -40,7 +40,7 @@ public class ServerApplicationDecorator extends AbstractDecorator {
     glex.replaceTemplate("cd2java.Annotations", serverApplicationClass, new StringHookPoint("@SpringBootApplication(\n" +
         "    // We have our own data management\n" +
         "    exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class},\n" +
-        "    scanBasePackages={\"umlp.backendrte.service.websocket\", \"umlp.backendrte.service.rest\", \"" +origCD.getCDDefinition().getName().toLowerCase() +
+        "    scanBasePackages={\"umlp.frontend\",\"umlp.backendrte.service.websocket\", \"umlp.backendrte.service.rest\", \"" +origCD.getCDDefinition().getName().toLowerCase() +
         ".service\", \"service\"}\n" +
         ")\n@jsweet.lang.Erased\n"));
 

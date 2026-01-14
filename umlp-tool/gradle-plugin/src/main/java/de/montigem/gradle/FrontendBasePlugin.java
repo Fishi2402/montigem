@@ -21,6 +21,8 @@ import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.bundling.ZipEntryCompression;
+import org.gradle.jvm.tasks.Jar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -45,6 +47,7 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
   public static final String UMLP_FRONTEND_BUILD_IMAGE_LOCAL_TASK = "buildImageLocal";
   public static final String UMLP_FRONTEND_DEPLOY_IMAGE_CI_TASK = "deployImageCI";
   public static final String UMLP2SYM_TASK = "umlp2sym";
+  public static final String FULL_APPLICATION_JAR_HOSTING = "fullAppJar";
 
   public static final String UMLP_GROUP_NAME = "umlp";
   public static final String GUI_TYPES_CONFIG = "guiTypes";
@@ -181,6 +184,55 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
     // Docker images
     project.getTasks().register(UMLP_FRONTEND_BUILD_IMAGE_LOCAL_TASK, FrontendLocalImageTask.class);
     project.getTasks().register(UMLP_FRONTEND_DEPLOY_IMAGE_CI_TASK, FrontendCIImageTask.class);
+
+    Optional<Project> parent = Optional.ofNullable(project.getParent());
+    Optional<Project> backend = parent.map(value -> value.findProject(value.getPath() + ":backend"));
+    if(backend.isPresent()) {
+      TaskProvider<Jar> fullAppJar = project.getTasks().register(FULL_APPLICATION_JAR_HOSTING, Jar.class, task -> {
+        task.setGroup("build");
+        task.getArchiveClassifier().set(FULL_APPLICATION_JAR_HOSTING);
+        TaskProvider<Jar> backendBootJar = backend.get().getTasks().named("bootJar", Jar.class);
+
+        task.dependsOn(backendBootJar);
+        task.dependsOn(buildAppTask);
+
+        task.setEntryCompression(ZipEntryCompression.STORED);
+
+        // Start from Spring Boot Jar that was created in the backend
+        task.from(
+            project.zipTree(backendBootJar.flatMap(Jar::getArchiveFile)),
+            copySpec -> {
+              // Add application.properties with a new entry 'java.frontend.enabled=true' to start
+              // the FrontEnd server for hosting the websources
+              copySpec.filesMatching(
+                  "BOOT-INF/classes/application.properties",
+                  fileCopyDetails -> {
+                    final boolean[] appended = { false };
+                    fileCopyDetails.filter(line -> {
+                      if (!appended[0]) {
+                        appended[0] = true;
+                        return line + "\njava.frontend.enabled=true";
+                      }
+                      return line;
+                    });
+                  }
+              );
+            }
+        );
+
+        // Copy websources into jar
+        task.from(
+            setupFrontend.map(t -> t.getOutput().dir("dist/client")),
+            copySpec -> copySpec.into("BOOT-INF/classes")
+        );
+
+        task.getManifest().from(backendBootJar.flatMap(Jar::getArchiveFile).map(archive ->
+                    project.zipTree(archive)
+                        .matching(p -> p.include("META-INF/MANIFEST.MF"))
+                        .getSingleFile())
+        );
+      });
+    }
   }
 
   private TaskProvider<UMLP2SymTask> createUMLP2SymTask(Project project) {

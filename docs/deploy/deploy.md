@@ -51,3 +51,12 @@ docker build .  -t <imageNameOfFrontend>
 * On the server:
     * `docker login -u user -p <token> registry.git.rwth-aachen.de`
     * `docker compose up --detach`
+
+### Local All in one Deployment Jar
+
+If desired it is also possible to create a single jar from which you can start the application i.e. Backend and Frontend Server
+hosting the websources. You can do by running the `:frontend:fullAppJar` gradle task. 
+
+This works by creating a new jar based on the backend bootJar and copying all the websources created by `:frontend:buildApp` into it.
+Furthermore, the `application.properties` is extended to include `java.frontend.enabled=true` which tells the Spring application to
+start the `umlp.frontend.DemoFrontendServer` from the `umlp-rte` project. 

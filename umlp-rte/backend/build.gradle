@@ -27,6 +27,7 @@ dependencies {
   // Problems with apache commons-text and MontiCore JSON Parser
   compileOnly "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
   implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
+  implementation("io.undertow:undertow-core:2.3.20.Final")
 
   // Used for umlp._infrastructure.TestSetup
   // Alternative: testing-rte + generate a testing module for each cd
