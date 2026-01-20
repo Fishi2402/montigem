@@ -11,6 +11,7 @@ page GemVennDiagramExample(List<Person> persons) {
       data = null
     ),
     basePath = "example_charts",
-    componentName = "GemVennDiagramExample"
+    componentName = "GemVennDiagramExample",
+    simple = true
   );
 }

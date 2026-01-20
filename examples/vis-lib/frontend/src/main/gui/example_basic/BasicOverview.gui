@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_basic;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import common.ComponentCard;
+
+page BasicOverview() {
+  @GemColumn(
+    hAlign = "center",
+    components = [
+      @GemText(value = "Basic Components", size = "2rem", weight = "bold", height = "auto"),
+      @GemText(value = "Fundamental UI elements", size = "1.2rem", color = "gray", height = "auto"),
+
+      @GemRow(
+        wrap = "wrap",
+        hAlign = "center",
+        rowGap = "20px",
+        colGap = "20px",
+        width = "100%",
+        components = [
+            @ComponentCard(title = "Button", icon = "smart_button", click = goToButton()),
+            @ComponentCard(title = "Text", icon = "text_fields", click = goToText()),
+            @ComponentCard(title = "Icon", icon = "star", click = goToIcon()),
+            @ComponentCard(title = "Image", icon = "image", click = goToImage()),
+            @ComponentCard(title = "Link", icon = "link", click = goToLink()),
+            @ComponentCard(title = "Loading Spinner", icon = "loop", click = goToLoadingSpinner()),
+            @ComponentCard(title = "Audio", icon = "audiotrack", click = goToAudio()),
+            @ComponentCard(title = "Video", icon = "videocam", click = goToVideo())
+        ]
+      )
+    ]
+  );
+}

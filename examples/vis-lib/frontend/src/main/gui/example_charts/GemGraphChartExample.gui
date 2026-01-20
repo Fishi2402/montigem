@@ -11,6 +11,7 @@ page GemGraphChartExample(List<Person> persons) {
       data = null
     ),
     basePath = "example_charts",
-    componentName = "GemGraphChartExample"
+    componentName = "GemGraphChartExample",
+    simple = true
   );
 }

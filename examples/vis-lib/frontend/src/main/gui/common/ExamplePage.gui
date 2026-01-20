@@ -11,21 +11,36 @@ component ExamplePage(
   GUIViewElement component,
   String basePath,
   String componentName,
+  Boolean simple = false,
 
   // Internal state
-  ?String layoutMode = "hidden" // "fullscreen", "right", "bottom", "hidden"
+  String layoutMode = "hidden" // "fullscreen", "right", "bottom", "hidden"
 ) {
 
   // Toolbar
-  @GemRow(hAlign = "right", vAlign = "center", components = [
-    @GemText(value = "Show/Hide Code:", width = "auto", height = "auto"),
-    @GemRow(components = [
-      @GemButton(width = "40px", content = [@GemIcon(name = "code")], leftClick = setLayoutFullscreen()),
-      @GemButton(width = "40px", content = [@GemIcon(name = "vertical_split")], leftClick = setLayoutRight()),
-      @GemButton(width = "40px", content = [@GemIcon(name = "horizontal_split")], leftClick = setLayoutBottom()),
-      @GemButton(width = "40px", content = [@GemIcon(name = "visibility_off")], leftClick = setLayoutHidden())
-    ])
-  ]);
+  @guard(!simple) {
+    @GemRow(hAlign = "right", vAlign = "center", components = [
+      @GemText(value = "Show/Hide Code:", width = "auto", height = "auto"),
+      @GemRow(components = [
+        @LayoutButton(mode = "fullscreen", currentMode = layoutMode, label = "Only Source", icon = "code", clickHandler = setLayoutFullscreen()),
+        @LayoutButton(mode = "right", currentMode = layoutMode, label = "Right of GUI", icon = "vertical_split", clickHandler = setLayoutRight()),
+        @LayoutButton(mode = "bottom", currentMode = layoutMode, label = "Below GUI", icon = "horizontal_split", clickHandler = setLayoutBottom()),
+        @LayoutButton(mode = "hidden", currentMode = layoutMode, label = "Hide", icon = "visibility_off", clickHandler = setLayoutHidden())
+      ])
+    ]);
+  } else {
+    @GemRow(hAlign = "right", vAlign = "center", components = [
+      @GemButton(
+        leftClick = toggleLayoutModeSimple(),
+        content = [
+          @GemRow(vAlign = "center", colGap = "5px", components = [
+            @GemIcon(name = "code"),
+            @GemText(value = "Toggle View")
+          ])
+        ]
+      )
+    ]);
+  };
 
   // Content
   @guard(layoutMode == "fullscreen") {

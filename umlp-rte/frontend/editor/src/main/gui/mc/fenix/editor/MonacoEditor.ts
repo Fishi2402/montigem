@@ -41,12 +41,16 @@ import {HoverContent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/
 export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit, OnDestroy {
 
   @HostBinding('style.width') get styleWidth() { return this.getWidth(); }
-  @HostBinding('style.height') get styleHeight() { return this.getHeight(); }
+  @HostBinding('style.height') get styleHeight() { 
+      if (this.isAutoHeight()) return 'auto';
+      return this.getHeight(); 
+  }
 
   protected editor: monacoTypes.editor.ICodeEditor;
   protected cacheCheck : string = "";
   protected highlightingCache;
   private resizeObserver: ResizeObserver;
+  private contentSizeListener: monacoTypes.IDisposable;
 
   /**
    * Adapt the component here if you want to add any options
@@ -99,7 +103,7 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
 
   ngAfterViewInit() {
     this.resizeObserver = new ResizeObserver(() => {
-      if (this.editor) {
+      if (this.editor && !this.isAutoHeight()) {
         this.editor.layout();
       }
     });
@@ -109,6 +113,9 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   ngOnDestroy() {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
+    }
+    if (this.contentSizeListener) {
+        this.contentSizeListener.dispose();
     }
     super.ngOnDestroy();
   }
@@ -129,8 +136,30 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       this.highlightInitialization(editorInstance)
       this.scrollToLine(this.editor)
     }
+    
+    if (this.isAutoHeight()) {
+        this.updateHeight();
+        this.contentSizeListener = this.editor.onDidContentSizeChange(() => {
+            this.updateHeight();
+        });
+    }
+
     // Initial layout
     setTimeout(() => this.editor.layout(), 0);
+  }
+  
+  private updateHeight() {
+      if (!this.editor) return;
+      const contentHeight = this.editor.getContentHeight();
+      const lineHeight = this.editor.getOption(monaco.editor.EditorOption.lineHeight);
+      const maxLines = this.getMaxLines() || 30; // Default 30 if not set
+      const maxHeight = maxLines * lineHeight;
+      
+      const height = Math.min(contentHeight, maxHeight);
+      
+      const width = this.elementRef.nativeElement.clientWidth;
+      this.elementRef.nativeElement.style.height = `${height}px`;
+      this.editor.layout({ width: width, height: height });
   }
 
   public highlightInitialization(editor: monacoTypes.editor.ICodeEditor): void {
@@ -197,6 +226,20 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       this.highlightInitialization(this.editor);
     }
   }
+  
+  public override setAutoHeight(val: boolean) {
+      super.setAutoHeight(val);
+      this.updateOptions();
+      if (val && this.editor && !this.contentSizeListener) {
+          this.updateHeight();
+          this.contentSizeListener = this.editor.onDidContentSizeChange(() => {
+            this.updateHeight();
+        });
+      } else if (!val && this.contentSizeListener) {
+          this.contentSizeListener.dispose();
+          this.contentSizeListener = undefined;
+      }
+  }
 
   public updateOptions() : void {
     this._options = {
@@ -206,6 +249,7 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       readOnly: this._disabled,
       glyphMargin: this._glyphMargin,
       automaticLayout: false,
+      scrollBeyondLastLine: !this.isAutoHeight(),
       hover: {
         enabled: true,
         sticky: true,

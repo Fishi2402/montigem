@@ -1,18 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
 package example_cad;
 
 import mc.fenix.cad.GemCAD;
 import mc.fenix.cad.GemCADTypes.Marker;
+import common.ExamplePage;
 
 page GemCADExample() {
-  @GemCAD(
-    height = "300px",
-    width = "800px",
-    filePath = "assets/cad/test.gltf",
-    markers = [
-      Marker("", "red"),
-            Marker("Blue Label", "blue"),
-            Marker("Green Label", "green")
-    ],
-    onNodeClick = handleNodeClick()
+  @ExamplePage(
+    component = cad@GemCAD(
+      height = "500px",
+      width = "100%",
+      filePath = "assets/cad/test.gltf",
+      markers = [
+        Marker("", "red"),
+        Marker("Blue Label", "blue"),
+        Marker("Green Label", "green")
+      ],
+      onNodeClick = handleNodeClick()
+    ),
+    basePath = "example_cad",
+    componentName = "GemCADExample"
   );
 }

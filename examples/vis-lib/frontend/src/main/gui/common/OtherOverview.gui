@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package common;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import common.ComponentCard;
+
+page OtherOverview() {
+  @GemColumn(
+    hAlign = "center",
+    components = [
+      @GemText(value = "Other Components", size = "2rem", weight = "bold", height = "auto"),
+      @GemText(value = "Specialized and domain-specific components", size = "1.2rem", color = "gray", height = "auto"),
+
+      @GemRow(
+        wrap = "wrap",
+        hAlign = "center",
+        rowGap = "20px",
+        colGap = "20px",
+        width = "100%",
+        components = [
+            @ComponentCard(title = "Monaco Editor", icon = "code", click = goToMonaco()),
+            @ComponentCard(title = "Fischertechnik", icon = "precision_manufacturing", click = goToFischertechnik()),
+            @ComponentCard(title = "CAD Viewer", icon = "3d_rotation", click = goToCAD()),
+            @ComponentCard(title = "Person Overview", icon = "people", click = goToPerson())
+        ]
+      )
+    ]
+  );
+}

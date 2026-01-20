@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+:host ::ng-deep {
+  .gem-card-header {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+}

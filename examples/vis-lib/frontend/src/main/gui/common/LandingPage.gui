@@ -1,0 +1,111 @@
+/* (c) https://github.com/MontiCore/monticore */
+package common;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.editor.MonacoEditor;
+
+page LandingPage(
+    ?String demoCode
+) {
+  landingPageContainer@GemColumn(
+    hAlign = "center",
+    height = "100%",
+    components = [
+
+      // --- 1. Hero Section ---
+      heroSection@GemColumn(
+        hAlign = "center",
+        vAlign = "center",
+        height = "400px",
+        width = "100%",
+        components = [
+            @GemIcon(name = "analytics", size = "100px", color = "white"),
+            @GemText(value = "MontiGem Visualization Library", size = "3rem", weight = "bold", color = "white", height = "auto", width = "auto"),
+            @GemText(value = "A comprehensive collection of charts and UI components for MontiGem applications.", size = "1.5rem", color = "#e0e0e0", height = "auto", width = "auto")
+        ]
+      ),
+
+      // --- 2. The DSL Concept (Code vs Result) ---
+      sectionContainer@GemColumn(
+        width = "80%",
+        hAlign = "center",
+        components = [
+            @GemText(value = "Write Models, Generate UI", size = "2.5rem", weight = "bold", color = "#333", height = "auto", width = "auto"),
+            @GemText(value = "Define your user interface in the concise GUI DSL. MontiGem generates the Angular code for you.", size = "1.2rem", color = "gray", height = "auto", width = "auto"),
+
+            demoRow@GemRow(
+                width = "100%",
+                colGap = "40px",
+                vAlign = "stretch",
+                components = [
+                    // Left: Code
+                    @GemCard(
+                        title = "MyPage.gui",
+                        width = "50%",
+                        component = codeBlock@GemColumn(
+                            height = "auto",
+                            components = [
+                                @MonacoEditor(
+                                    entry = demoCode,
+                                    language = "java",
+                                    disabled = true,
+                                    theme = "vs",
+                                    glyphMargin = false,
+                                    height = "auto",
+                                    autoHeight = true
+                                )
+                            ]
+                        )
+                    ),
+                    // Right: Result
+                    @GemCard(
+                        title = "Rendered Result",
+                        width = "50%",
+                        component = previewBlock@GemColumn(
+                            hAlign = "center",
+                            vAlign = "center",
+                            rowGap = "15px",
+                            height = "auto",
+                            components = [
+                                @GemText(value = "Hello World", size = "1.5rem", height = "auto", width = "auto"),
+                                @GemTextInput(id = "demoInput", labelText = "Name"),
+                                @GemButton(label = "Send")
+                            ]
+                        )
+                    )
+                ]
+            )
+        ]
+      ),
+
+      // --- 3. Component Library Overview ---
+      sectionContainerLight@GemColumn(
+        width = "100%",
+        hAlign = "center",
+        components = [
+            @GemText(value = "Comprehensive Component Library", size = "2.5rem", weight = "bold", color = "#333", height = "auto", width = "auto"),
+            @GemRow(
+                wrap = "wrap",
+                hAlign = "center",
+                rowGap = "30px",
+                colGap = "30px",
+                width = "80%",
+                components = [
+                    @ComponentCard(title = "Basic Elements", icon = "check_box", description = "Buttons, Texts, Icons, Images, Links...", click = goToBasicFromFeatures()),
+                    @ComponentCard(title = "Input Forms", icon = "input", description = "TextInputs, Dropdowns, RadioButtons, Validations...", click = goToInput()),
+                    @ComponentCard(title = "Layout & Arrange", icon = "dashboard", description = "Grid, Row, Column, Cards, Dialogs...", click = goToArrange()),
+                    @ComponentCard(title = "Data Visualization", icon = "insert_chart", description = "Over 15 types of interactive charts.", click = goToChartsOverviewFromFeatures()),
+                    @ComponentCard(title = "Other Components", icon = "extension", description = "Monaco Editor, Fischertechnik, and more.", click = goToOther())
+                ]
+            )
+        ]
+      )
+    ]
+  );
+}

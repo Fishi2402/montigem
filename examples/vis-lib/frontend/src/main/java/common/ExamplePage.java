@@ -29,4 +29,14 @@ public class ExamplePage extends ExamplePageTOP {
   public Consumer<Void> setLayoutHidden() {
       return v -> setLayoutMode("hidden");
   }
+  
+  public Consumer<Void> toggleLayoutModeSimple() {
+      return v -> {
+          if ("hidden".equals(getLayoutMode())) {
+              setLayoutMode("fullscreen");
+          } else {
+              setLayoutMode("hidden");
+          }
+      };
+  }
 }

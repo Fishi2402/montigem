@@ -13,5 +13,7 @@ component GemTimelineChart (
   Optional<LocalDateTime> showAfter,
   Optional<LocalDateTime> showUntil,
   Boolean hideLegend,
-  Event<TimelineBlock> blockClick
+  Event<TimelineBlock> blockClick,
+  String width = "100%",
+  String height = "350px"
 )

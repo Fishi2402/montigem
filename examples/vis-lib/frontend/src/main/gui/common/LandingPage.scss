@@ -1,0 +1,53 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+:host ::ng-deep {
+  .landingPageContainer {
+      background-color: #ffffff;
+  }
+
+  .heroSection {
+    background: linear-gradient(135deg, #00549F 0%, #0072C6 100%);
+    color: white;
+    padding: 60px 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .sectionContainer {
+      padding: 60px 0;
+  }
+
+  .sectionContainerLight {
+      padding: 60px 0;
+      background-color: #f8f9fa;
+  }
+
+  .demoRow {
+      margin-top: 40px;
+  }
+
+  .codeBlock {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      border: 1px solid #ddd;
+      overflow: auto;
+  }
+
+  .previewBlock {
+      padding: 20px;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      background-color: white;
+  }
+
+  .gem-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+  }
+
+  .gem-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+}

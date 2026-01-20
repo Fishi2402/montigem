@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+package common;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemRow;
+import java.util.function.Consumer;
+
+component LayoutButton(
+  String mode,
+  String currentMode,
+  String label,
+  String icon,
+  Consumer<Void> clickHandler
+) {
+  @guard(mode == currentMode) {
+      activeBtn@GemButton(
+        leftClick = clickHandler,
+        content = [
+            @GemRow(vAlign="center", components=[
+                @GemIcon(name = icon, color = "white"),
+                @GemText(value = label, color = "white")
+            ])
+        ]
+      );
+  } else {
+      inactiveBtn@GemButton(
+        leftClick = clickHandler,
+        content = [
+            @GemRow(vAlign="center", components=[
+                @GemIcon(name = icon),
+                @GemText(value = label)
+            ])
+        ]
+      );
+  };
+}

@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import common.ComponentCard;
+
+page InputOverview() {
+  @GemColumn(
+    hAlign = "center",
+    components = [
+      @GemText(value = "Input Components", size = "2rem", weight = "bold", height = "auto"),
+      @GemText(value = "Forms and user input", size = "1.2rem", color = "gray", height = "auto"),
+
+      @GemRow(
+        wrap = "wrap",
+        hAlign = "center",
+        rowGap = "20px",
+        colGap = "20px",
+        width = "100%",
+        components = [
+            @ComponentCard(title = "Text Input", icon = "input", click = goToTextInput()),
+            @ComponentCard(title = "Text Area", icon = "notes", click = goToTextareaInput()),
+            @ComponentCard(title = "Checkbox", icon = "check_box", click = goToCheckBoxInput()),
+            @ComponentCard(title = "Radio Button", icon = "radio_button_checked", click = goToRadioInput()),
+            @ComponentCard(title = "Dropdown", icon = "arrow_drop_down_circle", click = goToDropdownInput()),
+            @ComponentCard(title = "Autocomplete", icon = "search", click = goToAutocompleteInput()),
+            @ComponentCard(title = "Range Input", icon = "linear_scale", click = goToRangeInput()),
+            @ComponentCard(title = "Chat", icon = "chat", click = goToChat())
+        ]
+      )
+    ]
+  );
+}

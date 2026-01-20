@@ -27,5 +27,8 @@ component MonacoEditor(
   List<HoverContent> hoverContents,
 
   String width = "100%",
-  String height = "100%"
+  String height = "100%",
+
+  boolean autoHeight = false,
+  int maxLines = 30
 )

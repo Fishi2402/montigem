@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import common.ComponentCard;
+
+page ArrangeOverview() {
+  @GemColumn(
+    hAlign = "center",
+    components = [
+      @GemText(value = "Layout & Arrange", size = "2rem", weight = "bold", height = "auto"),
+      @GemText(value = "Structure your page", size = "1.2rem", color = "gray", height = "auto"),
+
+      @GemRow(
+        wrap = "wrap",
+        hAlign = "center",
+        rowGap = "20px",
+        colGap = "20px",
+        width = "100%",
+        components = [
+            @ComponentCard(title = "Grid", icon = "grid_view", click = goToGrid()),
+            @ComponentCard(title = "Row", icon = "view_column", click = goToRow()),
+            @ComponentCard(title = "Column", icon = "view_stream", click = goToColumn()),
+            @ComponentCard(title = "Card", icon = "crop_portrait", click = goToCard()),
+            @ComponentCard(title = "Dialog", icon = "open_in_new", click = goToDialog()),
+            @ComponentCard(title = "Tree Node", icon = "account_tree", click = goToTreeNode()),
+            @ComponentCard(title = "Table", icon = "table_chart", click = goToTable())
+        ]
+      )
+    ]
+  );
+}

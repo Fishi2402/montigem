@@ -2,6 +2,7 @@
 package navigation;
 
 import umlp.jsweet.extension.annotation.Component;
+import umlp.guiutil.Router;
 import java.util.function.Consumer;
 
 @Component
@@ -10,6 +11,10 @@ public class Navigation extends NavigationTOP {
   @Override
   public void init() {
     super.init();
+  }
+
+  public Consumer<Void> goToLandingPage() {
+      return v -> Router.navigate("common", "LandingPage");
   }
 
   public Consumer<Void> setCategoryBasic() {

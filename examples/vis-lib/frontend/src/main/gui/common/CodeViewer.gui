@@ -24,7 +24,8 @@ component CodeViewer(
 
   // Layout
   boolean vertical = false,
-  String height = "auto"
+  String height = "auto",
+  boolean autoHeight = true
 ) {
       @GemCard(title = "Source Code", height = height, component =
         @GemColumn(height = "100%", components = [
@@ -54,42 +55,42 @@ component CodeViewer(
           @guard(vertical) {
               editorsCol@GemColumn(height = "100%", components = [
                 @guard(isGuiVisible) {
-                    guiContainerVert@GemColumn(height = "300px", components = [
+                    guiContainerVert@GemColumn(height = getEditorContainerHeight(), components = [
                         @GemText(value = "GUI Model:", height = "auto"),
-                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
                     ]);
                 },
                 @guard(isJavaVisible) {
-                    javaContainerVert@GemColumn(height = "300px", components = [
+                    javaContainerVert@GemColumn(height = getEditorContainerHeight(), components = [
                         @GemText(value = "Java Logic:", height = "auto"),
-                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
                     ]);
                 },
                 @guard(isScssVisible) {
-                    scssContainerVert@GemColumn(height = "300px", components = [
+                    scssContainerVert@GemColumn(height = getEditorContainerHeight(), components = [
                         @GemText(value = "SCSS Style:", height = "auto"),
-                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false)
+                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
                     ]);
                 }
               ]);
           } else {
               editorsRow@GemRow(wrap = "wrap", height = "100%", components = [
                 @guard(isGuiVisible) {
-                    guiContainerHoriz@GemColumn(height = "400px", components = [
+                    guiContainerHoriz@GemColumn(height = getEditorContainerHeight(), components = [
                         @GemText(value = "GUI Model:", height = "auto"),
-                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
                     ]);
                 },
                 @guard(isJavaVisible) {
-                    javaContainerHoriz@GemColumn(height = "400px", components = [
+                    javaContainerHoriz@GemColumn(height = getEditorContainerHeight(), components = [
                         @GemText(value = "Java Logic:", height = "auto"),
-                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false)
+                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
                     ]);
                 },
                 @guard(isScssVisible) {
-                    scssContainerHoriz@GemColumn(height = "400px", components = [
+                    scssContainerHoriz@GemColumn(height = getEditorContainerHeight(), components = [
                         @GemText(value = "SCSS Style:", height = "auto"),
-                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false)
+                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
                     ]);
                 }
               ]);

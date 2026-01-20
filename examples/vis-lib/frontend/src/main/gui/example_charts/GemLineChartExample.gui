@@ -4,15 +4,18 @@ package example_charts;
 import Domain.Person;
 import mc.fenix.charts.GemLineChart;
 import common.ExamplePage;
+import mc.fenix.arrange.GemRow;
 
 page GemLineChartExample(List<Person> persons) {
   @ExamplePage(
-    component = linechart@GemLineChart(
-      data = null,
-      enableBackgroundColor = true,
-      maxValue = null,
-      minValue = null
-    ),
+    component = @GemRow(height = "450px", components = [
+      linechart@GemLineChart(
+        data = null,
+        enableBackgroundColor = true,
+        maxValue = null,
+        minValue = null
+      )
+    ]),
     basePath = "example_charts",
     componentName = "GemLineChartExample"
   );

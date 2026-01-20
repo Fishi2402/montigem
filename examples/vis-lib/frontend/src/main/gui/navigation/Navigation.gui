@@ -11,6 +11,7 @@ component Navigation(String activeCategory = "Basic") {
 
     // 1. Row: Categories
     @GemRow(wrap = "wrap", vAlign = "center", components = [
+      @GemButton(label = "Home", leftClick = goToLandingPage()),
       @GemButton(label = "Basic", leftClick = setCategoryBasic()),
       @GemButton(label = "Input", leftClick = setCategoryInput()),
       @GemButton(label = "Arrange", leftClick = setCategoryArrange()),
@@ -22,6 +23,7 @@ component Navigation(String activeCategory = "Basic") {
     @GemRow(wrap = "wrap", vAlign = "center", components = [
 
       @guard(activeCategory == "Basic") {
+        @GemNavItem(title = "Overview", target = "/example_basic/BasicOverview");
         @GemNavItem(title = "LoadingSpinner", target = "/example_basic/GemLoadingSpinnerExample");
         @GemNavItem(title = "Audio", target = "/example_basic/GemAudioExample");
         @GemNavItem(title = "Button", target = "/example_basic/GemButtonExample");
@@ -33,6 +35,7 @@ component Navigation(String activeCategory = "Basic") {
       },
 
       @guard(activeCategory == "Input") {
+        @GemNavItem(title = "Overview", target = "/example_input/InputOverview");
         @GemNavItem(title = "RangeInput", target = "/example_input/GemRangeInputExample");
         @GemNavItem(title = "Chat", target = "/example_input/GemChatExample");
         @GemNavItem(title = "TextInput", target = "/example_input/GemTextInputExample");
@@ -44,6 +47,7 @@ component Navigation(String activeCategory = "Basic") {
       },
 
       @guard(activeCategory == "Arrange") {
+        @GemNavItem(title = "Overview", target = "/example_arrange/ArrangeOverview");
         @GemNavItem(title = "Table", target = "/example_table/GemTableExample");
         @GemNavItem(title = "TreeNode", target = "/example_arrange/GemTreeNodeExample");
         @GemNavItem(title = "Dialog", target = "/example_arrange/GemDialogExample");
@@ -56,10 +60,11 @@ component Navigation(String activeCategory = "Basic") {
       },
 
       @guard(activeCategory == "Charts") {
+        @GemNavItem(title = "Overview", target = "/example_charts/ChartsOverview");
         @GemNavItem(title = "BarChart", target = "/example_charts/GemBarChartExample");
-        @GemNavItem(title = "BoxPlot", target = "/example_charts/GemBoxPlotExample");
-        @GemNavItem(title = "BulletChart", target = "/example_charts/GemBulletChartExample");
-        @GemNavItem(title = "CandlestickChart", target = "/example_charts/GemCandlestickChartExample");
+        wipBoxplot@GemNavItem(title = "BoxPlot (WIP)", target = "/example_charts/GemBoxPlotExample");
+        wipBullet@GemNavItem(title = "BulletChart (WIP)", target = "/example_charts/GemBulletChartExample");
+        wipCandlestick@GemNavItem(title = "CandlestickChart (WIP)", target = "/example_charts/GemCandlestickChartExample");
         @GemNavItem(title = "GaugeChart", target = "/example_charts/GemGaugeChartExample");
         @GemNavItem(title = "LineChart", target = "/example_charts/GemLineChartExample");
         @GemNavItem(title = "GemTimeSeriesChart", target = "/example_charts/GemTimeSeriesChartExmaple");
@@ -70,14 +75,16 @@ component Navigation(String activeCategory = "Basic") {
         @GemNavItem(title = "SunburstChart", target = "/example_charts/GemSunburstChartExample");
         @GemNavItem(title = "VennDiagram", target = "/example_charts/GemVennDiagramExample");
         @GemNavItem(title = "NetworkChart", target = "/example_charts/GemGraphChartExample");
-        @GemNavItem(title = "NewNetworkChart", target = "/example_network/NetworkChartExample/");
+        wipNetwork@GemNavItem(title = "NewNetworkChart (WIP)", target = "/example_network/NetworkChartExample/");
         @GemNavItem(title = "GemScatterPlot", target = "/example_charts/GemScatterPlotExample");
       },
 
       @guard(activeCategory == "Other") {
-        @GemNavItem(title = "Overview", target = "/person/SimpleOverview");
+        @GemNavItem(title = "Overview", target = "/common/OtherOverview");
+        @GemNavItem(title = "Person Overview", target = "/person/SimpleOverview");
         @GemNavItem(title = "MonacoEditor", target = "/example_monaco/ExampleFromLib/3");
         @GemNavItem(title = "Fischertechnik", target = "/fischertechnik/FischertechnikExample");
+        @GemNavItem(title = "CAD Viewer", target = "/example_cad/GemCADExample");
       }
 
     ])

@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package common;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+component FeatureCard(String title, String icon, String description, Event<Void> click) {
+    @GemCard(
+        width = "350px",
+        height = "auto",
+        title = title,
+        component = @GemColumn(
+            hAlign = "center",
+            vAlign = "center",
+            height = "100%",
+            rowGap = "10px",
+            components = [
+                @GemIcon(name = icon, size = "48px", color = "#00549F"),
+                @GemText(value = description, height = "auto"),
+                @GemButton(label = "Explore", leftClick = click)
+            ]
+        )
+    );
+}
