@@ -243,7 +243,8 @@ We omit some types for now and only use most common ones:
 ## Control statements
 
 Now that we want to display a list of cars, we need to be able to go over the
-list and show the details. Add the following to the `SimpleCarList` page:
+list and show the details. First, add a new class `Car` to your class diagram and give it some attributes
+like `model`, `make`, and `name`. Add the following to the `SimpleCarList` page:
 ```ts
 package gui;
 

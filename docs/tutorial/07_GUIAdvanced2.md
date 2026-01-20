@@ -238,19 +238,24 @@ public class CarCreate extends CarCreateTOP{
 To save the object, we simply need to call the `build` method of the object.
 
 Unfortunately, this method will not work, because the object has to be valid
-before it is saved. The class diagram defines `Car` class like so (simplified):
+before it is saved. The class diagram defines `RentableItem` class like so (simplified):
 ```java
-class Car {
-  String model;
-  String make;
+class RentableItem {
   float costPerDay;
   float mileage;
-  String name;
   RentableStatus rentableStatus;
+}
+
+class Car extends RentableItem {
+  /* ... */
 }
 
 association [1] Car -> MileageDataPoint [*];
 ```
+
+All attributes of `Car` need to be not `null` and since it extends `RentableItem`, this means all attributes of both
+classes have to be filled.
+
 !!! note
     The class `MileageDataPoint` does not exist yet, create it with attributes for record date and mileage.
 

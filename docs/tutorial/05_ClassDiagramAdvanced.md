@@ -17,9 +17,9 @@ umlp Carrental {
 
 }
 ```
-
-For each method specified in the singleton class, MontiGem generates a command
-which requires custom implementation via TOP-mechanism. For example,
+The method `rentItem` has an argument of type `RentableItem`. Create this class with at least one
+attribute called `rentableStatus` of type `RentableStatus` that we created earlier. For each method specified in the 
+singleton class, MontiGem generates a command which requires custom implementation via TOP-mechanism. For example,
 `backend/src/main/java/carrental/commands/RentItem.java`:
 ```java
 package carrental.commands;
