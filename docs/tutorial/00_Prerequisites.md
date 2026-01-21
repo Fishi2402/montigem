@@ -15,7 +15,7 @@ and commands defined for a standard app setup.
 - Add environment variable `JAVA_HOME` with its value set to the `jdk-21` directory, e.g. `C:\Program Files\Java\jdk-21`.
 - Add `%JAVA_HOME%\bin` entry to the `Path` environment variable. Open a command line and run `java -version` command to check if Java is working properly.
 
-### Setup Gradle 8.5 or later
+### Setup Gradle 8.5
 
 Download [Gradle 8.5](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
 
@@ -130,3 +130,6 @@ instead use the following task to serve the new code in much less time.
 ```sh
   gradle :frontend:SYNC_genGUI
 ```
+
+!!! note
+    This command is currently outdated and will be reworked.

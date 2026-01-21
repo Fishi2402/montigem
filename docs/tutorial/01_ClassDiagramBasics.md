@@ -56,8 +56,8 @@ umlp Carrental {
     understanding the app when you want to override the default behavior.
 
 A class diagram defines the base of the app. The generated files can be found in
-`backend/build/umlp/backend` and
-`frontend/build/umlp_frontend/intermediate/appdomain`. The generated files have
+`backend/build/umlp2java` and
+`frontend/build/app/umlpJava2ts`. The generated files have
 very similar implementations. Generated classes include:
 
 * ServerApplication: `CarrentalServerApplication`, used as a main class for

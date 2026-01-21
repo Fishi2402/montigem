@@ -15,12 +15,12 @@ Default app setup has source roots for:
 
 - **backend**
 
-  - `backend/build/umlp2java/` – code generated from models
+  - `backend/build/umlp2java` – code generated from models
   - `backend/src/main/java` – hand-written code
 
 - **frontend**
 
-  - `frontend/build/app/umlpJava2ts/`, `frontend/build/app/gui2java2ts/` – code generated from models
+  - `frontend/build/app/umlpJava2ts`, `frontend/build/app/gui2java2ts` – code generated from models
   - `frontend/src/main/java` – hand-written java code
   - `frontend/src/main/gui` – hand-written ts, html and scss code
 

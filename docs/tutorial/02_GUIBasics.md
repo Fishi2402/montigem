@@ -57,9 +57,7 @@ Car rental example (see the `Start.gui` model in the directory `models/gui`):
 ```java
 package gui;
 
-import mc.fenix.basic.GemText;
-
-import gui.navigation.NavContainer;
+/* imports */
 
 page Start() {
   /* component usages, control statements, etc. */
@@ -71,7 +69,7 @@ page Start() {
     of the app and when you want to override the default behavior.
 
 A GUI model defines an Angular component. The generated files can be found in
-`frontend/build/umlp_frontend/intermediate/appgui`. Following structures are
+`frontend/build/app/gui2java2ts`. Following structures are
 generated from a component declaration:
 
 * Java file: `Start.java` with main component logic, such as loading and
@@ -113,60 +111,18 @@ It contains:
     This is like parameter assignment in Python or R. The assignment via
     order (e.g., `@ComponentName(arg1, arg2)`) is not allowed though.
 
-Try it yourself. Add the following NavContainer content to the `Start` page of the car rental example:
+Try it yourself. Add a welcome message to the `Start` page of the car rental example:
 ```ts
 package gui;
 
 import mc.fenix.basic.GemText;
 
-import gui.navigation.NavContainer;
-
 page Start() {
-  @NavContainer(content = [
-    @GemText(value = "Welcome! Use the navigation on the left side to see some examples.")
-  ]);
+  @GemText(value = "Welcome! This is the car rental example.");
 }
 ```
-Here, components `NavContainer` and `GemText` are imported and used. The result
-is a web page with a navigation bar and text:
-
-![start page](./Start.png)
-
-The `GemText` is a library component, those can be found in the [documentation for library components](../gendoc_components/Frontend-RTE.md).
-
-The `NavContainer` is a component you have to create yourself for the car rental app. Within the directory `models/gui/navigation` create a new file called `NavContainer.gui` and add the following content:
-```ts
-package gui.navigation;
-
-import mc.fenix.arrange.GemRow;
-import mc.fenix.arrange.GemColumn;
-
-import mc.fenix.navigation.GemNavItem;
-import mc.fenix.navigation.GemNavList;
-
-component NavContainer(List<GUIViewElement> content) {
-  // row of components, from left to right: navigation bar, main content.
-  @GemRow(colGap = "25px", components = [
-
-    // navigation bar
-    @GemNavList(width = "40ch", height = "100vh", components = [
-      @GemNavItem(title = "Home", target = "/gui/Start"),
-      @GemNavItem(title = "Simple car list", target = "/gui/SimpleCarList")
-      // other items
-    ]),
-    // main content
-    @GemRow(hAlign = "center", components = content)
-
-  ]);
-}
-```
-Take some time reading through the intricacies of this gui component.
-It consists of other library components and declares a list of
-`GUIViewElement` objects as a parameter named `content`. A `GUIViewElement` type
-represents any GUI component. Here the list gets passed to the `GemRow`
-component that renders passed components from left to right. In the `Start` page
-above, the `content` is set to the list with one element - `GemText`, specifying
-that the only element of the page besides the container is the text.
+Here, the component `GemText` is imported and used. The `GemText` is a library component, those can be found in 
+the [documentation for library components](../gendoc_components/Frontend-RTE.md).
 
 There are several notable types that are used as GUI component parameter types:
 
@@ -195,15 +151,7 @@ We omit some types for now and only use most common ones:
   ```ts
   component GemText(String value = "" /*, other params */)
   ```
-* The `List` of objects are created using square brackets (an OCL-like syntax).
-  We've seen an example earlier:
-  ```ts
-  @NavContainer(content = [
-    @GemText(value = "Welcome! Use the navigation on the left side to see some examples.")
-  ]);
-  ```
-  Depending on the type, the content is different, e.g., a `List<Integer>`: `[1,
-  2, 3]`.
+
 * You can import types from class diagrams. Here we discuss only ones imported
   from a domain class diagram (that one that defines the data structure of the
   app). For example, we would like to have a page showing the list of cars. 
@@ -239,6 +187,77 @@ We omit some types for now and only use most common ones:
     `java.util.List`, `gui.NavContainer`. In CD4A (class diagram language) the
     fully qualified name of a type consists of package name (if present), class
     diagram name, and the type name, e.g., `somepackage.Carrental.Car`.
+
+## Navigation basics
+
+In common web apps, there is a way to navigate between different pages, usually done by a navigation bar. 
+In our car rental example, we want to do the same. Therefore, create the `NavContainer` component. 
+Within the directory `frontend/src/main/gui/navigation` create a new file called `NavContainer.gui`. 
+From now on, this component can be reused in every page we want to enable navigation. 
+Add the following content to the file:
+```ts
+package gui.navigation;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.navigation.GemNavList;
+
+component NavContainer(List<GUIViewElement> content) {
+  // row of components, from left to right: navigation bar, main content.
+  @GemRow(colGap = "25px", components = [
+
+    // navigation bar
+    @GemNavList(width = "40ch", height = "100vh", components = [
+      @GemNavItem(title = "Home", target = "/gui/Start")
+      // other items
+    ]),
+    // main content
+    @GemRow(hAlign = "center", components = content)
+
+  ]);
+}
+```
+
+The navigation bar part has items that indicate the target of navigation: `/gui/Start`. Those are URLs of the pages
+we declared so far. An URL is constructed from a fully qualified name of a page, compare: `gui.Start` and `/gui/Start`.
+For every new page for which navigation to should be possible, add a new `GemNavItem` (or `GemLink`) in the `GemNavList`
+with the respective route. More advanced cases will be discussed later.
+
+Take some time reading through the intricacies of this gui component. It consists of other library components and 
+declares a list of `GUIViewElement` objects as a parameter named `content`. A `GUIViewElement` type represents any 
+GUI component. Here the list gets passed to the `GemRow` component that renders passed components from left to right.
+
+Now, to integrate the `NavContainer` in a page, look at the following code:
+
+```ts
+package gui;
+
+import mc.fenix.basic.GemText;
+
+import gui.navigation.NavContainer;
+
+page Start() {
+  @NavContainer(content = [
+    @GemText(value = "Welcome! Use the navigation on the left side to see some examples.")
+  ]);
+}
+```
+
+In the `Start` page above, the `content` is set to the list with one element - `GemText`, specifying that the only 
+element of the page besides the container is the text. The result is a web page with a navigation bar and text:
+
+![start page](./StartNavigation.png)
+
+* The `List` of objects are created using square brackets (an OCL-like syntax):
+  ```ts
+  @NavContainer(content = [
+    @GemText(value = "Welcome! Use the navigation on the left side to see some examples.")
+  ]);
+  ```
+  Depending on the type, the content is different, e.g., a `List<Integer>`: `[1,
+  2, 3]`.
 
 ## Control statements
 
@@ -306,39 +325,4 @@ Besides usual compontent usages we have `iterate` and `guard..else` constructs.
     soon as possible and are reflected in the GUI. This also applies to the
     components.
 
-## Navigation basics
 
-Let's go back to the navigation container and add a navigation item towards the newly created page:
-```ts
-/* package, imports */
-component NavContainer(List<GUIViewElement> content) {
-  // row of components, from left to right: navigation bar, main content.
-  @GemRow(colGap = "25px", components = [
-
-    // navigation bar
-    @GemNavList(width = "40ch", height = "100vh", components = [
-      @GemNavItem(title = "Home", target = "/gui/Start"),
-      @GemNavItem(title = "Simple car list", target = "/gui/SimpleCarList")
-      // other items
-    ]),
-    // main content
-    @GemRow(hAlign = "center", components = content)
-
-  ]);
-}
-```
-The navigation bar part has items that indicate the target of navigation:
-`/gui/Start` and `/gui/SimpleCarList`. Those are URLs of the pages we declared
-so far. A URL is constructed from a fully qualified name of a page, compare:
-```
-gui.Start
-gui.SimpleCarList
-```
-and
-```
-/gui/Start
-/gui/SimpleCarList
-```
-Whenever you add a page, you can add corresponding navigation item (or
-`GemLink`) to enable navigation to the new page. More advanced cases will be
-discussed later.
