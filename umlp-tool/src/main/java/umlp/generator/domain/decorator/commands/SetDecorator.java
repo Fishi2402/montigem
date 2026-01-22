@@ -211,7 +211,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
             .getDiagramFor(type.asGenericType().getArgument(0).getTypeInfo().getAstNode());
         getCD4C().addImport(ast, getPackageName(compilationUnit, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
       }
-      else if (GenService.isJavaType(((SymTypeOfGenerics) type).getArgument(0))) {
+      else if (GenService.isNotADomainType(((SymTypeOfGenerics) type).getArgument(0))) {
         getCD4C().addImport(ast, ((SymTypeOfGenerics) type).getArgument(0).printFullName());
       }
     }
@@ -220,7 +220,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
         ASTCDCompilationUnit compilationUnit = UMLPSymbolTables.getDiagramFor(type.getTypeInfo().getAstNode());
         getCD4C().addImport(ast,getPackageName(compilationUnit, DEFAULT_PACKAGE)+"."+ type.print());
       }
-      else if (GenService.isJavaType(type)) {
+      else if (GenService.isNotADomainType(type)) {
         getCD4C().addImport(ast, type.printFullName());
       }
       else if (isGem) {
@@ -261,7 +261,7 @@ public class SetDecorator extends AbstractDeSerDecorator {
       typeName = type.printFullName();
       isCDEnum = GenService.isCDEnum(type);
       packageName = type.getTypeInfo().getPackageName().toLowerCase();
-      if (GenService.isJavaType(type)) {
+      if (GenService.isNotADomainType(type)) {
         addDeSerJavaImport(ast, typeName);
       }
     }

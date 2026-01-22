@@ -16,7 +16,7 @@ public class UMLPCheckOutgoingAssociation implements CDAssociationASTCDAssocSide
   @Override
   public void check(ASTCDAssocSide assocSide) {
     SymTypeExpression sourceType = assocSide.getSymbol().getOtherSide().getType();
-    if (assocSide.getSymbol().isIsDefinitiveNavigable() && (GenService.isJavaType(sourceType) || GenService.isCDEnum(sourceType))) {
+    if (assocSide.getSymbol().isIsDefinitiveNavigable() && (GenService.isNotADomainType(sourceType) || GenService.isCDEnum(sourceType))) {
       Log.error(String.format(ERROR_CODE+ ERROR_MSG_FORMAT, sourceType.print()), assocSide.get_SourcePositionStart());
     }
   }

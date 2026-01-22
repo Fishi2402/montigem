@@ -5,6 +5,10 @@ import mc.fenix.charts.GemPieChartTypes.GemPieChartData;
 
 classdiagram Domain {
 
+  class Data {
+    /Optional<GemBarChartData> bcData;
+  }
+
   class Conversation {
     String conversationid;
   }

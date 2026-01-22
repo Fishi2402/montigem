@@ -86,16 +86,16 @@ public interface OwnCommands {
   }
 
   default boolean isGem(SymTypeExpression type) {
-    return GenService.isCDType(type)
-               || (GenService.isOptional(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0)));
+    return GenService.isDomainType(type)
+               || (GenService.isOptional(type) && GenService.isDomainType(((SymTypeOfGenerics) type).getArgument(0)));
   }
 
   default boolean isOptionalGem(SymTypeExpression type) {
-    return GenService.isOptional(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
+    return GenService.isOptional(type) && GenService.isDomainType(((SymTypeOfGenerics) type).getArgument(0));
   }
 
   default boolean isListOfGemIdentifiable(SymTypeExpression type) {
-    return GenService.isList(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
+    return GenService.isList(type) && GenService.isDomainType(((SymTypeOfGenerics) type).getArgument(0));
   }
 
 }

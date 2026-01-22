@@ -8,7 +8,6 @@ import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.codegen.methods.MethodDecorator;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -401,7 +400,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
 
         if (GenService.isJavaType(type)){
           addJavaImport(domainType, type);
-        }else if (GenService.isCDType(type)){
+        }else if (GenService.isDomainType(type) || GenService.isPojoCDType(type)){
           getCD4C().addImport(cdType, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
         }
 

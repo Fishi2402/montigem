@@ -122,7 +122,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
         var symbol = meth.getEnclosingScope().resolveType(paramType);
         if (symbol.isEmpty())
           Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
-        String paramFQN = domainToLowerCase(symbol.get().getFullName());
+        String paramFQN = GenService.getCorrectJavaFQN(symbol.get().getFullName());
         // Handle native types
         if (DerivedClassCommandDecorator.nativeTypes.contains(paramFQN) || DerivedClassCommandDecorator.nativeTypes.contains(boxType(paramFQN)))
           paramFQN = "java.lang." + boxType(paramFQN);
@@ -137,9 +137,9 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
           if (symbol.isEmpty()) {
             Log.error("Unable to resolve Optional inner type " + paramType, meth.get_SourcePositionStart());
           }
-          paramFQN = domainToLowerCase(symbol.get().getFullName());
+          paramFQN = GenService.getCorrectJavaFQN(symbol.get().getFullName());
         } else if (paramTypeSym.getDefiningSymbol().isPresent()) {
-          paramFQN = domainToLowerCase(paramTypeSym.getDefiningSymbol().get().getFullName());
+          paramFQN = GenService.getCorrectJavaFQN(paramTypeSym.getDefiningSymbol().get().getFullName());
         } else {
           Log.error("Unable to detect type from command ", meth.get_SourcePositionStart());
           paramFQN = "Object";
@@ -166,7 +166,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     List<SymTypeExpression> domainParameters = new ArrayList<>();
     meth.getCDParameterList().forEach(p -> {
       SymTypeExpression type = p.getSymbol().getType();
-      if (GenService.isCDType(type)) {
+      if (GenService.isDomainType(type)) {
         domainParameters.add(type);
       }
       addImport(type, ast);
@@ -175,16 +175,6 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
 
     return ast;
-  }
-
-  protected String domainToLowerCase(String fqn) {
-    // Turn Domain.Class into domain.class
-    // and MyDomain.class into mydomain.class
-    if (fqn.contains(".")) {
-      String[] sp = fqn.split("\\.", 2);
-      return sp[0].toLowerCase() + "." + sp[1];
-    }
-    return fqn;
   }
 
   protected String getAttributeForMethodParameter(ASTCDParameter param) {
@@ -214,7 +204,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
   protected void addImport(SymTypeExpression type, ASTCDClass ast) {
     if(type.getTypeInfo().isPresentAstNode()) {
       ASTCDCompilationUnit typeCD = UMLPSymbolTables.getDiagramFor((ASTCDType) type.getTypeInfo().getAstNode());
-      if (GenService.isCDType(type)) {
+      if (GenService.isDomainType(type) || GenService.isPojoCDType(type)) {
         getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
         if (!GenService.isCDEnum(type)) {
           getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print()
@@ -229,7 +219,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
       }
     } else {
       // Assume guiLib Import?
-      if(GenService.isCDType(type) && type.getTypeInfo().getFullName().startsWith("mc.fenix")) {
+      if(GenService.isPojoCDType(type) && type.getTypeInfo().getFullName().startsWith("mc.fenix")) {
         System.out.println(type.getTypeInfo().getFullName());
         getCD4C().addImport(ast, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
       }
@@ -343,7 +333,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
       }
       paramNameList.add(paramName);
       typeList.add(type);
-      if (GenService.isJavaType(type)) {
+      if (GenService.isNotADomainType(type)) {
         addJavaImport(ast, type);
       }
 
@@ -423,7 +413,7 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
     if (GenService.isCDEnum(innerType)) {
       getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
     }
-    else if (GenService.isJavaType(innerType)) {
+    else if (GenService.isNotADomainType(innerType)) {
       getCD4C().addImport(ast, innerType.printFullName());
     }
   }
