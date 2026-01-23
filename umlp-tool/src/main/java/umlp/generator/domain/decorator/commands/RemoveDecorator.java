@@ -133,7 +133,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
     if (GenService.isCDEnum(type)) {
       ASTCDCompilationUnit compilationUnit = UMLPSymbolTables.getDiagramFor(type.getTypeInfo().getAstNode());
       getCD4C().addImport(ast,getPackageName(compilationUnit, DEFAULT_PACKAGE)+"."+ type.print());
-    } else if (GenService.isJavaType(type)) {
+    } else if (GenService.isNotADomainType(type)) {
       addJavaImport(ast, type);
     }
     return ast;
@@ -235,7 +235,7 @@ public class RemoveDecorator extends AbstractDeSerDecorator {
       ASTCDCompilationUnit compilationUnit = UMLPSymbolTables
           .getDiagramFor(type.asGenericType().getArgument(0).getTypeInfo().getAstNode());
       getCD4C().addImport(ast, getPackageName(compilationUnit, DEFAULT_PACKAGE) + "." + ((SymTypeOfGenerics) type).getArgument(0).print());
-    } else if (GenService.isJavaType(innerType)) {
+    } else if (GenService.isNotADomainType(innerType)) {
       getCD4C().addImport(ast, innerType.printFullName());
     }
   }

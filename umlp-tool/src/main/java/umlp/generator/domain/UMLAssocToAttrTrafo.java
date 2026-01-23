@@ -62,34 +62,51 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
     ASTCDAssocSide assocSide;
     SymTypeExpression classType;
     if (GenService.isCDEnum(assoc.getLeft().getSymbol().getType()) ||
-        GenService.isJavaType(assoc.getLeft().getSymbol().getType())) {
+        GenService.isNotADomainType(assoc.getLeft().getSymbol().getType())) {
       assocSide = assoc.getLeft();
       classType = assoc.getRight().getSymbol().getType();
+      SymTypeExpression enumType = assocSide.getSymbol().getType();
+      ASTMCType attrType;
+      if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isOpt()) {
+        attrType = MCTypeFacade.getInstance().createOptionalTypeOf(enumType.print());
+      } else if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isMult()) {
+        attrType = MCTypeFacade.getInstance().createListTypeOf(enumType.print());
+      } else {
+        attrType = MCTypeFacade.getInstance().createQualifiedType(enumType.print());
+      }
+      ASTCDAttribute attr = CD4CodeMill.cDAttributeBuilder().
+          setModifier(assoc.getModifier().deepClone()).
+          setName(assocSide.getCDRole().getName()).
+          setMCType(attrType).build();
+      Optional<CDTypeSymbol> cdType = assoc.getEnclosingScope().resolveCDType(classType.printFullName());
+      if (cdType.isPresent() && cdType.get().isPresentAstNode()) {
+        ASTCDType astCDType = cdType.get().getAstNode();
+        astCDType.addCDMember(attr);
+        assocMap.put(astcdPackage, assoc);
+      }
     } else if (GenService.isCDEnum(assoc.getRight().getSymbol().getType()) ||
-        GenService.isJavaType(assoc.getRight().getSymbol().getType())) {
+        GenService.isNotADomainType(assoc.getRight().getSymbol().getType())) {
       assocSide = assoc.getRight();
       classType = assoc.getLeft().getSymbol().getType();
-    } else {
-      return;
-    }
-    SymTypeExpression enumType = assocSide.getSymbol().getType();
-    ASTMCType attrType;
-    if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isOpt()) {
-      attrType = MCTypeFacade.getInstance().createOptionalTypeOf(enumType.print());
-    } else if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isMult()) {
-      attrType = MCTypeFacade.getInstance().createListTypeOf(enumType.print());
-    } else {
-      attrType = MCTypeFacade.getInstance().createQualifiedType(enumType.print());
-    }
-    ASTCDAttribute attr = CD4CodeMill.cDAttributeBuilder().
-        setModifier(assoc.getModifier().deepClone()).
-        setName(assocSide.getCDRole().getName()).
-        setMCType(attrType).build();
-    Optional<CDTypeSymbol> cdType = assoc.getEnclosingScope().resolveCDType(classType.printFullName());
-    if (cdType.isPresent() && cdType.get().isPresentAstNode()) {
-      ASTCDType astCDType = cdType.get().getAstNode();
-      astCDType.addCDMember(attr);
-      assocMap.put(astcdPackage, assoc);
+      SymTypeExpression enumType = assocSide.getSymbol().getType();
+      ASTMCType attrType;
+      if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isOpt()) {
+        attrType = MCTypeFacade.getInstance().createOptionalTypeOf(enumType.print());
+      } else if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isMult()) {
+        attrType = MCTypeFacade.getInstance().createListTypeOf(enumType.print());
+      } else {
+        attrType = MCTypeFacade.getInstance().createQualifiedType(enumType.print());
+      }
+      ASTCDAttribute attr = CD4CodeMill.cDAttributeBuilder().
+          setModifier(assoc.getModifier().deepClone()).
+          setName(assocSide.getCDRole().getName()).
+          setMCType(attrType).build();
+      Optional<CDTypeSymbol> cdType = assoc.getEnclosingScope().resolveCDType(classType.printFullName());
+      if (cdType.isPresent() && cdType.get().isPresentAstNode()) {
+        ASTCDType astCDType = cdType.get().getAstNode();
+        astCDType.addCDMember(attr);
+        assocMap.put(astcdPackage, assoc);
+      }
     }
   }
 

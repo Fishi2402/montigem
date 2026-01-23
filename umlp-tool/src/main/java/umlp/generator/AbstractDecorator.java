@@ -546,8 +546,8 @@ public abstract class AbstractDecorator {
 
   protected void addJavaImport(ASTCDType domainType, SymTypeExpression type) {
     if (type.isGenericType()) {
-      if (GenService.isJavaType(type.asGenericType().getArgument(0))) {
-        String imp = type.asGenericType().getArgument(0).printFullName();
+      if (GenService.isNotADomainType(type.asGenericType().getArgument(0))) {
+        String imp = GenService.getCorrectJavaFQN(type.asGenericType().getArgument(0).printFullName());
         getCD4C().addImport(domainType, imp);
       } else if(GenService.isCDEnum(type.asGenericType().getArgument(0))) {
         String imp =
@@ -556,8 +556,8 @@ public abstract class AbstractDecorator {
                 type.asGenericType().getArgument(0).getTypeInfo().getName());
         getCD4C().addImport(domainType, imp);
       }
-    } else if (GenService.isJavaType(type)) {
-      getCD4C().addImport(domainType, type.printFullName());
+    } else if (GenService.isNotADomainType(type)) {
+      getCD4C().addImport(domainType, GenService.getCorrectJavaFQN(type.printFullName()));
     } else if(GenService.isCDEnum(type)) {
       String imp =
           Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(),type.getTypeInfo().getName());

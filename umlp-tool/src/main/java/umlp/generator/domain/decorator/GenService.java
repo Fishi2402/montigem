@@ -2,14 +2,11 @@
 package umlp.generator.domain.decorator;
 
 import com.google.common.base.Defaults;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.class2mc.adapters.JClass2OOTypeSymbolAdapter;
@@ -24,7 +21,6 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.check.TypeRelations;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
@@ -32,17 +28,14 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.UMLPMill;
 import umlp._prettyprint.UMLPFullPrettyPrinter;
-import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.box;
@@ -212,7 +205,10 @@ public class GenService {
       String res = ((SymTypeOfGenerics) symType).getBaseName();
       return box(res);
     }
-    if (isCDType(symType)) {
+    if (isDomainType(symType)) {
+      return symType.print();
+    }
+    if(isNotADomainType(symType) && !isJavaType(symType)) {
       return symType.print();
     }
     return box(symType.getTypeInfo().getFullName());
@@ -448,13 +444,21 @@ public class GenService {
     return false;
   }
 
-  public static boolean isCDType(SymTypeExpression type) {
+  public static boolean isDomainType(SymTypeExpression type) {
     // TODO: Bessere Lösung?
-    return type.hasTypeInfo() && (type.getTypeInfo() instanceof CDTypeSymbol);
+    if(!type.hasTypeInfo()) {
+      Log.error("0xABC01: "+type.getClass().getName()+ " "+type.printFullName()
+          + " has no type symbol.");
+    }
+    return isDomainType(type.getTypeInfo());
+  }
+
+  public static boolean isDomainType(TypeSymbol typeSymbol) {
+    return typeSymbol instanceof CDTypeSymbol && !TagLookUp.isPojo(typeSymbol);
   }
 
   public static boolean isCDEnum(SymTypeExpression type) {
-    return isCDType(type) && ((CDTypeSymbol) type.getTypeInfo()).isIsEnum();
+    return isDomainType(type) && ((CDTypeSymbol) type.getTypeInfo()).isIsEnum();
   }
 
   public static boolean isInnerCDEnum(SymTypeExpression type) {
@@ -468,9 +472,62 @@ public class GenService {
     return isCDEnum(type) || isInnerCDEnum(type);
   }
 
-  public static boolean isJavaType(SymTypeExpression type) {
+  public static boolean isPojoCDType(SymTypeExpression type) {
+    if(!type.hasTypeInfo()) {
+      Log.error("0xABC02: "+type.getClass().getName()+ " "+type.printFullName()
+          + " has no type symbol.");
+    }
     // TODO: Bessere Lösung?
-    return type.getTypeInfo() instanceof JClass2OOTypeSymbolAdapter;
+    return isPojoCDType(type.getTypeInfo());
+  }
+
+  public static boolean isPojoCDType(TypeSymbol type) {
+    // TODO: Bessere Lösung?
+    return TagLookUp.isPojo(type);
+  }
+
+  public static boolean isNotADomainType(SymTypeExpression type) {
+    if(!type.hasTypeInfo()) {
+      Log.error("0xABC02: "+type.getClass().getName()+ " "+type.printFullName()
+          + " has no type symbol.");
+    }
+    // TODO: Bessere Lösung?
+    return isNotADomainType(type.getTypeInfo());
+  }
+
+  public static boolean isNotADomainType(TypeSymbol type) {
+    // TODO: Bessere Lösung?
+    return
+        // Check for Java Types
+        (type instanceof JClass2OOTypeSymbolAdapter)
+            // check for Pojo types
+            || TagLookUp.isPojo(type);
+  }
+
+  public static boolean isJavaType(SymTypeExpression type) {
+    if(!type.hasTypeInfo()) {
+      Log.error("0xABC03: "+type.getClass().getName()+ " "+type.printFullName()
+          + " has no type symbol.");
+    }
+    // TODO: Bessere Lösung?
+    return isJavaType(type.getTypeInfo());
+  }
+
+  public static boolean isJavaType(TypeSymbol type) {
+    // TODO: Bessere Lösung?
+    return (type instanceof JClass2OOTypeSymbolAdapter);
+  }
+
+  public static String getCorrectJavaFQN(String importString) {
+    if(!importString.contains(".")) {
+      return importString;
+    }
+    String[] splitString = importString.split("\\.");
+    // Assume at least one . in import String
+    for (int i = 0; i < splitString.length-1; i++) {
+      splitString[i] = splitString[i].toLowerCase();
+    }
+    return String.join(".", splitString);
   }
 
   public static String getNativeName(String name) {
@@ -584,6 +641,6 @@ public class GenService {
   }
 
   public static boolean isListOfGemIdentifiable(SymTypeExpression type) {
-    return GenService.isList(type) && GenService.isCDType(((SymTypeOfGenerics) type).getArgument(0));
+    return GenService.isList(type) && GenService.isDomainType(((SymTypeOfGenerics) type).getArgument(0));
   }
 }

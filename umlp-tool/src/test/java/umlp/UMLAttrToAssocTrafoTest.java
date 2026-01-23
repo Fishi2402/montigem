@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import umlp.generator.domain.UMLAttrToAssocTrafo;
+import umlp.generator.domain.UMLImportTrafo;
 
 import java.util.stream.Stream;
 
@@ -24,6 +25,10 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
   @MethodSource("transformAttributes")
   public void testCard(String modelName) {
     ASTCDCompilationUnit ast = parse("src/test/resources", modelName);
+
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.inheritanceTraverser());
+    importTrafo.transform(ast);
+
     createSymTab(ast);
 
     // Before
@@ -46,6 +51,10 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
   @Test
   public void testNoTransformation() {
     ASTCDCompilationUnit ast = parse("src/test/resources", "trafo/NoTransformation.umlp");
+
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.inheritanceTraverser());
+    importTrafo.transform(ast);
+
     createSymTab(ast);
 
     UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
@@ -59,6 +68,10 @@ public class UMLAttrToAssocTrafoTest extends AbstractUMLPTest {
   @Test
   public void testMultipleUsesOfDomainClass() {
     ASTCDCompilationUnit ast = parse("src/test/resources", "trafo/MultipleUsesOfDomainClass.umlp");
+
+    UMLImportTrafo importTrafo = new UMLImportTrafo(CD4CodeMill.inheritanceTraverser());
+    importTrafo.transform(ast);
+
     createSymTab(ast);
 
     UMLAttrToAssocTrafo trafo = new UMLAttrToAssocTrafo(CD4CodeMill.inheritanceTraverser());
