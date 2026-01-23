@@ -152,47 +152,11 @@ We omit some types for now and only use most common ones:
   component GemText(String value = "" /*, other params */)
   ```
 
-* You can import types from class diagrams. Here we discuss only ones imported
-  from a domain class diagram (that one that defines the data structure of the
-  app). For example, we would like to have a page showing the list of cars. 
-  Therefore, we create the following gui model:
-  ```java
-  package gui;
-
-  // data class
-  import Carrental.Car;
-
-  page SimpleCarList(List<Car> cars) {
-    /* ... */
-  }
-  ```
-  
-    Here we import class `Car` (which you have to implement by yourself, a hint on which attributes need to be implemented can be found on the page `Simple CarList` in section Control statements) from the `Carrental` domain class diagram that has
-    no package (called default package). Whenever an input parameter of type from
-    a class diagram is used, the MontiGem will generate logic to automatically
-    load the object if possible. Specifically here we use `List<Car>` which will
-    load all objects of type `Car`.
-
-    !!! note 
-        There is also logic for loading a single `Car` which will be discussed later.
-  
-    !!! info
-        The types are imported using the so-called *fully qualified names*. 
-        The fully qualified name concept is [general for programming languages](https://en.wikipedia.org/wiki/Fully_qualified_name) - 
-        it's a name that uniquely identifies a type, method, variable, etc., 
-        which is used by a compiler (interperter, generator) to be able to identify an entity.
-
-    In Java and GUI DSL a fully qualified name of a type or component consists of
-    a package name (if present) and the type or component name respectively, e.g.,
-    `java.util.List`, `gui.NavContainer`. In CD4A (class diagram language) the
-    fully qualified name of a type consists of package name (if present), class
-    diagram name, and the type name, e.g., `somepackage.Carrental.Car`.
-
 ## Navigation basics
 
 In common web apps, there is a way to navigate between different pages, usually done by a navigation bar. 
 In our car rental example, we want to do the same. Therefore, create the `NavContainer` component. 
-Within the directory `frontend/src/main/gui/navigation` create a new file called `NavContainer.gui`. 
+Within the directory `frontend/src/main/gui/gui/navigation` create a new file called `NavContainer.gui`. 
 From now on, this component can be reused in every page we want to enable navigation. 
 Add the following content to the file:
 ```ts
@@ -259,11 +223,48 @@ element of the page besides the container is the text. The result is a web page 
   Depending on the type, the content is different, e.g., a `List<Integer>`: `[1,
   2, 3]`.
 
+## Import class diagram types
+You can import types from class diagrams. Here we discuss only ones imported
+from a domain class diagram (that one that defines the data structure of the
+app). For example, we would like to have a page showing the list of cars.
+Therefore, we create the following gui model:
+```java
+package gui;
+
+// data class
+import Carrental.Car;
+
+page SimpleCarList(List<Car> cars) {
+  /* ... */
+}
+```
+
+Here we import class `Car` from the `Carrental` domain class diagram that has
+no package (called default package). First, add a new class `Car` to your class 
+diagram and give it some attributes like `model`, `make`, and `name`.  
+Whenever an input parameter of type from a class diagram is used, the MontiGem 
+will generate logic to automatically load the object if possible. Specifically, 
+here we use `List<Car>` which will load all objects of type `Car`.
+
+!!! note
+There is also logic for loading a single `Car` which will be discussed later.
+
+!!! info
+The types are imported using the so-called *fully qualified names*.
+The fully qualified name concept is [general for programming languages](https://en.wikipedia.org/wiki/Fully_qualified_name) -
+it's a name that uniquely identifies a type, method, variable, etc.,
+which is used by a compiler (interperter, generator) to be able to identify an entity.
+
+In Java and GUI DSL a fully qualified name of a type or component consists of
+a package name (if present) and the type or component name respectively, e.g.,
+`java.util.List`, `gui.NavContainer`. In CD4A (class diagram language) the
+fully qualified name of a type consists of package name (if present), class
+diagram name, and the type name, e.g., `somepackage.Carrental.Car`.
+
 ## Control statements
 
 Now that we want to display a list of cars, we need to be able to go over the
-list and show the details. First, add a new class `Car` to your class diagram and give it some attributes
-like `model`, `make`, and `name`. Add the following to the `SimpleCarList` page:
+list and show the details. Add the following to the `SimpleCarList` page:
 ```ts
 package gui;
 
