@@ -9,7 +9,7 @@ public abstract class OD2DataToolAction implements WorkAction<OD2DataToolAction.
 
   @Override
   public void execute() {
-    OD4DevelopmentTool.main(getParameters().getArgs().get());
+    new OD4DevelopmentTool().run(getParameters().getArgs().get());
   }
 
   public interface Params extends WorkParameters {
