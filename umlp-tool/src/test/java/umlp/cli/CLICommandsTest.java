@@ -19,14 +19,14 @@ public class CLICommandsTest extends AbstractUMLPTest {
 
     // Parse and pretty-print the umlp model
     final String cd = TEST_PATH + "AssocTest.umlp";
-    UMLPTool.main(new String[] {"-i", cd, "-pp", out + "AssocTest/AssocTest.umlp"});
+    new UMLPTool().run(new String[] {"-i", cd, "-pp", out + "AssocTest/AssocTest.umlp"});
 
     File outF = new File(out + "AssocTest/AssocTest.umlp");
     Assertions.assertTrue(outF.exists());
     Assertions.assertEquals(0, Log.getFindingsCount());
 
     // Reparse to check if the pretty-printing produces a syntactically sound model
-    UMLPTool.main(new String[] {"-i", out + "AssocTest/AssocTest.umlp", "-pp",
+    new UMLPTool().run(new String[] {"-i", out + "AssocTest/AssocTest.umlp", "-pp",
         out + "AssocTest/AssocTest.umlp"});
     Assertions.assertEquals(0, Log.getFindingsCount());
   }
@@ -37,7 +37,7 @@ public class CLICommandsTest extends AbstractUMLPTest {
     final String cd2 = TEST_PATH + "Person/B.umlp";
     final String cd3 = TEST_PATH + "Person/C.umlp";
     final String out = "target/generated/multi-merge-test/Person/";
-    UMLPTool.main(new String[] {"-i", cd1, "-mrg", cd2, cd3, "-pp", out + "Persons.umlp"});
+    new UMLPTool().run(new String[] {"-i", cd1, "-mrg", cd2, cd3, "-pp", out + "Persons.umlp"});
 
     File outF = new File(out + "Persons.umlp");
     Assertions.assertTrue(outF.exists());

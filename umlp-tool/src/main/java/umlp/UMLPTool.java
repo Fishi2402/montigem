@@ -151,12 +151,6 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
-  public static void main(String[] args) {
-    Log.ensureInitialization(); // by default, don't use SLF4J log
-    UMLPTool tool = new UMLPTool();
-    tool.run(args);
-  }
-
   public static void gradleMain(String[] args) {
     GradleLog.init(); // by default, don't use SLF4J log
     UMLPTool tool = new UMLPTool();
@@ -187,6 +181,7 @@ public class UMLPTool extends UMLPToolTOP {
    * @param args
    */
   public void run(String[] args) {
+    Log.ensureInitialization();
     //init CLI options
     Options options = initOptions();
 

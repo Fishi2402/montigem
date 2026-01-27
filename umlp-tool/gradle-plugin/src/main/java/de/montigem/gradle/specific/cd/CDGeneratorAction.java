@@ -8,7 +8,7 @@ public abstract class CDGeneratorAction implements WorkAction<CDGeneratorAction.
 
   @Override
   public void execute() {
-    de.monticore.CDGeneratorTool.main(getParameters().getArgs().get());
+    new de.monticore.CDGeneratorTool().run(getParameters().getArgs().get());
   }
 
   public interface CDGenParams extends WorkParameters {
