@@ -14,12 +14,12 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
       ${includeArgs("umlp.dao.Set", statement, index, genService.getDBType(attr.getSymbol().getType()), "o."+genService.getGetterName(attr.getName(), attr.getSymbol().getType())+"()", true, neo4j)};
     </#list>
     ${statement}.executeUpdate();
-    <#list listAttributes as attr>
-    update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}List());
-    </#list>
   } catch (SQLException e){
     throw new RuntimeException(e);
   }
+  <#list listAttributes as attr>
+  update${attr.getName()?cap_first}(o.getGemId(), o.get${attr.getName()?cap_first}List());
+  </#list>
   List<Long> iDs;
   <#list listAssocs as assocSide, assoc>
   iDs= o._internal_get${assocSide.getName()?cap_first}GemList().getIDs();
