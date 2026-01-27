@@ -20,14 +20,14 @@ ${cd4c.method("public void insert${typeName}(${typeName} o)")}
   } catch (SQLException e){
     throw new RuntimeException(e);
   }
-
+  List<Long> iDs;
   <#list listAssocs as assocSide, assoc>
-  List<Long> iDs = o._internal_get${assocSide.getName()?cap_first}GemList().getIDs();
+  iDs= o._internal_get${assocSide.getName()?cap_first}GemList().getIDs();
   HashMap<Long, List<Long>> ${assocSide.getName()?uncap_first}Map = new HashMap<>();
     <#if assocSide.isLeft()>
-    iDs.forEach(id -> ${assocSide.getName()?uncap_first}Map.put(id, Arrays.asList(o.getGemId())));
+  iDs.forEach(id -> ${assocSide.getName()?uncap_first}Map.put(id, Arrays.asList(o.getGemId())));
     <#else>
-    ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), iDs);
+  ${assocSide.getName()?uncap_first}Map.put(o.getGemId(), iDs);
     </#if>
   ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().addMany${assoc.getName()?cap_first}(${assocSide.getName()?uncap_first}Map);
   </#list>
