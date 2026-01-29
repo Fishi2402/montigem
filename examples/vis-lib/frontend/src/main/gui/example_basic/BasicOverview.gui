@@ -10,8 +10,8 @@ page BasicOverview() {
   @GemColumn(
     hAlign = "center",
     components = [
-      @GemText(value = "Basic Components", size = "2rem", weight = "bold", height = "auto"),
-      @GemText(value = "Fundamental UI elements", size = "1.2rem", color = "gray", height = "auto"),
+      @GemText(value = "Basic Components", size = "2rem", weight = "bold", height = "auto", width = "auto"),
+      @GemText(value = "Fundamental UI elements", size = "1.2rem", color = "gray", height = "auto", width = "auto"),
 
       @GemRow(
         wrap = "wrap",
@@ -20,14 +20,14 @@ page BasicOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Button", icon = "smart_button", click = goToButton()),
-            @ComponentCard(title = "Text", icon = "text_fields", click = goToText()),
-            @ComponentCard(title = "Icon", icon = "star", click = goToIcon()),
-            @ComponentCard(title = "Image", icon = "image", click = goToImage()),
-            @ComponentCard(title = "Link", icon = "link", click = goToLink()),
-            @ComponentCard(title = "Loading Spinner", icon = "loop", click = goToLoadingSpinner()),
-            @ComponentCard(title = "Audio", icon = "audiotrack", click = goToAudio()),
-            @ComponentCard(title = "Video", icon = "videocam", click = goToVideo())
+            @ComponentCard(title = "Button", icon = "smart_button", description = "Clickable button for actions.", click = goToButton()),
+            @ComponentCard(title = "Text", icon = "text_fields", description = "Display text content.", click = goToText()),
+            @ComponentCard(title = "Icon", icon = "star", description = "Material Design icons.", click = goToIcon()),
+            @ComponentCard(title = "Image", icon = "image", description = "Embed images.", click = goToImage()),
+            @ComponentCard(title = "Link", icon = "link", description = "Hyperlinks to other pages.", click = goToLink()),
+            @ComponentCard(title = "Loading Spinner", icon = "loop", description = "Indicate loading state.", click = goToLoadingSpinner()),
+            @ComponentCard(title = "Audio", icon = "audiotrack", description = "Play audio files.", click = goToAudio()),
+            @ComponentCard(title = "Video", icon = "videocam", description = "Play video files.", click = goToVideo())
         ]
       )
     ]

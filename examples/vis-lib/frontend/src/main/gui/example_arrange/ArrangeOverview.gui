@@ -10,8 +10,8 @@ page ArrangeOverview() {
   @GemColumn(
     hAlign = "center",
     components = [
-      @GemText(value = "Layout & Arrange", size = "2rem", weight = "bold", height = "auto"),
-      @GemText(value = "Structure your page", size = "1.2rem", color = "gray", height = "auto"),
+      @GemText(value = "Layout & Arrange", size = "2rem", weight = "bold", height = "auto", width = "auto"),
+      @GemText(value = "Structure your page", size = "1.2rem", color = "gray", height = "auto", width = "auto"),
 
       @GemRow(
         wrap = "wrap",
@@ -20,13 +20,13 @@ page ArrangeOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Grid", icon = "grid_view", click = goToGrid()),
-            @ComponentCard(title = "Row", icon = "view_column", click = goToRow()),
-            @ComponentCard(title = "Column", icon = "view_stream", click = goToColumn()),
-            @ComponentCard(title = "Card", icon = "crop_portrait", click = goToCard()),
-            @ComponentCard(title = "Dialog", icon = "open_in_new", click = goToDialog()),
-            @ComponentCard(title = "Tree Node", icon = "account_tree", click = goToTreeNode()),
-            @ComponentCard(title = "Table", icon = "table_chart", click = goToTable())
+            @ComponentCard(title = "Grid", icon = "grid_view", description = "2D grid layout.", click = goToGrid()),
+            @ComponentCard(title = "Row", icon = "view_column", description = "Horizontal layout.", click = goToRow()),
+            @ComponentCard(title = "Column", icon = "view_stream", description = "Vertical layout.", click = goToColumn()),
+            @ComponentCard(title = "Card", icon = "crop_portrait", description = "Container with header.", click = goToCard()),
+            @ComponentCard(title = "Dialog", icon = "open_in_new", description = "Modal dialog window.", click = goToDialog()),
+            @ComponentCard(title = "Tree Node", icon = "account_tree", description = "Hierarchical tree structure.", click = goToTreeNode()),
+            @ComponentCard(title = "Table", icon = "table_chart", description = "Data table.", click = goToTable())
         ]
       )
     ]

@@ -10,8 +10,8 @@ page InputOverview() {
   @GemColumn(
     hAlign = "center",
     components = [
-      @GemText(value = "Input Components", size = "2rem", weight = "bold", height = "auto"),
-      @GemText(value = "Forms and user input", size = "1.2rem", color = "gray", height = "auto"),
+      @GemText(value = "Input Components", size = "2rem", weight = "bold", height = "auto", width = "auto"),
+      @GemText(value = "Forms and user input", size = "1.2rem", color = "gray", height = "auto", width = "auto"),
 
       @GemRow(
         wrap = "wrap",
@@ -20,14 +20,14 @@ page InputOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Text Input", icon = "input", click = goToTextInput()),
-            @ComponentCard(title = "Text Area", icon = "notes", click = goToTextareaInput()),
-            @ComponentCard(title = "Checkbox", icon = "check_box", click = goToCheckBoxInput()),
-            @ComponentCard(title = "Radio Button", icon = "radio_button_checked", click = goToRadioInput()),
-            @ComponentCard(title = "Dropdown", icon = "arrow_drop_down_circle", click = goToDropdownInput()),
-            @ComponentCard(title = "Autocomplete", icon = "search", click = goToAutocompleteInput()),
-            @ComponentCard(title = "Range Input", icon = "linear_scale", click = goToRangeInput()),
-            @ComponentCard(title = "Chat", icon = "chat", click = goToChat())
+            @ComponentCard(title = "Text Input", icon = "input", description = "Single-line text field.", click = goToTextInput()),
+            @ComponentCard(title = "Text Area", icon = "notes", description = "Multi-line text field.", click = goToTextareaInput()),
+            @ComponentCard(title = "Checkbox", icon = "check_box", description = "Binary choice input.", click = goToCheckBoxInput()),
+            @ComponentCard(title = "Radio Button", icon = "radio_button_checked", description = "Select one from many.", click = goToRadioInput()),
+            @ComponentCard(title = "Dropdown", icon = "arrow_drop_down_circle", description = "Select from a list.", click = goToDropdownInput()),
+            @ComponentCard(title = "Autocomplete", icon = "search", description = "Input with suggestions.", click = goToAutocompleteInput()),
+            @ComponentCard(title = "Range Input", icon = "linear_scale", description = "Slider for numeric range.", click = goToRangeInput()),
+            @ComponentCard(title = "Chat", icon = "chat", description = "Chat interface component.", click = goToChat())
         ]
       )
     ]

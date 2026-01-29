@@ -10,8 +10,8 @@ page OtherOverview() {
   @GemColumn(
     hAlign = "center",
     components = [
-      @GemText(value = "Other Components", size = "2rem", weight = "bold", height = "auto"),
-      @GemText(value = "Specialized and domain-specific components", size = "1.2rem", color = "gray", height = "auto"),
+      @GemText(value = "Other Components", size = "2rem", weight = "bold", height = "auto", width = "auto"),
+      @GemText(value = "Specialized and domain-specific components", size = "1.2rem", color = "gray", height = "auto", width = "auto"),
 
       @GemRow(
         wrap = "wrap",
@@ -20,10 +20,10 @@ page OtherOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Monaco Editor", icon = "code", click = goToMonaco()),
-            @ComponentCard(title = "Fischertechnik", icon = "precision_manufacturing", click = goToFischertechnik()),
-            @ComponentCard(title = "CAD Viewer", icon = "3d_rotation", click = goToCAD()),
-            @ComponentCard(title = "Person Overview", icon = "people", click = goToPerson())
+            @ComponentCard(title = "Monaco Editor", icon = "code", description = "Powerful code editor.", click = goToMonaco()),
+            @ComponentCard(title = "Fischertechnik", icon = "precision_manufacturing", description = "Control Fischertechnik models.", click = goToFischertechnik()),
+            @ComponentCard(title = "CAD Viewer", icon = "3d_rotation", description = "View 3D CAD models.", click = goToCAD()),
+            @ComponentCard(title = "Person Overview", icon = "people", description = "Example domain overview.", click = goToPerson())
         ]
       )
     ]
