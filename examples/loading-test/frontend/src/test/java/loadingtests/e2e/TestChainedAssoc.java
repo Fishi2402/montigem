@@ -59,6 +59,7 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
     page.waitForLoadState(LoadState.NETWORKIDLE);
     waitForAngular(page);
 
+    // Check ${a1_2}.favouriteFood.name
     assertThat(page.locator(GemText.selector())).hasText(" ");
     Food f = LoadingTestsManager.foodBuilder().name("F1").build().get();
     a1_2.setFavouriteFood(f);
@@ -67,6 +68,16 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
     Food f2 = LoadingTestsManager.foodBuilder().name("F2").build().get();
     a1_2.setFavouriteFood(f2);
     assertThat(page.locator(GemText.selector())).hasText(f2.getName());
+    f2.setName("F2_updated");
+    assertThat(page.locator(GemText.selector())).hasText(f2.getName());
+
+    // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4940
+//    // also test the other way
+//    Food f3 = LoadingTestsManager.foodBuilder().name("F3").build().get();
+//    f3.setAnimalOfFavAssoc(a1_2); // bidirectional
+//    assertThat(page.locator(GemText.selector())).hasText(f3.getName());
+//    f3.setName("F3_updated");
+//    assertThat(page.locator(GemText.selector())).hasText(f3.getName());
   }
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
