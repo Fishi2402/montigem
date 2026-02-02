@@ -189,6 +189,12 @@ public class UMLPTool extends UMLPToolTOP {
       CommandLineParser parser = new DefaultParser();
       CommandLine cmd = parser.parse(options, args);
 
+      if(cmd.hasOption("h")){
+        printHelp(options);
+        //do not continue, when help is printed.
+        return;
+      }
+
       // Due to its size, we define the Pipeline of the UMLP Tool in a separate class (UMLPToolPipelineSetup)
       UMLPToolPipeline pipeline = new UMLPToolPipeline(cmd);
 

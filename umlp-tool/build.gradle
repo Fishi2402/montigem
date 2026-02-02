@@ -17,6 +17,12 @@ ecj {
   compilerVersion = "3.43.0"
 }
 
+shadowJar {
+  manifest {
+    attributes 'Main-Class': 'umlp.UMLPTool'
+  }
+}
+
 java {
   toolchain {
     languageVersion = JavaLanguageVersion.of(21)
