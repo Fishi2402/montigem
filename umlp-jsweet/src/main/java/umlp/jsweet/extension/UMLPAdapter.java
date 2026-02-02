@@ -11,6 +11,7 @@ import umlp.jsweet.extension.module.RelativeImportAdapter;
 import umlp.jsweet.extension.umlp.BackendOnlyAdapter;
 import umlp.jsweet.extension.umlp.CollectionsAdapter;
 import umlp.jsweet.extension.umlp.JavaBasicsAdapter;
+import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 import umlp.jsweet.extension.umlp.MutexAdapter;
 import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 
@@ -22,9 +23,10 @@ public class UMLPAdapter extends PrinterAdapter {
     super(
         new GUITypesImportAdapter(
             new CollectionsAdapter(
-                new JavaBasicsAdapter(
-                    new UMLPRTEImportAdapter(
-                        // new RelativeImportAdapter(
+                new JavaTimeAdapter(
+                    new JavaBasicsAdapter(
+                        new UMLPRTEImportAdapter(
+                            // new RelativeImportAdapter(
                             new BasicsAdapter(
                                 new BackendOnlyAdapter(
                                     new MutexAdapter(
@@ -34,7 +36,8 @@ public class UMLPAdapter extends PrinterAdapter {
                                     )
                                 )
                             )
-                        // )
+                            // )
+                        )
                     )
                 )
             )

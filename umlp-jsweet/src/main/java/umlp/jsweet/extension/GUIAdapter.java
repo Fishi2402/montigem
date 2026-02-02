@@ -2,6 +2,7 @@
 package umlp.jsweet.extension;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
+import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 import umlp.jsweet.extension.umlp.MutexAdapter;
 import umlp.jsweet.extension.common.BasicsAdapter;
 import umlp.jsweet.extension.common.UMLPEnumAdapter;
@@ -28,18 +29,20 @@ public class GUIAdapter extends PrinterAdapter {
         new JavaBasicsAdapter(
             new UMLPGUICollectionsAdapter(
                 new UMLPRTEImportAdapter(
-                    new BasicsAdapter(
-                        new DelegateGemListToArrayAdapter(
-                            new GUIComponentObserverPatternAdapter(
-                                new GUIComponentBasicsAdapter(
-                                    new GUITypesImportAdapter(
-                                        new TSTypesAdapter(
-                                            new GUIUtilAdapter(
-                                                new BackendOnlyAdapter(
-                                                    new MutexAdapter(
-                                                        new UMLPEnumAdapter(
-                                                            new AnnotationToDecoratorAdapter(
-                                                                parentAdapter
+                    new JavaTimeAdapter(
+                        new BasicsAdapter(
+                            new DelegateGemListToArrayAdapter(
+                                new GUIComponentObserverPatternAdapter(
+                                    new GUIComponentBasicsAdapter(
+                                        new GUITypesImportAdapter(
+                                            new TSTypesAdapter(
+                                                new GUIUtilAdapter(
+                                                    new BackendOnlyAdapter(
+                                                        new MutexAdapter(
+                                                            new UMLPEnumAdapter(
+                                                                new AnnotationToDecoratorAdapter(
+                                                                    parentAdapter
+                                                                )
                                                             )
                                                         )
                                                     )

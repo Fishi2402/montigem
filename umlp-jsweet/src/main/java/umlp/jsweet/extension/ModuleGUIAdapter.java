@@ -16,6 +16,7 @@ import umlp.jsweet.extension.gui.TSTypesAdapter;
 import umlp.jsweet.extension.gui.UMLPGUICollectionsAdapter;
 import umlp.jsweet.extension.module.RelativeImportAdapter;
 import umlp.jsweet.extension.umlp.BackendOnlyAdapter;
+import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 import umlp.jsweet.extension.umlp.MutexAdapter;
 import umlp.jsweet.extension.util.NeverCDAdapter;
 import umlp.jsweet.extension.util.OnlyCDAdapter;
@@ -38,10 +39,11 @@ public class ModuleGUIAdapter extends PrinterAdapter {
                                             new NeverCDAdapter(new TSTypesAdapter(
                                                 new OnlyCDAdapter(new JavaBasicsAdapter(
                                                     new BackendOnlyAdapter(
-                                                        new BasicsAdapter(
-                                                            new MutexAdapter(
-                                                                new UMLPEnumAdapter(
-                                                                    parentAdapter
-                                                                )))))))))))))))))))))))));
+                                                        new JavaTimeAdapter(
+                                                            new BasicsAdapter(
+                                                                new MutexAdapter(
+                                                                    new UMLPEnumAdapter(
+                                                                        parentAdapter
+                                                                    ))))))))))))))))))))))))));
   }
 }
