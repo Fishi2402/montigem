@@ -42,7 +42,8 @@ Replace `my_user` and `my_password` with your Nexus account name and password.
   - VSCode: [https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix)
 
 ## Commands
-Clone the project and build it.
+
+Clone the project or install using a [launcher](https://nexus.se.rwth-aachen.de/repository/monticore-snapshots/de/se_rwth/montiinit/guiLauncher/1.0-SNAPSHOT/guiLauncher-1.0-20260202.172429-4-native.exe) (experimental) and build it.
 
 ### Build
 
