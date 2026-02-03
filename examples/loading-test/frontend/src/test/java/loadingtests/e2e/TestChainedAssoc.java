@@ -71,13 +71,12 @@ public class TestChainedAssoc extends AbstractLoadingTestsE2ETest {
     f2.setName("F2_updated");
     assertThat(page.locator(GemText.selector())).hasText(f2.getName());
 
-    // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4940
-//    // also test the other way
-//    Food f3 = LoadingTestsManager.foodBuilder().name("F3").build().get();
-//    f3.setAnimalOfFavAssoc(a1_2); // bidirectional
-//    assertThat(page.locator(GemText.selector())).hasText(f3.getName());
-//    f3.setName("F3_updated");
-//    assertThat(page.locator(GemText.selector())).hasText(f3.getName());
+    // also test the other way
+    Food f3 = LoadingTestsManager.foodBuilder().name("F3").build().get();
+    f3.setAnimalOfFavAssoc(a1_2); // bidirectional
+    assertThat(page.locator(GemText.selector())).hasText(f3.getName());
+    f3.setName("F3_updated");
+    assertThat(page.locator(GemText.selector())).hasText(f3.getName());
   }
 
   @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
