@@ -3,6 +3,10 @@
 This document describes what you need to install in order to run a MontiGem app,
 and commands defined for a standard app setup.
 
+!!! warning
+    The tutorial is based on a pre-built example application. Currently, you
+    need to ask a MontiGem developer to get access to it.
+
 ## Installation
 
 ### Install Java 21
@@ -15,17 +19,20 @@ and commands defined for a standard app setup.
 - Add environment variable `JAVA_HOME` with its value set to the `jdk-21` directory, e.g. `C:\Program Files\Java\jdk-21`.
 - Add `%JAVA_HOME%\bin` entry to the `Path` environment variable. Open a command line and run `java -version` command to check if Java is working properly.
 
-### Setup Gradle 8.5
+### Setup Gradle 8.14.3
 
-Download [Gradle 8.5](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
+Download [Gradle 8.14.3](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
+
+!!! note
+    You may try later versions or other version with the major version number 8,
+    they might work, but it is not guaranteed.
 
 Create a `gradle.properties` file in `%userprofile%/.gradle` folder with content:
 
-=== "gradle.properties"
-    ```
-    mavenUser=my_user
-    mavenPassword=my_password
-    ```
+```properties title="gradle.properties"
+mavenUser=my_user
+mavenPassword=my_password
+```
   
 Replace `my_user` and `my_password` with your Nexus account name and password.
 
@@ -80,12 +87,14 @@ If there are no errors in the ouput, the last lines will signal the
 successful frontend start (there may be more output after these lines):
 
 ```
-** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
-
-... Compiled successfully.
+Watch mode enabled. Watching for file changes...
+    Local:   http://localhost:4200/
 ```
 
 Open the browser and navigate to [localhost:4200](http://localhost:4200) to see the app.
+The app shows a text directing you to the start of the tutorial:
+
+![first tutorial app page](tutorial/arch.png)
 
 ### Stop
 
@@ -120,17 +129,44 @@ sudo ./killfe.sh
 
 ### Good to know
 
+After starting the frontend:
+
 ```sh
-  gradle :frontend:run
+gradle :frontend:run
 ```
 
-Starts a local node server. The startup time is quite slow. If you are only 
-changing FrontEnd code or GUI models, you can simply let the taks run and 
-instead use the following task to serve the new code in much less time.
+If you are only changing frontend code or GUI models, you can let the task run
+and execute the following task in a new console window to serve the new code in
+less time:
 
 ```sh
-  gradle :frontend:SYNC_genGUI
+gradle :frontend:sync_gui2java2ts
+```
+
+For example, open `Start.gui` and update the `@GemText`:
+
+```ts title="frontend/src/main/gui/gui/Start.gui"
+page Start() {
+  /* component usages, control statements, etc. */
+  @GemText(value="Hello, World!");
+}
+```
+
+Then run 
+
+```sh
+gradle :frontend:sync_gui2java2ts
+```
+
+First time you execute this command, it may take a bit. When it's done, the
+console where you ran `gradle :frontend:run` will show:
+
+```
+Page reload sent to client(s).
 ```
 
 !!! note
-    This command is currently outdated and will be reworked.
+    If your changes are invalid, e.g., the updated GUI model has errors,
+    the console running `gradle :frontend:sync_gui2java2ts` will display the
+    error, and the page will not reload. In that case, fix the error and rerun
+    the command.

@@ -14,67 +14,99 @@ The generated code is adaptable by using the TOP-mechanism.
 ### Start-up
 
 The server application is generated from the UML class diagram. However, some
-custom start-up logic might require hand-written adaptions.
-The entry point for adapting the applicatoin start-up is adapting the
-`ServerApplication` class, e.g.,
-`carrental.CarrentalServerApplication`. Here you can override the `init` method
-with the Spring Boot `@PostConstruct` annotation. A typical use case for this
-is the creation of start-up dummy data to test your product.
-We already provided an empty method `initEntities()` to do so.
-Try it yourself, by implementing this method and instantiating classes,
-you modeled in the class diagram.
+custom start-up logic might require hand-written adaptations. The entry point
+for adapting the applicatoin start-up is adapting the `ServerApplication` class,
+e.g., `carrental.CarrentalServerApplication`. Here you can override the `init`
+method with the Spring Boot `@PostConstruct` annotation. A typical use case for
+this is the creation of start-up dummy data to test your product. You have
+already worked with the `initEntities()` method to do so while learning [class
+diagram basics](./01_ClassDiagramBasics.md#class).
 
-```java
+```java title="backend/src/main/java/carrental/CarrentalServerApplication.java"
 public class CarrentalServerApplication extends CarrentalServerApplicationTOP {
 
   @PostConstruct
   @Override
   public void init() throws IOException {
     super.init();
-    // your code, e.g., dummy data creation
+    initEntities();
   }
 
-  /*...*/
+  protected void initEntities() {
+    // dummy data creation
+  }
 }
 ```
 
-## Interaction with the Code
+## Hand-Written Code Extensions: Create, Read, Update, Delete (CRUD) Operations
 
 The main entry point to interact with any part of the stored domain objects is
 the generated singleton class `Manager` (e.g., `carrental.CarrentalManager`,
-`domain.DomainManager`). It offers methods to create, retrieve or delete a
-domain object. E.g., for a domain object `Foo`:
+`domain.DomainManager`). It offers methods to create, retrieve or delete
+a domain object. For example, for a domain object `Car`:
 
-* `Manager.getFoo(gemId)` returns the object if present
-* `Manager.getFooSure(gemId)` returns the object 
-* `Manager.fooBuilder()` returns a builder
-* `Manager.deleteFoo(...)` deletes the object if present
+* `Manager.getCar(gemId)` returns the object if present
+* `Manager.getCarSure(gemId)` returns the object
+* `Manager.getCarList()` returns all objects of the `Car` type
+* `Manager.carBuilder()` returns a builder
+* `Manager.deleteCar(...)` deletes the object if present
 
 The Manager is available both in the backend and frontend. Both are synchronized
 via a websocket connection. Note that synchronization is ensured between all 
 clients and also the database.
 
-Altering the objects happens by editing the objects directly. Synchronization
-with the manager and therefore also the server, all clients and the database 
-happens automatically in the background. Each domain object offers the methods
-to edit attributes (also all list operations) and navigate through associations.
+!!! note
+    Most of the Java code in MontiGem is synchronous, it executes operations
+    sequentially. However, the Java code for GUI which works with domain objects
+    is translated to asynchronous TypeScript code for the app frontend. Since
+    the frontend is a single process, making requests asynchronous ensures that
+    the GUI stays responsive and enables user interaction while data is being
+    transferred from the server.
+    
+    Example Java:
+
+    ```java
+    Car c = CarrentalManager.getCarSure(4); 
+    // work with c object
+    ```
+
+    Example TypeScript:
+
+    ```ts
+    CarrentalManager.getCarSure(4).then((c: Car) => {
+      // work with c object
+    });
+    ```
+
+Updating the objects happens by using setter methods of the objects. For
+example:
+```java
+Car c = CarrentalManager.getCarSure(4); 
+c.setModel("DeLorean"); // update car model
+```
+Synchronization with the manager and the server, all clients and the database
+happens automatically in the background. Each domain object offers methods to
+edit attributes and read associations.
 
 ## Synchronization
 
-The communication between back- and frontend, server and clients, is
-implemented using a command pattern and websockets. For each action, e.g.,
-adding/altering a domain object, MontiGem generates a command (Java/TS class)
-and corresponding De-Serializers (JSON). When executing an action (e.g., 
-`car.setModel("DeLorean DMC-12")`), these
-commands are exchanged between server and clients via a websocket endpoint.
-Then on the other end, the command is executed. The logic for each command
-can be overriden within its `CommandResult<T> doAction()` method.
-The server is then responsible to broadcast changes to all clients and the
-database.
+The communication between server and clients is implemented using a command
+pattern and websockets. For each action, e.g., creating/updating a domain
+object, MontiGem generates a command (Java/TS class) and corresponding
+(de-)serializers converting objects into JSON. When executing an action, e.g.,
+`car.setModel("DeLorean")`, these commands are exchanged between server and
+clients via a websocket endpoint and executed. The logic for each command can be
+overriden in its `CommandResult<T> doAction()` method. The server is responsible
+to broadcast changes to all clients and the database. Commands can be send by
+calling the singleton class `CommandManager`, e.g.,
+`CommandManager.executeCommand(new Car_SetModelCommand(4, "DeLorean");`.
+Sending the commands manually will be discussed in the next [tutorial
+step](./05_ClassDiagramAdvanced.md).
 
 ### Synchronization Example
 
-Consider a scenario with a Database, a Server, and two Clients (A and B). All have loaded the same `Foo` object (ID: 1).
+Consider a scenario with a Database, a Server, and two Clients (A and B). All
+have loaded the same `Foo` object (ID: 1).
 
 1.  **Initial State:**
     *   Database: `Foo(1).bar = "initial"`
@@ -85,11 +117,13 @@ Consider a scenario with a Database, a Server, and two Clients (A and B). All ha
 2.  **Action:** Client A executes `foo.setBar("updated")`.
 
 3.  **Propagation:**
-    *   **Client A:** Sends a `Foo_setBar(1, "updated")` command to the Server via WebSocket.
+    *   **Client A:** Sends a `Foo_setBar(1, "updated")` command to the Server
+        via WebSocket.
     *   **Server:** Receives the command.
         *   Executes it: Updates the in-memory object `Foo(1).bar = "updated"`.
         *   Persists it: Updates the Database `Foo(1).bar = "updated"`.
-        *   Broadcasts: Sends the command to all *other* connected clients (Client B).
+        *   Broadcasts: Sends the command to all *other* connected clients
+            (Client B).
     *   **Client B:** Receives `Foo_setBar(1, "updated")`.
         *   Executes it: Updates its local object `Foo(1).bar = "updated"`.
         *   The UI (if bound to `foo.bar`) updates automatically via the Observer pattern.
@@ -101,12 +135,12 @@ e.g., `CommandManager.executeCommand(new Car_SetModelCommand(4, "DeLorean DMC-12
 
 ### End-Points
 
-Synchronization happens over the command websocket endpoint.
-If there is need to add new end-points, Spring Boot provides lots of utility
-for this. E.g., an endpoint to store a PDF file a new class can
-be added with the `@RestController` annotation. The precise location of the file does
-not matter (unless it is still in the backend source code). 
-Spring Boot will find it and take corresponding action:
+Synchronization happens over the command websocket endpoint. Spring Boot
+provides utilities to add end-points. You may need extra end-points to handle
+binary data, for example, an endpoint to store a PDF file. To do so, add a new
+class with the `@RestController` annotation. The location of the file does not
+matter as far as it is in the backend source code. Spring Boot will find it and
+take corresponding action:
 
 ```java
 package carrental.somewhere;
@@ -114,6 +148,7 @@ package carrental.somewhere;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
+
 @RestController
 public class PDFEndpoint {
   @PostMapping(value="/pdf")

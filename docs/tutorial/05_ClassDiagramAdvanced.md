@@ -5,23 +5,26 @@ providing user authentication. Those tasks are typically managed through one or
 several services that you can introduce via the class diagram. A (static)
 service is annotated with the `<<singleton>>` stereotype and corresponding
 fields/methods. For example, add to the class diagram:
-```java
+```java title="models/Carrental.umlp"
 umlp Carrental {
+  /* other classes */
 
   <<singleton>>
   class RentalService {
-    RentalTransaction rentItem(RentableItem rentable);
-    void returnItem(RentalTransaction rentalTransaction);
-    void processPayment(RentalTransaction rentalTransaction);
+    RentalTransaction rentCar(Car c);
+    // void returnCar(RentalTransaction rentalTransaction);
+    // void processPayment(RentalTransaction rentalTransaction);
   }
 
 }
 ```
-The method `rentItem` has an argument of type `RentableItem`. Create this class with at least one
-attribute called `rentableStatus` of type `RentableStatus` that we created earlier. For each method specified in the 
-singleton class, MontiGem generates a command which requires custom implementation via TOP-mechanism. For example,
-`backend/src/main/java/carrental/commands/RentItem.java`:
-```java
+
+For each method specified in the singleton class, MontiGem generates a command
+which requires custom implementation via TOP-mechanism. For now, we will work
+with a single `rentItem` method, you can try commenting in and implementing
+other methods later. The `rentItem` method calls the `RentItem` command, which
+you have to implement:
+```java title="backend/src/main/java/carrental/commands/RentItem.java"
 package carrental.commands;
 
 import carrental.RentalTransaction;
@@ -41,8 +44,6 @@ public class RentItem extends RentItemTOP {
   }
 }
 ```
-Now add a dummy implementation for all three commands defined in
-the singleton above.
 
 The singleton can then be used in the frontend and backend code. The example `RentItem`
 command is sent using a `CommandManager`:

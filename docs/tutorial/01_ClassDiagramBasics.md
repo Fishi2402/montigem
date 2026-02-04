@@ -1,7 +1,7 @@
 # Creating a basic data structure 
 
-The core of a MontiGem app is a data structure modeled with a class diagram. The
-most basic one requires few elements to get started:
+The core of a MontiGem app is a data structure modeled as a class diagram. The
+basic one requires few elements to get started:
 
 - class diagram
 - class
@@ -43,7 +43,7 @@ It contains
 
 Car rental example (located in the `models` directory):
 
-```java
+```java title="models/Carrental.umlp"
 import java.time.LocalDateTime;
 
 umlp Carrental {
@@ -56,14 +56,19 @@ umlp Carrental {
     understanding the app when you want to override the default behavior.
 
 A class diagram defines the base of the app. The generated files can be found in
-`backend/build/umlp2java` and
-`frontend/build/app/umlpJava2ts`. The generated files have
-very similar implementations. Generated classes include:
+`backend/build/umlp2java` and `frontend/build/umlpJava2ts`. The generated files
+have very similar implementations. Generated classes include:
 
-* ServerApplication: `CarrentalServerApplication`, used as a main class for
+* ServerApplication: `CarrentalServerApplicationTOP`, used as a main class for
   running the server. It is also a common place for dummy data initialization.
-* Manager: `CarrentalManager`, used to get builder classes and has internal data
-  management purposes.
+
+!!! note
+    The class name has a `TOP` suffix, since it is a generated files extended
+    via hand-written code. You will learn about hand-written extensions
+    [later](./03_TOPMechanism.md)
+
+* Manager: `CarrentalManager`, used to get builder classes, load data, and has
+  internal data management purposes.
 * Manager mock: `CarrentalMock`, used in testing as a substitute of the real
   `CarrentalManager`.
 
@@ -71,7 +76,8 @@ Having an empty class diagram is not really meaningful, but it plays a certain
 role in the generated code as will be explained further.
 
 !!! note
-    The generator runs using the already mentioned commands `gradle build`, `gradle :backend:run` and `gradle :frontend:run`.
+    The generator runs using the already mentioned commands `gradle build`,
+    `gradle :backend:run` and `gradle :frontend:run`.
 
 ## Class
 
@@ -91,7 +97,7 @@ It contains
 
 The car rental example already contains a single class:
 
-```java
+```java title="models/Carrental.umlp"
 class Customer {
   String name;
   String email;
@@ -99,11 +105,12 @@ class Customer {
 }
 ```
 
-Specifying classes and running the generator will produce a bunch of code that is
-used for entities management:
+Specifying classes and running the generator will produce a bunch of code that
+is used for entities management:
 
 * Domain classes: `Customer`, represent the domain objects.
-* Builder classes: `CustomerBuilder`, used to build (i.e., instantiate) domain objects.
+* Builder classes: `CustomerBuilder`, used to build (i.e. instantiate) domain
+  objects.
 * Data Access Object (DAO): `CustomerDAO`, used to get/set data from/to the
   database.
 * (De)serializer: `CustomerDeSer`, used to (de)serialize the domain objects for
@@ -117,30 +124,41 @@ used for entities management:
   project.
 
 The most relevant classes are domain and builder classes. Those are used to
-create and update domain objects. 
-Try it yourself. For instance, using the `initEntities()` method in the `CarrentalServerApplication` class.
+create and update domain objects. Try it yourself. For example, update
+`initEntities()` method in the `CarrentalServerApplication`:
 
 - Create an object using a builder:
-  ```java
+  ```java title="backend/src/main/java/carrental/CarrentalServerApplication.java"
   Customer jim = CarrentalManager.customerBuilder() // returns CustomerBuilder
     .name("Jim Douglas")
-    .email("jim.double@example.com")
+    .email("incorrect_mail@example.com")
     .age(34)
     .build() // return Optional<Customer>
     .get();
+  Customer dummy = CarrentalManager.customerBuilder()
+    .name("Delete me")
+    .email("delete@me.mail")
+    .age(33)
+    .build()
+    .get();
   ```
 - Read object attributes using `get` methods:
-  ```java
+  ```java title="backend/src/main/java/carrental/CarrentalServerApplication.java"
   jim.getName();
   ```
 - Update object attributes using `set` methods:
-  ```java
+  ```java title="backend/src/main/java/carrental/CarrentalServerApplication.java"
   jim.setEmail("jim.douglas@example.com");
   ```
 - Delete objects using `delete` methods of manager:
-  ```java
-  CarrentalManager.deleteCustomer(jim.getGemId());
+  ```java title="backend/src/main/java/carrental/CarrentalServerApplication.java"
+  CarrentalManager.deleteCustomer(dummy.getGemId());
   ```
+
+The tutorial application has a page displaying a list of customers. If you
+restart the backend and navigate to a predefined page
+http://localhost:4200/gui/CustomerOverview, the customer overview page will show
+Jim Douglas.
 
 ## Enum
 
@@ -157,7 +175,7 @@ It contains
 - an optional list of constants
 
 Add the following enum to the class diagram of your car rental example:
-```java
+```java title="models/Carrental.umlp"
 enum RentableStatus {
   AVAILABLE,
   RENTED,
@@ -186,8 +204,9 @@ The association has left and right sides separated with an arrow:
 - direction that defines which side of the association is the owner in the
   "has a" relation, typical values are `<-`, `->`, `<->` (goes both ways) 
 
-Let's add another class to the car rental example to give an example of such relation:
-```java
+Let's first add another class to the car rental class diagram, we will use to
+create an association:
+```java title="models/Carrental.umlp"
 class RentalTransaction {
   LocalDateTime rentalDate;
   LocalDateTime returnDate;
@@ -199,7 +218,7 @@ other words, a customer *has* (performs) rental transactions if the customer
 rents one or several cars.
 
 Add to the car rental example:
-```
+```ts title="models/Carrental.umlp"
 association [*] RentalTransaction <-> Customer [1];
 ```
 This association means that
@@ -208,13 +227,22 @@ This association means that
 - A customer may have 0, 1 or several rental transactions
 
 The above association can be described differently:
+```ts
+association [*] RentalTransaction (rentalTransaction) <-> (customer) Customer [1];
 ```
+The role names here are set explicitely.
+
+Role names are automatically derived from class names if not specified. The
+cardinalities also have default values, however, it is recommended to specify
+them. Defining associations as class attributes is possible, but it must be a
+calculated decision. It is common, however, to define enum-typed attribute, as
+an enum cannot (shouldn't) have associated objects.
+
+Associations are tricky at times. Consider similar but slightly different
+definitions:
+```ts
 association [*] RentalTransaction <- Customer [1]; // a customer has rental transactions
 association [*] RentalTransaction -> Customer [1]; // rental transaction has a customer
-```
-or
-```
-association [*] RentalTransaction (rentalTransaction) <-> (customer) Customer [1];
 ```
 or
 ```java
@@ -228,18 +256,24 @@ class RentalTransaction {
   Customer customer;
 }
 ```
-
-Role names are automatically derived from class names if not specified. The
-cardinalities also have default values, however, it is recommended to specify
-them. Defining associations as class attributes is possible, but is not
-recommended as it is easier to, e.g., turn a uni-directional association into a
-bidirectional and vice versa. It is common, however, to define enum-typed
-attribute, as an enum cannot (shouldn't) have associated objects.
+The difference is subtle but important: associations in these cases show two
+different relations. For example, the association
+```ts
+association [*] RentalTransaction <- Customer [1];
+```
+could mean that the customer performs transactions, and the other association
+```ts
+association [*] RentalTransaction -> Customer [1];
+```
+could mean that transaction refers to the customer that rents something to other
+customers. If the intent was to specify that a `RentalTransaction` has a creator
+`Customer`, defining two associations is a mistake; a single bidirectional
+association should be used instead.
 
 ## Attributes and types
 
 Previously we showed several example classes with attributes:
-```java
+```java title="models/Carrental.umlp"
 class Customer {
   String name;
   String email;
@@ -262,4 +296,4 @@ different types:
 
 There are, however, limitations to what types can be used. The biggest one is
 that the generic types are not supported, other than `java.util.List` and
-`java.util.Optional`.
+`java.util.Optional`. A full list of usable type is a work in progress.
