@@ -26,8 +26,17 @@ def getNodeDir() {
   return node_dir
 }
 
-subprojects {
+allprojects {
   apply plugin: 'java'
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(21)
+    }
+  }
+}
+
+subprojects {
+
   apply plugin: 'io.github.themrmilchmann.ecj'
 
   dependencies {
@@ -35,11 +44,7 @@ subprojects {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   }
-  java {
-    toolchain {
-      languageVersion = JavaLanguageVersion.of(21)
-    }
-  }
+
 
   // Use downloaded node for all subprojects
   tasks.withType(NpxTask).configureEach {
