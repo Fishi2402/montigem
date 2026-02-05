@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Mydomain {
+  class SomeClass {
+    String someAttribute;
+    // CoCo error, duplicate attribute
+    String someAttribute;
+  }
+}

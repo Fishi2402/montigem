@@ -51,7 +51,7 @@ dependencies {
 
   intellijPlatform {
     intellijIdeaCommunity("2024.2")
-    plugins(["com.redhat.devtools.lsp4ij:0.7.0"])
+    plugins(["com.redhat.devtools.lsp4ij:0.18.0"])
     testFramework(TestFrameworkType.Platform.INSTANCE)
     testFramework(TestFrameworkType.Plugin.Java.INSTANCE)
   }
@@ -95,7 +95,15 @@ prepareSandbox {
   }
   dependsOn(copyUMLPWithGUIJarIntoIntellijPlugin)
 }
+prepareTestSandbox {
+  // TODO: double copy, we can probably skip copy into generated-sources
+  from("build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-intellij-plugin/bin/") {
+    into("umlp-intellij-plugin/bin") // based on project name, not generated plugin name!
+  }
+  dependsOn(copyUMLPWithGUIJarIntoIntellijPlugin)
+}
 copyUMLPWithGUIJarIntoIntellijPlugin.dependsOn(parent.tasks.packUMLPWithGUILanguageServer)
+tasks.test.dependsOn(copyUMLPWithGUIJarIntoIntellijPlugin)
 
 // config
 if(shouldBuildIntelliJPlugin) {

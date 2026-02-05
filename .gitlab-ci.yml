@@ -118,12 +118,21 @@ build_intellij_plugin:
   stage: build
   script:
     - "cd umlp-tool"
+    # MontiGem Template is used for IntelliJ plugin integration tests
+    - "git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/umlp-anwendungen/montigem-templates/montigem-template.git umlp-intellij-plugin/src/test/montigem-template"
+    # CI Credentials for Gradle project import
+    - "echo mavenUser=$user >> umlp-intellij-plugin/src/test/montigem-template/gradle.properties"
+    - "echo mavenPassword=$pass >> umlp-intellij-plugin/src/test/montigem-template/gradle.properties"
+    # Make lsp logs accessible for artifacts
+    - mkdir "${CI_PROJECT_DIR}/tmpdir"
+    - "export _JAVA_OPTIONS=-Djava.io.tmpdir=${CI_PROJECT_DIR}/tmpdir"
     - "gradle :umlp-intellij-plugin:build -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
     when: always
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - build.log
+      - tmpdir/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
