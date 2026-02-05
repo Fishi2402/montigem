@@ -73,4 +73,12 @@ public class LocalDateTimeE2ETest extends AbstractJsweettestE2ETest {
     checkActionExact(page, "methodIsBefore", "isBefore tomorrow? true");
     checkActionExact(page, "methodIsEqual", "isEqual? true");
   }
+
+  @Test
+  void testToString(Page page){
+    waitRdy(page);
+    assertThat(page.locator(DATE_INPUT_SELECTOR)).isVisible();
+    page.fill(DATE_INPUT_SELECTOR, "");
+    checkActionExact(page, "testToString", "Test toString: null");
+  }
 }

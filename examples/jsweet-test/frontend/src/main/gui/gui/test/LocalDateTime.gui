@@ -41,6 +41,7 @@ page LocalDateTime() {
   testLocalDateNow@GemButton(label = "Test LocalDate Now", leftClick = testLocalDateNow());
   testLocalDateOf@GemButton(label = "Test LocalDate Of", leftClick = testLocalDateOf());
   testLocalDateCalc@GemButton(label = "Test LocalDate Calc", leftClick = testLocalDateManipulation());
+  testToString@GemButton(label = "Test toString", leftClick = testToString());
 
   resultField@GemTextInput(
     id = "resultId",

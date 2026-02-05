@@ -70,10 +70,10 @@ public class JavaTimeAdapter extends AbstractAdapter {
 
     if (isLocalDateTime && !alreadyDateLike) {
       // Wrap the expression in 'new Date()' if it's a raw variable or method call.
-      this.print("new Date(").print(invocation.getTargetExpression()).print(")");
+      this.print("new Date(").print(invocation.getTargetExpression()).print(")").println();
     } else {
       // Print directly if it's already a Date object.
-      this.print(invocation.getTargetExpression());
+      this.print(invocation.getTargetExpression()).println();
     }
   }
 
@@ -89,27 +89,27 @@ public class JavaTimeAdapter extends AbstractAdapter {
       printMacroName(methodName);
 
       // Use UTC to create the date so browser timezone doesn't shift the values.
-      this.print("new Date(Date.UTC(");
+      this.print("new Date(Date.UTC(").println();
 
       List<ExtendedElement> args = invocation.getArguments();
       if (args.size() >= 3) {
-        this.print(args.get(0)).print(", ");       // Year
-        this.print(args.get(1)).print(" - 1, ");   // Subtract 1 because Java months are 1-12, JS are 0-11.
-        this.print(args.get(2));                   // Day
+        this.print(args.get(0)).print(", ").println();       // Year
+        this.print(args.get(1)).print(" - 1, ").println();   // Subtract 1 because Java months are 1-12, JS are 0-11.
+        this.print(args.get(2)).println();                   // Day
 
         // Handle optional arguments for Hour, Minute, and Second, defaulting to 0.
-        this.print(", ").print(args.size() >= 4 ? args.get(3).toString() : "0");
-        this.print(", ").print(args.size() >= 5 ? args.get(4).toString() : "0");
-        this.print(", ").print(args.size() >= 6 ? args.get(5).toString() : "0");
+        this.print(", ").print(args.size() >= 4 ? args.get(3).toString() : "0").println();
+        this.print(", ").print(args.size() >= 5 ? args.get(4).toString() : "0").println();
+        this.print(", ").print(args.size() >= 6 ? args.get(5).toString() : "0").println();
 
         // Convert nanoseconds (Java) to milliseconds (JS), losing precision.
         if (args.size() >= 7) {
-          this.print(", Math.floor(").print(args.get(6)).print(" / 1000000)");
+          this.print(", Math.floor(").print(args.get(6)).print(" / 1000000)").println();
         } else {
-          this.print(", 0");
+          this.print(", 0").println();
         }
       }
-      this.print("))");
+      this.print("))").println();
       return true;
     }
 
@@ -120,9 +120,9 @@ public class JavaTimeAdapter extends AbstractAdapter {
         ("plus".equals(methodName) || "minus".equals(methodName))) {
       String targetOp = "plus".equals(methodName) ? "addTo" : "subtractFrom";
       printMacroName(methodName);
-      this.print(invocation.getArguments().get(0)).print("." + targetOp + "(");
+      this.print(invocation.getArguments().get(0)).print("." + targetOp + "(").println();
       printDateTarget(invocation, isLocalDateTime);
-      this.print(")");
+      this.print(")").println();
       return true;
     }
 
@@ -152,32 +152,32 @@ public class JavaTimeAdapter extends AbstractAdapter {
 
       printMacroName(methodName);
 
-      this.print("((d) => { ");
-      this.print("let res = new Date(d.getTime()); ");
+      this.print("((d) => { ").println();
+      this.print("let res = new Date(d.getTime()); ").println();
 
       if ("Months".equals(baseName) || "Years".equals(baseName)) {
-        this.print("let checkDay = res.getUTCDate(); ");
-        this.print("res." + jsSetter + "(res." + jsGetter + "()");
-        this.print(isPlus ? " + " : " - ");
-        this.print(invocation.getArguments().get(0));
-        this.print("); ");
-        this.print("if (res.getUTCDate() !== checkDay) { res.setUTCDate(0); } ");
+        this.print("let checkDay = res.getUTCDate(); ").println();
+        this.print("res." + jsSetter + "(res." + jsGetter + "()").println();
+        this.print(isPlus ? " + " : " - ").println();
+        this.print(invocation.getArguments().get(0)).println();
+        this.print("); ").println();
+        this.print("if (res.getUTCDate() !== checkDay) { res.setUTCDate(0); } ").println();
       } else if ("Nanos".equals(baseName)) {
-        this.print("res." + jsSetter + "(res." + jsGetter + "()");
-        this.print(isPlus ? " + Math.floor(" : " - Math.floor(");
-        this.print(invocation.getArguments().get(0)).print(" / 1000000)");
-        this.print("); ");
+        this.print("res." + jsSetter + "(res." + jsGetter + "()").println();
+        this.print(isPlus ? " + Math.floor(" : " - Math.floor(").println();
+        this.print(invocation.getArguments().get(0)).print(" / 1000000)").println();
+        this.print("); ").println();
       } else {
-        this.print("res." + jsSetter + "(res." + jsGetter + "()");
-        this.print(isPlus ? " + (" : " - (");
-        this.print(invocation.getArguments().get(0));
-        if (factor > 1) this.print(" * " + factor);
-        this.print(")); ");
+        this.print("res." + jsSetter + "(res." + jsGetter + "()").println();
+        this.print(isPlus ? " + (" : " - (").println();
+        this.print(invocation.getArguments().get(0)).println();
+        if (factor > 1) this.print(" * " + factor).println();
+        this.print(")); ").println();
       }
 
-      this.print("return res; })(");
+      this.print("return res; })(").println();
       printDateTarget(invocation, isLocalDateTime);
-      this.print(")");
+      this.print(")").println();
       return true;
     }
 
@@ -186,18 +186,18 @@ public class JavaTimeAdapter extends AbstractAdapter {
     // ==========================================================================================
     if ("isAfter".equals(methodName) || "isBefore".equals(methodName) || "isEqual".equals(methodName)) {
       printMacroName(methodName);
-      this.print("(");
+      this.print("(").println();
       printDateTarget(invocation, isLocalDateTime);
-      this.print(".getTime()");
+      this.print(".getTime()").println();
 
-      if ("isAfter".equals(methodName))       this.print(" > ");
-      else if ("isBefore".equals(methodName)) this.print(" < ");
-      else                                    this.print(" === ");
+      if ("isAfter".equals(methodName))       this.print(" > ").println();
+      else if ("isBefore".equals(methodName)) this.print(" < ").println();
+      else                                    this.print(" === ").println();
 
-      if (isLocalDateTime) this.print("new Date(");
-      this.print(invocation.getArguments().get(0));
-      if (isLocalDateTime) this.print(")");
-      this.print(".getTime())");
+      if (isLocalDateTime) this.print("new Date(").println();
+      this.print(invocation.getArguments().get(0)).println();
+      if (isLocalDateTime) this.print(")").println();
+      this.print(".getTime())").println();
       return true;
     }
 
@@ -216,7 +216,7 @@ public class JavaTimeAdapter extends AbstractAdapter {
     if (jsSimpleMethod != null) {
       printMacroName(methodName);
       printDateTarget(invocation, isLocalDateTime);
-      this.print(".").print(jsSimpleMethod).print("()");
+      this.print(".").print(jsSimpleMethod).print("()").println();
       return true;
     }
 
@@ -226,70 +226,73 @@ public class JavaTimeAdapter extends AbstractAdapter {
     switch (methodName) {
       case "getMonthValue":
         printMacroName(methodName);
-        this.print("(");
+        this.print("(").println();
         printDateTarget(invocation, isLocalDateTime);
-        this.print(".getUTCMonth() + 1)");
+        this.print(".getUTCMonth() + 1)").println();
         return true;
 
       case "getMonth":
         printMacroName(methodName);
-        this.print("[\"JANUARY\", \"FEBRUARY\", \"MARCH\", \"APRIL\", \"MAY\", \"JUNE\", \"JULY\", \"AUGUST\", \"SEPTEMBER\", \"OCTOBER\", \"NOVEMBER\", \"DECEMBER\"][");
+        this.print("[\"JANUARY\", \"FEBRUARY\", \"MARCH\", \"APRIL\", \"MAY\", \"JUNE\", \"JULY\", \"AUGUST\", \"SEPTEMBER\", \"OCTOBER\", \"NOVEMBER\", \"DECEMBER\"][").println();
         printDateTarget(invocation, isLocalDateTime);
-        this.print(".getMonth()]");
+        this.print(".getMonth()]").println();
         return true;
 
       case "getDayOfWeek":
         printMacroName(methodName);
-        this.print("[\"SUNDAY\", \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\"][");
+        this.print("[\"SUNDAY\", \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\"][").println();
         printDateTarget(invocation, isLocalDateTime);
-        this.print(".getDay()]");
+        this.print(".getDay()]").println();
         return true;
 
       case "getDayOfYear":
         printMacroName(methodName);
-        this.print("((d) => { ");
-        this.print("let utcNow = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); ");
-        this.print("let utcStart = Date.UTC(d.getUTCFullYear(), 0, 0); ");
-        this.print("return Math.floor((utcNow - utcStart) / 86400000); })(");
+        this.print("((d) => { ").println();
+        this.print("let utcNow = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); ").println();
+        this.print("let utcStart = Date.UTC(d.getUTCFullYear(), 0, 0); ").println();
+        this.print("return Math.floor((utcNow - utcStart) / 86400000); })(").println();
         printDateTarget(invocation, isLocalDateTime);
-        this.print(")");
+        this.print(")").println();
         return true;
 
       case "getNano":
         printMacroName(methodName);
-        this.print("(");
+        this.print("(").println();
         printDateTarget(invocation, isLocalDateTime);
-        this.print(".getUTCMilliseconds() * 1000000)");
+        this.print(".getUTCMilliseconds() * 1000000)").println();
         return true;
 
       case "toString":
         printMacroName(methodName);
-        this.print("((d) => { ");
-        this.print("  const pad = (n) => ('0' + n).slice(-2); ");
-        this.print("  let s = d.getUTCFullYear() + '-' + ");
-        this.print("         pad(d.getUTCMonth() + 1) + '-' + ");
-        this.print("         pad(d.getUTCDate()); ");
+        this.print("((d) => { ").println();
+        this.print("if(d == null || d === undefined){").println();
+        this.print("  return null;").println();
+        this.print("}").println();
+        this.print("  const pad = (n) => ('0' + n).slice(-2); ").println();
+        this.print("  let s = d.getUTCFullYear() + '-' + ").println();
+        this.print("         pad(d.getUTCMonth() + 1) + '-' + ").println();
+        this.print("         pad(d.getUTCDate()); ").println();
 
         if (!targetType.equals("java.time.LocalDate")) {
-          this.print("  s += 'T' + ");
-          this.print("         pad(d.getUTCHours()) + ':' + ");
-          this.print("         pad(d.getUTCMinutes()) + ':' + ");
-          this.print("         pad(d.getUTCSeconds()); ");
-          this.print("  if (d.getUTCMilliseconds() > 0) { ");
-          this.print("    s += '.' + ('00' + d.getUTCMilliseconds()).slice(-3); ");
-          this.print("  } ");
+          this.print("  s += 'T' + ").println();
+          this.print("         pad(d.getUTCHours()) + ':' + ").println();
+          this.print("         pad(d.getUTCMinutes()) + ':' + ").println();
+          this.print("         pad(d.getUTCSeconds()); ").println();
+          this.print("  if (d.getUTCMilliseconds() > 0) { ").println();
+          this.print("    s += '.' + ('00' + d.getUTCMilliseconds()).slice(-3); ").println();
+          this.print("  } ").println();
         }
-        this.print("  return s; ");
-        this.print("})(");
+        this.print("  return s; ").println();
+        this.print("})(").println();
         printDateTarget(invocation, isLocalDateTime);
-        this.print(")");
+        this.print(")").println();
         return true;
 
       case "now":
-        this.print("((() => { ");
-        this.print("  const now = new Date(); ");
-        this.print("  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())); ");
-        this.print("})())");
+        this.print("((() => { ").println();
+        this.print("  const now = new Date(); ").println();
+        this.print("  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())); ").println();
+        this.print("})())").println();
         return true;
 
       case "parse":

@@ -203,4 +203,12 @@ public class LocalDateTime extends LocalDateTimeTOP {
       setResultFieldEntry("Result (+2 Weeks, -1 Day, +1 Year): " + result.toString());
     };
   }
+
+  @Override
+  public Consumer<Void> testToString() {
+    return (Void) -> {
+      LocalDate result = null;
+      setResultFieldEntry("Test toString: " + result);
+    };
+  }
 }
