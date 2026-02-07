@@ -49,7 +49,7 @@ export class HierarchicalLayout  {
     var edge, delta;
     while (this.tightTreeHelper(tree, graph) < size) {
       edge = this.findMinSlackEdge(tree, graph);
-      delta = tree.includes(graph.source(edge)) ? HierarchicalLayout.slack(graph, edge) : -HierarchicalLayout.slack(graph, edge);
+      delta = edge != null && tree.includes(graph.source(edge)) ? HierarchicalLayout.slack(graph, edge) : -HierarchicalLayout.slack(graph, edge);
       this.shiftRanks(tree, graph, delta);
     }
     return graph;

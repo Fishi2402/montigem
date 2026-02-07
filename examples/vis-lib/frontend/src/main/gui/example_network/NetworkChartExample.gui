@@ -1,18 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_network;
 
+import example_input.GemChat;
+import mc.fenix.arrange.GemColumn;
+import common.ExamplePage;
 import mc.fenix.networkgraph.GemGraph;
 
 page NetworkChartExample() {
-
-  personGraph@GemGraph(
-    graph=null,
-    showFilterGroup=true,
-    showSearchNode=true,
-    showControlButtons=true,
-    showInformation=true,
-    nodePositionsAfterLayout=getPositions(),
-    customBoundingBox = null,
-    initialLayout = null
+  @ExamplePage(
+    component = @GemColumn(width = "100%", components = [
+      personGraph@GemGraph(
+        graph=null,
+        showFilterGroup=true,
+        showSearchNode=true,
+        showControlButtons=true,
+        showInformation=true,
+        nodePositionsAfterLayout=getPositions(),
+        customBoundingBox = null,
+        initialLayout = null
+      )
+    ]),
+    basePath = "example_network",
+    componentName = "NetworkChartExample"
   );
 }
