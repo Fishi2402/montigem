@@ -143,7 +143,6 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  @Disabled("Investigate why this is not working")
   public void testGUINavToDefinition() throws IOException{
     String guiModelPath = "frontend/src/main/gui/gui/Another.gui";
     copyExternalFileToProject("src/test/resources/navigation/Another.gui", guiModelPath);
@@ -153,11 +152,30 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
 
     PsiElement[] result = getDeclarations();
     assertNotNull(result);
-    // assertEquals(1, result.length);
+    assertEquals(1, result.length);
 
     PsiElement elementAtCaret = getElementReferencedAtCaret();
     PsiElement definition = result[0];
     assertEquals("Start", ReadAction.compute(definition::getText));
+    assertNotEquals(elementAtCaret, definition);
+  }
+
+  @Test
+  public void testGUIToUmlpNavToDefinition() throws IOException{
+    String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
+    copyExternalFileToProject("src/test/resources/navigation/Start.gui", guiModelPath);
+    openFile(guiModelPath);
+
+    waitForLspIndexing();
+
+    PsiElement[] result = getDeclarations();
+    assertNotNull(result);
+    assertEquals(1, result.length);
+
+    PsiElement elementAtCaret = getElementReferencedAtCaret();
+    PsiElement definition = result[0];
+    assertTrue(definition.getContainingFile().getName().endsWith("Mydomain.umlp"));
+    assertEquals("SomeClass", ReadAction.compute(definition::getText));
     assertNotEquals(elementAtCaret, definition);
   }
 }

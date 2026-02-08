@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package gui;
+
+import mydomain.SomeClass;
+
+page Start(Some<caret>Class s) {
+
+}
