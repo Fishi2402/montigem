@@ -270,7 +270,7 @@ type. We omit some types for now and only use most common ones:
   
   For example, we would like to have a page showing the list of cars. For this
   create the following GUI model:
-  ```java
+  ```ts title="frontend/src/main/gui/gui/SimpleCarList.gui"
   package gui;
 
   // data class
