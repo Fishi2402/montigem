@@ -3,64 +3,80 @@
 Besides managing data an app may do other tasks, such as sending e-mails or
 providing user authentication. Those tasks are typically managed through one or
 several services that you can introduce via the class diagram. A (static)
-service is annotated with the `<<singleton>>` stereotype and corresponding
-fields/methods. For example, add to the class diagram:
+service is annotated with the `<<singleton>>` stereotype.
+For example, add to the class diagram:
 ```java title="models/Carrental.umlp"
 umlp Carrental {
   /* other classes */
 
   <<singleton>>
   class RentalService {
-    RentalTransaction rentCar(Car c);
-    // void returnCar(RentalTransaction rentalTransaction);
+    void rentCar(Car rentedCar);
+    // void returnCar(Car rentedCar);
     // void processPayment(RentalTransaction rentalTransaction);
   }
-
 }
 ```
 
 For each method specified in the singleton class, MontiGem generates a command
 which requires custom implementation via TOP-mechanism. For now, we will work
-with a single `rentItem` method, you can try commenting in and implementing
-other methods later. The `rentItem` method calls the `RentItem` command, which
-you have to implement:
-```java title="backend/src/main/java/carrental/commands/RentItem.java"
+with a single `rentCar` method, you can try commenting in and implementing
+other methods later.
+
+Let's add an attribute of type `RentableStatus` to the `Car` class. You may use
+it in the next step:
+```java title="models/Carrental.umlp"
+umlp Carrental {
+  /* other classes */
+
+  class Car {
+    /* other attributes */
+    RentableStatus status = RentableStatus.AVAILABLE;
+  }
+}
+```
+The `rentCar` method calls the `RentCar` command. Try to implement the
+`doAction` method yourself (hint: `rentedCarId` is the variable of `RentCar`
+class holding an ID of the `rentedCar`):
+```java title="backend/src/main/java/carrental/commands/RentCar.java"
 package carrental.commands;
 
-import carrental.RentalTransaction;
-import umlp.backendrte.command.SimpleResult;
+import carrental.Car;
+import carrental.CarrentalManager;
+import carrental.RentableStatus;
+import umlp.backendrte.command.StatusResult;
 
-public class RentItem extends RentItemTOP {
-    
-  public RentItem(long rentableGemId) {
-    super(rentableGemId);
+public class RentCar extends RentCarTOP {
+
+  public RentCar(long rentedCarId) {
+    super(rentedCarId);
   }
 
   @Override
-  public SimpleResult<RentalTransaction> doAction() {
-    RentalTransaction result;
-    // your code
-    return new SimpleResult<>(getId(), result, RentalTransaction.class.getName());
+  public StatusResult doAction() {
+    // TODO: change car status
+    return StatusResult.ok(getId());
   }
 }
 ```
 
-The singleton can then be used in the frontend and backend code. The example `RentItem`
-command is sent using a `CommandManager`:
-```java
-CommandManager.executeCommand(new RentItem(car.getGemId()));
-```
+!!! note
+    You may run `gradlew backend:umlp2java` command in the project folder
+    to generate backend code anew. If you work in an IDE, hand-written
+    extensions will have missing symbols without the generated code.
 
-The result of a command is a
-`CommandResult` that contains whatever result is set as a return type of the
-command method.
+The singleton can then be used in the frontend and backend code. The example
+`RentItem` command is sent using a `CommandManager`:
 ```java
-CommandResult<RentalTransaction> res = CommandManager.executeCommand(new RentItem(car.getGemId()));
+CommandManager.executeCommand(new RentCar(car.getGemId()));
 ```
+We will come back to this command later.
 
+<!--
 ## Global State Management
 
-Singletons are also useful for managing global state in the frontend. You can define a singleton class to hold the state of your application.
+Singletons are also useful for managing global state in the frontend. You can
+define a singleton class to hold the state of your application.
 
 ```java
 umlp Carrental {
@@ -68,7 +84,6 @@ umlp Carrental {
   <<singleton>>
   class App {
     String selectedTopic;
-    // other state variables
   }
 
 }
@@ -92,3 +107,5 @@ This `App` singleton can be passed to pages and components to share state.
     Components that use `app.selectedTopic` (e.g., in `@guard` or as a parameter) will automatically update when the value changes.
 
 This approach provides a "Single Source of Truth" and avoids manually passing callbacks through many layers of components.
+
+-->

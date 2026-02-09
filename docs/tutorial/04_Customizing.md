@@ -40,12 +40,11 @@ public class CarrentalServerApplication extends CarrentalServerApplicationTOP {
 
 ## Hand-Written Code Extensions: Create, Read, Update, Delete (CRUD) Operations
 
-The main entry point to interact with any part of the stored domain objects is
-the generated singleton class `Manager` (e.g., `carrental.CarrentalManager`,
-`domain.DomainManager`). It offers methods to create, retrieve or delete
-a domain object. For example, for a domain object `Car`:
+To handle domain objects a generated singleton class `Manager` is used (e.g.,
+`carrental.CarrentalManager`, `domain.DomainManager`). It offers methods to
+create, retrieve or delete a domain object. For example, for a domain object
+`Car`:
 
-* `Manager.getCar(gemId)` returns the object if present
 * `Manager.getCarSure(gemId)` returns the object
 * `Manager.getCarList()` returns all objects of the `Car` type
 * `Manager.carBuilder()` returns a builder

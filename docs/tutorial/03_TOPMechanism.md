@@ -182,7 +182,7 @@ guide](https://v17.angular.io/guide/router).
 
 For example, try changing the default route in a hand-written extension of
 `AppGemRouting` by adjusting the `redirectTo` value:
-```ts
+```ts title="frontend/src/main/gui/AppGemRouting.ts"
 /* (c) https://github.com/MontiCore/monticore */
 import { Routes } from "@angular/router";
 import { routes as routesTOP } from "AppGemRoutingTOP";
@@ -201,5 +201,5 @@ Since `routes` is a JSON object, you can create your own JSON object (must be
 assigned to `routes` variable) and reuse the contents of the generated
 `routesTOP` object with a spread operator (`...routesTOP`). In this example the
 hand-written `routes` makes sure that navigating to your website without
-specific path (e.g., `www.some-website.com` or `localhost:4200` during the
-development), the app user will get redirected to the `Start` page.
+specific path (e.g., `www.some-website.com` or http://localhost:4200 during the
+development), the app user will get redirected to the `SimpleCarList` page.

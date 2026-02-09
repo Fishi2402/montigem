@@ -94,7 +94,7 @@ Watch mode enabled. Watching for file changes...
 Open the browser and navigate to [localhost:4200](http://localhost:4200) to see the app.
 The app shows a text directing you to the start of the tutorial:
 
-![first tutorial app page](tutorial/arch.png)
+![first tutorial app page](first_page.png)
 
 ### Stop
 
