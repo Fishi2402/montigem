@@ -281,26 +281,26 @@ type. We omit some types for now and only use most common ones:
   }
   ```
   
-    Here we import the `Car` class from the domain class diagram. Whenever an
-    input parameter of type from a class diagram is used, the MontiGem will
-    generate logic to automatically load the object if possible. Specifically
-    here we use `List<Car>` which will load all objects of type `Car`.
+  Here we import the `Car` class from the domain class diagram. Whenever an
+  input parameter of type from a class diagram is used, the MontiGem will
+  generate logic to automatically load the object if possible. Specifically
+  here we use `List<Car>` which will load all objects of type `Car`.
 
-    !!! note 
-        There is also logic for loading a single `Car` which will be discussed later.
-  
-    !!! info
-        The types are imported using the so-called *fully qualified names*. 
-        The fully qualified name concept is [general for programming languages](https://en.wikipedia.org/wiki/Fully_qualified_name) - 
-        it's a name that uniquely identifies a type, method, variable, etc., 
-        which is used by a compiler (interperter, generator) to be able to identify an entity.
+  !!! note 
+      There is also logic for loading a single `Car` which will be discussed later.
 
-    In Java and GUI DSL a fully qualified name of a type or component consists
-    of a package name (if present) and the type or component name respectively,
-    e.g., `java.util.List`, `gui.navigation.NavContainer`. In CD4A (class
-    diagram language) the fully qualified name of a type consists of package
-    name (if present), class diagram name, and the type name, e.g.,
-    `somepackage.Carrental.Car`.
+  !!! info
+      The types are imported using the so-called *fully qualified names*. 
+      The fully qualified name concept is [general for programming languages](https://en.wikipedia.org/wiki/Fully_qualified_name) - 
+      it's a name that uniquely identifies a type, method, variable, etc., 
+      which is used by a compiler (interperter, generator) to be able to identify an entity.
+
+  In Java and GUI DSL a fully qualified name of a type or component consists
+  of a package name (if present) and the type or component name respectively,
+  e.g., `java.util.List`, `gui.navigation.NavContainer`. In CD4A (class
+  diagram language) the fully qualified name of a type consists of package
+  name (if present), class diagram name, and the type name, e.g.,
+  `somepackage.Carrental.Car`.
 
 ## Control statements
 
