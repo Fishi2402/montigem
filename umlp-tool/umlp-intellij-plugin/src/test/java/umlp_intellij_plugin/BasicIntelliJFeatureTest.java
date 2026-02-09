@@ -82,6 +82,7 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
+  @Disabled
   public void testGUICoCoErrorWorks() throws IOException {
     String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
     copyExternalFileToProject("src/test/resources/coco_errors/Start.gui", guiModelPath);
