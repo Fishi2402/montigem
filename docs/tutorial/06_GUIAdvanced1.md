@@ -5,7 +5,7 @@ a bit closer to an actual page.
 
 We start with a simple page again:
 
-```java
+```java title="frontend/src/main/gui/gui/CarOverview.gui"
 package gui;
 
 import gui.navigation.NavContainer;
@@ -26,34 +26,33 @@ page CarOverview(List<Car> cars) {
 }
 ```
 
-Here `@GemText` calls a function `getAvailableCarsTitle()` to get the correct
-value. The function was never declared in the component, but the generator
-assumes that you will implement it and creates an empty function.
+Try adding the page to `NavContainer` yourself.
+
+The `@GemText` in `CarOvervew` calls a function `getAvailableCarsTitle()` to get
+the correct value. The function was never declared in the component, but the
+generator assumes that you will implement it and creates an empty function.
 
 !!! note 
     You could expect to be able to write something like `@GemText(value =
     getAvailableCarsAmount() + " available cars")`, but this is not allowed. The
-    generator is unable to process more complex expressions that have calls inside
-    of them.
+    generator is unable to process more complex expressions containing method
+    calls.
 
 Let's add this function to `CarOverview.java`.
 We can apply TOP-mechanism and override the empty function to show the number of
 available cars:
 
-```java
+```java title="frontend/src/main/java/gui/CarOverview.java"
 package gui;
 
-import Carrental.Car;
-import Carrental.RentableStatus;
+import carrental.Car;
+import carrental.RentableStatus;
 import umlp.jsweet.extension.annotation.Component;
 
 @Component()
-public class CarOverview extends CarOverviewTOP{
+public class CarOverview extends CarOverviewTOP {
 
   public String getAvailableCarsTitle() {
-    if (this.getCars() == null) {
-      return "";
-    }
     int i = 0;
     for (Car c : this.getCars()) {
       if (c.getRentableStatus() == RentableStatus.AVAILABLE) {
@@ -66,16 +65,20 @@ public class CarOverview extends CarOverviewTOP{
 ```
 
 !!! note
-    Just like backend Java files (e.g., `CarrentalServerApplication.java`), frontend Java classes are placed in the `frontend/src/main/java/<packageName>/` directory.
-    In this case, the only package in this tutorial used is `gui`.
+    Just like backend Java files (e.g., `CarrentalServerApplication.java`),
+    frontend Java classes are placed in the
+    `frontend/src/main/java/<packageName>/` directory. In this case, the only
+    package in this tutorial used is `gui`.
 
 The `getAvailableCarsTitle` method checks if cars are loaded and counts amount
 of available cars and return a string indicating the amount, e.g. `3 available
 cars`.
 
-!!! question "Where do `this.getCars()` and `c.getRentableStatus()` methods come from?" 
-    The generator produces a bunch of methods that are mapped from variables and
-    attributes in class diagram and GUI component model.
+!!! question
+    "Where does the `this.getCars()` method come from?" The generator produces
+    methods that are mapped from variables and attributes in class diagram and
+    GUI component model. Getters and setters are generated for most class
+    diagram attributes and GUI component parameters.
 
 Some useful generated methods:
 
@@ -86,7 +89,7 @@ Some useful generated methods:
     - `initCars` method
     - `setCars` method
     - `_cars` attribute
-    - `cars` pseudo-attribute
+    - `cars` pseudo-attribute (only in a TypeScript file)
 
 - Each class attribute has a getter, for example, in `class Car { RentableStatus
   rentableStatus; }` the `rentableStatus` is transformed into
@@ -96,47 +99,44 @@ Some useful generated methods:
   
     !!! note 
         For `boolean` type attributes `is` prefix is generated. For example, 
-        if attribute `boolean available` was defiend, `isAvailable` method would be 
-        generated instead of `getAvailable`.
+        if attribute `boolean available` was defiend, `isAvailable` method would
+        be generated instead of `getAvailable`.
 
 - If an attribute is a list or is described as association with `*` cardinality
-  additional methods can be used, for example, a Car has an association
-  `association [1] Car -> MileageDataPoint [*];` which is transformed into:
+  additional methods can be used, for example, a `Customer` has an association
+  to `RentalTransaction`: `association [*] RentalTransaction <-> Customer [1]`.
+  For the `Customer` class following methods are generated:
 
-    - `addMileageDataPoint2` method
-    - `removeMileageDataPoint2` method
-    - `sizeMileageDataPoints` method
+    - `addRentalTransaction` method
+    - `removeRentalTransaction` method
+    - `sizeRentalTransactions` method
   
-    !!! note 
-        The `2` at the end doesn't really mean anything, it solves a specific 
-        technical issue. In general, you should rely on the IDE to help you out with 
-        a correct name.
 
-The check `this.getCars() == null` in the beginning is necessary because
-before the cars are loaded from the backend, the function shouldn't try to
-operate with the cars data. The Angular framework evaluates this function (and
-other functions that return some value shown in GUI) "continuously" to keep the
-user interface up-to-date.
-
-!!! note
-    This is a common Angular trap. Whenever a not-yet-loaded object is used
-    in calculations, an error will be thrown preventing GUI from operating
-    normally (although it might appear to be fine).
+The method `getAvailableCarsTitle` (its TypeScript variant) is re-evaluated at
+application run-time, when any related object, such as `cars`, changes. If the
+evaluation result is different from the last method call, the corresponding GUI
+part is automatically updated.
 
 ## Adding services
 
 Let's extend the page to show cars and a button for renting them:
-```java
+```java title="frontend/src/main/java/gui/CarOverview.java"
 package gui;
-/* imports */
+
+import gui.navigation.NavContainer;
+import mc.fenix.basic.GemText;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemButton;
+import Carrental.Car;
+
 page CarOverview(List<Car> cars) {
   @NavContainer(content = [
     @GemColumn(components = [
 
       @GemText(value = getAvailableCarsTitle()),
       @iterate(Car c : cars) {
-        @GemText(value = c.make + " " + c.model + " " + c.name);
-        @GemButton(leftClick = rentCar(c));
+        @GemText(value = c.make + " " + c.model);
+        @GemButton(label = "Rent car", leftClick = rentCar(c));
       }
 
     ])
@@ -145,38 +145,39 @@ page CarOverview(List<Car> cars) {
 ```
 Here we iterate through cars and add a button for each car. The `rentCar` is a
 custom function similar to `getAvailableCarsTitle`, but it expects an
-`Consumer<Void>` (the TypeScript equivalent would be the `Event<void>` type) to be returned. 
-The generated code is:
+`Consumer<Void>` (the TypeScript equivalent would be the `Event<void>` type) to
+be returned. The generated code is:
 ```java
 public Consumer<Void> rentCar(Car val) {
   return null;
 }
 ```
 The generator finds out what a function should return based on context. Here,
-leftClick is an event that doesn't provide any value about the left click (thus
-`Consumer<Void>`).
+`leftClick` is an event that doesn't provide any value, thus the type is
+`Consumer<Void>`.
 
 !!! note
     The button could, for example, provide an id of a clicked button as a
-    string, in which case the type would be `Consumer<String>`
+    string, in which case the type would be `Consumer<String>`.
 
-The `Consumer<Void>` type actually indicates a callback function that should be
-called when an event triggers, e.g., when left click happens. This means that
-the function `rentCar` has to return a function. For example, we want to call a
+The `Consumer<Void>` type indicates a callback function that should be called
+when an event triggers, e.g., when left click happens. This means that the
+function `rentCar` has to return a function. For example, we want to call a
 function that changes status of the car from available to rented when the button
 is clicked. Thus, we implement the following method:
-```java
-/*other imports*/
+```java title="frontend/src/main/java/gui/CarOverview.java"
 import java.util.function.Consumer;
 /*other imports*/
+
 public class CarOverview extends CarOverviewTOP {
+  /*...*/
+
   @Override
   public Consumer<Void> rentCar(Car car) {
     return x -> {
       car.setRentableStatus(RentableStatus.RENTED);
     };
   }
-  /*...*/
 }
 ```
 the syntax `x -> { /*...*/ }` indicates a lambda
@@ -189,15 +190,15 @@ better option is to use a service that would execute necessary actions.
 [Previously](./05_ClassDiagramAdvanced.md) we defined such a service. We can use
 it by executing corresponding commands via the `CommandManager`. For example: 
 ```java
-/*other imports*/
 import carrental.commands.RentItem;
 import umlp.backendrte.command.CommandManager;
 /*other imports*/
+
 public class CarOverview extends CarOverviewTOP {
   @Override
-  public Consumer<Void>  rentCar(Car car) {
+  public Consumer<Void> rentCar(Car car) {
     return x -> {
-      CommandManager.executeCommand(new RentItem(car.getGemId()));
+      CommandManager.executeCommand(new RentCar(car.getGemId()));
     };
   }
   /*...*/
@@ -206,13 +207,15 @@ public class CarOverview extends CarOverviewTOP {
 
 ### Event Handling Best Practices
 
-Currently, method overloading is not supported for event handler methods in the GUI DSL (this might change in future versions). Instead of:
-```gui
+Currently, method overloading is not supported for event handler methods in the
+GUI DSL (this might change in future versions). Instead of:
+```java
 @GemButton(leftClick=doSomething("A"));
 @GemButton(leftClick=doSomething("B"));
 ```
-Use unique method names in the GUI DSL and delegate to a common implementation in Java:
-```gui
+Use unique method names in the GUI DSL and delegate to a common implementation
+in Java:
+```java
 @GemButton(leftClick=doThingA());
 @GemButton(leftClick=doThingB());
 ```
