@@ -236,14 +236,14 @@ slowtest:
       junit: "**/slowtest/**/TEST-*.xml"
     expire_in: 1 week
 
-trigger-doppelkopf:
-  stage: testDeployed
-  allow_failure: false # Failure is not an option
-  trigger:
-    project: monticore/umlp-anwendungen/doppelkopf
-    branch: main
-  only:
-    - dev
+#trigger-doppelkopf:
+#  stage: testDeployed
+#  allow_failure: false # Failure is not an option
+#  trigger:
+#    project: monticore/umlp-anwendungen/doppelkopf
+#    branch: main
+#  only:
+#    - dev
 
 trigger-dtmm:
   stage: testDeployed
