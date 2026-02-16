@@ -211,7 +211,7 @@ Currently, method overloading is not supported for event handler methods in the
 GUI DSL (this might change in future versions). Instead of:
 ```java
 @GemButton(leftClick=doSomething("A"));
-@GemButton(leftClick=doSomething("B"));
+@GemButton(leftClick=doSomething(12));
 ```
 Use unique method names in the GUI DSL and delegate to a common implementation
 in Java:
@@ -221,6 +221,8 @@ in Java:
 ```
 ```java
 public Consumer<Void> doThingA() { return v -> doSomething("A"); }
-public Consumer<Void> doThingB() { return v -> doSomething("B"); }
+public Consumer<Void> doThingB() { return v -> doSomething(12); }
+
 private void doSomething(String param) { ... }
+private void doSomething(int param) { ... }
 ```

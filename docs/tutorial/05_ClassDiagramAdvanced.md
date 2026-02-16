@@ -31,12 +31,12 @@ umlp Carrental {
 
   class Car {
     /* other attributes */
-    RentableStatus status = RentableStatus.AVAILABLE;
+    RentableStatus rentableStatus = RentableStatus.AVAILABLE;
   }
 }
 ```
 The `rentCar` method calls the `RentCar` command. Try to implement the
-`doAction` method yourself (hint: `rentedCarId` is the variable of `RentCar`
+`doAction` method yourself (hint: `rentedCarGemId` is the variable of `RentCar`
 class holding an ID of the `rentedCar`):
 ```java title="backend/src/main/java/carrental/commands/RentCar.java"
 package carrental.commands;
@@ -48,8 +48,8 @@ import umlp.backendrte.command.StatusResult;
 
 public class RentCar extends RentCarTOP {
 
-  public RentCar(long rentedCarId) {
-    super(rentedCarId);
+  public RentCar(long rentedCarGemId) {
+    super(rentedCarGemId);
   }
 
   @Override

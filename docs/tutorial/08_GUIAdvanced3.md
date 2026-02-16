@@ -8,6 +8,21 @@ grids. The `mc.fenix.arrange` package contains corresponding components
     These components are based on the [flexbox layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
     and [grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Basic_concepts_of_grid_layout).
 
+To make the process more realistic, let's add some classes and data associated
+with a car:
+```java
+class RentableItem {
+  float costPerDay = 100.0f;
+  float mileage = 0;
+  RentableStatus rentableStatus = RentableStatus.AVAILABLE;
+}
+
+class Car extends RentableItem {
+  /* ... */
+  /* Remove rentableStatus attribute */
+}
+```
+
 The `CarOverview` so far had a simple layout. Now, we update it to an extended layout configuration:
 
 ```ts
@@ -49,7 +64,7 @@ page CarOverview(List<Car> cars) {
                 ]
               ]),
               @GemColumn(width = "40ch", rowGap = "10px", hAlign = "right", components = [
-                @GemText(value = (c.costPerDay * 3) + "€ for 3 days", size = "1.5rem"),
+                @GemText(width = "fit-content", value = (c.costPerDay * 3) + "€ for 3 days", size = "1.5rem"),
                 @GemButton(width = "calc(8ch + 10px)", label = "Rent car", leftClick = rentCar(c)),
                 @GemButton(width = "calc(10ch + 10px)", label = "Update car", leftClick = updateCar(c))
               ])
@@ -166,7 +181,7 @@ and buttons are split vertically**
       ]
     ]),
     @GemColumn(components = [
-      @GemText(value = (c.costPerDay * 3) + "€ for 3 days", size = "1.5rem"),
+      @GemText(width = "fit-content", value = (c.costPerDay * 3) + "€ for 3 days", size = "1.5rem"),
       @GemButton(width = "calc(8ch + 10px)", label = "Rent car", leftClick = rentCar(c)),
       @GemButton(width = "calc(10ch + 10px)", label = "Update car", leftClick = updateCar(c))
     ])

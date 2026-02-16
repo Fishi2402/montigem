@@ -210,26 +210,21 @@ package gui;
 
 import carrental.Car;
 import carrental.CarrentalManager;
-import carrental.RentableStatus;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.function.Consumer;
 
 @Component()
-public class CarCreate extends CarCreateTOP{ 
+public class CarCreate extends CarCreateTOP {
   @Override
   public Consumer<Void> createAndNavigate(Car car) {
     return $ -> {
       CarrentalManager.carBuilder()
         .make(car.getMake())
         .model(car.getModel())
-        .costPerDay(car.getCostPerDay())
-        .mileage(car.getMileage())
         .name(car.getName())
-        .rentableStatus(RentableStatus.AVAILABLE)
-        .build()
-        .get();
+        .build();
       Router.navigate("gui", "CarOverview");
     };
   }
@@ -237,6 +232,7 @@ public class CarCreate extends CarCreateTOP{
 ```
 To save the object, we simply need to call the `build` method of the object.
 
+<!--
 Unfortunately, this method will not work, because the object has to be valid
 before it is saved. The class diagram defines `RentableItem` class like so (simplified):
 ```java
@@ -262,3 +258,4 @@ classes have to be filled.
 None of the listed attributes are optional, which means all of them must be set
 to some value. Since `MileageDataPoint` has `*` cardinality, there may be `0`
 objects in the association, which makes it optional.
+-->

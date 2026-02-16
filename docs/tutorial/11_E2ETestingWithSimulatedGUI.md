@@ -50,7 +50,7 @@ Feel free to try that out.
 ## Creating an E2E test
 
 An E2E test is in essence just a JUnit test like any other.
-In `frontend/test/java/gui` you will find the skeleton for a `CustomerOverviewGUITest`.
+In `frontend/src/test/java/gui` you will find the skeleton for a `CustomerOverviewGUITest`.
 
 ```java
 class CustomerOverviewGUITest extends CarrentalMockTestSetup {
@@ -235,7 +235,6 @@ We can just write some simple checks for that:
 getBackend().activate();
 
 //check the newly created user exists
-List<Customer> customers = CarrentalManager.getCustomerList();
 var foundNewUser = false;
 for (Customer customer : CarrentalManager.getCustomerList()) {
   if (name.equals(customer.getName()) && 
