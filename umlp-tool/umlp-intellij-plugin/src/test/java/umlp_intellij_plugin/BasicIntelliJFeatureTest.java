@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -197,5 +199,34 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
     PsiElement definition = result[0];
     assertEquals("B", ReadAction.compute(definition::getText));
     assertNotEquals(elementAtCaret, definition);
+  }
+
+  @Test
+  @Disabled("Reproduces https://git.rwth-aachen.de/monticore/monticore/-/issues/4962")
+  public void testGUIIterateTypecheckIsCorrect() throws IOException {
+    String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
+    copyExternalFileToProject("src/test/resources/typecheck/IterateStart.gui", guiModelPath);
+    openFile(guiModelPath);
+
+    waitForLspIndexing();
+
+    List<HighlightInfo> highlights = getHighlights();
+    assertFalse(highlights.isEmpty());
+    List<HighlightInfo> errors = highlights.stream().filter(it -> it.type.equals(HighlightInfoType.ERROR)).toList();
+    assertTrue(errors.isEmpty(), "Error(s) found for correct model:\n" + errors.stream().map(Objects::toString).collect(Collectors.joining("\n")));
+  }
+
+  @Test
+  public void testGUIEventTypecheckIsCorrect() throws IOException {
+    String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
+    copyExternalFileToProject("src/test/resources/typecheck/EventStart.gui", guiModelPath);
+    openFile(guiModelPath);
+
+    waitForLspIndexing();
+
+    List<HighlightInfo> highlights = getHighlights();
+    assertFalse(highlights.isEmpty());
+    List<HighlightInfo> errors = highlights.stream().filter(it -> it.type.equals(HighlightInfoType.ERROR)).toList();
+    assertTrue(errors.isEmpty(), "Error(s) found for correct model:\n" + errors.stream().map(Objects::toString).collect(Collectors.joining("\n")));
   }
 }
