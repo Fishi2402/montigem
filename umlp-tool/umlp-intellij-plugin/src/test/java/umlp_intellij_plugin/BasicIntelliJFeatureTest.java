@@ -179,4 +179,23 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
     assertEquals("SomeClass", ReadAction.compute(definition::getText));
     assertNotEquals(elementAtCaret, definition);
   }
+
+  @Test
+  public void testUMLPNavToDefinitionExtends() throws IOException {
+    String umlpModelPath = "models/Mydomain.umlp";
+    copyExternalFileToProject("src/test/resources/navigation/ExtendsNavigation.umlp", umlpModelPath);
+    openFile(umlpModelPath);
+
+    waitForLspIndexing();
+
+    PsiElement[] result = getDeclarations();
+
+    assertNotNull(result);
+    assertEquals(1, result.length);
+
+    PsiElement elementAtCaret = getElementReferencedAtCaret();
+    PsiElement definition = result[0];
+    assertEquals("B", ReadAction.compute(definition::getText));
+    assertNotEquals(elementAtCaret, definition);
+  }
 }

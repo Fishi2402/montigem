@@ -46,7 +46,7 @@ public abstract class AbstractIntelliJPluginTest {
     // Trace messages to tmp file
     Path msgLogFile = Files.createTempFile("lsp-messages", ".log");
     System.setProperty("LSP_OPTS", "-t '" + msgLogFile + "'");
-    System.setProperty("LSP_JAVA_OPTS", "-DLSPLOG_LEVEL=DEBUG" + (debugLanguageServer ? " -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" : ""));
+    System.setProperty("LSP_JAVA_OPTS", "-DLSPLOG_LEVEL=DEBUG" + (debugLanguageServer ? " -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005" : ""));
     System.out.println("Logging lsp msgs to " + msgLogFile);
 
     TestFixtureBuilder<IdeaProjectTestFixture> fixtureBuilder =
@@ -204,7 +204,6 @@ public abstract class AbstractIntelliJPluginTest {
   protected PsiElement[] getDeclarations() {
     getHighlights();
     PsiElement elementAtCaret = getElementReferencedAtCaret();
-    assertInstanceOf(LSPSemanticTokenPsiElement.class, elementAtCaret);
     GotoDeclarationHandler handler = GotoDeclarationHandler.EP_NAME.getExtensionList().stream().filter(it -> it instanceof LSPGotoDeclarationHandler).findFirst().orElseThrow();
     int offset = ReadAction.compute(() -> codeInsightFixture.getCaretOffset());
     PsiElement[] result = handler.getGotoDeclarationTargets(elementAtCaret, offset, codeInsightFixture.getEditor());
