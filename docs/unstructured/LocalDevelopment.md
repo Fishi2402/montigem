@@ -19,10 +19,10 @@ Note that you need to use the same directory name as in the tsconfig.json change
 Here it is `networktest`.
 
 ````gradle
-symlinkCreation {
+createSymlink {
   def networkTest = file("$buildDir/frontendGen/networktest")
   def networkTestTarget = file("$PATH_TO_UMLP/umlp/umlp-rte/frontend/networkgraph")
-  getSymlinkMap().put(networkTest, networkTestTarget)
+  getLinks().put(networkTest, networkTestTarget)
 }
 ````
 
@@ -31,5 +31,5 @@ Use the property `useLocalRepo=true` in project/gradle.properties and `gradle pu
 Alternative: add `includeBuild(".../umlp")` in project/settings.gradle.
 
 ## UMLP-Tool
-Use the property `useLocalRepo=true` in project/gradle.properties and `gradle publishToMavenLocal` in the `umlp/umpl-tool` project.
+Use the property `useLocalRepo=true`    in project/gradle.properties and `gradle publishToMavenLocal` in the `umlp/umpl-tool` project.
 Alternative: add `pluginManagement { includeBuild(".../umlp/umlp-tool") }` in project/settings.gradle.
