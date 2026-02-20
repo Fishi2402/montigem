@@ -2,7 +2,7 @@
 
 package gui;
 
-import mydomain.SomeClass;
+import Mydomain.SomeClass;
 
 page Start(Some<caret>Class s) {
 

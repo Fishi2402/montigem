@@ -13,7 +13,7 @@ import mc.fenix.input.GemRadioInput;
 import mc.fenix.basic.GemImage;
 import gui.navigation.NavContainer;
 
-import mydomain.SomeClass;
+import Mydomain.SomeClass;
 
 page Start(Event<SomeClass> event) {
   // empty
