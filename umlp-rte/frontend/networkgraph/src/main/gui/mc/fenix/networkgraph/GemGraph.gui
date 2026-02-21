@@ -21,7 +21,8 @@ component GemGraph(
   Object complexLayout = null,            //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
   Event<Integer> layoutIteration,
   Event<List<NodePos>> nodePositionsAfterLayout,
-  Object customBoundingBox = null
+  Object customBoundingBox = null,
+  Event<GraphNode> graphClickNode
   // TODO configure Layout from GUIDsl
 
   //@Input() customMetricsGenerator?: CustomMetricsGenerator;

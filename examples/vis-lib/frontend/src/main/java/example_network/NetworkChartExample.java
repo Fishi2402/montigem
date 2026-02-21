@@ -12,6 +12,9 @@ import umlp.jsweet.extension.annotation.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+
+import de.se_rwth.commons.logging.Log;
 
 @Component(
     imports = {"...config.imports", "GemGraph"},
@@ -142,6 +145,13 @@ public class NetworkChartExample extends NetworkChartExampleTOP {
         .color(color)
         .name(Optional.of(name))
         .build();
+  }
+
+  public Consumer<GraphNode> updateClickedNode() {
+    return (node) -> {
+      this.setLastClickedNodeName(node.getLabel());
+      Log.info("NetworkChartExample", "Clicked on node: " + node.getId() + " (" + node.getLabel() + ")");
+    };
   }
 
   @Override

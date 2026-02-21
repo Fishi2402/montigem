@@ -5,10 +5,12 @@ import example_input.GemChat;
 import mc.fenix.arrange.GemColumn;
 import common.ExamplePage;
 import mc.fenix.networkgraph.GemGraph;
+import mc.fenix.basic.GemText;
 
-page NetworkChartExample() {
+page NetworkChartExample(String lastClickedNodeName = "None") {
   @ExamplePage(
     component = @GemColumn(width = "100%", components = [
+      @GemText(value="Last Clicked Node: " + lastClickedNodeName),
       personGraph@GemGraph(
         graph=null,
         showFilterGroup=true,
@@ -16,6 +18,7 @@ page NetworkChartExample() {
         showControlButtons=true,
         showInformation=true,
         nodePositionsAfterLayout=getPositions(),
+        graphClickNode=updateClickedNode(),
         customBoundingBox = null,
         initialLayout = null
       )

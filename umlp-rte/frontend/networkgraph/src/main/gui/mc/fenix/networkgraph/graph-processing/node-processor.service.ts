@@ -116,7 +116,7 @@ export class NodeProcessorService<
 
     const x: number = ProcessorServiceTemplate.getAttribute(node, "x") ?? 0;
     const y: number = ProcessorServiceTemplate.getAttribute(node, "y") ?? 0;
-
+console.error(imageLink)
     return {
       key,
       attributes: {
@@ -124,7 +124,7 @@ export class NodeProcessorService<
         size: ProcessorServiceTemplate.getAttribute(node, "size") ?? this.graphSettings.getSetting("defaultNodeSize"),
         type: nodeProgram,
         group: group,
-        image: imageLink ? PathUtil.join(this.graphSettings.getSetting("assetsPath"), imageLink) : undefined,
+        image: imageLink ? imageLink : undefined,
         color: node.color? node.color : this.groupMapping.getColorForGroup(group, this.graphSettings.getSetting("defaultNodeColor")),
         fixed: ProcessorServiceTemplate.getAttribute(node, "fixed"),
         x: x,
