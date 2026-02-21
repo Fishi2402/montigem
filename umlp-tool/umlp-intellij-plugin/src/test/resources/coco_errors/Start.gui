@@ -14,7 +14,5 @@ import mc.fenix.basic.GemImage;
 import gui.navigation.NavContainer;
 
 page Start() {
-  sameName@GemText();
-  // CoCo error: same name reused
-  sameName@GemText();
+  sameName@GemText(value="1", value="2");
 }

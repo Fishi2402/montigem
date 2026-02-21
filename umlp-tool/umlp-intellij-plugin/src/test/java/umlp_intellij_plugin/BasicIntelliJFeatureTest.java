@@ -84,7 +84,6 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  @Disabled
   public void testGUICoCoErrorWorks() throws IOException {
     String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
     copyExternalFileToProject("src/test/resources/coco_errors/Start.gui", guiModelPath);
@@ -202,7 +201,6 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  @Disabled("Reproduces https://git.rwth-aachen.de/monticore/monticore/-/issues/4962")
   public void testGUIIterateTypecheckIsCorrect() throws IOException {
     String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
     copyExternalFileToProject("src/test/resources/typecheck/IterateStart.gui", guiModelPath);
@@ -220,6 +218,20 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   public void testGUIEventTypecheckIsCorrect() throws IOException {
     String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
     copyExternalFileToProject("src/test/resources/typecheck/EventStart.gui", guiModelPath);
+    openFile(guiModelPath);
+
+    waitForLspIndexing();
+
+    List<HighlightInfo> highlights = getHighlights();
+    assertFalse(highlights.isEmpty());
+    List<HighlightInfo> errors = highlights.stream().filter(it -> it.type.equals(HighlightInfoType.ERROR)).toList();
+    assertTrue(errors.isEmpty(), "Error(s) found for correct model:\n" + errors.stream().map(Objects::toString).collect(Collectors.joining("\n")));
+  }
+
+  @Test
+  public void testGUIGuardTypecheckIsCorrect() throws IOException {
+    String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
+    copyExternalFileToProject("src/test/resources/typecheck/GuardStart.gui", guiModelPath);
     openFile(guiModelPath);
 
     waitForLspIndexing();

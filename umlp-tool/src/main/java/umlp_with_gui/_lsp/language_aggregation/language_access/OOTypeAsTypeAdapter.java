@@ -1,12 +1,12 @@
 package umlp_with_gui._lsp.language_aggregation.language_access;
 
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.symbols.basicsymbols._ast.ASTType;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.SourcePosition;
@@ -24,19 +24,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Adapts a CDTypeSymbol as a TypeSymbol.
- * This is needed since {@link CDTypeSymbol#accept} only works with Traversers of type CDBasisTraverser,
+ * Adapts a OOTypeSymbol as a TypeSymbol.
+ * This is needed since {@link OOTypeSymbol#accept} only works with Traversers of type CDBasisTraverser,
  * which the GUIDSL does not provide.
  * {@link TypeSymbol#accept} also works with a BasicSymbolsTraverse, which the GUIDSL provides.
  */
-public class CDTypeAsTypeAdapter extends TypeSymbol {
-  protected CDTypeSymbol delegate;
+public class OOTypeAsTypeAdapter extends TypeSymbol {
+  protected OOTypeSymbol delegate;
 
-  public static List<TypeSymbol> from(List<CDTypeSymbol> types ){
-    return types.stream().map(CDTypeAsTypeAdapter::new).collect(Collectors.toList());
+  public static List<TypeSymbol> from(List<OOTypeSymbol> types ){
+    return types.stream().map(OOTypeAsTypeAdapter::new).collect(Collectors.toList());
   }
 
-  public CDTypeAsTypeAdapter(CDTypeSymbol delegate) {
+  public OOTypeAsTypeAdapter(OOTypeSymbol delegate) {
     super(delegate.getName());
     this.delegate = delegate;
   }
