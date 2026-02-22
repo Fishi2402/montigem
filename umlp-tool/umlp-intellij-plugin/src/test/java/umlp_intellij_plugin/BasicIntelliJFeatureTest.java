@@ -98,7 +98,7 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  public void testUMLPCompletion() throws IOException{
+  public void testUMLPCompletion() throws IOException {
     String umlpModelPath = "models/Mydomain.umlp";
     copyExternalFileToProject("src/test/resources/completion/Mydomain.umlp", umlpModelPath);
     openFile(umlpModelPath);
@@ -112,8 +112,10 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  public void testGUICompletion() throws IOException{
-    String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
+  public void testGUICompletion() throws IOException {
+    String baseBath = "frontend/src/main/gui/gui/";
+    String guiModelPath = baseBath + "Start.gui";
+    copyExternalFileToProject("src/test/resources/completion/Another.gui", baseBath + "Another.gui");
     copyExternalFileToProject("src/test/resources/completion/Start.gui", guiModelPath);
     openFile(guiModelPath);
 
@@ -123,10 +125,15 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
     System.out.println(Arrays.toString(result));
     assertNotNull(result);
     assertNotEquals(0, result.length);
+
+    assertTrue(Arrays.stream(result).anyMatch(it -> it.getLookupString().equals("@Another")));
+    assertTrue(Arrays.stream(result).anyMatch(it -> it.getLookupString().equals("@GemText")));
+
+    assertFalse(Arrays.stream(result).anyMatch(it -> it.getLookupString().equals("@Start")));
   }
 
   @Test
-  public void testUMLPNavToDefinition() throws IOException{
+  public void testUMLPNavToDefinition() throws IOException {
     String umlpModelPath = "models/Mydomain.umlp";
     copyExternalFileToProject("src/test/resources/navigation/Mydomain.umlp", umlpModelPath);
     openFile(umlpModelPath);
@@ -145,7 +152,7 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  public void testGUINavToDefinition() throws IOException{
+  public void testGUINavToDefinition() throws IOException {
     String guiModelPath = "frontend/src/main/gui/gui/Another.gui";
     copyExternalFileToProject("src/test/resources/navigation/Another.gui", guiModelPath);
     openFile(guiModelPath);
@@ -163,7 +170,7 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  public void testGUIToUmlpNavToDefinition() throws IOException{
+  public void testGUIToUmlpNavToDefinition() throws IOException {
     String guiModelPath = "frontend/src/main/gui/gui/Start.gui";
     copyExternalFileToProject("src/test/resources/navigation/Start.gui", guiModelPath);
     openFile(guiModelPath);
