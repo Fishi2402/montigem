@@ -133,6 +133,23 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
+  public void testGUICompletionInParameters() throws IOException {
+    String baseBath = "frontend/src/main/gui/gui/";
+    String guiModelPath = baseBath + "Start.gui";
+    copyExternalFileToProject("src/test/resources/completion/CompletionInParameters.gui", guiModelPath);
+    openFile(guiModelPath);
+
+    waitForLspIndexing();
+
+    LookupElement[] result = getCompletion();
+    System.out.println(Arrays.toString(result));
+    assertNotNull(result);
+    assertNotEquals(0, result.length);
+
+    assertTrue(Arrays.stream(result).anyMatch(it -> it.getLookupString().equals("SomeClass")));
+  }
+
+  @Test
   public void testUMLPNavToDefinition() throws IOException {
     String umlpModelPath = "models/Mydomain.umlp";
     copyExternalFileToProject("src/test/resources/navigation/Mydomain.umlp", umlpModelPath);
