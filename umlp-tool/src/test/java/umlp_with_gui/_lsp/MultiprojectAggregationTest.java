@@ -180,7 +180,6 @@ public class MultiprojectAggregationTest {
     }
   }
 
-  @Disabled("TODO AHe")
   @Test
   public void compareMultiProjectWithRegular(){
     var hPosition = new Position(11, 12);
