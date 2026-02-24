@@ -2,17 +2,19 @@
 
 Since testing is a crucial part of software development, we now want to create an end-to-end (E2E) test for our website.
 
-In UMLP we can do that using **simulated GUIs**. 
+In MontiGem we can do that using **simulated GUIs**. 
 Those provide a way to simulate user interactions with the generated components. 
 The resulting state changes in the underlying objects can then be verified across different contexts.   
 
 In essence this means:
 
-- UMLP generates components and representing Java classes from the GUI models.
+- MontiGem generates components and representing Java classes from the GUI models.
 - Those Java classes provide methods to simulate user interaction, e.g. clicking a button (`registerLeftClick`) or 
   entering text (`set...Entry`).
 - Normal JUnit tests can be used to verify resulting state changes in the underlying objects (backend and frontend) and 
   in the simulated GUI (`get...Entry`).
+
+For a detailed explanation see the [testing documentation](../unstructured/Testing.md).
 
 ## Adding the customer overview page
 
