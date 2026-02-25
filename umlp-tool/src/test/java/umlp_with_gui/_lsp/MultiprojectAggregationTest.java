@@ -18,11 +18,11 @@ import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp_with_gui._lsp.language_aggregation.UMLPWithGUILanguageAggrServer;
 import umlp_with_gui._lsp.language_aggregation.multiproject.UMLPWithGUILanguageAggrMultiProjectServer;
 import umlp_with_gui._lsp.mock.MockLanguageClient;
+import umlp_with_gui._lsp.mock.EmptyMockModelPathResolver;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -82,7 +82,8 @@ public class MultiprojectAggregationTest {
       languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1)){
         @Override
         protected void initResolver() {
-          super.initResolver();
+          //noinspection unchecked
+          resolver = new EmptyMockModelPathResolver();
           multiProjectLayout = new MultiProjectLayout();
           ProjectLayout subprojectLayout = new ProjectLayout();
           subprojectLayout.name = "multiproject";
@@ -150,7 +151,8 @@ public class MultiprojectAggregationTest {
       languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1)){
         @Override
         protected void initResolver() {
-          super.initResolver();
+          //noinspection unchecked
+          resolver = new EmptyMockModelPathResolver();
           multiProjectLayout = new MultiProjectLayout();
           ProjectLayout subprojectLayout = new ProjectLayout();
           subprojectLayout.name = "multiproject";
