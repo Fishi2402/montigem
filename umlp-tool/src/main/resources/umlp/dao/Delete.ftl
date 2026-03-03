@@ -2,7 +2,7 @@
 ${tc.signature("cdName","tableName", "typeName", "associations", "assocsToDefinitionDiagramMap")}
 ${cd4c.method("public void delete${typeName}(long gemId)")}
 
-delete${typeName} = "DELETE FROM ${tableName} WHERE id = $1";
+delete${typeName} = "DELETE FROM ${tableName} WHERE id = ?";
 
 try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st = connection.prepareStatement(delete${typeName}); ){
   <#list associations as assocSide, assoc>
