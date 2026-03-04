@@ -10,56 +10,215 @@ import {Component, HostBinding, Input} from '@angular/core';
   templateUrl: "MultiProcessingStation.html",
 })
 export class MultiProcessingStation extends MultiProcessingStationComponent {
-  @Input()
-  @HostBinding("style.--lightBarrierIndicatorOpacity")
-  lightBarrierIndicatorOpacity: number;
 
-  override set lightBarrier(value: boolean) {
-    super.lightBarrier = value;
-    this.lightBarrierIndicatorOpacity = value ? 1 : 0;
+  // --- Outputs ---
+
+  @Input()
+  @HostBinding("style.--refSwitchTurnTableAtVacuumOpacity")
+  refSwitchTurnTableAtVacuumOpacity: number;
+
+  override set refSwitchTurnTableAtVacuum(value: boolean) {
+    super.refSwitchTurnTableAtVacuum = value;
+    this.refSwitchTurnTableAtVacuumOpacity = value ? 1 : 0;
   }
 
   @Input()
-  @HostBinding("style.--lightBarrierIndicatorOvenOpacity")
-  lightBarrierIndicatorOvenOpacity: number;
+  @HostBinding("style.--refSwitchTurnTableAtBeltOpacity")
+  refSwitchTurnTableAtBeltOpacity: number;
+
+  override set refSwitchTurnTableAtBelt(value: boolean) {
+    super.refSwitchTurnTableAtBelt = value;
+    this.refSwitchTurnTableAtBeltOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--refSwitchTurnTableAtSawOpacity")
+  refSwitchTurnTableAtSawOpacity: number;
+
+  override set refSwitchTurnTableAtSaw(value: boolean) {
+    super.refSwitchTurnTableAtSaw = value;
+    this.refSwitchTurnTableAtSawOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--lightBarrierConveyorEndOpacity")
+  lightBarrierConveyorEndOpacity: number;
+
+  override set lightBarrierConveyorEnd(value: boolean) {
+    super.lightBarrierConveyorEnd = value;
+    this.lightBarrierConveyorEndOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--refSwitchFeederInsideOpacity")
+  refSwitchFeederInsideOpacity: number;
+
+  override set refSwitchFeederInside(value: boolean) {
+    super.refSwitchFeederInside = value;
+    this.refSwitchFeederInsideOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--refSwitchFeederOutsideOpacity")
+  refSwitchFeederOutsideOpacity: number;
+
+  override set refSwitchFeederOutside(value: boolean) {
+    super.refSwitchFeederOutside = value;
+    this.refSwitchFeederOutsideOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--refSwitchVacuumAtTurnTableOpacity")
+  refSwitchVacuumAtTurnTableOpacity: number;
+
+  override set refSwitchVacuumAtTurnTable(value: boolean) {
+    super.refSwitchVacuumAtTurnTable = value;
+    this.refSwitchVacuumAtTurnTableOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--refSwitchVacuumAtOvenOpacity")
+  refSwitchVacuumAtOvenOpacity: number;
+
+  override set refSwitchVacuumAtOven(value: boolean) {
+    super.refSwitchVacuumAtOven = value;
+    this.refSwitchVacuumAtOvenOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--lightBarrierOvenOpacity")
+  lightBarrierOvenOpacity: number;
 
   override set lightBarrierOven(value: boolean) {
     super.lightBarrierOven = value;
-    this.lightBarrierIndicatorOvenOpacity = value ? 1 : 0;
+    this.lightBarrierOvenOpacity = value ? 1 : 0;
+  }
+
+  // --- Inputs ---
+
+  @Input()
+  @HostBinding("style.--moveTurnTableClockwiseOpacity")
+  moveTurnTableClockwiseOpacity: number;
+
+  override set moveTurnTableClockwise(value: boolean) {
+    super.moveTurnTableClockwise = value;
+    this.moveTurnTableClockwiseOpacity = value ? 1 : 0;
   }
 
   @Input()
-  @HostBinding("style.--pusherIndicatorOpacity")
-  pusherIndicatorOpacity: number;
+  @HostBinding("style.--moveTurnTableCounterclockwiseOpacity")
+  moveTurnTableCounterclockwiseOpacity: number;
 
-  override set pusher(value: boolean) {
-    super.pusher = value;
-    this.pusherIndicatorOpacity = value ? 1 : 0;
+  override set moveTurnTableCounterclockwise(value: boolean) {
+    super.moveTurnTableCounterclockwise = value;
+    this.moveTurnTableCounterclockwiseOpacity = value ? 1 : 0;
   }
 
   @Input()
-  @HostBinding("style.--gripperIndicatorOpacity")
-  gripperIndicatorOpacity: number;
+  @HostBinding("style.--moveConveyorForwardOpacity")
+  moveConveyorForwardOpacity: number;
 
-  override set gripper(value: boolean) {
-    super.gripper = value;
-    this.gripperIndicatorOpacity = value ? 1 : 0;
+  override set moveConveyorForward(value: boolean) {
+    super.moveConveyorForward = value;
+    this.moveConveyorForwardOpacity = value ? 1 : 0;
   }
 
   @Input()
-  @HostBinding("style.--positionIndicatorPosition")
-  _positionIndicatorPercentage: number;
+  @HostBinding("style.--enableSawOpacity")
+  enableSawOpacity: number;
+
+  override set enableSaw(value: boolean) {
+    super.enableSaw = value;
+    this.enableSawOpacity = value ? 1 : 0;
+  }
 
   @Input()
-  @HostBinding("style.--beltSpeedIndicatorPosition")
-  _beltSpeedIndicatorPercentage: number;
+  @HostBinding("style.--moveOvenFeederRetractOpacity")
+  moveOvenFeederRetractOpacity: number;
+
+  override set moveOvenFeederRetract(value: boolean) {
+    super.moveOvenFeederRetract = value;
+    this.moveOvenFeederRetractOpacity = value ? 1 : 0;
+  }
 
   @Input()
-  @HostBinding("style.--drillSpeedIndicatorPosition")
-  _drillSpeedIndicatorPercentage: number;
+  @HostBinding("style.--moveOvenFeederExtendOpacity")
+  moveOvenFeederExtendOpacity: number;
+
+  override set moveOvenFeederExtend(value: boolean) {
+    super.moveOvenFeederExtend = value;
+    this.moveOvenFeederExtendOpacity = value ? 1 : 0;
+  }
 
   @Input()
-  @HostBinding("style.--rotationIndicatorDeg")
-  _rotationIndicatorDeg: number;
+  @HostBinding("style.--moveVacuumToOvenOpacity")
+  moveVacuumToOvenOpacity: number;
 
+  override set moveVacuumToOven(value: boolean) {
+    super.moveVacuumToOven = value;
+    this.moveVacuumToOvenOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--moveVacuumToTurnTableOpacity")
+  moveVacuumToTurnTableOpacity: number;
+
+  override set moveVacuumToTurnTable(value: boolean) {
+    super.moveVacuumToTurnTable = value;
+    this.moveVacuumToTurnTableOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--enableOvenLightOpacity")
+  enableOvenLightOpacity: number;
+
+  override set enableOvenLight(value: boolean) {
+    super.enableOvenLight = value;
+    this.enableOvenLightOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--enableCompressorOpacity")
+  enableCompressorOpacity: number;
+
+  override set enableCompressor(value: boolean) {
+    super.enableCompressor = value;
+    this.enableCompressorOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--enableValveVacuumOpacity")
+  enableValveVacuumOpacity: number;
+
+  override set enableValveVacuum(value: boolean) {
+    super.enableValveVacuum = value;
+    this.enableValveVacuumOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--enableValveMoveVacuumOpacity")
+  enableValveMoveVacuumOpacity: number;
+
+  override set enableValveMoveVacuum(value: boolean) {
+    super.enableValveMoveVacuum = value;
+    this.enableValveMoveVacuumOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--enableValveMoveOvenDoorOpacity")
+  enableValveMoveOvenDoorOpacity: number;
+
+  override set enableValveMoveOvenDoor(value: boolean) {
+    super.enableValveMoveOvenDoor = value;
+    this.enableValveMoveOvenDoorOpacity = value ? 1 : 0;
+  }
+
+  @Input()
+  @HostBinding("style.--enableValveMoveFeederOpacity")
+  enableValveMoveFeederOpacity: number;
+
+  override set enableValveMoveFeeder(value: boolean) {
+    super.enableValveMoveFeeder = value;
+    this.enableValveMoveFeederOpacity = value ? 1 : 0;
+  }
 }

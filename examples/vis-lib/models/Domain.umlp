@@ -73,15 +73,32 @@ classdiagram Domain {
 
   <<singleton>>
   class FischertechnikMultiProcessingStationState {
-    int positionIndicatorPercentage = 0;
-    int beltSpeedIndicatorPercentage = 0;
-    int drillSpeedIndicatorPercentage = 0;
-    int rotationIndicatorDeg = 0;
-    boolean lightBarrier = false;
+    // Outputs of the machine (sensors)
+    boolean refSwitchTurnTableAtVacuum = false;
+    boolean refSwitchTurnTableAtBelt = false;
+    boolean refSwitchTurnTableAtSaw = false;
+    boolean lightBarrierConveyorEnd = false;
+    boolean refSwitchFeederInside = false;
+    boolean refSwitchFeederOutside = false;
+    boolean refSwitchVacuumAtTurnTable = false;
+    boolean refSwitchVacuumAtOven = false;
     boolean lightBarrierOven = false;
-    boolean pusher = false;
-    boolean gripper = false;
-    boolean pumpRunning = false;
+
+    // Inputs of the machine (actuators)
+    boolean moveTurnTableClockwise = false;
+    boolean moveTurnTableCounterclockwise = false;
+    boolean moveConveyorForward = false;
+    boolean enableSaw = false;
+    boolean moveOvenFeederRetract = false;
+    boolean moveOvenFeederExtend = false;
+    boolean moveVacuumToOven = false;
+    boolean moveVacuumToTurnTable = false;
+    boolean enableOvenLight = false;
+    boolean enableCompressor = false;
+    boolean enableValveVacuum = false;
+    boolean enableValveMoveVacuum = false;
+    boolean enableValveMoveOvenDoor = false;
+    boolean enableValveMoveFeeder = false;
   }
 
   <<singleton>>

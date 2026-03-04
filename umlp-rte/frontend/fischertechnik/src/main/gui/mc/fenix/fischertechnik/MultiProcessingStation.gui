@@ -1,15 +1,32 @@
 package mc.fenix.fischertechnik;
 
 component MultiProcessingStation(
-    int positionIndicatorPercentage,
-    int beltSpeedIndicatorPercentage,
-    int drillSpeedIndicatorPercentage,
-    int rotationIndicatorDeg,
-    boolean lightBarrier,
+    // Outputs of the machine (sensors)
+    boolean refSwitchTurnTableAtVacuum,
+    boolean refSwitchTurnTableAtBelt,
+    boolean refSwitchTurnTableAtSaw,
+    boolean lightBarrierConveyorEnd,
+    boolean refSwitchFeederInside,
+    boolean refSwitchFeederOutside,
+    boolean refSwitchVacuumAtTurnTable,
+    boolean refSwitchVacuumAtOven,
     boolean lightBarrierOven,
-    boolean pusher,
-    boolean gripper,
-    boolean pumpRunning
+
+    // Inputs of the machine (actuators)
+    boolean moveTurnTableClockwise,
+    boolean moveTurnTableCounterclockwise,
+    boolean moveConveyorForward,
+    boolean enableSaw,
+    boolean moveOvenFeederRetract,
+    boolean moveOvenFeederExtend,
+    boolean moveVacuumToOven,
+    boolean moveVacuumToTurnTable,
+    boolean enableOvenLight,
+    boolean enableCompressor,
+    boolean enableValveVacuum,
+    boolean enableValveMoveVacuum,
+    boolean enableValveMoveOvenDoor,
+    boolean enableValveMoveFeeder
 ){
 
 }

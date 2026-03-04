@@ -4,80 +4,156 @@ import Domain.FischertechnikMultiProcessingStationState;
 
 import mc.fenix.fischertechnik.MultiProcessingStation;
 import mc.fenix.arrange.GemColumn;
-import mc.fenix.input.GemRangeInput;
 import mc.fenix.input.GemCheckBoxInput;
 
 page MultiProcessingStation_Demo(FischertechnikMultiProcessingStationState state){
     @GemColumn(
         rowGap = "15px",
         components = [
-        @GemRangeInput(
-            id="position-indicator",
-            labelText="Position:",
-            vertical=false,
-            step=1,
-            minValue=1,
-            maxValue=100,
-            value=state.positionIndicatorPercentage
-        ),
-        @GemRangeInput(
-            id="belt-speed-indicator",
-            labelText="Bandgeschwindigkeit:",
-            vertical=false,
-            step=1,
-            minValue=1,
-            maxValue=100,
-            value=state.beltSpeedIndicatorPercentage
-        ),
-        @GemRangeInput(
-            id="drill-speed-indicator",
-            labelText="Bohrer Geschwindigkeit:",
-            vertical=false,
-            step=1,
-            minValue=1,
-            maxValue=100,
-            value=state.drillSpeedIndicatorPercentage
-        ),
-        @GemRangeInput(
-            id="rotation-indicator",
-            labelText="Rotation:",
-            vertical=false,
-            step=1,
-            minValue=0,
-            maxValue=270,
-            value=state.rotationIndicatorDeg
+        // -- Sensors ---
+        @GemCheckBoxInput(
+            id="ref-switch-turntable-vacuum",
+            labelText="Drehtisch bei Vakuum",
+            checked=state.refSwitchTurnTableAtVacuum
         ),
         @GemCheckBoxInput(
-            id="light-barrier",
-            labelText="Lichtschranke",
-            checked=state.lightBarrier
+            id="ref-switch-turntable-belt",
+            labelText="Drehtisch bei Band",
+            checked=state.refSwitchTurnTableAtBelt
+        ),
+        @GemCheckBoxInput(
+            id="ref-switch-turntable-saw",
+            labelText="Drehtisch bei Säge",
+            checked=state.refSwitchTurnTableAtSaw
+        ),
+        @GemCheckBoxInput(
+            id="light-barrier-conveyor-end",
+            labelText="Lichtschranke Förderband",
+            checked=state.lightBarrierConveyorEnd
+        ),
+        @GemCheckBoxInput(
+            id="ref-switch-feeder-inside",
+            labelText="Zuführung eingefahren",
+            checked=state.refSwitchFeederInside
+        ),
+        @GemCheckBoxInput(
+            id="ref-switch-feeder-outside",
+            labelText="Zuführung ausgefahren",
+            checked=state.refSwitchFeederOutside
+        ),
+        @GemCheckBoxInput(
+            id="ref-switch-vacuum-turntable",
+            labelText="Vakuum am Drehtisch",
+            checked=state.refSwitchVacuumAtTurnTable
+        ),
+        @GemCheckBoxInput(
+            id="ref-switch-vacuum-oven",
+            labelText="Vakuum am Ofen",
+            checked=state.refSwitchVacuumAtOven
         ),
         @GemCheckBoxInput(
             id="light-barrier-oven",
             labelText="Lichtschranke Ofen",
             checked=state.lightBarrierOven
         ),
+
+        // --- Actuators ---
         @GemCheckBoxInput(
-            id="pusher",
-            labelText="Pusher",
-            checked=state.pusher
+            id="move-turntable-clockwise",
+            labelText="Drehtisch im Uhrzeigersinn",
+            checked=state.moveTurnTableClockwise
         ),
         @GemCheckBoxInput(
-            id="gripper",
-            labelText="Gripper",
-            checked=state.gripper
+            id="move-turntable-counterclockwise",
+            labelText="Drehtisch gegen Uhrzeigersinn",
+            checked=state.moveTurnTableCounterclockwise
+        ),
+        @GemCheckBoxInput(
+            id="move-conveyor-forward",
+            labelText="Förderband vorwärts",
+            checked=state.moveConveyorForward
+        ),
+        @GemCheckBoxInput(
+            id="enable-saw",
+            labelText="Säge an",
+            checked=state.enableSaw
+        ),
+        @GemCheckBoxInput(
+            id="move-feeder-retract",
+            labelText="Zuführung einfahren",
+            checked=state.moveOvenFeederRetract
+        ),
+        @GemCheckBoxInput(
+            id="move-feeder-extend",
+            labelText="Zuführung ausfahren",
+            checked=state.moveOvenFeederExtend
+        ),
+        @GemCheckBoxInput(
+            id="move-vacuum-to-oven",
+            labelText="Vakuum zum Ofen",
+            checked=state.moveVacuumToOven
+        ),
+        @GemCheckBoxInput(
+            id="move-vacuum-to-turntable",
+            labelText="Vakuum zum Drehtisch",
+            checked=state.moveVacuumToTurnTable
+        ),
+        @GemCheckBoxInput(
+            id="enable-oven-light",
+            labelText="Ofenlicht an",
+            checked=state.enableOvenLight
+        ),
+        @GemCheckBoxInput(
+            id="enable-compressor",
+            labelText="Kompressor an",
+            checked=state.enableCompressor
+        ),
+        @GemCheckBoxInput(
+            id="enable-valve-vacuum",
+            labelText="Greifer an",
+            checked=state.enableValveVacuum
+        ),
+        @GemCheckBoxInput(
+            id="enable-valve-move-vacuum",
+            labelText="Vakuum-Fahrt",
+            checked=state.enableValveMoveVacuum
+        ),
+        @GemCheckBoxInput(
+            id="enable-valve-oven-door",
+            labelText="Ofentür",
+            checked=state.enableValveMoveOvenDoor
+        ),
+        @GemCheckBoxInput(
+            id="enable-valve-feeder",
+            labelText="Schieber aktiv",
+            checked=state.enableValveMoveFeeder
         )
       ]
     );
     @MultiProcessingStation(
-        positionIndicatorPercentage=state.positionIndicatorPercentage,
-        beltSpeedIndicatorPercentage=state.beltSpeedIndicatorPercentage,
-        drillSpeedIndicatorPercentage=state.drillSpeedIndicatorPercentage,
-        rotationIndicatorDeg=state.rotationIndicatorDeg,
-        lightBarrier=state.lightBarrier,
+        refSwitchTurnTableAtVacuum=state.refSwitchTurnTableAtVacuum,
+        refSwitchTurnTableAtBelt=state.refSwitchTurnTableAtBelt,
+        refSwitchTurnTableAtSaw=state.refSwitchTurnTableAtSaw,
+        lightBarrierConveyorEnd=state.lightBarrierConveyorEnd,
+        refSwitchFeederInside=state.refSwitchFeederInside,
+        refSwitchFeederOutside=state.refSwitchFeederOutside,
+        refSwitchVacuumAtTurnTable=state.refSwitchVacuumAtTurnTable,
+        refSwitchVacuumAtOven=state.refSwitchVacuumAtOven,
         lightBarrierOven=state.lightBarrierOven,
-        pusher=state.pusher,
-        gripper=state.gripper,
-        pumpRunning=state.pumpRunning
+
+        moveTurnTableClockwise=state.moveTurnTableClockwise,
+        moveTurnTableCounterclockwise=state.moveTurnTableCounterclockwise,
+        moveConveyorForward=state.moveConveyorForward,
+        enableSaw=state.enableSaw,
+        moveOvenFeederRetract=state.moveOvenFeederRetract,
+        moveOvenFeederExtend=state.moveOvenFeederExtend,
+        moveVacuumToOven=state.moveVacuumToOven,
+        moveVacuumToTurnTable=state.moveVacuumToTurnTable,
+        enableOvenLight=state.enableOvenLight,
+        enableCompressor=state.enableCompressor,
+        enableValveVacuum=state.enableValveVacuum,
+        enableValveMoveVacuum=state.enableValveMoveVacuum,
+        enableValveMoveOvenDoor=state.enableValveMoveOvenDoor,
+        enableValveMoveFeeder=state.enableValveMoveFeeder
     );
 }
