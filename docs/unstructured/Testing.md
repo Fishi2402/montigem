@@ -1,5 +1,5 @@
 # Testing MontiGem Applications
-[[_TOC_]]
+[_TOC_]
 
 ## Motivation
 Since MontiGem transpiles all handwritten Java code into TypeScript via JSweet, MontiGem applications can be end-to-end tested purely in Java.
