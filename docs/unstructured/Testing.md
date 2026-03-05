@@ -1,5 +1,6 @@
 # Testing MontiGem Applications
-[_TOC_]
+
+[TOC]
 
 ## Motivation
 Since MontiGem transpiles all handwritten Java code into TypeScript via JSweet, MontiGem applications can be end-to-end tested purely in Java.
@@ -13,6 +14,7 @@ The base concept for testing in MontiGem revolves around the `TestSetup` interfa
 This interface defines the basic structure for setting up and cleaning up JUnit test environments.
 For each domain class diagram, 3 different implementations of `TestSetup` are generated.
 Here for the `Flensburg` example:
+
 1. `FlensburgMockTestSetup`, which keeps all domain objects in RAM
 2. `FlensburgSQLDBTestSetup`, which keeps all domain objects in a SQL database (typically H2 during testing, Postgres during production)
 3. `FlensburgNeo4JDBTestSetup`, which keeps all domain objects in a graph database (typically Neo4J)
@@ -330,6 +332,7 @@ public class MultiPageE2ETest extends AbstractDomainE2ETest {
 }
 ```
 This example demonstrates multi-page testing:
+
 1. Two `Page` objects (`page1`, `page2`) are created, representing two different browser tabs/windows.
 2. The `init` method sets up each page.
 3. User interactions are simulated on `page1` to create a new Person.
