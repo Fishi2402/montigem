@@ -34,7 +34,7 @@ Testing base features typically involves verifying the functionality of individu
 public class CityInfoTest extends FlensburgMockTestSetup {
 
   public CityInfoTest() {
-    super(ClientSetup.of(1)); // Only one "client" context is used, no actual synchronization
+    super(ClientSetup.of(0)); // No client needed
   }
 
   @Test
@@ -75,7 +75,15 @@ public class PersonEditGUITest extends AbstractGUITest {
   @Test
   public void editPersonGUITest() {
     // ... object creation ...
-    PersonEdit e = new PersonEdit(); // Create GUI instance
+    Person p1 = FlensburgManager.personBuilder()
+        .age(24)
+        .nickname("theo")
+        .mainResidence(a)
+        .build().get();
+    // ...
+    
+    // Create simulated GUI page 
+    PersonEdit e = new PersonEdit();
     e.setP(p1); // Link GUI to the Person object
 
     // Check initial GUI values
@@ -97,7 +105,10 @@ public class PersonEditGUITest extends AbstractGUITest {
   @Test
   public void observePersonGUITest() {
     // ... setup multiple clients and GUI instances ...
+    PersonEdit e1 = new PersonEdit();
+    PersonEdit e2 = new PersonEdit();
 
+    // Simulate user interaction
     getClients(0).activate();
     // Simulate changing the age in GUI of client 1
     e1.setGemTextInput5Entry("33");
@@ -119,7 +130,7 @@ This example demonstrates:
 3.  Simulating user input by setting text in an input field.
 4.  Verifying that the change is reflected in the underlying `Person` object.
 5.  Simulating a button click and observing the effect on both the GUI and the object.
-6.   Testing GUI updates across multiple clients.
+6.  Testing GUI updates across multiple clients.
 
 # Testing the MontiGem platform
 The developers of the MontiGem platform need to ensure that the RTE and generated code work correctly.
@@ -130,7 +141,9 @@ Some typical patterns are described below.
 
 ## Testing Synchronization between Server and Clients
 
-A crucial aspect of internal MontiGem testing is verifying synchronization between the server (backend) and one or more clients.  This involves creating objects in one context (e.g., a client) and verifying that the changes are reflected in another context (e.g., the server or another client). It is crucial to activate the context, where changes should happen, before object modifications.
+A crucial aspect of internal MontiGem testing is verifying synchronization between the server (backend) and one or more clients.
+This involves creating objects in one context (e.g., a client) and verifying that the changes are reflected in another context (e.g., the server or another client).
+It is crucial to activate the context, where changes should happen, before object modifications.
 
 **Key Concepts:**
 
@@ -250,11 +263,11 @@ public class PersonSyncTest extends TestSetup<FlensburgTestContext> {
   }
 }
 ```
-This example demonstrates persisting a change to a `Human` object and verifies it in the database.
+This example demonstrates persisting a change to a `Human` object and verifies it in the SQL and Neo4J database implementations.
 
 ## E2E Testing with Playwright
 
-MontiGem supports end-to-end (E2E) testing using [Playwright](https://playwright.dev/), a library for automating web browsers.
+MontiGem also supports end-to-end (E2E) testing using [Playwright](https://playwright.dev/), a library for automating web browsers.
 This allows for testing the entire application flow, including interactions between the frontend and backend, in a real browser environment.
 These tests execute much slower than testing using the simulated GUI, therefore it should only be used to test the MontiGem platform itself, not generated applications. 
 Additionally, the execution of these tests involves multiple threads, making them much harder to write and understand due to the need to synchronize the threads.
