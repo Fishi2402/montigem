@@ -124,7 +124,11 @@ public class CollectionsAdapter extends AbstractAdapter {
         case "java.util.Stack":
         case "java.util.Vector":
         case "umlp.backendrte.common.GemList":
-          return substituteCommonListInvocations(invocation, targetMethodName);
+          // Handle standard List methods + stream()
+          if (substituteCommonListInvocations(invocation, targetMethodName)) {
+            return true;
+          }
+          break;
         case "java.util.Collections":
           if (substituteJavaCollectionsInvocations(invocation, targetMethodName))
             return true;
@@ -162,7 +166,7 @@ public class CollectionsAdapter extends AbstractAdapter {
   }
 
   private boolean substituteUMLPGuiArrayInvocations(MethodInvocationElement invocation,
-      String targetMethodName) {
+                                                    String targetMethodName) {
     switch (targetMethodName) {
       case "set":
         print(invocation.getTargetExpression()).print("[").print(invocation.getArgument(0)).print("] = ").print(invocation.getArgument(1));
@@ -250,11 +254,29 @@ public class CollectionsAdapter extends AbstractAdapter {
   }
 
   private boolean substituteCommonListInvocations(MethodInvocationElement invocation, String targetMethodName) {
+    // 1. Handle stream() here to prevent erasure.
+    // Result: nums.stream() -> nums
+    if ("stream".equals(targetMethodName)) {
+      if (invocation.getTargetExpression() != null) {
+        print(invocation.getTargetExpression());
+      } else {
+        // Fallback: extract expression directly from AST if JSweet model returns null
+        MethodInvocationTree tree = ExtendedElementFactory.toTree(invocation);
+        if (tree.getMethodSelect() instanceof MemberSelectTree) {
+          ExpressionTree expression = ((MemberSelectTree) tree.getMethodSelect()).getExpression();
+          print(expression);
+        }
+      }
+      return true;
+    }
+
     switch (targetMethodName) {
       case "remove":
         substituteRemoveMethod(invocation);
         return true;
       default:
+        // 2. Default fallback: Print as a standard method call (e.g., .add(), .get()).
+        // This ensures compatibility with IUMLPList (avoids mapping to .push()).
         getPrinter().printDefaultMethodInvocation(ExtendedElementFactory.toTree(invocation));
         return true;
     }
@@ -329,13 +351,6 @@ public class CollectionsAdapter extends AbstractAdapter {
         return true;
     }
 
-//    if (UMLPAdapterUtils.isSubTypeOf(newClass.getType(), "umlp.backendrte.common.GemListBuilder",
-//        util(), types(), context)) {
-//      print("(await new ").print(newClass.getConstructorAccess()).print("(")
-//          .printArgList(newClass.getArguments()).print(").finalizeConstructor())");
-//      return true;
-//    }
-
     return super.substituteNewClass(newClass);
   }
 
@@ -400,7 +415,7 @@ public class CollectionsAdapter extends AbstractAdapter {
   }
 
   private boolean substituteMapInvocations(MethodInvocationElement invocation,
-      String targetMethodName) {
+                                           String targetMethodName) {
     switch (targetMethodName) {
       case "put":
         printMacroName(targetMethodName);
@@ -461,7 +476,7 @@ public class CollectionsAdapter extends AbstractAdapter {
   }
 
   private boolean substituteMapEntryInvocations(MethodInvocationElement invocation,
-      String targetMethodName) {
+                                                String targetMethodName) {
     switch (targetMethodName) {
       case "getValue":
         printMacroName(targetMethodName);

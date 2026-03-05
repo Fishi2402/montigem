@@ -7,18 +7,21 @@ import umlp.jsweet.extension.common.UMLPEnumAdapter;
 import umlp.jsweet.extension.gui.UMLPGUICollectionsAdapter;
 import umlp.jsweet.extension.cd.JavaBasicsAdapter;
 import umlp.jsweet.extension.cd.UMLPRTEImportAdapter;
+import umlp.jsweet.extension.umlp.JavaStreamAdapter;
 import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 
 public class CDAdapter extends PrinterAdapter {
   public CDAdapter(PrinterAdapter parentAdapter) {
     super(
-        new UMLPGUICollectionsAdapter(
-            new UMLPRTEImportAdapter(
-                new JavaTimeAdapter(
-                    new JavaBasicsAdapter(
-                        new BasicsAdapter(
-                            new UMLPEnumAdapter(
-                                parentAdapter
+        new JavaStreamAdapter(
+            new UMLPGUICollectionsAdapter(
+                new UMLPRTEImportAdapter(
+                    new JavaTimeAdapter(
+                        new JavaBasicsAdapter(
+                            new BasicsAdapter(
+                                new UMLPEnumAdapter(
+                                    parentAdapter
+                                )
                             )
                         )
                     )

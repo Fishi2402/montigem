@@ -57,7 +57,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
             .equals("umlp.jsweet.extension.annotation.BackendOnly")
             || a.getAnnotationType().toString()
             .equals(Erased.class.getCanonicalName())
-        || a.getAnnotationType().toString().equals(Replace.class.getCanonicalName()));
+            || a.getAnnotationType().toString().equals(Replace.class.getCanonicalName()));
     super.visitMethod(methodTree, trees);
     return null;
   }
@@ -80,23 +80,147 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
   }
 
   /**
-   * Throw error when finding .stream() usage.
-   * @param invocation
+   * Delegates method invocations to the unsupported APIs checker.
+   * * @param invocation
    * @param trees
    * @return
    */
   @Override
   public Void visitMethodInvocation(MethodInvocationTree invocation, Trees trees) {
-    if(!surroundingExcludedFromTranspilation() && invocation.toString().contains("stream()")) {
-      Log.warn("0xEE001: at "
-          +getStartSourcePosition(invocation) +
-          " Java streams are currently not supported by our transpilation. " +
-          "Try using a forEach instead or use the BackendOnly or Erased annotation.");
+    if (!surroundingExcludedFromTranspilation()) {
+      checkUnsupportedApis(invocation, trees);
     }
     super.visitMethodInvocation(invocation, trees);
     return null;
   }
 
+  /**
+   * Checks for usages of Java APIs, die laut User Guide nicht oder nur teilweise unterstützt werden,
+   * und gibt entsprechende Warnungen aus.
+   */
+  protected void checkUnsupportedApis(MethodInvocationTree invocation, Trees trees) {
+    Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) trees.getElement(
+        trees.getPath(getCurrentPath().getCompilationUnit(), invocation.getMethodSelect()));
+
+    if (methodSymbol == null) {
+      return;
+    }
+
+    String methodName = methodSymbol.getSimpleName().toString();
+    String ownerFqn = methodSymbol.owner != null
+        ? methodSymbol.owner.getQualifiedName().toString()
+        : "";
+
+    // 1) Java 9+ Factory-Methoden wie List.of / Map.of / Set.of
+    if (methodName.equals("of")
+        && ("java.util.List".equals(ownerFqn)
+        || "java.util.Map".equals(ownerFqn)
+        || "java.util.Set".equals(ownerFqn))) {
+      Log.warn("0xEE005: at "
+          + getStartSourcePosition(invocation)
+          + " " + ownerFqn + ".of(...) is not supported by our transpilation. "
+          + "Use Collections.* helpers (e.g., Collections.emptyList/singletonList) "
+          + "or Guava's Lists.newArrayList instead.");
+      return;
+    }
+
+    // 2) Collections-Hilfsmethoden, die wir NICHT explizit unterstützen
+    if ("java.util.Collections".equals(ownerFqn)) {
+      switch (methodName) {
+        case "emptySet":
+        case "emptyMap":
+        case "singleton":
+        case "singletonMap":
+        case "unmodifiableMap":
+        case "unmodifiableSet":
+        case "unmodifiableSortedSet":
+        case "sort":
+        case "reverse":
+        case "shuffle":
+        case "binarySearch":
+        case "copy":
+        case "fill":
+        case "rotate":
+        case "swap":
+        case "min":
+        case "max":
+        case "checkedCollection":
+        case "checkedList":
+        case "checkedMap":
+        case "checkedSet":
+        case "checkedSortedSet":
+        case "synchronizedCollection":
+        case "synchronizedList":
+        case "synchronizedMap":
+        case "synchronizedSet":
+        case "synchronizedSortedSet":
+          Log.warn("0xEE006: at "
+              + getStartSourcePosition(invocation)
+              + " java.util.Collections." + methodName + "(...) is not supported by our transpilation. "
+              + "Use simple list/map operations or custom helpers instead.");
+          return;
+        default:
+          // emptyList/singletonList/unmodifiableList/unmodifiableCollection/nCopies sind explizit unterstützt
+      }
+    }
+
+    // 3) Kritische Objects-Methoden, die wir nicht explizit unterstützen
+    if ("java.util.Objects".equals(ownerFqn)) {
+      switch (methodName) {
+        case "hash":
+        case "hashCode":
+        case "deepEquals":
+        case "compare":
+        case "compareUnsigned":
+        case "requireNonNullElse":
+        case "requireNonNullElseGet":
+          Log.warn("0xEE008: at "
+              + getStartSourcePosition(invocation)
+              + " java.util.Objects." + methodName + "(...) is not explicitly supported "
+              + "and may not behave as expected in transpiled code. "
+              + "Prefer requireNonNull/equals or implement comparison/hash logic explicitly.");
+          return;
+        default:
+          // requireNonNull / equals sind explizit unterstützt
+      }
+    }
+
+    // 4) Andere java.time-Typen als LocalDateTime/LocalDate/java.util.Date
+    if (ownerFqn.startsWith("java.time.")
+        && !ownerFqn.equals("java.time.LocalDateTime")
+        && !ownerFqn.equals("java.time.LocalDate")) {
+      Log.warn("0xEE009: at "
+          + getStartSourcePosition(invocation)
+          + " Calls to " + ownerFqn + "." + methodName + "(...) are not explicitly supported. "
+          + "Only java.time.LocalDateTime, java.time.LocalDate and java.util.Date "
+          + "with their standard methods are supported in transpiled code.");
+      return;
+    }
+
+    // 5) Pakete, die grundsätzlich nicht für transpilierten Code unterstützt werden
+    if (ownerFqn.startsWith("java.io.")
+        || ownerFqn.startsWith("java.net.")
+        || ownerFqn.startsWith("java.sql.")
+        || ownerFqn.startsWith("java.security.")
+        || ownerFqn.startsWith("java.lang.reflect.")) {
+      Log.warn("0xEE003: at "
+          + getStartSourcePosition(invocation)
+          + " Calls to " + ownerFqn + "." + methodName + " are not supported in transpiled code. "
+          + "Move this logic to backend-only code or mark it with @BackendOnly/@Erased.");
+      return;
+    }
+
+    // 6) java.util.concurrent – nur sehr eingeschränkt erlaubt
+    if (ownerFqn.startsWith("java.util.concurrent.")) {
+      // Whitelist: AtomicReference (Typ ist bekannt, aber ohne echte Concurrency-Semantik)
+      if (!ownerFqn.equals("java.util.concurrent.atomic.AtomicReference")) {
+        Log.warn("0xEE004: at "
+            + getStartSourcePosition(invocation)
+            + " java.util.concurrent APIs are not supported in transpiled code. "
+            + "Use async/await and @Synchronized instead of Java threads or executors.");
+      }
+    }
+  }
 
   public String getStartSourcePosition(standalone.com.sun.source.tree.Tree tree) {
     long startSP = getContext().trees.getSourcePositions()

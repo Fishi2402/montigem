@@ -1,0 +1,26 @@
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+
+page ArrayStreamAdapterTest() {
+  inputTestFiel@GemTextInput(
+    id = "inputTestFieldId",
+    labelText = "Test Input Field"
+  );
+  map@GemButton(label = "Test stream().map()", leftClick = testMap());
+  filter@GemButton(label = "Test stream().filter()", leftClick = testFilter());
+  mapPlusFilter@GemButton(label = "Test filter()+map()", leftClick = testMapAndFilter());
+
+  flatMap@GemButton(label = "Test flatMap()", leftClick = testFlatMap());
+  distinct@GemButton(label = "Test distinct()", leftClick = testDistinct());
+  limit@GemButton(label = "Test limit()", leftClick = testLimit());
+  skip@GemButton(label = "Test skip()", leftClick = testSkip());
+  sorted@GemButton(label = "Test sorted()", leftClick = testSorted());
+  peek@GemButton(label = "Test peek()", leftClick = testPeek());
+
+  resultField@GemTextInput(
+      id = "resultId",
+      labelText = "Test Result"
+    );
+}
