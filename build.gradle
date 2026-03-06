@@ -11,6 +11,10 @@ plugins {
   id "com.github.node-gradle.node" version "5.0.0"
 }
 
+ecj {
+    compilerVersion = "3.43.0"
+}
+
 // Download node once for all subprojects
 node {
   download = true
@@ -39,7 +43,12 @@ subprojects {
 
   apply plugin: 'io.github.themrmilchmann.ecj'
 
-  dependencies {
+  ecj {
+      compilerVersion = "3.43.0"
+  }
+
+
+    dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
@@ -110,8 +119,8 @@ subprojects {
   }
 
   tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     options.encoding = 'UTF-8'
     options.warnings = false
   }

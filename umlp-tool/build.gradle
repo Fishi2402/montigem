@@ -7,7 +7,7 @@ plugins {
   id 'java'
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
-  id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+  id 'com.gradleup.shadow' version "$shadow_plugin_version"
 
   id 'de.monticore.language-server' version "$mclsg_version"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
