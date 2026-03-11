@@ -185,7 +185,11 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
         /* add */
         (newElems.push(eidOrBuilder) > 0);
       }
-      newElems.forEach(e => this.builderElemStorage.splice(idx, 0, e));
+      // TODO: Find out where else this is broken (a test exists in TestAtomicUpdate#testOrder)
+      // when [1,2,3] are added at position 0 (initial set),
+      //  first 1 is added at position 0, then 2 is added at the new position 0, ..., resulting in [3,2,1]
+      // Thus, we reverse, such that the first entry ends up at idx (monticore#4975)
+      newElems.reverse().forEach(e => this.builderElemStorage.splice(idx, 0, e));
       if (this.asArray != null) {
         additions.forEach(async e => {
           let loadResult = await this.loadSingleObject(e);

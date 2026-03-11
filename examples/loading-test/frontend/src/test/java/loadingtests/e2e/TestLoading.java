@@ -3,6 +3,7 @@ package loadingtests.e2e;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import de.se_rwth.commons.logging.Log;
+import loadingtests.Animal;
 import loadingtests.LoadingTestsManager;
 import loadingtests.Person;
 import loadingtests.commands.Animal_create;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static loadingtests.e2e.E2EUtil.createDummyData;
@@ -68,11 +70,9 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     );
   }
 
-  @Disabled
   @Test
   void testLoadOnePersonAndAllButOneAnimals(Page page) {
     Long gemIdOfPersonWithAnimals = this.personGemIds.get(4);
-    Long gemIdOfAnimalThatIsNotAttachedToAPerson = this.animalGemIds.get(4);
 
     navAndWait(page, "/test_load_all/LoadOnePersonAndAllAnimals/"+gemIdOfPersonWithAnimals); //go to page we want to test
     // We need this to ensure that all Client Request were answered from the Backend
@@ -90,15 +90,18 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
       }
     });
 
+    List<Long> attachedGemIds = LoadingTestsManager.getPersonSure(gemIdOfPersonWithAnimals).getPetList().stream().map(Animal::getGemId).toList();
     animalGemIds.forEach(id -> {
-      if(!id.equals(gemIdOfAnimalThatIsNotAttachedToAPerson)) {
-        assertEquals(Boolean.TRUE,page.evaluate(isLoadedPersonFunction,id.intValue()));
-      } else {
-        assertEquals(Boolean.FALSE,page.evaluate(isLoadedPersonFunction,id.intValue()));
+      if (attachedGemIds.contains(id)) {
+        assertEquals(Boolean.TRUE, page.evaluate(isLoadedAnimalFunction, id.intValue()), "Animal gemId=" + id + " was not loaded, " + attachedGemIds);
+      }
+      else {
+        assertEquals(Boolean.FALSE, page.evaluate(isLoadedAnimalFunction, id.intValue()), "Animal gemId=" + id + " was loaded despite not being attached to " + attachedGemIds);
       }
     });
 
   }
+
 
   @Test
   void testUpdateAllAnimalsPageAfterNewAnimalWasCreated(Page page) {
@@ -111,6 +114,12 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
       assertEquals(Boolean.TRUE,page.evaluate(isLoadedAnimalFunction,id.intValue()));
     });
 
+    // Assert that animals are displayed
+    assertThat(page.locator(GemText.selector())).hasCount(animalGemIds.size());
+    for (int i=0;i<animalGemIds.size();i++) {
+      assertThat(page.locator(GemText.selector()).nth(i)).hasText(LoadingTestsManager.getAnimalSure(animalGemIds.get(i)).getName());
+    }
+
     Log.info("Building new animal now.", this.getClass().getName());
     Long gemId = LoadingTestsManager.animalBuilder().name("animalName").legs(0).food(Set.of()).build().get().getGemId();
 
@@ -119,10 +128,13 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
 
     // Assert that new animal was synchronized
     assertEquals(Boolean.TRUE,page.evaluate(isLoadedAnimalFunction,gemId.intValue()));
+
+    // and is also displayed
+    assertThat(page.locator(GemText.selector())).hasCount(animalGemIds.size() + 1);
+    assertThat(page.locator(GemText.selector()).nth(animalGemIds.size())).hasText("animalName");
   }
 
-  @Test
-  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4805
+  @Test // for https://git.rwth-aachen.de/monticore/monticore/-/issues/4805
   void testRemoveWithReload(Page page) {
     Person person = LoadingTestsManager.personBuilder().age(0).name("P").build().get();
     person.addPet(LoadingTestsManager.animalBuilder().name("aA").legs(4).build().get());
@@ -132,16 +144,15 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     navAndWait(page, "/test_load_all/AnimalsRemove/"+person.getGemId());
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
-
     // The list is, apparently, inverted
-    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aA");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aA");
     assertThat(page.locator(GemText.selector()).nth(1)).hasText("aB");
-    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aC");
     page.reload();
     // Is the page the same after a reload?
-    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aA");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aA");
     assertThat(page.locator(GemText.selector()).nth(1)).hasText("aB");
-    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aC");
     // Ensure the first/favourite pet is the one we expect
     Assertions.assertEquals("aA", person.getFavouritePet().getName());
     Assertions.assertEquals("aA", person.getPet(0).getName());
@@ -149,26 +160,27 @@ public class TestLoading extends AbstractLoadingTestsE2ETest {
     // Remove the first/favourite pet, which should be aA
     page.locator(GemButton.selector()).click();
     // And assert, that we have removed the correct element
-    Assertions.assertEquals("aB", person.getPet(0).getName()); // <--- fails here currently
+    Assertions.assertEquals("aB", person.getPet(0).getName());
     // TODO: No guarantee for the tests after this point
-    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aB");
-    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aB");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC");
     // Prepare next removal
     person.setFavouritePet(person.getPet(0));
     Assertions.assertEquals("aB", person.getFavouritePet().getName()); // ensure it really is correct
     // and add new element
     person.addPet(LoadingTestsManager.animalBuilder().name("aD").legs(4).build().get());
+
     // Assert, that the new element is in the correct order
-    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aB");
-    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC"); // TODO: index 1&0 might be inverted - that should be a bug!
-    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aD");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aB");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(2)).hasText("aD"); // check that the insert appears at the correct position: https://git.rwth-aachen.de/monticore/monticore/-/issues/4976
     page.locator(GemButton.selector()).click(); // remove aB
-    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC");
-    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aD");
-    // final check
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aD");
+    // final check, because page-reloads apparently are not supported by MontiGem
     page.reload();
-    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aC");
-    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aD");
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("aC");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("aD");
 
   }
 

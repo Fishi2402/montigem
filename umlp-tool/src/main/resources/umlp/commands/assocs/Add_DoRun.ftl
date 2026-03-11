@@ -54,10 +54,10 @@ if(loaded${ctargetName} && loaded${csourceName}){
   if(loaded${ctargetName}){
     ${targetType} target = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
-    if(${targetName}Index == -1){
-      ${targetName}Index = target.size${csourceName}s();
+    if(${sourceName}Index == -1){ // TODO: only on server/backend?
+      ${sourceName}Index = target.size${csourceName}s();
     }
-    target.INTERNAL_add${csourceName}Id(${targetName}Index, ${sourceName}GemId, NotificationScope.MINIMAL);
+    target.INTERNAL_add${csourceName}Id(${sourceName}Index, ${sourceName}GemId, NotificationScope.MINIMAL);
 <#else>
    target._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
 </#if>
@@ -71,10 +71,10 @@ if(loaded${ctargetName} && loaded${csourceName}){
 } else if(loaded${csourceName}) {
     ${sourceType} source = ${managerName}.get${sourceType}Sure(${sourceName}GemId);
 <#if isTargetList>
-    if(${sourceName}Index == -1){
-      ${sourceName}Index = source.size${ctargetName}s();
+    if(${targetName}Index == -1){ // TODO: only on server/backend?
+      ${targetName}Index = source.size${ctargetName}s();
     }
-    source.INTERNAL_add${ctargetName}Id(${sourceName}Index, ${targetName}GemId, NotificationScope.MINIMAL);
+    source.INTERNAL_add${ctargetName}Id(${targetName}Index, ${targetName}GemId, NotificationScope.MINIMAL);
 <#else>
     source._internal_set${ctargetName}(${targetName}GemId, NotificationScope.MINIMAL);
 </#if>

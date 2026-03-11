@@ -101,7 +101,7 @@ public abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
       List<IDOrBuilder<E>> newElems = new ArrayList<>();
       for (Long e : additions) {
         IDOrBuilder<E> eidOrBuilder = new IDOrBuilder<>(e);
-        newElems.add(eidOrBuilder);
+        newElems.add(eidOrBuilder); // note: add inserts at the end
       }
       builderElemStorage.addAll(idx, newElems);
     }
