@@ -19,15 +19,34 @@ public class TestGlobalList extends AbstractLoadingTestsE2ETest {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
   }
 
-  final String INNER = "Inner";
+  final String INNER = "inner";
+  final String InnerWithHWC = "inner-with-h-w-c";
   final int unPassed = 0, withPassed = 1;
 
-  @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
-  @Disabled
-    // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4800
-  void testUpdateWithReload(Page page) throws Exception {
+  void testUpdateInnerPassed(Page page) {
+    this.testUpdate(page, INNER, withPassed);
+  }
 
+  @Test // Test for https://git.rwth-aachen.de/monticore/monticore/-/issues/4800
+  void testUpdateInnerNotPassed(Page page) {
+    this.testUpdate(page, INNER, unPassed);
+  }
+
+  @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4977
+  void testUpdateInnerHWCPassed(Page page) {
+    this.testUpdate(page, InnerWithHWC, withPassed);
+  }
+
+  @Test
+  @Disabled // TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4977
+  void testUpdateInnerHWCNotPassed(Page page) {
+    this.testUpdate(page, InnerWithHWC, unPassed);
+  }
+
+
+  void testUpdate(Page page, String container, int passed) {
     LoadingTestsManager.leftSideBuilder().label("A").build().get();
 
     navAndWait(page, "/test_gui/Outer"); //go to page we want to test
@@ -35,21 +54,18 @@ public class TestGlobalList extends AbstractLoadingTestsE2ETest {
     page.waitForLoadState(LoadState.NETWORKIDLE);
     waitForAngular(page);
 
-
+    // Test initial:
     checkSize(1, "gem-column", 0, page);
-    checkSize(1, INNER, withPassed, page);
-    checkSize(1, INNER, unPassed, page);
+    checkSize(1, container, passed, page);
 
     // Add a new element
     LoadingTestsManager.leftSideBuilder().label("B").build().get();
 
-    // TODO: When a page.reload is present, the test works - https://git.rwth-aachen.de/monticore/monticore/-/issues/4800
-
-    // Which should be included in both components
     checkSize(2, "gem-column", 0, page);
-    checkSize(2, INNER, withPassed, page);
-    checkSize(2, INNER, unPassed, page);
+    checkSize(2, container, passed, page);
   }
+
+
 
   protected void checkSize(int expected_size, String container, int nth, Page page) {
     // GemColumn
