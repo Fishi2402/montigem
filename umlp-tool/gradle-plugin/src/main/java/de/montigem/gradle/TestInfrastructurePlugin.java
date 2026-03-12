@@ -1,10 +1,12 @@
 package de.montigem.gradle;
 
+import de.montigem.gradle.specific.SD2TestTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import de.montigem.gradle.specific.UMLP2TestInfrastructureTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.api.file.Directory;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.tasks.SourceSet;
@@ -15,6 +17,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
+import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
@@ -38,6 +41,7 @@ import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG
 public abstract class TestInfrastructurePlugin implements Plugin<Project> {
 
   protected static final String UMLP_TEST_INFRASTRUCTURE_TASK_NAME = "generateTestInfrastructure";
+  protected static final String SD2TEST_TASK_NAME = "generateSDTests";
   protected static final String UMLP_GROUP_NAME = "umlp";
   protected static final String TEST_IMPLEMENTATION = "testImplementation";
   protected static final String COMPILE_ONLY = "compileOnly";
@@ -50,6 +54,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     pluginManager.apply("java");
 
     var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project);
+    var sd2testTask = createSD2TestTask(project, umlpTestInfrastructureTask);
     var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     var testSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME);
     //generate test infrastructure must run before compiling the tests
@@ -58,10 +63,14 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
         .matching(t -> t.getName().equals(testSourceSet.getCompileJavaTaskName())
             || t.getName().equals(mainSourceSet.getCompileJavaTaskName() // TODO: Remove this dependency and introduce test fixtures?
         ))
-        .configureEach(testTask -> testTask.dependsOn(umlpTestInfrastructureTask));
+        .configureEach(testTask -> {
+          testTask.dependsOn(umlpTestInfrastructureTask);
+          testTask.dependsOn(sd2testTask);
+        });
 
     // TODO: Introduce test-fixtures and generate the "test-infra" into the test source set instead of the main source set
     mainSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
+    testSourceSet.getJava().srcDir(sd2testTask.get().getOutputDir());
 
     //TODO: add generated source files to "test" source set
 //    testSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
@@ -139,6 +148,34 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     }
 
     return testInfrastructureTask;
+  }
+
+  public static TaskProvider<SD2TestTask> createSD2TestTask(Project project, TaskProvider<UMLP2TestInfrastructureTask> testInfraTask) {
+    return project.getTasks().register(SD2TEST_TASK_NAME, SD2TestTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+
+      UMLP2JavaTask backendTask = (UMLP2JavaTask) project.getTasks().findByName(
+          BackendPlugin.UMLP2JAVA_TASK
+      );
+
+      Directory models = project.getLayout().getProjectDirectory().dir("../test-models");
+      task.getInput().from(models);
+
+      if (backendTask != null) {
+        task.dependsOn(backendTask);
+        task.getDomainModel().fileProvider(backendTask.getInput().getElements().map(it -> it.iterator().next().getAsFile()));
+      }
+
+      task.dependsOn(testInfraTask);
+      task.getTestSymbolDirectory().set(testInfraTask.get().getSymbolOutDir());
+
+      System.out.println("Set output dir to " + project.getLayout().getBuildDirectory().dir("umlp/sdtests"));
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp/sdtests"));
+
+      String projectDirPath = project.getProjectDir().getAbsolutePath();
+      setIfPathExists(path -> task.getHwcDirectory().set(path),
+          Path.of(projectDirPath, "src", "test", "java"));
+    });
   }
 
   private static void setIfPathExists(Consumer<File> setter, Path path) {

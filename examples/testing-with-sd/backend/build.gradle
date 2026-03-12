@@ -1,4 +1,5 @@
 import de.montigem.gradle.specific.UMLP2JavaTask
+import de.montigem.gradle.specific.SD2TestTask
 
 plugins {
   id 'de.rwth.se.montigem-backend'

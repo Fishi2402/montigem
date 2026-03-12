@@ -10,7 +10,7 @@ class SD2TestToolArgsTest {
 
   @Test
   void testParseValid() {
-    var parsed = SD2TestToolArgs.parse(new String[]{
+    var parsed = sd2test.umlp.args.SD2TestToolArgs.parse(new String[]{
         "--domainModel",
         "examples/testing-with-sd/models/Webshop.umlp",
         "--model",
@@ -27,7 +27,7 @@ class SD2TestToolArgsTest {
         "--hwcDirectory",
         "examples/testing-with-sd/backend/src/test/java/",
     });
-    var expected = new SD2TestToolArgs("examples/testing-with-sd/models/Webshop.umlp",
+    var expected = new sd2test.umlp.args.SD2TestToolArgs("examples/testing-with-sd/models/Webshop.umlp",
                                        List.of("examples/testing-with-sd/test-models/TotalTest.sd",
                                                "examples/testing-with-sd/test-models/WebshopTest" +
                                                ".sd",
