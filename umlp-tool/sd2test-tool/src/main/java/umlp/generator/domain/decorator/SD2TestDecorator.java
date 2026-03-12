@@ -251,7 +251,7 @@ public class SD2TestDecorator {
   private Stream<String> createExpectStatements(Interaction interaction,
                                                 String processorName,
                                                 MatchingStrategy defaultMatchingStrategy) {
-    return interaction.matchVariant(new ExhaustiveInteractionVariantMatcher<>() {
+    return interaction.matchVariant(new ExhaustiveInteractionVariantMatcher<Stream<String>, RuntimeException>() {
 
       @Override
       public Stream<String> whenMethodCall(MethodCallInteraction methodCall) {
@@ -480,7 +480,7 @@ public class SD2TestDecorator {
         .preInteractionOCLStatements()
         .stream()
         .flatMap(oclStatement -> getVariable(oclStatement).stream());
-    var testInteractions = sdTest.trigger().stream().flatMap(trigger -> {
+    List<Interaction> testInteractions = sdTest.trigger().stream().flatMap(trigger -> {
       var triggerInteractionStream = Stream.of(trigger.triggerInteraction());
       var resultingInteractionStream = trigger.resultingInteractions().stream();
       return Stream.concat(triggerInteractionStream, resultingInteractionStream);
