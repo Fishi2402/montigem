@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.networkgraph;
+
+import mc.fenix.networkgraph.NetworkGraphTypes.GraphNode;
+import mc.fenix.networkgraph.NetworkGraphTypes.GraphEdge;
+import mc.fenix.networkgraph.NetworkGraphTypes.NodePos;
+import mc.fenix.networkgraph.NetworkGraphTypes.Graph;
+
+//NetworkGraph is a graphical representation of a network. It is composed of nodes and edges.
+//Nodes are the entities of the network, and edges are the relationships between the nodes.
+
+component GemGraph(
+  Graph graph,
+  String minHeight="50vH",
+  boolean showFilterGroup=true,
+  boolean showSearchNode=true,
+  boolean showControlButtons=true,
+  boolean showInformation=true,
+  List<String> metricKeys,
+  Object initialLayout = null,           //@Input() initialLayout?: InitialGraphLayoutConfiguration | null;
+  Object complexLayout = null,            //@Input() complexLayout?: ComplexGraphLayoutConfiguration | null;
+  Event<Integer> layoutIteration,
+  Event<List<NodePos>> nodePositionsAfterLayout,
+  Object customBoundingBox = null,
+  Event<GraphNode> graphClickNode
+  // TODO configure Layout from GUIDsl
+
+  //@Input() customMetricsGenerator?: CustomMetricsGenerator;
+  //@Input() cameraState?: CameraState;
+  //@Input() settings?: Partial<GraphSettings>;
+  //@Input() cbExtendButtons?: ControlButton[];
+  //@Input() cbRemoveButtons?: string[];
+  //@Input() cbLayout?: ControlButtonsLayout;
+  //@Input() cbSpeedDialConfig?: SpeedDialConfig;
+)
+
+

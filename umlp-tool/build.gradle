@@ -7,15 +7,25 @@ plugins {
   id 'java'
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
-  id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+  id 'com.gradleup.shadow' version "$shadow_plugin_version"
 
   id 'de.monticore.language-server' version "$mclsg_version"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 
+ecj {
+  compilerVersion = "3.43.0"
+}
+
+shadowJar {
+  manifest {
+    attributes 'Main-Class': 'umlp.UMLPTool'
+  }
+}
+
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
@@ -45,8 +55,9 @@ dependencies {
   implementation group: "org.yaml", name: "snakeyaml", version: "$snake_yaml_version"
 
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-  implementation(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.0-UMLP-SNAPSHOT'){
-    exclude(group: "com.kohlschutter.jdk", module:"standalone-home") // conflict with standalone-jdk11
+  implementation(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.1-UMLP-SNAPSHOT'){
+    exclude(group: "com.kohlschutter.jdk", module: "standalone-home") // conflict with standalone-jdk21
+    exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21
   }
 
   // LSP dependencies
@@ -59,7 +70,7 @@ dependencies {
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
   testImplementation group: 'com.github.javaparser', name: 'javaparser-symbol-solver-core', version: javaparser_version
-  testImplementation group: 'org.mockito', name: 'mockito-inline', version: mockito_version
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: mockito_version
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.2")
 
   grammar("de.monticore.lang:cd4analysis:$mc_version")
@@ -128,7 +139,7 @@ packUMLPWithGUILanguageServer{
 
 if(shouldBuildVscodePlugin) {
   runUMLPWithGUIVscodePluginAttached {
-    def lspWorkDir = project.getProjectDir().toPath().getParent().resolve("examples").toAbsolutePath().toString()
+    def lspWorkDir = project.getProjectDir().toPath().getParent().toAbsolutePath().toString()
     getModelProjectDir().set(lspWorkDir)
     getArgumentProviders().add({["-mup"]} as CommandLineArgumentProvider)
   }

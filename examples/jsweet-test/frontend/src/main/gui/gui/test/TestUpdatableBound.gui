@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+
+component TestUpdatableBound(?String myString) {
+  @GemTextInput(entry = myString);
+}
+

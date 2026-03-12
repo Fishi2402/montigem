@@ -7,6 +7,9 @@ umlp Enums {
     Optional<Colour> ccOpt;
   }
 
+  class FooExtension extends Foo;
+
+
   enum Colour {
     RED, GREEN;
   }

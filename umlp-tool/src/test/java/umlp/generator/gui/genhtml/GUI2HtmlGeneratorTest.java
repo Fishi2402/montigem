@@ -29,9 +29,7 @@ public class GUI2HtmlGeneratorTest extends DomainGUITest {
     genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
     UMLPGeneratorConfig conf = UMLPGeneratorConfig.getInstance()
         .setUseSpring(false)
-        .setUseJsweet(false)
-        .setUseShell(false)
-        .setGenerateTypescript(false);
+        .setUseShell(false);
     genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", conf);
 
     GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);

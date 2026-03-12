@@ -1,11 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAttributes", "listAssocs", "gemAssocs", "neo4j")}
 ${cd4c.method("public Boolean insert${typeName}(Collection<${typeName}> objectsToInsert)")}
-<#assign statement="insert"+typeName>
+<#assign statement="st">
 ensureInsert${typeName}Created();
-synchronized(${statement}){
-  try{
-    DatabaseAccessManager.getConnection().setAutoCommit(false);
+try(Connection connection = DatabaseAccessManager.getConnection()){
+  try(PreparedStatement st = connection.prepareStatement(insert${typeName})){
+    connection.setAutoCommit(false);
     ${statement}.clearBatch();
     for(${typeName} o : objectsToInsert) {
       ${statement}.clearParameters();
@@ -24,13 +24,13 @@ synchronized(${statement}){
       </#list>
     }
     ${statement}.executeBatch();
-    DatabaseAccessManager.getConnection().commit();
-    DatabaseAccessManager.getConnection().setAutoCommit(true);
+    connection.commit();
+    connection.setAutoCommit(true);
     return true;
 
     } catch (SQLException e){
       try {
-        DatabaseAccessManager.getConnection().rollback();
+        connection.rollback();
       } catch (SQLException ex) {
         ex.printStackTrace();
       }
@@ -40,9 +40,13 @@ synchronized(${statement}){
 
     finally{
       try {
-        DatabaseAccessManager.getConnection().setAutoCommit(true);
+        connection.setAutoCommit(true);
       } catch (SQLException e) {
         e.printStackTrace();
+        return false;
       }
     }
+  } catch(SQLException e) {
+	  e.printStackTrace();
+    return false;
   }

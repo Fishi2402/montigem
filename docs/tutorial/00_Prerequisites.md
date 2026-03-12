@@ -1,0 +1,172 @@
+# Prerequisites
+
+This document describes what you need to install in order to run a MontiGem app,
+and commands defined for a standard app setup.
+
+!!! warning
+    The tutorial is based on a pre-built example application. Currently, you
+    need to ask a MontiGem developer to get access to it.
+
+## Installation
+
+### Install Java 21
+
+!!! note
+    The following are the instructions for Windows. For other systems look it up on the internet.
+
+- Download and install [java 21 archive](https://www.oracle.com/java/technologies/downloads/#jdk21-windows) and extract the folder. Alternatively look for `21` version of Java in the Java archive.
+- Extracted folder will contain `jdk-21`. You can copy it into `Program Files/Java` if you want, it is a standard path for JDK.
+- Add environment variable `JAVA_HOME` with its value set to the `jdk-21` directory, e.g. `C:\Program Files\Java\jdk-21`.
+- Add `%JAVA_HOME%\bin` entry to the `Path` environment variable. Open a command line and run `java -version` command to check if Java is working properly.
+
+### Setup Gradle 8.14.3
+
+Download [Gradle 8.14.3](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
+
+!!! note
+    You may try later versions or other version with the major version number 8,
+    they might work, but it is not guaranteed.
+
+Create a `gradle.properties` file in `%userprofile%/.gradle` folder with content:
+
+```properties title="gradle.properties"
+mavenUser=my_user
+mavenPassword=my_password
+```
+  
+Replace `my_user` and `my_password` with your Nexus account name and password.
+
+(Optional) Install a plugin for language support:
+
+**Downloads**
+
+  - [IntelliJ](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/umlp-intellij-plugin/build/distributions/umlp-intellij-plugin-7.9.0-SNAPSHOT.zip?job=build_intellij_plugin)
+  - [Visual Studio Code](https://git.rwth-aachen.de/monticore/umlp/-/jobs/artifacts/dev/raw/umlp-tool/build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-7.9.0-SNAPSHOT.vsix?job=build_with_deploy)
+
+**Plugin installation guides**:
+
+  - IntelliJ: [https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk](https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk)
+  - VSCode: [https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix)
+
+## Commands
+
+Clone the project or install using a [launcher](https://nexus.se.rwth-aachen.de/repository/monticore-snapshots/de/se_rwth/montiinit/guiLauncher/1.0-SNAPSHOT/guiLauncher-1.0-20260202.172429-4-native.exe) (experimental) and build it.
+
+### Build
+
+To build the project, use the following command:
+```sh
+gradle build
+```
+  
+### Run
+
+Run the project's backend and frontend using following commands (each command will not stop on its own, since you are starting continous processes):
+
+Open a console/terminal and start backend:
+
+```sh
+gradle :backend:run
+```
+
+If there are no errors in the output, the last lines will signal the
+successful backend start (there may be more output after these lines):
+
+```
+[main] INFO domain.DomainServerApplication - Started DomainServerApplication in ... seconds (JVM running for ...)
+shell:>
+```
+
+Open another console/terminal and start frontend:
+
+```sh
+gradle :frontend:run
+```
+
+If there are no errors in the ouput, the last lines will signal the
+successful frontend start (there may be more output after these lines):
+
+```
+Watch mode enabled. Watching for file changes...
+    Local:   http://localhost:4200/
+```
+
+Open the browser and navigate to [localhost:4200](http://localhost:4200) to see the app.
+The app shows a text directing you to the start of the tutorial:
+
+![first tutorial app page](first_page.png)
+
+### Stop
+
+Stop the backend or frontend by pressing `ctrl+c` in the console/terminal.
+
+!!! warning
+    Next instruction kills a process running on port 4200. This is the
+    node process running frontend app. If you have a special setup that uses
+    port 4200 for something else you will need to adjust the scripts.
+
+Run the `killfe` script in the project folder in a console with administrative
+rights:
+
+```
+killfe
+```
+
+or for Unix-like environment
+
+```
+sudo ./killfe.sh
+```
+
+!!! note
+    `killfe` stands for kill frontend. The script finds the process which
+    uses port 4200 and kills it if such process is found. This is a crutch of
+    `gradle` build system/OS process and thread management. Internally the
+    `gradle :frontend:run` command starts a dev-server for the angular app. The
+    server runs in the separate process, not controlled by gradle. The behavior
+    may vary and you might not need to kill the process manually/it might
+    terminate on its own later.
+
+### Good to know
+
+After starting the frontend:
+
+```sh
+gradle :frontend:run
+```
+
+If you are only changing frontend code or GUI models, you can let the task run
+and execute the following task in a new console window to serve the new code in
+less time:
+
+```sh
+gradle :frontend:sync_gui2java2ts
+```
+
+For example, open `Start.gui` and update the `@GemText`:
+
+```ts title="frontend/src/main/gui/gui/Start.gui"
+page Start() {
+  /* component usages, control statements, etc. */
+  @GemText(value="Hello, World!");
+}
+```
+
+Then run 
+
+```sh
+gradle :frontend:sync_gui2java2ts
+```
+
+First time you execute this command, it may take a bit. When it's done, the
+console where you ran `gradle :frontend:run` will show:
+
+```
+Page reload sent to client(s).
+```
+
+!!! note
+    If your changes are invalid, e.g., the updated GUI model has errors,
+    the console running `gradle :frontend:sync_gui2java2ts` will display the
+    error, and the page will not reload. In that case, fix the error and rerun
+    the command.

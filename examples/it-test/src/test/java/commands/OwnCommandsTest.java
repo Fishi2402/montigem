@@ -2,6 +2,7 @@
 package commands;
 
 import com.google.common.collect.Lists;
+import commands.commands.GetStringContainingQuotationMarks;
 import commands.commands.SendEmail;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
@@ -113,6 +114,24 @@ public class OwnCommandsTest {
         "\n" +
         "    }", ((SendEmail) clonedCommand).getForwards(2));
     assertEquals(user.getGemId(), ((SendEmail) clonedCommand).getUserGemId());
+  }
+
+  @Test
+  public void testStringContainingQuotationMarksInCommandResult() {
+    CommandsMock.init();
+
+    var command = new GetStringContainingQuotationMarks();
+    var cmdStr = CommandObjectMapper.serializeCommand(command);
+
+    Command<?> clonedCommand = CommandObjectMapper.deserializeCommand(cmdStr).get();
+    var result = CommandManager.executeCommand(clonedCommand);
+
+    var resultStr = CommandObjectMapper.serializeResponse(result);
+    var clonedResult = CommandObjectMapper.deserializeResponse(resultStr);
+
+    assertNotNull(clonedResult);
+    assertTrue(clonedResult.get().asSimpleResult().isSuccessful());
+    assertEquals(GetStringContainingQuotationMarks.stringWithQuotationMarks, clonedResult.get().asSimpleResult().get());
   }
 
 }

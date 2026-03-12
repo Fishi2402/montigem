@@ -3,7 +3,7 @@
 
 plugins {
   id 'java'
-  id 'de.rwth.se.umlp-tool-frontend'
+  id 'de.rwth.se.montigem-frontend'
 }
 
 repositories {
@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
   // a configuration containing the domain sources
-  domainSources project(":products:syse_functions:backend")
+  srcUMLPConfig project(":products:syse_functions:backend")
   implementation project(":products:syse_functions:backend")
 
   implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
@@ -31,24 +31,24 @@ dependencies {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/frontendGen")
+  nodeProjectDir = file("${buildDir}/app")
 }
-nodeSetup.dependsOn(frontendSetup)
+nodeSetup.dependsOn(setupFrontend)
 
-genGUI {
-  domainModels = ["FunctionStructure4Fenix"]
+gui2java {
+  domain = ["FunctionStructure4Fenix"]
 }
 
-translateJava2TSDomain {
+umlpJava2ts {
   verbose = true
 }
 
-translateJava2TSGUI {
+guiJava2ts {
   verbose = true
 }
 
-nodeSetup.dependsOn(frontendSetup)
-npmInstall.dependsOn(nodeSetup, ':umlp-rte:client:npmInstall')
+nodeSetup.dependsOn(setupFrontend)
+npmInstall.dependsOn(nodeSetup, ':umlp-rte:frontend:npmInstall')
 
 def prebuildTasks = [
     npmInstall, generate

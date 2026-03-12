@@ -10,11 +10,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BidirectionalCommandSyncTest extends AssociationsMockTestSetup {
   public BidirectionalCommandSyncTest() {
-    super(1);
+    super(2);
   }
 
   @Test
@@ -40,5 +41,27 @@ public class BidirectionalCommandSyncTest extends AssociationsMockTestSetup {
     assertEquals(lhs1Server.gemId, rhs1Server.getOptToManyLhsGem().getGemId());
     assertTrue(lhs1Server.containsOptToManyRhs(rhs1Server));
     assertEquals(1, lhs1Server.getOptToManyRhsList().size());
+  }
+
+  @Test
+  public void checkIfOtherClientsReceivesUpdate(){
+
+    getBackend().activate();
+    var manyToManyLhs = AssociationsManager.manyToManyLhsBuilder().build().get();
+    AssociationsManager.manyToManyRhsBuilder().build().get();
+
+    getClients(1).activate();
+    var client1ManyToManyLhs = AssociationsManager.getManyToManyLhsList().get(0);
+    var client1ManyToManyRhs = AssociationsManager.getManyToManyRhsList().get(0);
+
+    getClients(0).activate();
+    var clientManyToManyLhs = AssociationsManager.getManyToManyLhsList().get(0);
+    clientManyToManyLhs.addManyToManyRhs(AssociationsManager.getManyToManyRhsList().get(0));
+
+    getBackend().activate();
+    assertEquals(1, manyToManyLhs.getManyToManyRhsList().size());
+
+    getClients(1).activate();
+    assertEquals(1, client1ManyToManyLhs.getManyToManyRhsList().size());
   }
 }

@@ -5,26 +5,24 @@ import org.apache.commons.cli.CommandLine;
 
 import java.util.Optional;
 
+import static umlp.UMLPToolOptions.GEN_NEO4J;
 import static umlp.UMLPToolOptions.GUI_GEN_FOR_TS_LIB;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
 import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
+import static umlp.UMLPToolOptions.USE_NEO4J;
 import static umlp.UMLPToolOptions.USE_PLAYWRIGHT;
 import static umlp.UMLPToolOptions.USE_SHELL;
 import static umlp.UMLPToolOptions.USE_SPRING;
 
 public class UMLPGeneratorConfig {
 
-  public static final String GUI_GEN_TS_FUNC_DEFAULT = "true";
-
-  private static final String GUI_GEN_JSWEET_DEFAULT = "false";
-
   private boolean useSpring;
   private boolean usePlaywright;
   private boolean useShell;
+  private boolean genNeo4j;
+  private boolean useNeo4j;
 
-  private boolean generateTypescript = true;
   private String tslib;
-  public boolean useJsweet;
 
   private UMLPGeneratorConfig() {
   }
@@ -50,6 +48,24 @@ public class UMLPGeneratorConfig {
     return this;
   }
 
+  public boolean isGenNeo4j() {
+    return genNeo4j;
+  }
+
+  public UMLPGeneratorConfig setGenNeo4j(boolean genNeo4j){
+    this.genNeo4j = genNeo4j;
+    return this;
+  }
+
+  public boolean isUseNeo4j() {
+    return useNeo4j;
+  }
+
+  public UMLPGeneratorConfig setUseNeo4j(boolean useNeo4j){
+    this.useNeo4j = useNeo4j;
+    return this;
+  }
+
   public boolean isUsePlaywright() {
     return usePlaywright;
   }
@@ -68,15 +84,6 @@ public class UMLPGeneratorConfig {
     return this;
   }
 
-  public boolean isGenerateTypescript() {
-    return generateTypescript;
-  }
-
-  public UMLPGeneratorConfig setGenerateTypescript(boolean generateTypescript) {
-    this.generateTypescript = generateTypescript;
-    return this;
-  }
-
   public boolean is4TSLib() {
     return Optional.ofNullable(tslib).isPresent();
   }
@@ -90,24 +97,14 @@ public class UMLPGeneratorConfig {
     return this;
   }
 
-  public boolean isUseJsweet() {
-    return useJsweet;
-  }
-
-  public UMLPGeneratorConfig setUseJsweet(boolean useJsweet) {
-    this.useJsweet = useJsweet;
-    this.generateTypescript = generateTypescript && !useJsweet;
-    return this;
-  }
-
   public UMLPGeneratorConfig initFromCmd(CommandLine cmd) {
     if (GUI_GEN_FOR_TS_LIB.isSelected(cmd)) {
       this.setTSLib(GUI_GEN_FOR_TS_LIB.getValue(cmd));
     }
     return this.setUseSpring(USE_SPRING.isSelected(cmd))
         .setUseShell(USE_SHELL.isSelected(cmd))
-        .setGenerateTypescript(Boolean.parseBoolean(GUI_GEN_TS_FUNC.getValue(cmd, GUI_GEN_TS_FUNC_DEFAULT)))
-        .setUseJsweet(Boolean.parseBoolean(GUI_GEN_JSWEET.getValue(cmd, GUI_GEN_JSWEET_DEFAULT)))
-        .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd));
+        .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd))
+        .setGenNeo4j(GEN_NEO4J.isSelected(cmd))
+        .setUseNeo4j(USE_NEO4J.isSelected(cmd));
   }
 }

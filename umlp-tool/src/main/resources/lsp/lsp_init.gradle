@@ -35,7 +35,7 @@ allprojects {
   task manifestTask(){
     doLast{
       tasks.each {
-        if(it.class.name.contains("UMLPBackendTask")){
+        if(it.class.name.contains("UMLP2JavaTask")){
           try{
             def subproj = new MCLSMultiprojectPluginExtension.SubprojectLayoutExtension();
             def model = it.getInput().getAsFileTree().getFiles().findAll {it.name.endsWith(".umlp")}[0]
@@ -49,6 +49,7 @@ allprojects {
               subproj.name = model.parentFile.parentFile.name
               subproj.projectpath = model.parentFile.parentFile.toString()
               List<String> resources = new ArrayList<>()
+              Set<String> guiSymbolPaths = new HashSet<>();
 
               resources.addAll(it.getModelDir().getFiles().collect { it.toString() })
 
@@ -62,7 +63,6 @@ allprojects {
                 resources.add(f.toString())
               }
 
-              subproj.resources = resources.toArray(new String[0])
               subproj.modelDirs = []
               rootProject.ext.subprojectCollection << subproj
 
@@ -75,10 +75,27 @@ allprojects {
                   Configuration config = frontend.configurations.findByName("guiLib")
                   if(config != null){
                     println("Found config")
-                    subproj.symbolPath = config.files.collect{ it.toString() }.toArray(new String[0])
-                    println(subproj.symbolPath)
+                    guiSymbolPaths.addAll(config.files.collect{ it.toString() })
                   }else{
                     println("Did not find config")
+                  }
+
+                  // Extract gui model dir(s) and symbol path(s)
+                  println("Going through frontend tasks")
+                  frontend.tasks.each{
+                    if(it.class.name.contains("GUI2Java2TSTask")){
+                      println("Frontend Task " + it.path + " matches")
+                      it.getModelDir().getFiles().each {
+                        println("Adding frontend resource " + it)
+                        resources.add(it.toString())
+                      }
+                      it.getSymbolPath().getFiles().each {
+                        if(it.toString().endsWith(".jar")){
+                          println("Adding frontend symbol path " + it)
+                          guiSymbolPaths.add(it.toString())
+                        }
+                      }
+                    }
                   }
                 }else{
                   println("Did not find frontend")
@@ -86,6 +103,9 @@ allprojects {
               }else{
                 println("Project path '${project.path}' does not end with :backend")
               }
+
+              subproj.resources = resources.toArray(new String[0])
+              subproj.symbolPath = guiSymbolPaths.toArray(new String[0])
 
               def generator = new groovy.json.JsonGenerator.Options()
                   .excludeFieldsByName('contentHash', 'originalClassName')

@@ -1,39 +1,4 @@
-plugins {
-  id 'java'
-}
-
-group 'org.example'
-version '7.8.0-SNAPSHOT'
-
-repositories {
-  mavenCentral()
-}
-
-dependencies {
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-  useJUnitPlatform()
-}
-
-task run {
+tasks.register("run") {
+  group = "application"
   dependsOn ":examples:vis-lib:frontend:run", ':examples:vis-lib:backend:run'
 }
-
-//project('frontend') {
-//  sourceSets.main.java.srcDirs += ['../backend/src/main/java', '../backend/build/umlp/backend']
-//}
-
-//project('frontend').translateTypeScript.dependsOn(project('backend').generateUmlpBackend)
-//project('frontend').getTasksByName('translateJava2TSDomain', true).forEach {a -> {
-//  project('backend').getTasksByName('jar', true).forEach {b -> {
-//    a.dependsOn(b)
-//  }}
-//}}
-//project('frontend').getTasksByName('translateJava2TSGUI', true).forEach {a -> {
-//  project('backend').getTasksByName('jar', true).forEach {b -> {
-//    a.dependsOn(b)
-//  }}
-//}}

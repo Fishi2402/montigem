@@ -85,7 +85,7 @@ public class AllObserverDecorator extends AbstractDecorator {
           getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + definingType.getName());
         });
 
-    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : DAODecorator.getOppositeSideToAssociationMap(domainClass).entrySet()) {
+    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : UMLPSymbolTables.getOppositeSideToAssociationMap(domainClass).entrySet()) {
       if (!e.getValue().getModifier().isDerived()) {
         CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
 

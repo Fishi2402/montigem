@@ -1,0 +1,10 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<div class="buttons-and-inputs-container">
+  <!-- Button -->
+  <button class="toggleLiveDataButton" (click)="toggleLiveData($event)" *ngIf="!isHideLiveDataToggle()">
+    {{ getToggleLiveDataButtonLabel() }}
+  </button>
+</div>
+
+<div #tSChart class="chart-container"></div>

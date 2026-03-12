@@ -6,6 +6,7 @@ ${tc.signature("name", "managerName", "assocList", "isSingleton")}
 ${cd4c.method("public Optional<${name}> build()")}
 
 if (!buildFinished) {
+  buildFinished = true;
   if (!isBuildable()) {
     return Optional.empty();
   }
@@ -13,6 +14,19 @@ if (!buildFinished) {
 <#list assocList as assoc>
     <#if genService.isList(assoc)>
       this._${assoc.getName()}.build();
+    <#else>
+    {
+      boolean needsBuild = this._${assoc.getName()}.getLoadingState() == LoadingState.LOADED
+                            && !this._${assoc.getName()}.get().isBuildFinished();
+      if (needsBuild) {
+        boolean buildFailed = this._${assoc.getName()}.get().build().isEmpty();
+        if(buildFailed){
+          //let the build fail
+          ${name}ErrorCollector.report${assoc.getName()?cap_first}Invalid(this);
+          return Optional.empty();
+        }
+      }
+    }
     </#if>
 </#list>
 
@@ -51,7 +65,6 @@ if (!buildFinished) {
 </#list>
 }
 ${name?uncap_first}Observers.forEach(obs -> obs.notifyBuild(this)); //+ an initial notification
-buildFinished = true;
 }
 return Optional.of(this);
 

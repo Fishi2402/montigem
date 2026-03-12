@@ -41,11 +41,13 @@ if(${sourceName}Loaded){
   // Do nothing?
 </#if>
 } else if(new${ctargetName}Loaded){
+  // The target is already loaded -> update bidirectional (using local)
+  // ToDo: Decide if we want to load ${sourceName}GemId (lazy loading) or just keep track of the id
   ${targetType} newLoaded = ${managerName}.get${targetType}Sure(${targetName}GemId);
 <#if isSourceList>
-  newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.MINIMAL);
+  newLoaded._internal_add${csourceName}(newLoaded.size${csourceName}s(), Lists.newArrayList(${sourceName}GemId), NotificationScope.LOCAL);
 <#else>
-  newLoaded._internal_set${csourceName}(${sourceName}GemId, NotificationScope.MINIMAL);
+  newLoaded._internal_set${csourceName}(${sourceName}GemId, NotificationScope.LOCAL);
 </#if>
   <#if hasOCL>
   ${targetType}Validator newLoadedValidator = new ${targetType}Validator();

@@ -1,2 +1,2 @@
 ${signature("statement","columnName")}
-Optional.ofNullable((Long) ${statement}.getObject(${columnName})).map(java.time.LocalTime::ofNanoOfDay).orElse(null)
+(${statement}.get(${columnName}).isNull()? null :${statement}.get(${columnName}).asLocalTime())

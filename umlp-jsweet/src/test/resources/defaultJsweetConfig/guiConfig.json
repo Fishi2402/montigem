@@ -1,0 +1,17 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.GUIAdapter",
+    "domainAdapter.DomainImportAdapter"
+  ],
+  "domainName": "Domain",
+  "@Erased": {
+    "include": [
+      "**.spliterator*()",
+      "**.stream*()",
+      "**.parallelStream*()",
+      "**.toArray*(*)",
+      "**.hashCode*()",
+      "**.equals*?\\(*\\)"
+    ]
+  }
+}

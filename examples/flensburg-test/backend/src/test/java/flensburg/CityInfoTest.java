@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CityInfoTest extends FlensburgMockTestSetup {
 
   public CityInfoTest() {
-    super(ClientSetup.of(1));
+    super(ClientSetup.of(0));
   }
 
   @Test

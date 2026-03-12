@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import Domain.Person;
+import mc.fenix.charts.GemBarChart;
+import common.ExamplePage;
+
+page GemBarChartExample(List<Person> persons) 
+{
+  @ExamplePage(
+    component = barchart@GemBarChart(
+      data = null,
+      stacked = false,
+      maxValue = 10,
+      minValue = null
+    ),
+    basePath = "example_charts",
+    componentName = "GemBarChartExample"
+  );
+}

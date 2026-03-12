@@ -2,7 +2,6 @@
 
 package umlp._lsp.language_access;
 
-import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd4code._symboltable.CD4CodeSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.io.paths.MCPath;
@@ -21,7 +20,6 @@ public class UMLPScopeManager extends UMLPScopeManagerTOP {
   @Override
   public void initGlobalScope(MCPath modelPath) {
     super.initGlobalScope(modelPath);
-    syncAccessGlobalScope(globalScope -> BuiltInTypes.addBuiltInTypes(globalScope, false));
   }
 
   @Override

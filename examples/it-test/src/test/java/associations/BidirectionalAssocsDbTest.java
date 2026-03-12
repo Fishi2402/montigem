@@ -3,6 +3,8 @@ package associations;
 import associations.test_infrastructure.AssociationsNeo4JDBTestSetup;
 import associations.test_infrastructure.AssociationsSQLDBTestSetup;
 import associations.test_infrastructure.AssociationsTestSetup;
+import associations2.Associations2DAOFactory;
+import associations2.Associations2Manager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,15 +21,34 @@ public interface BidirectionalAssocsDbTest extends AssociationsTestSetup {
   @DisplayName("Neo4J-BidirectionalAssocs")
   class Neo4JTestSuite extends AssociationsNeo4JDBTestSetup implements BidirectionalAssocsDbTest {
     Neo4JTestSuite() {
-      super(0);
+      super(1);
     }
   }
 
   @DisplayName("SQL-BidirectionalAssocs")
   class SQLTestSuite extends AssociationsSQLDBTestSetup implements BidirectionalAssocsDbTest {
     SQLTestSuite() {
-      super(0);
+      super(1);
     }
+  }
+
+  @Test
+  default void testClientAssocUpdateIsSynchronized() {
+    getBackend().activate();
+    var manyToManyLhs = AssociationsManager.manyToManyLhsBuilder().build().get();
+    AssociationsManager.manyToManyRhsBuilder().build().get();
+
+    getClients(0).activate();
+    var clientManyToManyLhs = AssociationsManager.getManyToManyLhsList().get(0);
+    // Ensure that no DB Observer is triggered in the Client
+    assertNotEquals(manyToManyLhs.manyToManyLhsObservers, clientManyToManyLhs.manyToManyLhsObservers);
+    clientManyToManyLhs.addManyToManyRhs(AssociationsManager.getManyToManyRhsList().get(0));
+
+    getBackend().activate();
+    var dao = AssociationsDAOFactory.getManyToManyLhsDAO();
+    var clone = dao.selectManyToManyLhs(manyToManyLhs.gemId).get();
+
+    assertEquals(manyToManyLhs.getManyToManyRhsList().size(),clone.getManyToManyRhsList().size());
   }
 
   @Test

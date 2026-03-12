@@ -19,6 +19,7 @@ import umlp.backendrte.common.LoadingState;
 import umlp.test_rte.ClientSetup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -114,30 +115,33 @@ public class CommandObjectMapperTest extends FlensburgMockTestSetup {
     int gemId = 1001;
     int age = 20;
 
-    Address a1001 = FlensburgManager.addressBuilderFromId(gemId).city("Flensburg").build().get();
-    Person p1002 = FlensburgManager
-        .personBuilder()
+    Address address = FlensburgManager.addressBuilderFromId(gemId)
+        .city("Flensburg")
+        .build()
+        .orElseThrow();
+    Person person = FlensburgManager.personBuilder()
         .age(age)
         .nickname("Smith")
-        .mainResidence(a1001)
+        .mainResidence(address)
         .build()
-        .get();
+        .orElseThrow();
 
-    SimpleResult<Person> resp = new SimpleResult<>(commandId, p1002, "hardy.flensburg.Person");
+    SimpleResult<Person> response = new SimpleResult<>(commandId, person, "hardy.flensburg.Person");
 
-    String respStr = CommandObjectMapper.serializeResponse(resp);
-    CommandResult<?> recreatedResp = CommandObjectMapper.deserializeResponse(respStr).get();
+    String serializedResponse = CommandObjectMapper.serializeResponse(response);
+    CommandResult<?> deserializedResponse = CommandObjectMapper.deserializeResponse(
+        serializedResponse).orElseThrow();
 
-    assertTrue(recreatedResp.isSimpleResult());
+    assertTrue(deserializedResponse.isSimpleResult());
 
-    SimpleResult<?> simpleRes = recreatedResp.asSimpleResult();
-    assertTrue(simpleRes.isSuccessful());
+    SimpleResult<?> simpleResult = deserializedResponse.asSimpleResult();
+    assertTrue(simpleResult.isSuccessful());
 
-    assertTrue(simpleRes.get() instanceof Person);
-    Person recreatedPerson = (Person) simpleRes.get();
+    assertInstanceOf(Person.class, simpleResult.get());
+    Person recreatedPerson = (Person) simpleResult.get();
 
-    assertNotSame(p1002, recreatedPerson);
-    assertEquals(p1002.getGemId(), recreatedPerson.getGemId());
+    assertNotSame(person, recreatedPerson);
+    assertEquals(person.getGemId(), recreatedPerson.getGemId());
 
     Gem<Address> mainResidenceGem = recreatedPerson.getMainResidenceGem();
     assertEquals(LoadingState.NOT_YET_LOADED, mainResidenceGem.getLoadingState());

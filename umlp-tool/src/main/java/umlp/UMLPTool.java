@@ -91,12 +91,10 @@ public class UMLPTool extends UMLPToolTOP {
   public static final String DEFAULT_REPORT_OUT = "target/generated-sources/umlp-reports";
   public static final String DEFAULT_CONFIGTEMPLATE = "umlp.UMLP2Java";
 
-  public static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA2TS = "umlp.UMLP2Java2TS";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2JAVA = "umlp.GUI2Java";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2HTML = "umlp.GUI2Html";
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
   public static final String DEFAULT_CONFIGTEMPLATE_RTE2JAVA = "umlp.RTE2Java";
-  public static final String DEFAULT_CONFIGTEMPLATE_GUI2ANGULAR = "umlp.GUI2Angular";
 
   private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
 
@@ -153,12 +151,6 @@ public class UMLPTool extends UMLPToolTOP {
     return null;
   }
 
-  public static void main(String[] args) {
-    Log.ensureInitialization(); // by default, don't use SLF4J log
-    UMLPTool tool = new UMLPTool();
-    tool.run(args);
-  }
-
   public static void gradleMain(String[] args) {
     GradleLog.init(); // by default, don't use SLF4J log
     UMLPTool tool = new UMLPTool();
@@ -189,12 +181,19 @@ public class UMLPTool extends UMLPToolTOP {
    * @param args
    */
   public void run(String[] args) {
+    Log.ensureInitialization();
     //init CLI options
     Options options = initOptions();
 
     try {
       CommandLineParser parser = new DefaultParser();
       CommandLine cmd = parser.parse(options, args);
+
+      if(cmd.hasOption("h")){
+        printHelp(options);
+        //do not continue, when help is printed.
+        return;
+      }
 
       // Due to its size, we define the Pipeline of the UMLP Tool in a separate class (UMLPToolPipelineSetup)
       UMLPToolPipeline pipeline = new UMLPToolPipeline(cmd);

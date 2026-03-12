@@ -8,9 +8,16 @@ import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 public class GemRadarChartExample extends GemRadarChartExampleTOP {
+
+  @Override
+  public void init() {
+    super.init();
+  }
+
   @Override
   public GemRadarChartData getData() {
     GemRadarChartData data = new GemRadarChartDataBuilder()
@@ -32,5 +39,23 @@ public class GemRadarChartExample extends GemRadarChartExampleTOP {
                 .build().get()
         )).build().get();
     return data;
+  }
+
+  public Consumer<Void> changeWidth(int delta) {
+    return v -> {
+      int currentWidth = Integer.parseInt(getWidth().replace("px", ""));
+      int newWidth = currentWidth + delta;
+      if (newWidth < 100) newWidth = 100;
+      setWidth(newWidth + "px");
+    };
+  }
+
+  public Consumer<Void> changeHeight(int delta) {
+    return v -> {
+      int currentHeight = Integer.parseInt(getHeight().replace("px", ""));
+      int newHeight = currentHeight + delta;
+      if (newHeight < 100) newHeight = 100;
+      setHeight(newHeight + "px");
+    };
   }
 }

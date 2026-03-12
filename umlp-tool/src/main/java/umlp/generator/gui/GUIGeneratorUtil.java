@@ -2,12 +2,9 @@
 package umlp.generator.gui;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -50,11 +47,11 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
@@ -66,11 +63,10 @@ import umlp.generator.gui.genjava.prettyprinter.IterationItemsFinder;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
 import umlp.generator.gui.gentypescript.printer.TSBackendMap;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
+import umlp.generator.gui.gentypescript.printer.TSUtilsPrinter;
 import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.TagLookUp;
-import umlp.generator.util.UMLPSymbolTables;
 
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,7 +78,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -132,13 +127,13 @@ public class GUIGeneratorUtil {
   }
 
   public boolean isCommandCall(ASTGUICompilationUnit unit, ASTCallExpression methodCall) {
-    if(methodCall.getExpression() instanceof ASTFieldAccessExpression) {
+    if (methodCall.getExpression() instanceof ASTFieldAccessExpression) {
       ASTFieldAccessExpression fieldAccessExpression = (ASTFieldAccessExpression) methodCall.getExpression();
-      if(fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
+      if (fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
         String variableName = ((ASTNameExpression) fieldAccessExpression.getExpression()).getName();
         Optional<GUIParamSymbol> guiParamOpt = unit.getGUIComponentDeclaration().getSpannedScope().resolveGUIParam(variableName);
-        if(guiParamOpt.isPresent()) {
-          if(guiParamOpt.get().getType().getTypeInfo() instanceof OOTypeSymbol) {
+        if (guiParamOpt.isPresent()) {
+          if (guiParamOpt.get().getType().getTypeInfo() instanceof OOTypeSymbol) {
             OOTypeSymbol typeSymbol = (OOTypeSymbol) guiParamOpt.get().getType().getTypeInfo();
              /*
              For now: Assume that every method call of a singleton is a Command Execution Call
@@ -191,8 +186,7 @@ public class GUIGeneratorUtil {
 
   public boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
     return existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".ts") | // Use bitwise to report on both checks
-        (UMLPGeneratorConfig.getInstance().isUseJsweet() && existsHandwrittenFile(targetPath,
-            Names.getPathFromPackage(qualifiedName) + ".java"));
+        existsHandwrittenFile(targetPath, Names.getPathFromPackage(qualifiedName) + ".java");
   }
 
   public boolean isInitialized() {
@@ -213,7 +207,7 @@ public class GUIGeneratorUtil {
   public final String print(ASTNode node, boolean syncedOpt) {
     printer.setPrintComments(false);
     String res = printer.prettyprint(node);
-    if (syncedOpt && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+    if (syncedOpt) {
       res += SYNCHRONIZED_SUFFIX;
     }
     return res;
@@ -508,7 +502,7 @@ public class GUIGeneratorUtil {
     values.addAll(guiComponent.getGUINamedArgs().getGUINamedArgList().stream().map(a -> a.getExpression())
         .filter(a -> GUIDSLMill.typeDispatcher().isSetExpressionsASTSetEnumeration(a))
         .flatMap(a -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetEnumeration(a).getSetCollectionItemList().stream())
-            .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v))
+        .map(v -> GUIDSLMill.typeDispatcher().asSetExpressionsASTSetValueItem(v))
         .filter(v -> isComponentArgument(guiComponent, v.getExpression()))
         .map(v -> v.getExpression()).collect(Collectors.toList()));
     return values;
@@ -567,11 +561,7 @@ public class GUIGeneratorUtil {
     return "get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
-        + ((UMLPGeneratorConfig.getInstance().isGenerateTypescript() || isList(namedArg))
-        && !UMLPGeneratorConfig.getInstance().isUseJsweet()
-        ? ""
-        : SYNCHRONIZED_SUFFIX // JSweet method to synchronize async callbacks
-    );
+        + SYNCHRONIZED_SUFFIX;
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -589,7 +579,7 @@ public class GUIGeneratorUtil {
   @SuppressWarnings("unused") // Component.ftl
   @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
-    return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? "" : SYNCHRONIZED_SUFFIX;
+    return SYNCHRONIZED_SUFFIX;
     /*
     if (true) return ""; // no longer required due to | async
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
@@ -653,11 +643,7 @@ public class GUIGeneratorUtil {
         .map(v -> v.getName()).collect(
             Collectors.joining(", "));
     String getter = "get" + StringTransformations.capitalize(name);
-    if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
-      getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
-    } else {
-      getter = getter + "(" + args + ")";
-    }
+    getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
     return getter;
   }
 
@@ -1018,9 +1004,20 @@ public class GUIGeneratorUtil {
     return res;
   }
 
+  public String predictRelativeImportPath(
+      Path importedFolder, Path importer, String file) {
+    Path imported = importedFolder.resolve(file);
+    return importer.getParent()
+        .toAbsolutePath()
+        .normalize()
+        .relativize(imported.toAbsolutePath())
+        .toString()
+        .replaceAll("\\\\", "/");
+  }
+
   public Optional<String> getRelativeImportPathForClass(MCPath imported, Path importer, String qualifiedName) {
     Optional<String> result = getRelativeImportPath(imported, importer, qualifiedName, "ts");
-    if (result.isEmpty() && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+    if (result.isEmpty()) {
       result = getRelativeImportPath(imported, importer, qualifiedName, "java");
       if (result.isPresent()) {
         return Optional.of("./" + Names.getSimpleName(qualifiedName));
@@ -1285,7 +1282,7 @@ public class GUIGeneratorUtil {
   }
 
   public String params2String(Map<ASTCDParameter, SymTypeExpression> params) {
-    if(params == null) {
+    if (params == null) {
       return "";
     }
     StringBuilder res = new StringBuilder();
@@ -1338,6 +1335,32 @@ public class GUIGeneratorUtil {
       ASTCDParameter param = iter.next();
       res.append(param.getMCType().printType());
       res.append(" ");
+      res.append(param.getName());
+    }
+    return res.toString();
+  }
+
+  public String tsParams2String(ASTMCType setterType, String arg, Collection<ASTCDParameter> params) {
+    TSUtilsPrinter printer = new TSUtilsPrinter();
+
+    StringBuilder res = new StringBuilder(arg + ": " + printer.printType(setterType));
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      ASTCDParameter param = iter.next();
+      res.append(param.getName());
+      res.append(": ");
+      res.append(printer.printType(param.getMCType()));
+    }
+    return res.toString();
+  }
+
+  public String params2ArgsString(String arg, Collection<ASTCDParameter> params) {
+    StringBuilder res = new StringBuilder(arg);
+    Iterator<ASTCDParameter> iter = params.iterator();
+    while (iter.hasNext()) {
+      res.append(",");
+      ASTCDParameter param = iter.next();
       res.append(param.getName());
     }
     return res.toString();

@@ -1,13 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("initializationTypeName", "domName")}
+${signature("className", "domName")}
 
 /* (c) https://github.com/MontiCore/monticore */
-package umlp.jsweet.extension.domainAdapters;
+package umlp.jsweet.extension.umlp;
 
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
-public class ${initializationTypeName} extends UMLPDomainImportAdapter {
-  public ${initializationTypeName}(PrinterAdapter parentAdapter) {
+public class ${className} extends UMLPDomainImportAdapter {
+  public ${className} (PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }
 

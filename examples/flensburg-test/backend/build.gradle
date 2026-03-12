@@ -1,36 +1,13 @@
 plugins {
-  id 'java'
-  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.montigem-backend'
 
-  id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
 }
 
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    url repo
-  }
-  mavenCentral()
-}
-
-configurations {
-  guiDefaultTypes
-}
-
-dependencies {
-  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
-  guiDefaultTypes "de.monticore.lang:guidsl:${project.properties['mc_version']}:default-types"
-}
-
 application {
-  mainClass = 'app.FlensburgServerApplication'
+  mainClass = 'hardy.flensburg.FlensburgServerApplication'
 }
 
 dependencies {
@@ -39,8 +16,6 @@ dependencies {
     exclude module: 'logback-classic'
     exclude module: 'log4j-to-slf4j'
   }
-
-
 
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
@@ -53,9 +28,9 @@ dependencies {
 
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
-  testImplementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: '4.0.9'
-  testImplementation "org.neo4j:neo4j:4.4.10"
-  testImplementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+  implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
+  testImplementation "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
+
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
@@ -64,31 +39,12 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-generateUmlpBackend {
-  input = file("../models/hardy/Flensburg.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-}
-
-tasks.register('runServer') {
-  dependsOn(bootRun)
-}
-
-test {
-  testLogging {
-    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
-  }
-  useJUnitPlatform()
-}
-
 sourceSets {
   main {
     java.srcDirs += [layout.buildDirectory.dir("testgui")]
-    java.srcDirs += [layout.buildDirectory.dir("umlp/fe2")]
-    //main.resources.srcDirs += generateUmlpBackend.getOutputDir().dir("resources")  // Add generated resources (e.g. html & sql files) to JAR
   }
-  test {
-    java {
-      //exclude '**/gui/**'
-    }
-  }
+}
+
+umlp2java {
+  genNeo4j.set(true)
 }

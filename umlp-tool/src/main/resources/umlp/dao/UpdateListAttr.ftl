@@ -4,28 +4,30 @@ ${tc.signature("tableName","attr", "innerType", "dbName")}
 ${cd4c.method("public void update${attrName}(long gemId, List<${innerType}> ${attrName?uncap_first})")}
 
   if(remove${attrName}Statement == null) {
-    remove${attrName}Statement = DatabaseAccessManager.prepareStatement("DELETE FROM ${tableName} WHERE id = ?");
+    remove${attrName}Statement = "DELETE FROM ${tableName} WHERE id = ?";
   }
   if(update${attrName}Statement == null) {
-    update${attrName}Statement = DatabaseAccessManager.prepareStatement("INSERT INTO ${tableName} (id, _value, index) VALUES (?, ?, ?)");
+    update${attrName}Statement = "INSERT INTO ${tableName} (id, _value, index) VALUES (?, ?, ?)";
   }
-  try{
-    synchronized(remove${attrName}Statement){
-      remove${attrName}Statement.clearParameters();
-      remove${attrName}Statement.setLong(1, gemId);
-      remove${attrName}Statement.executeUpdate();
-    }
+  try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st1 = connection.prepareStatement(remove${attrName}Statement);
+      PreparedStatement st2 = connection.prepareStatement(update${attrName}Statement);){
 
-    synchronized(update${attrName}Statement){
-      long index = 0;
-      for(${innerType} element : ${attrName?uncap_first}) {
-        update${attrName}Statement.clearParameters();
-        update${attrName}Statement.setLong(1, gemId);
-        ${includeArgs("umlp.dao.Set", "update"+attrName+"Statement", 2, dbName, "element", false,"")};
-        update${attrName}Statement.setLong(3, index++);
-        update${attrName}Statement.executeUpdate();
-      }
+    connection.setAutoCommit(false);
+    st1.clearParameters();
+    st1.setLong(1, gemId);
+    st1.executeUpdate();
+
+    long index = 0;
+    for(${innerType} element : ${attrName?uncap_first}) {
+      st2.clearParameters();
+      st2.setLong(1, gemId);
+      ${includeArgs("umlp.dao.Set", "st2", 2, dbName, "element", false,"")};
+      st2.setLong(3, index++);
+      st2.addBatch();
     }
+    st2.executeBatch();
+    connection.commit();
+    connection.setAutoCommit(true);
   } catch (SQLException e){
     throw new RuntimeException(e);
   }

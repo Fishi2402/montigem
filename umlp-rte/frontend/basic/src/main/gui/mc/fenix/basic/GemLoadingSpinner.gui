@@ -1,0 +1,36 @@
+package mc.fenix.basic;
+/**
+  Visualizes a loading process or a wait state within the user interface.
+  This component indicates that the system is currently processing a request
+  and may operate in either a determinate or indeterminate mode.
+*/
+component GemLoadingSpinner(
+  /**
+    Defines the dimensional size of the spinner component (e.g., "100%", "500px").
+  */
+  String size = "100%",
+
+  /**
+    Specifies the color schema applied to the spinner.
+  */
+  String color = "#3f51b5",
+
+  /**
+    Determines the operational mode of the spinner animation.
+    If set to true, the spinner functions in an indeterminate state, signifying
+    an unknown duration.
+  */
+  boolean intermediate = false,
+
+  /**
+    Represents the quantifiable progression of the loading task.
+    This value denotes the completion ratio and must be normalized strictly
+    between 0 and 1.
+  */
+  float progress,
+
+  /**
+      Text shown below the spinner to provide additional context about the loading state.
+    */
+  String label = ""
+)

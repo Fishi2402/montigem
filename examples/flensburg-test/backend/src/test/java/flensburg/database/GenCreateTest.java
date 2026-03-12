@@ -22,8 +22,10 @@ import hardy.flensburg.PersonDAO;
 import hardy.flensburg.PersonDAOInterface;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.test_rte.ClientSetup;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -42,19 +44,98 @@ public class GenCreateTest extends GenAbstractDBTest {
     super(ClientSetup.of(1));
   }
 
-  @Disabled
-  @Test
-  public void insertManyPersons(){
+ /* @Test
+  public void insertManyPersonswithGemIdManager(){
+    PersonDAO personDAO = new PersonDAO();
 
     Stopwatch watch = Stopwatch.createStarted();
     for(int i = 0; i < 20000; i++){
-      Address a1 = FlensburgManager.addressBuilder().city("Flensburg").build().get();
-      Person p1 = FlensburgManager.personBuilder().age(20).nickname("Jane").mainResidence(a1).build().get();
+      Long id = GemIdManager.getFreeGemId();
+      Person p =  new PersonBuilder(id);
+      p.setAge(20);
+      p.setNickname("John");
+      personDAO.insertPerson(p);
     }
     watch.stop();
-    Long time = watch.elapsed(TimeUnit.MILLISECONDS);
+    System.out.println("Time elapsed for creating and inserting many persons into DB with GemIdManager: " + watch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+  }*/
 
-    assert(2000 > time);
+  @Test
+  public void insertManyPersonswithGemId(){
+    PersonDAO personDAO = new PersonDAO();
+
+    Stopwatch watch = Stopwatch.createStarted();
+    for(int i = 0; i < 20000; i++){
+      Long gemid = DatabaseAccessManager.getFreeGemId();
+      Person p =  new PersonBuilder(gemid);
+      p.setAge(20);
+      p.setNickname("John");
+      personDAO.insertPerson(p);
+    }
+    watch.stop();
+    System.out.println("Time elapsed for creating and inserting many persons into DB with GemId: " + watch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+
+  }
+
+  // faster than inserting every person with one statement
+  @Test
+  public void insertManyPersonsWithBatch(){
+    PersonDAO personDAO = new PersonDAO();
+
+    Stopwatch watch = Stopwatch.createStarted();
+    List<Person> persons = new ArrayList<>();
+    for(int i = 20000; i < 40000; i++){
+      Person p =  new PersonBuilder(i);
+      p.setAge(20);
+      p.setNickname("John");
+      persons.add(p);
+    }
+    personDAO.insertPerson(persons);
+    watch.stop();
+    System.out.println("Time elapsed for creating and inserting many persons with Batch into DB: " + watch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+    //TestDatabaseAccessManager.openWebServer();
+  }
+
+  @Test
+  public void insertManyPersons(){
+    PersonDAO personDAO = new PersonDAO();
+
+    Stopwatch watch = Stopwatch.createStarted();
+    for(int i = 2000; i < 20000; i++){
+      Person p =  new PersonBuilder(i);
+      p.setAge(20);
+      p.setNickname("John");
+      personDAO.insertPerson(p);
+    }
+    watch.stop();
+    System.out.println("Time elapsed for creating and inserting many persons into DB: " + watch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+
+  }
+
+  @Test
+  public void insertManyHumans() {
+    HumanDAO humanDAO = new HumanDAO();
+
+    Stopwatch watch = Stopwatch.createStarted();
+    for (int i = 2000; i < 20000; i++) {
+
+      // works fine
+      Human h =  new HumanBuilder(i);
+      h.setAge(20);
+
+      // Error: Es gibt gleiche GemIds in der DB
+      //Human h = FlensburgManager.humanBuilder().age(20).build().get();
+
+      // works fine
+      /*HumanBuilder builder = new MockHumanBuilder(i);
+      builder.age(20);
+      Human h = builder.build().get();*/
+
+      humanDAO.insertHuman(h);
+    }
+    watch.stop();
+    System.out.println("Time elapsed for creating and inserting many humans into DB: " + watch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+    //TestDatabaseAccessManager.openWebServer();
   }
 
   @Test

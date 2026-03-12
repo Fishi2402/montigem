@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { DomainManagerClientImpl } from 'domain/DomainManagerClientImpl';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
-import {Navigation} from "navigation/navigation.component";
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager, BaseClassObjectMapper } from '@umlp/commonj2ts';
+import { DomainComponentObserverManager } from 'DomainComponentObserverManager'
+import { Navigation } from "navigation/Navigation";
 
 @Component({
   selector: 'app-root',
@@ -17,5 +18,6 @@ export class AppComponent {
     ));
     CommandManager.initMe(cmdManager);
     (<any>window).websocket_connected = true;
+    DomainComponentObserverManager.init();
   }
 }

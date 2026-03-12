@@ -4,7 +4,6 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

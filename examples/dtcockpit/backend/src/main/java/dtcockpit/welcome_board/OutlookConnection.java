@@ -6,6 +6,7 @@ import dtcockpit.DtcockpitManager;
 import dtcockpit.Meeting;
 import dtcockpit.MeetingDeSer;
 import dtcockpit.MessageOfTheDay;
+import jsweet.lang.Erased;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.enumeration.property.BodyType;
@@ -31,6 +32,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+@Erased
 public class OutlookConnection {
   private ExchangeService service;
 

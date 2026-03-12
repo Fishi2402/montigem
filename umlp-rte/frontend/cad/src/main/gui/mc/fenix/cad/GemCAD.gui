@@ -1,0 +1,33 @@
+package mc.fenix.cad;
+import mc.fenix.cad.GemCADTypes.Marker;
+
+/**
+  This component renders a 3D CAD model and facilitates user interaction through
+  node selection and marker overlays.
+*/
+component GemCAD(
+   /**
+     The vertical dimension of the component (e.g., "100%", "500px").
+   */
+   String height,
+
+   /**
+     The horizontal dimension of the component.
+   */
+   String width,
+
+   /**
+     The relative or absolute path to the CAD file resource.
+   */
+   String filePath = "",
+
+   /**
+     A collection of Marker objects to be rendered as annotations on the CAD model.
+   */
+   List<Marker> markers,
+
+   /**
+     The event emitted when a user interacts with a specific node in the CAD model.
+   */
+   Event<String> onNodeClick
+)

@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import Domain.Person;
+import mc.fenix.charts.GemTimeSeriesChart;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
+
+page GemTimeSeriesChartExmaple (List<Person> persons) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      chart1@GemTimeSeriesChart(
+        data = computeDate(persons),
+        hideLiveDataToggle = true
+      ),
+      chart2@GemTimeSeriesChart(
+        data = computeDate(persons),
+        hideLiveDataToggle = true
+      )
+    ]),
+    basePath = "example_charts",
+    componentName = "GemTimeSeriesChartExmaple"
+  );
+}

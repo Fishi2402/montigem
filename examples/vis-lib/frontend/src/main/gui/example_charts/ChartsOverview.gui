@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import common.ComponentCard;
+
+page ChartsOverview() {
+  @GemColumn(
+    hAlign = "center",
+    components = [
+      @GemText(value = "Charts Overview", size = "2rem", weight = "bold", height = "auto", width = "auto"),
+      @GemText(value = "Explore the available chart components", size = "1.2rem", color = "gray", height = "auto", width = "auto"),
+
+      @GemRow(
+        wrap = "wrap",
+        hAlign = "center",
+        rowGap = "20px",
+        colGap = "20px",
+        width = "100%",
+        components = [
+            @ComponentCard(title = "Bar Chart", icon = "bar_chart", description = "Compare categorical data.", click = goToBarChart()),
+            @ComponentCard(title = "Pie Chart", icon = "pie_chart", description = "Show proportions.", click = goToPieChart()),
+            @ComponentCard(title = "Line Chart", icon = "show_chart", description = "Visualize trends over time.", click = goToLineChart()),
+            @ComponentCard(title = "Gauge Chart", icon = "speed", description = "Display single value within range.", click = goToGaugeChart()),
+            @ComponentCard(title = "Radar Chart", icon = "radar", description = "Compare multivariate data.", click = goToRadarChart()),
+            @ComponentCard(title = "Scatter Plot", icon = "scatter_plot", description = "Show relationship between variables.", click = goToScatterPlot()),
+            @ComponentCard(title = "Venn Diagram", icon = "bubble_chart", description = "Visualize set relationships.", click = goToVennDiagram()),
+            wipNetwork@ComponentCard(title = "Network Graph (WIP)", icon = "hub", description = "Display nodes and edges.", click = goToNetworkGraph()),
+            @ComponentCard(title = "Heatmap", icon = "grid_on", description = "Visualize data density.", click = goToHeatmap()),
+            @ComponentCard(title = "Sunburst", icon = "donut_large", description = "Hierarchical data visualization.", click = goToSunburst()),
+            @ComponentCard(title = "Timeline", icon = "view_timeline", description = "Events over time.", click = goToTimeline()),
+            @ComponentCard(title = "Time Series", icon = "timeline", description = "Interactive time series data.", click = goToTimeSeries()),
+            wipBoxplot@ComponentCard(title = "Box Plot (WIP)", icon = "candlestick_chart", description = "Statistical distribution.", click = goToBoxPlot()),
+            wipBullet@ComponentCard(title = "Bullet Chart (WIP)", icon = "linear_scale", description = "Performance against target.", click = goToBulletChart()),
+            wipCandlestick@ComponentCard(title = "Candlestick (WIP)", icon = "waterfall_chart", description = "Financial data visualization.", click = goToCandlestick())
+        ]
+      )
+    ]
+  );
+}

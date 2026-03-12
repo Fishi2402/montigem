@@ -6,6 +6,7 @@ ${tc.signature("name", "assocList", "isSingleton")}
 ${cd4c.method("public Optional<${name}> build()")}
 
 if (!buildFinished) {
+  buildFinished = true;
   if (!isBuildable()) {
     return Optional.empty();
   }
@@ -17,8 +18,6 @@ if (!buildFinished) {
         );
       </#if>
   </#list>
-
-  buildFinished = true;
 }
 
 return Optional.of(this);

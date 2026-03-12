@@ -1,0 +1,65 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.charts;
+
+import mc.fenix.charts.GemRadarChartTypes.GemRadarChartData;
+import java.util.Optional;
+
+/**
+  A radar chart is a way of showing multiple data points and the variation between them.
+  They are often useful for comparing the points of two or more different data sets.
+*/
+component GemRadarChart(
+    /**
+      The data to be displayed in the chart.
+      Contains labels and datasets.
+    */
+    GemRadarChartData data,
+    /**
+      The width of the line in pixels.
+    */
+    Optional<Integer> borderWidth,
+    /**
+      If true, the area under the line will be filled.
+    */
+    Boolean fill = false,
+    /**
+      The minimum value of the scale.
+    */
+    Optional<Double> min,
+    /**
+      The maximum value of the scale.
+    */
+    Optional<Double> max,
+    /**
+      The step size of the scale.
+    */
+    Optional<Double> stepSize,
+    /**
+      Maximum length of labels. Longer labels will be truncated.
+    */
+    Optional<Integer> maxLabelLength,
+    /**
+      If true, shows a configuration button (internal use).
+    */
+    Boolean showConfig = true,
+    /**
+      Width of the chart container as a valid CSS length (e.g., "500px", "100%").
+    */
+    String width = "500px",
+    /**
+      Height of the chart container as a valid CSS length (e.g., "auto", "400px").
+    */
+    String height = "auto",
+    /**
+      If true, the legend is displayed.
+    */
+    Boolean showLegend = true,
+    /**
+      If true, the axis labels are displayed.
+    */
+    Boolean showLabels = true,
+    /**
+      Opacity of the fill color (0.0 to 1.0).
+    */
+    Optional<Double> opacity
+)

@@ -4,6 +4,7 @@ package umlp.generator.gui.gentypescript.decorator;
 import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4codebasis._ast.ASTCDClass;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -11,9 +12,12 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
+import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
+import de.monticore.guidsl._ast.ASTGUINamedArg;
 import de.monticore.guidsl._ast.ASTGUIParam;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
+import de.monticore.guidsl._symboltable.GUIParamSymbol;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.io.paths.MCPath;
@@ -41,6 +45,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUIDSLVisitor2 {
@@ -160,7 +165,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularOverrideEventGetter",
               mcType, attr.getName(), getterName));
     }
-    // Normal attr
+    // Normal or ref attr
     else {
       /*
         protected override _myAttr: MyType;
@@ -197,13 +202,68 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       addImportString("import { Input } from '@angular/core';");
       // setter + getter
-      if (UMLPGeneratorConfig.getInstance().isUseJsweet()) {
 //        addImport(PathUtil.getBackendRTECommonPath("UMLPArrayList"));
-        mcType = createTypeAndAddImports(typeSTE);
-      }
+      mcType = createTypeAndAddImports(typeSTE);
       glex.replaceTemplate("umlp.Empty", attr,
           new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
               mcType, node.getName(), getterName, setterName));
+
+      // Ref attr
+      if (node.getSymbol().isIsReference()) {
+        /*
+          @Output()
+          public myAttrChange: EventEmitter<MyType> = new EventEmitter<MyType>();
+        */
+        String emitType = new TSUtilsPrinter().printType(mcType);
+        ASTCDAttribute eventAttr = getCDAttributeFacade().createAttribute(
+            CDModifier.PUBLIC.build(),
+            "EventEmitter<" + emitType + ">",
+            getRefParamEmitterName(node.getSymbol())
+        );
+        clazz.addCDMember(eventAttr);
+        addImportString("import { Output } from '@angular/core';");
+        glex.replaceTemplate(GUI2ComponentTemplates.ANNOTATIONS, eventAttr,
+            new StringHookPoint("@Output()"));
+
+        addImportString("import { EventEmitter } from '@angular/core';");
+        glex.replaceTemplate("cd2java.Value", eventAttr,
+            new StringHookPoint(" = new EventEmitter<" + emitType + ">()"));
+      }
+    }
+  }
+
+  protected String getRefParamEmitterName(GUIParamSymbol param) {
+    return param.getName() + "Change";
+  }
+
+  @Override
+  public void endVisit(ASTGUIComponent node) {
+    Map<ASTGUINamedArg, SymTypeExpression> argumentTypeMap = node.getArgumentTypes();
+    for (ASTGUINamedArg arg : node.getGUINamedArgs().getGUINamedArgList()) {
+      if (GUIDSLMill.typeDispatcher().isExpressionsBasisASTNameExpression(arg.getExpression())) {
+        String argName = GUIDSLMill.typeDispatcher().asExpressionsBasisASTNameExpression(arg.getExpression()).getName();
+        Optional<GUIParamSymbol> paramSymbol = node.getEnclosingScope().resolveGUIParam(argName);
+        if (paramSymbol.isPresent() && paramSymbol.get().isIsReference()) {
+
+          // calc type
+          if (!arg.isPresentNameSymbol()) {
+            Log.error("0x0000E Unable to find symbol for '" + arg.getName()
+                + "' at " + arg.get_SourcePositionStart().toString()
+                + " - " + arg.get_SourcePositionEnd().toString()
+            );
+          }
+          SymTypeExpression typeSTE = argumentTypeMap.get(arg);
+
+          ASTMCType type = getSimpleType(createTypeAndAddImports(typeSTE));
+          String name = calcBaseArgName(node, arg);
+          List<ASTCDParameter> params = getIterationItemParameters(arg);
+
+          glex.addAfterTemplate("umlp.gui2ts.TSConstructor", new TemplateHookPoint(
+              "umlp.gui2ts.GUI2AngularOverrideArgSetter",
+              type, name, params, getRefParamEmitterName(paramSymbol.get())
+          ));
+        }
+      }
     }
   }
 

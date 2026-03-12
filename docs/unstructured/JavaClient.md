@@ -4,6 +4,14 @@ You can use the generated MontiGem Java client to connect to a running MontiGem
 server and perform synchronized CRUD operations using the Manager and the usual 
 generated domain classes.
 
+## Websocket Buffer Issues
+
+On the client-side you may face websocket buffer issues. As of January 2026, the 
+client uses a TomCat Websocket. You can increase its default buffer size by setting 
+a System property, e.g. using the following code at the start of your client 
+application: 
+`System.setProperty("org.apache.tomcat.websocket.DEFAULT_BUFFER_SIZE",String.valueOf(512*1024));`
+
 ```java
 package example_analysis;
 

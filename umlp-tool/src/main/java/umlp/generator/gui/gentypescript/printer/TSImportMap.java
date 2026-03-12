@@ -50,7 +50,7 @@ public enum TSImportMap {
   public Optional<String> getTSPackage(String javaPackage) {
     for (String key : importMap.keySet()) {
       if (javaPackage.toLowerCase().startsWith(key.toLowerCase())) {
-        if (key.startsWith(BACKEND_RTE) && UMLPGeneratorConfig.getInstance().isUseJsweet()) {
+        if (key.startsWith(BACKEND_RTE)) {
           return Optional.of(JSWEET_RTE);
         }
         return Optional.of(importMap.get(key));

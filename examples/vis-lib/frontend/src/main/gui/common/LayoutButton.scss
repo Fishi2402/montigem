@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+:host ::ng-deep {
+  .activeBtn .gem-button {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+
+  .inactiveBtn .gem-button {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+    color: #333;
+  }
+
+  .inactiveBtn .gem-button:hover {
+      background-color: #e2e6ea;
+  }
+
+  .gem-text {
+      margin-left: 5px;
+      font-size: 0.9rem;
+  }
+}

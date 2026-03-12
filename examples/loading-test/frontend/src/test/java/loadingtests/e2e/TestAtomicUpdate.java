@@ -2,11 +2,11 @@ package loadingtests.e2e;
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
+import loadingtests.Food;
 import loadingtests.LoadingTestsManager;
 import loadingtests.test_infrastructure.AbstractLoadingTestsE2ETest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -107,20 +107,10 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
     // Let frontend communicate with backend and wait for response
     page.waitForLoadState(LoadState.NETWORKIDLE);
 
-    // TODO: The following behavior is broken (See #4381)
-    // The remove command does not update the Animal._food._values array of the FoodGemList
 
     Thread.sleep(200);
-
-
-//    assertThat(page.locator(GemText.selector())).hasCount(1);
-    // TODO: The first element SHOULD be removed, due to #4381 the GemList is not updated (see above)
-//    assertThat(page.locator(GemText.selector())).hasCount(2);
-
-//    // TODO: This element SHOULD be removed, due to #4381 the GemList is not updated (see above)
-//    assertThat(page.locator(GemText.selector()).first()).hasText("a");
-
     // Assert, that a different food is displayed
+    assertThat(page.locator(GemText.selector())).hasCount(1);
     assertThat(page.locator(GemText.selector()).last()).hasText("a#");
 
     // Do the entire thing again, to test if the next command works / lock is freed
@@ -129,10 +119,59 @@ public class TestAtomicUpdate extends AbstractLoadingTestsE2ETest {
     // Let frontend communicate with backend and wait for response
     page.waitForLoadState(LoadState.NETWORKIDLE);
     Thread.sleep(200);
-//    assertThat(page.locator(GemText.selector())).hasCount(2); // TODO: 1
-//    assertThat(page.locator(GemText.selector()).first()).hasText("a#"); // todo: remove
+    assertThat(page.locator(GemText.selector())).hasCount(1);
     assertThat(page.locator(GemText.selector()).last()).hasText("a##");
 
+
+  }
+
+  @Test
+  void testOrder(Page page) throws Exception {
+    navAndWait(page, "/test_update_list/TestAtomicUpdate"); //go to page we want to test
+    waitForAngular(page);
+    // We need this to ensure that all Client Request were answered from the Backend
+    page.waitForLoadState(LoadState.NETWORKIDLE);
+
+    // PlayWright cannot handle long values as args
+    // Also give the page some time to catch up
+    assertEqualsRetry(Boolean.TRUE, () -> page.evaluate(isLoadedAnimalFunction, (int) LoadingTestsManager.getUpdateListHelper().getTestAnimal().getGemId()),
+        "Failed to load animal " + LoadingTestsManager.getUpdateListHelper().getTestAnimal().getGemId());
+
+    waitForAngular(page);
+
+    assertEquals(1, LoadingTestsManager.getUpdateListHelper().getTestAnimal().getFoodList().size());
+    // Assert that one food is displayed
+    assertThat(page.locator(GemText.selector())).hasCount(1);
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("a");
+
+    Food b = LoadingTestsManager.foodBuilder().name("b").build().get();
+    LoadingTestsManager.getUpdateListHelper().getTestAnimal().addFood(b);
+
+    // ensure the frontend displays the correct data
+    assertThat(page.locator(GemText.selector())).hasCount(2);
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("a");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("b");
+
+    // just to make sure: the backend has the same order
+    assertEquals(2, LoadingTestsManager.getUpdateListHelper().getTestAnimal().getFoodList().size());
+    assertEquals("a", LoadingTestsManager.getUpdateListHelper().getTestAnimal().getFood(0).getName());
+    assertEquals("b", LoadingTestsManager.getUpdateListHelper().getTestAnimal().getFood(1).getName());
+
+    // and ensure something simple like a reload does not break our data (cough monticore#4975)
+    page.reload();
+    assertThat(page.locator(GemText.selector())).hasCount(2);
+    //  WTF does a reload break the ordering? -> because GemListBuilder
+    //  and we still don't have the time/priority to properly test the basics
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("a");
+    assertThat(page.locator(GemText.selector()).nth(1)).hasText("b");
+
+    // Finally, test that a remove operation works (as this was the initial reason for fixing the order bug)
+    LoadingTestsManager.getUpdateListHelper().getTestAnimal().removeFood(b);
+
+    assertEquals(1, LoadingTestsManager.getUpdateListHelper().getTestAnimal().getFoodList().size());
+    assertThat(page.locator(GemText.selector())).hasCount(1);
+    assertThat(page.locator(GemText.selector()).nth(0)).hasText("a");
+    // (if the order is incorrect, this line leads to a general sync bug/inconsistent state warning)
   }
 
   // Retry for about 20 seconds

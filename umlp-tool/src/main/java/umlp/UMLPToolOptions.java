@@ -69,7 +69,9 @@ public enum UMLPToolOptions {
       .desc("Name of a TS library if generation schema is adjusted for the TS library").build()),
   USE_SPRING(Option.builder("use_spring").desc("If the backend is generated, generate additional spring classes").build()),
   USE_SHELL(Option.builder("use_shell").desc("If the backend is generated, generate additional spring shell classes").build()),
-  USE_PLAYWRIGHT(Option.builder("use_playwright").desc("If spring classes are generated, generate additional playwright e2e infrastructure").build());
+  USE_PLAYWRIGHT(Option.builder("use_playwright").desc("If spring classes are generated, generate additional playwright e2e infrastructure").build()),
+  GEN_NEO4J(Option.builder("gen_neo4j").desc("Generate database access infrastructure for a Neo4j / Cypher databases.").build()),
+  USE_NEO4J(Option.builder("use_neo4j").desc("Make Neo4j the default database access for the MontiGem app.").build());
 
   UMLPToolOptions(Option option) {
     this.option = option;

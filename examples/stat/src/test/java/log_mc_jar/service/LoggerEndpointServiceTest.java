@@ -4,45 +4,21 @@ package log_mc_jar.service;
 import com.google.common.hash.Hashing;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import log_mc_jar.Log_MC_JARManagerImpl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import log_mc_jar.test_infrastructure.Log_MC_JARNeo4JDBTestSetup;
 import org.junit.jupiter.api.Test;
-import org.neo4j.configuration.connectors.BoltConnector;
-import org.neo4j.configuration.helpers.SocketAddress;
-import org.neo4j.dbms.api.DatabaseManagementService;
-import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
-import umlp.backendrte.common.DatabaseAccessManager;
-import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
-class LoggerEndpointServiceTest {
+class LoggerEndpointServiceTest extends Log_MC_JARNeo4JDBTestSetup {
 
   final LoggerEndpointService sut = new LoggerEndpointService();
 
-  private static DatabaseManagementService managementService = null;
-
-  private static final int port = getFreePort();
-
-  private static int getFreePort() {
-    ServerSocket socket = null;
-    try {
-      socket = new ServerSocket(0);
-      int port = socket.getLocalPort();
-      socket.close();
-      return port;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public LoggerEndpointServiceTest() {
+    super(0);
   }
 
   private static String getSString(){
@@ -55,47 +31,6 @@ class LoggerEndpointServiceTest {
         .toString();
   }
 
-  @BeforeAll
-  public static void initDB() {
-    if(managementService != null) {
-      managementService.database(DEFAULT_DATABASE_NAME);
-      return;
-    }
-    managementService =
-        new DatabaseManagementServiceBuilder(Paths.get("build", "temporaryNeo4jDB"))
-            .setConfig(BoltConnector.enabled, true )
-            .setConfig(BoltConnector.listen_address, new SocketAddress("localhost", port)).build();
-    registerShutdownHook(managementService);
-    managementService.database(DEFAULT_DATABASE_NAME);
-  }
-
-  private static void registerShutdownHook( final DatabaseManagementService managementService )
-  {
-    // Registers a shutdown hook for the Neo4j instance so that it
-    // shuts down nicely when the VM exits (even if you "Ctrl-C" the
-    // running application).
-    Runtime.getRuntime().addShutdownHook( new Thread()
-    {
-      @Override
-      public void run()
-      {
-        managementService.shutdown();
-      }
-    } );
-  }
-
-  @BeforeEach
-  void setUp() {
-    DatabaseAccessManager4Neo4j.initBoltLocalhost(port, "neo4j", "");
-    Log_MC_JARManagerImpl.initNeo4J();
-  }
-
-  @AfterEach
-  public void cleanup() throws SQLException {
-    // After each test set the database into a blank state again
-    DatabaseAccessManager4Neo4j.executeStatement("MATCH(n) DETACH DELETE n");
-    DatabaseAccessManager.closeConnection();
-  }
 
   @Test
   void umlp_jar_log() throws IOException {

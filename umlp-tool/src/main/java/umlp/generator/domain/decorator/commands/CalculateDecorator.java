@@ -22,6 +22,7 @@ import umlp.UMLPMill;
 import umlp.generator.domain.decorator.BaseClassObjectMapperDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.PathUtil;
+import umlp.generator.util.TagLookUp;
 
 import java.util.Optional;
 import java.util.Set;
@@ -53,8 +54,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
         astcdPackage.addCDElement(withOrigin(createClass(origCD,
                                                          a.getName(),
                                                          a.getSymbol().getType(),
-                                                         c,
-                                                         GenService.isCDEnum(a.getSymbol().getType()), false)));
+                                                         c, needsImport(a), false)));
         astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), a.getSymbol().getType(), c)));
       });
       CDSymbolTables.getAssociationsInHierarchy(c)
@@ -72,6 +72,20 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     });
   }
 
+
+  protected boolean needsImport(ASTCDAttribute a) {
+    SymTypeExpression symTypeExpression = a.getSymbol().getType();
+    SymTypeExpression evaluatedSmTypeExpression = symTypeExpression;
+    if(symTypeExpression.isGenericType()) {
+      if(GenService.isList(symTypeExpression) || GenService.isOptional(symTypeExpression)) {
+        evaluatedSmTypeExpression = symTypeExpression.asGenericType().getArgument(0);
+      } else {
+        Log.error("0xAEF01: Cannot derived attributes with generic types other than List or Optional. ", a.get_SourcePositionStart());
+      }
+    }
+    return GenService.isCDEnum(evaluatedSmTypeExpression)
+        || GenService.isPojoCDType(evaluatedSmTypeExpression);
+  }
 
   protected ASTCDClass createClass(ASTCDCompilationUnit origCD, String name, SymTypeExpression type, ASTCDClass domainClass, boolean needsImport, boolean multiCardinality) {
     String classname = domainClass.getName()+SUFFIX
@@ -104,7 +118,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     ast.addAllCDMembers(accessor.decorate(gemAttr));
 
     addImports(origCD, domainClass, ast);
-    if (GenService.isJavaType(type)) {
+    if (GenService.isNotADomainType(type)) {
       addJavaImport(ast, type);
     } else if (needsImport) {
       getCD4C().addImport(ast, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(),
@@ -164,7 +178,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
     }else if(type.isGenericType()){
       var genType = (SymTypeOfGenerics)type;
 
-      if(GenService.isList(type)){
+      if(GenService.isList(type) || GenService.isOptional(type)){
         SymTypeExpression inner = genType.getArgument(0);
         if(inner.isPrimitive()){
           t = SymTypePrimitive.box(inner.print());
@@ -209,15 +223,19 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
 
     String jsonStr;
     String typeName;
-    if (GenService.isOptional(type)) {
+    SymTypeExpression checkForPojo;
+    if (GenService.isList(type) || GenService.isOptional(type)) {
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics)type).getArgument(0));
       typeName = ((SymTypeOfGenerics)type).getArgument(0).printFullName();
+      checkForPojo = ((SymTypeOfGenerics)type).getArgument(0);
     } else {
       jsonStr = GenService.calculateJSon(type);
       typeName = type.printFullName();
+      checkForPojo = type;
     }
     String baseClassDecorator = origCD.getCDDefinition().getName() + BaseClassObjectMapperDecorator.SUFFIX;
-    boolean useDeSer = supportedDeSers.contains(typeName);
+    boolean useDeSer = supportedDeSers.contains(typeName)
+        || supportedDeSers.contains(GenService.getCorrectJavaFQN(typeName)) || TagLookUp.isPojo(checkForPojo.getTypeInfo());
     boolean makeAbstract = jsonStr.equals("") && !useDeSer;
 
     getCD4C().addMethod(ast, getGet_FromJsonObjectTemplate(), cmdName);

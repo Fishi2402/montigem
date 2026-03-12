@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_arrange;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemLink;
+import mc.fenix.arrange.GemColumn;
+import common.ExamplePage;
+
+page GemCardExample() {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @GemCard(
+        title = "Info Text",
+        component = @GemText(value = "Some Text")
+      ),
+      @GemCard(
+        width = "50%",
+        height = "300px",
+        titleComponent = @GemLink(url = "https://www.google.com/", text = "Google link"),
+        component = @GemButton(label = "A button")
+      )
+    ]),
+    basePath = "example_arrange",
+    componentName = "GemCardExample"
+  );
+}

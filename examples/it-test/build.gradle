@@ -1,23 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
-  id 'de.rwth.se.umlp-tool-backend'
+  id 'de.rwth.se.montigem-backend'
+
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
 }
 description 'it tests'
 
 dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-  implementation group: 'org.neo4j', name: 'neo4j-jdbc-driver', version: neo4j_jdbc_version
-  implementation "org.neo4j:neo4j:4.4.10"
-  implementation "org.neo4j.driver:neo4j-java-driver:$neo4jVersion"
+
+  implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
+  testRuntimeOnly "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
+  implementation group: "org.apache.commons", name: 'commons-text', version: '1.10.0'
+
   testImplementation project(':umlp-test-rte')
 }
 
-generateUmlpBackend {
-
-  hwcDir = [file("$projectDir/src/main/java"), file("$projectDir/src/test/java")]
-}
-
-test {
-  testLogging.showStandardStreams = true
+tasks.named("umlp2java", UMLP2JavaTask) {
+  input = file("./src/models")
+  modelDir.from(file("./src/models/Enums.umlp"))
+  handWrittenCodeDir.from(
+      file("$projectDir/src/main/java"),
+      file("$projectDir/src/test/java")
+  )
+  useSpring = false
+  genNeo4j = true
 }

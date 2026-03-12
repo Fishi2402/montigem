@@ -1,0 +1,6 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.ModuleGUIAdapter",
+    "umlp.jsweet.extension.umlp.LoginModuleImportAdapter"
+  ]
+}

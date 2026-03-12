@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("cdName","tableName", "typeName", "associations", "assocsToDefinitionDiagramMap")}
 ${cd4c.method("public void delete${typeName}(long gemId)")}
-try{
-  if(delete${typeName} == null || delete${typeName}.isClosed()){
-    delete${typeName} = DatabaseAccessManager.prepareStatement("DELETE FROM ${tableName} WHERE id = ?");
-  }
+
+delete${typeName} = "DELETE FROM ${tableName} WHERE id = ?";
+
+try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st = connection.prepareStatement(delete${typeName}); ){
   <#list associations as assocSide, assoc>
       <#if assocSide.isLeft()>
           <#assign otherSide=assoc.getRight().getName()>
@@ -13,10 +13,10 @@ try{
       </#if>
   ${assocsToDefinitionDiagramMap[assoc.getName()]}DAOFactory.getAssoc${assoc.getName()?cap_first}DAO().removeAllEntriesRelatedTo${otherSide?cap_first}(gemId);
   </#list>
-  synchronized(delete${typeName}){
-    delete${typeName}.clearParameters();
-    delete${typeName}.setLong(1, gemId);
-    delete${typeName}.executeUpdate();
+  synchronized(st){
+    st.clearParameters();
+    st.setLong(1, gemId);
+    st.executeUpdate();
   }
 
   }catch (SQLException e){

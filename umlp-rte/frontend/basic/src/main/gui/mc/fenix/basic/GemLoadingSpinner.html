@@ -1,0 +1,9 @@
+<mat-progress-spinner
+        class="gem-spinner"
+        [mode]="_matMode"
+        [value]="_matValue"
+        [diameter]="_matDiameter"
+        [style.--spinner-color]="_color">
+</mat-progress-spinner>
+
+<div *ngIf="label" class="gem-spinner-label">{{ label }}</div>

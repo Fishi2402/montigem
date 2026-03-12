@@ -11,6 +11,6 @@ public class TSBackendMap {
   }
 
   public static String getTSRTEPackage() {
-    return UMLPGeneratorConfig.getInstance().isUseJsweet() ? TSImportMap.JSWEET_RTE : TSImportMap.COMMON;
+    return TSImportMap.JSWEET_RTE;
   }
 }

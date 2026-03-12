@@ -1,0 +1,105 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id 'de.rwth.se.montigem-module-frontend'
+}
+
+montigem {
+  libs.addAll(
+    project(":umlp-rte:frontend:arrange"),
+    project(":umlp-rte:frontend:basic"),
+    project(":umlp-rte:frontend:cad"),
+    project(":umlp-rte:frontend:charts"),
+    project(":umlp-rte:frontend:common"),
+    project(":umlp-rte:frontend:commonj2ts"),
+    project(":umlp-rte:frontend:editor"),
+    project(":umlp-rte:frontend:fischertechnik"),
+    project(":umlp-rte:frontend:functiondisplay"),
+    project(":umlp-rte:frontend:input"),
+    project(":umlp-rte:frontend:navigation"),
+    project(":umlp-rte:frontend:networkgraph"),
+    project(":umlp-rte:frontend:table"),
+    project(":umlp-rte:frontend:theme")
+  )
+  libScope = "@umlp"
+}
+
+project(":umlp-rte:frontend").afterEvaluate {
+  def arrange = project(":umlp-rte:frontend:arrange").tasks.named("buildLib")
+  def basic = project(":umlp-rte:frontend:basic").tasks.named("buildLib")
+  def cad = project(":umlp-rte:frontend:cad").tasks.named("buildLib")
+  def charts = project(":umlp-rte:frontend:charts").tasks.named("buildLib")
+  def common = project(":umlp-rte:frontend:common").tasks.named("buildLib")
+  def commonj2ts = project(":umlp-rte:frontend:commonj2ts").tasks.named("buildLib")
+  def editor = project(":umlp-rte:frontend:editor").tasks.named("buildLib")
+  def fischertechnik = project(":umlp-rte:frontend:fischertechnik").tasks.named("buildLib")
+  def functiondisplay = project(":umlp-rte:frontend:functiondisplay").tasks.named("buildLib")
+  def input = project(":umlp-rte:frontend:input").tasks.named("buildLib")
+  def navigation = project(":umlp-rte:frontend:navigation").tasks.named("buildLib")
+  def networkgraph = project(":umlp-rte:frontend:networkgraph").tasks.named("buildLib")
+  def table = project(":umlp-rte:frontend:table").tasks.named("buildLib")
+
+  def commonNPMRC4Publish = project(":umlp-rte:frontend:common").tasks.named("npmrc4publish")
+  def commonj2tsNPMRC4Publish = project(":umlp-rte:frontend:commonj2ts").tasks.named("npmrc4publish")
+
+  def aNeedsB = { TaskProvider a, TaskProvider b ->
+    a.configure { t ->
+      t.inputs.files(b.map { it.outputs.files.singleFile })
+      t.dependsOn(b)
+    }
+  }
+
+  aNeedsB(basic, common)
+  aNeedsB(basic, commonj2ts)
+  aNeedsB(arrange, common)
+  aNeedsB(charts, commonj2ts)
+  aNeedsB(editor, commonj2ts)
+  aNeedsB(fischertechnik, commonj2ts)
+  aNeedsB(functiondisplay, commonj2ts)
+  aNeedsB(input, commonj2ts)
+  aNeedsB(navigation, commonj2ts)
+  aNeedsB(networkgraph, commonj2ts)
+  aNeedsB(table, commonj2ts)
+  aNeedsB(cad, common)
+  aNeedsB(cad, commonj2ts)
+
+  def aAfterB = { TaskProvider a, TaskProvider b ->
+    a.configure { t ->
+      t.inputs.files(b.map { it.outputs.files.singleFile })
+      t.mustRunAfter(b)
+    }
+  }
+
+  aAfterB(basic, commonNPMRC4Publish)
+  aAfterB(basic, commonj2tsNPMRC4Publish)
+  aAfterB(arrange, commonNPMRC4Publish)
+  aAfterB(charts, commonj2tsNPMRC4Publish)
+  aAfterB(editor, commonj2tsNPMRC4Publish)
+  aAfterB(fischertechnik, commonj2tsNPMRC4Publish)
+  aAfterB(functiondisplay, commonj2tsNPMRC4Publish)
+  aAfterB(input, commonj2tsNPMRC4Publish)
+  aAfterB(navigation, commonj2tsNPMRC4Publish)
+  aAfterB(networkgraph, commonj2tsNPMRC4Publish)
+  aAfterB(table, commonj2tsNPMRC4Publish)
+  aAfterB(cad, commonNPMRC4Publish)
+  aAfterB(cad, commonj2tsNPMRC4Publish)
+
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+  repositories {
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/umlp-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+}

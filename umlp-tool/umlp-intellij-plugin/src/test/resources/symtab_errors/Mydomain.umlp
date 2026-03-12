@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Mydomain {
+  class SomeClass {
+    String someAttribute;
+  }
+
+  // Symtab error, since UnknownClass is not defined
+  association [0..1] SomeClass -> UnknownClass [0..1];
+}

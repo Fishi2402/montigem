@@ -1,0 +1,51 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+
+import gui.test.TestNav;
+import Jsweettest.LocalDateTimeTest;
+
+page LocalDateTime() {
+  inputTestField@GemTextInput(
+    id = "inputTestFieldId",
+    labelText = "Test Input Field"
+  );
+
+  currentTime@GemButton(label = "Current Time (toString)", leftClick = currentTime());
+
+  getHour@GemButton(label = "Get Hour", leftClick = testGetHour());
+  getMinute@GemButton(label = "Get Minute", leftClick = testGetMinute());
+  getSecond@GemButton(label = "Get Second", leftClick = testGetSecond());
+  getYear@GemButton(label = "Get Year", leftClick = testGetYear());
+  getDayOfMonth@GemButton(label = "Get Day of Month", leftClick = testGetDayOfMonth());
+
+  getDayOfMonthValue@GemButton(label = "Get Month Value (int)", leftClick = testGetMonthValue());
+  getDayOfMonthEnum@GemButton(label = "Get Month (Enum)", leftClick = testGetMonth());
+  getDayOfMonthWeek@GemButton(label = "Get Day of Week (Enum)", leftClick = testGetDayOfWeek());
+  getDayOfYear@GemButton(label = "Get Day of Year (int)", leftClick = testGetDayOfYear());
+
+  getNano@GemButton(label = "Get Nano", leftClick = testGetNano());
+  getMillis@GemButton(label = "Get Millis (Calculated from Nano)", leftClick = testGetMillisFromNano());
+
+  methodOf@GemButton(label = "Method of", leftClick = testOf());
+  methodPlus@GemButton(label = "Method plus", leftClick = testPlus());
+  methodMinus@GemButton(label = "Method minus", leftClick = testMinus());
+  methodIsAfter@GemButton(label = "Method isAfter", leftClick = testIsAfter());
+  methodIsBefore@GemButton(label = "Method isBefore", leftClick = testIsBefore());
+  methodIsEqual@GemButton(label = "Method isEqual", leftClick = testIsEqual());
+
+  methodToEpochSecond@GemButton(label = "Method toEpochSecond", leftClick = testToEpochSecond());
+  methodOfEpochSecond@GemButton(label = "Method ofEpochSecond", leftClick = testOfEpochSecond());
+
+  testLocalDateNow@GemButton(label = "Test LocalDate Now", leftClick = testLocalDateNow());
+  testLocalDateOf@GemButton(label = "Test LocalDate Of", leftClick = testLocalDateOf());
+  testLocalDateCalc@GemButton(label = "Test LocalDate Calc", leftClick = testLocalDateManipulation());
+  testToString@GemButton(label = "Test toString", leftClick = testToString());
+
+  resultField@GemTextInput(
+    id = "resultId",
+    labelText = "Test Result"
+  );
+}
+

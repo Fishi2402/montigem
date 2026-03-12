@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UMLPWithGUIStreamConnectionProvider extends UMLPWithGUIStreamConnectionProviderTOP {
-  public  UMLPWithGUIStreamConnectionProvider(Project project, String jarName) {
-    super(project, jarName);
+  public UMLPWithGUIStreamConnectionProvider(Project project, String jarName, String pluginId) {
+    super(project, jarName, pluginId);
   }
 
   @Override

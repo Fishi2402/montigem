@@ -10,7 +10,12 @@ classdiagram Jsweettest {
     String value;
   }
 
+  class D {
+    String value;
+  }
+
   association [1] A -> B [*];
+  association [1] B -> D [*];
 
   <<singleton>> class TestDataManager {
     void resetTestData();
@@ -80,4 +85,11 @@ classdiagram Jsweettest {
   class AsyncSubNonAsync extends AsyncSuper;
 
   class AsyncSubAsync extends AsyncSuper; // In Java
+
+  // interface generation
+  class Reference;
+  interface ISource;
+  association [1] ISource -> Reference [*];
+
+  class ReferenceImpl implements ISource;
 }

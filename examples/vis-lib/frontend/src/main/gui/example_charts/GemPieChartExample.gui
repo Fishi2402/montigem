@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import Domain.Person;
+import mc.fenix.charts.GemPieChart;
+import common.ExamplePage;
+
+page GemPieChartExample(List<Person> persons) {
+  @ExamplePage(
+    component = chart@GemPieChart(
+      data = null,
+      innerRadius = 10
+    ),
+    basePath = "example_charts",
+    componentName = "GemPieChartExample"
+  );
+}

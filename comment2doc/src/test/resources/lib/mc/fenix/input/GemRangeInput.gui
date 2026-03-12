@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+//This component displays a label with a slider that allows users to select a value within a specified range.
+//This component can be used in forms and other interactive interfaces to allow users to select a range of values easily.
+
+component GemRangeInput(
+  String id,
+  String labelText,
+  Boolean vertical,
+  Integer step,
+  Integer minValue,
+  Integer maxValue,
+  ?Integer value
+)

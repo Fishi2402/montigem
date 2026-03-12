@@ -69,9 +69,9 @@ public class DbObserverDecorator extends AbstractDecorator {
           if(GenService.isList(a)) {
             String innerType = GenService.getInnerType(a.getMCType());
             getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.AddNotify",
-                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), definingType.getName(), domainClass.getName(), innerType);
+                UMLPSymbolTables.getDiagramFor(domainClass).getCDDefinition().getName(), a.getName(), definingType.getName(), domainClass.getName(), innerType);
             getCD4C().addMethod(observerClass, "umlp.dbobserver.listattrs.RemoveNotify",
-                UMLPSymbolTables.getDiagramFor(a).getCDDefinition().getName(), a.getName(), definingType.getName(), domainClass.getName(), innerType);
+                UMLPSymbolTables.getDiagramFor(domainClass).getCDDefinition().getName(), a.getName(), definingType.getName(), domainClass.getName(), innerType);
           }
 
           ASTCDMethodSignature set = getCD4C().addMethod(observerClass, "umlp.dbobserver.Notify",
@@ -83,7 +83,7 @@ public class DbObserverDecorator extends AbstractDecorator {
         });
 
     Set<String> daoFactoryImports = new HashSet<>();
-    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : DAODecorator.getOppositeSideToAssociationMap(domainClass).entrySet()) {
+    for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : UMLPSymbolTables.getOppositeSideToAssociationMap(domainClass).entrySet()) {
       if (!e.getValue().getModifier().isDerived()) {
         CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
 

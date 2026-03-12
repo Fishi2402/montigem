@@ -8,19 +8,15 @@ import de.monticore.guidsl._ast.ASTGUIBlockContent;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import de.monticore.guidsl._ast.ASTGUIComponent;
 import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
-import de.monticore.guidsl._ast.ASTGUIDSLNode;
 import de.monticore.guidsl._ast.ASTGUIGuard;
 import de.monticore.guidsl._ast.ASTGUIIterate;
-import de.monticore.guidsl._symboltable.IGUIDSLScope;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -158,7 +154,7 @@ public class HTMLHelper implements GUIDSLVisitor2 {
     if (!holderStack.empty()) {
       ASTGUIBlock currentBlock = holderStack.peek();
       if (!ngTemplates.containsKey(currentBlock)) {
-        ngTemplates.put(currentBlock, new HashSet<>());
+        ngTemplates.put(currentBlock, new LinkedHashSet<>());
       }
       ngTemplates.get(currentBlock).add(content);
     }

@@ -3,28 +3,19 @@ package umlp_with_gui._lsp.language_aggregation.multiproject;
 import de.mclsg.lsp.modelpath.ModelPathCache;
 import de.mclsg.lsp.modelpath.ModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLSPConfigModelPathCache;
-import de.mclsg.lsp.modelpath.multiproject.MultiProjectLanguageServerFileModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLanguageServerGradleModelPathResolver;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLayout;
-import de.mclsg.lsp.util.AsyncUtil;
-import de.mclsg.lsp.util.LogRegistry;
 import de.monticore.io.paths.MCPath;
 import org.eclipse.lsp4j.CompletionOptions;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InitializeResult;
-import org.eclipse.lsp4j.MessageParams;
-import org.eclipse.lsp4j.MessageType;
-import org.eclipse.lsp4j.ShowDocumentParams;
 import org.eclipse.lsp4j.SignatureHelpOptions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILanguageAggrMultiProjectServerTOP {
   public UMLPWithGUILanguageAggrMultiProjectServer(MCPath modelPath) {
@@ -40,13 +31,13 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
         List.of(
             new MultiProjectLanguageServerGradleModelPathResolver(rootDir) {
               {
-                this.minimumJavaVersion = 11;
-                this.maximumJavaVersion = 17;
+                this.minimumJavaVersion = 17;
+                this.maximumJavaVersion = 21;
               }
 
               @Override
               protected CompletableFuture<MultiProjectLayout> loadModelPaths() {
-                gradleVersion = "7.6";
+                gradleVersion = "8.5";
                 gradleTaskName = "aggregateAndProcessInfo";
                 return super.loadModelPaths();
               }

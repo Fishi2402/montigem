@@ -1,0 +1,89 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemDropdownInputTypes.Option;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import common.ExamplePage;
+
+page GemDropdownInputExample(String degreeEntry, String hobbyEntry, String hobbyFrequencyEntry) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @GemRow(
+        components = [
+          @GemDropdownInput(
+            entry = degreeEntry,
+            width = "50%",
+            labelText = "Academic degree:",
+            options = [
+              Option("Bachelor", "B.Sc."),
+              Option("Master", "M.Sc."),
+              Option("PhD")
+            ]
+          )
+        ]
+      ),
+      @GemColumn(
+        rowGap = "15px",
+        components = [
+          @GemRow(
+            components = [
+              @GemDropdownInput(
+                entry = hobbyEntry,
+                width = "50%",
+                labelText = "Hobby:",
+                options = [
+                  Option("Tennis"),
+                  Option("Sleeping"),
+                  Option("Model-driven development"),
+                  Option("Video gaming"),
+                  Option("Photographing"),
+                  Option("Bouldering"),
+                  Option("Football"),
+                  Option("Drawing"),
+                  Option("Social Media"),
+                  Option("Knitting"),
+                  Option("Volleyball"),
+                  Option("Running"),
+                  Option("Swimming"),
+                  Option("Reading"),
+                  Option("Music"),
+                  Option("Movies"),
+                  Option("Hiking"),
+                  Option("Climbing"),
+                  Option("Travelling"),
+                  Option("Scuba diving"),
+                  Option("Hacking"),
+                  Option("Cooking"),
+                  Option("Gardening"),
+                  Option("Other")
+                ],
+                searchEnabled = true
+              )
+            ]
+          ),
+          @GemRow(
+            components = [
+              @GemDropdownInput(
+                entry = hobbyFrequencyEntry,
+                width = "50%",
+                labelText = "How often do you attend your Hobby?",
+                options = [
+                  Option("Once a year"),
+                  Option("Once a month"),
+                  Option("Once a week"),
+                  Option("Three times a week"),
+                  Option("Everyday"),
+                  Option("More than once a day")
+                ]
+              )
+            ]
+          )
+        ]
+      )
+    ]),
+    basePath = "example_input",
+    componentName = "GemDropdownInputExample"
+  );
+}

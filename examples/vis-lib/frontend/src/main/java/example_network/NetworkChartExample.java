@@ -12,6 +12,9 @@ import umlp.jsweet.extension.annotation.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+
+import de.se_rwth.commons.logging.Log;
 
 @Component(
     imports = {"...config.imports", "GemGraph"},
@@ -26,10 +29,10 @@ public class NetworkChartExample extends NetworkChartExampleTOP {
   public void init() {
     Optional<GraphNode> node = createGraphNode("1", "Node 1", "Cluster A", Optional.of(100), Optional.of("triangle"));
     node.ifPresent(n -> nodes.add(n));
-    node = createGraphNode("12", "Node 1", "Cluster A", Optional.of(100), Optional.of("square"));
-    node.ifPresent(n -> nodes.add(n));
-    node = createGraphNode("13", "Node 1", "Cluster A", Optional.of(100), Optional.of("circle"));
-    node.ifPresent(n -> nodes.add(n));
+    //node = createGraphNode("12", "Node 1", "Cluster A", Optional.of(100), Optional.of("square"));
+    //node.ifPresent(n -> nodes.add(n));
+    //node = createGraphNode("13", "Node 1", "Cluster A", Optional.of(100), Optional.of("circle"));
+    //node.ifPresent(n -> nodes.add(n));
     node = createGraphNode("2", "Node 2", "Cluster A", Optional.of(35), Optional.empty());
     node.ifPresent(n -> nodes.add(n));
     node = createGraphNode("3", "Node 3", "Cluster A", Optional.of(44), Optional.empty());
@@ -58,7 +61,7 @@ public class NetworkChartExample extends NetworkChartExampleTOP {
     node.ifPresent(n -> nodes.add(n));
     node = createGraphNode("10", "Node 10", "Cluster B", Optional.empty(), Optional.empty());
     node.ifPresent(n -> nodes.add(n));
-    node = createGraphNode("11", "Node 11", "Cluster B", Optional.empty(), Optional.empty()); // hover:"No Group Demo!"
+   // node = createGraphNode("11", "Node 11", "Cluster B", Optional.empty(), Optional.empty()); // hover:"No Group Demo!"
     if (node.isPresent()) {
       node.get().setHoverLabel(Optional.of("No Group Demo!"));
       nodes.add(node.get());
@@ -142,6 +145,13 @@ public class NetworkChartExample extends NetworkChartExampleTOP {
         .color(color)
         .name(Optional.of(name))
         .build();
+  }
+
+  public Consumer<GraphNode> updateClickedNode() {
+    return (node) -> {
+      this.setLastClickedNodeName(node.getLabel());
+      Log.info("NetworkChartExample", "Clicked on node: " + node.getId() + " (" + node.getLabel() + ")");
+    };
   }
 
   @Override

@@ -3,18 +3,18 @@ ${tc.signature("typeName", "cdName", "attributes", "optionalAttributes", "listAt
 ${cd4c.method("public List<Long> selectAllIds${typeName}()")}
   ensureSelectAll${typeName}IdsCreated();
   List<Long> result = new ArrayList<>();
-  synchronized(selectAllIds${typeName}){
-    try{
-      selectAllIds${typeName}.clearParameters();
-      try(ResultSet res = selectAllIds${typeName}.executeQuery()) {
-        while(res.next()){
-          result.add(res.getLong(1));
-        }
-        return result;
-      } catch(SQLException e) {
-        throw new RuntimeException(e);
+
+  try(Connection connection = DatabaseAccessManager.getConnection(); PreparedStatement st = connection.prepareStatement(selectAllIds${typeName});){
+    st.clearParameters();
+    try(ResultSet res = st.executeQuery()) {
+      while(res.next()){
+        result.add(res.getLong(1));
       }
-    }catch (SQLException e){
+      return result;
+    } catch(SQLException e) {
       throw new RuntimeException(e);
     }
+  }catch (SQLException e){
+    throw new RuntimeException(e);
   }
+

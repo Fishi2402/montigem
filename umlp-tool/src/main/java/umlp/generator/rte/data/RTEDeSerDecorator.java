@@ -2,9 +2,7 @@ package umlp.generator.rte.data;
 
 import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDParameterBuilder;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDAttributeTOP;
@@ -15,7 +13,6 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.StringTransformations;
 import umlp.UMLPMill;
@@ -35,7 +32,6 @@ import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PROTECTED_STATIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 
 public class RTEDeSerDecorator extends AbstractDecorator {
 
@@ -134,7 +130,7 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     List<ASTCDAttribute> attributes = CDSymbolTables.getAttributesInHierarchy(cdClass).stream()
         .filter(attr -> !attr.getModifier().isDerived())
         .collect(Collectors.toList());
-    attributes.forEach(a -> addSerAndDeserMethod(origCD.getCDDefinition().getName(), originalClassName, deSer, a));
+    attributes.forEach(a -> addSerAndDeserMethod(cdName, originalClassName, deSer, a));
     List<ASTCDAssocSide> assocs = CDSymbolTables.getAssociationsInHierarchy(cdClass).stream()
         .filter(Predicate.not(GenService::isSymbolDerived))
         .collect(Collectors.toList());
@@ -171,16 +167,22 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     if (GenService.isList(attr)) {
       isList = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerTypeFull = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
+      innerTypeFull = GenService.getCorrectJavaFQN(
+          ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName());
       useDeSer = supportedDesers.contains(innerTypeFull);
     } else if (GenService.isOptional(attr)) {
       isOptional = true;
       jsonStr = GenService.calculateJSon(((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0));
-      innerTypeFull = ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName();
+      innerTypeFull = GenService.getCorrectJavaFQN(
+          ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName());
       useDeSer = supportedDesers.contains(innerTypeFull);
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
-      useDeSer = supportedDesers.contains(type);
+      if(type.contains(".")) {
+        useDeSer = supportedDesers.contains(type);
+      } else {
+        useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."+type);
+      }
     }
     boolean makeAbstract = jsonStr.isEmpty() && !useDeSer;
 

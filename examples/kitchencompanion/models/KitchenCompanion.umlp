@@ -19,6 +19,8 @@ classdiagram KitchenCompanion {
     <<dbColumn = "unique=true">>
     String email;
     KitchenCompanionRole role;
+    /double sum;
+    List<Tally> tallies;
   }
 
   enum KitchenCompanionRole {
@@ -32,5 +34,9 @@ classdiagram KitchenCompanion {
     double price;
   }
 
+  class Tally {
+    Offer offer;
+    int count;
+  }
 
 }

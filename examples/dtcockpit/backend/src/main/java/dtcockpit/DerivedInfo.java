@@ -3,6 +3,7 @@ package dtcockpit;
 import umlp.backendrte.common.Gem;
 import umlp.backendrte.common.GemList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DerivedInfo extends DerivedInfoTOP {
@@ -19,12 +20,12 @@ public class DerivedInfo extends DerivedInfoTOP {
 
   @Override
   public List<String> getManyStringsList() {
-    return List.of();
+    return new ArrayList<>();
   }
 
   @Override
   public MessageOfTheDay getRandomMSG() {
-    return DtcockpitManager.getMessageOfTheDayList().iterator().next();
+    return DtcockpitManager.getMessageOfTheDayList().get(0);
   }
 
   @Override
@@ -39,7 +40,7 @@ public class DerivedInfo extends DerivedInfoTOP {
 
   @Override
   public Meeting getImportantMeeting() {
-    return DtcockpitManager.getMeetingList().iterator().next();
+    return DtcockpitManager.getMeetingList().get(0);
   }
 
   @Override

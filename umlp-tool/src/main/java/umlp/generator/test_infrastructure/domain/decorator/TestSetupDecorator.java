@@ -2,6 +2,8 @@ package umlp.generator.test_infrastructure.domain.decorator;
 
 import com.google.common.base.Joiner;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -254,13 +256,19 @@ public class TestSetupDecorator extends AbstractDecorator {
     addSuperConstructors(res, parentClass);
 
     // attributes
-    addAttribute(res, "protected Neo4jDatabaseStarter dbStarter", " = new Neo4jDatabaseStarter()");
+    addAttribute(res, "protected static Neo4jDatabaseStarter dbStarter", " = new Neo4jDatabaseStarter()");
     cd4C.addImport(res, "umlp.backendrte.common.Neo4jDatabaseStarter");
     cd4C.addImport(res, "java.nio.file.Paths");
     cd4C.addImport(res, "java.nio.file.Path");
 
     // methods
     cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.Init", cdName);
+    ASTCDMethodSignature startDBMethod = cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.StartDB", res.getName());
+    glex.replaceTemplate("cd2java.Annotations", startDBMethod,
+        new StringHookPoint("@org.junit.jupiter.api.BeforeAll"));
+    ASTCDMethodSignature stopDBMethod = cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.StopDB");
+    glex.replaceTemplate("cd2java.Annotations", stopDBMethod,
+        new StringHookPoint("@org.junit.jupiter.api.AfterAll"));
     cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.Neo4jCleanup", cdName);
     cd4C.addMethod(res, "umlp.test_infrastructure.dbTestSetup.neo4j.GetDBPath", cdName);
 

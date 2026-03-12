@@ -1,0 +1,7 @@
+umlp Mydomain {
+  class B {
+  }
+
+  class A extends B<caret> {
+  }
+}

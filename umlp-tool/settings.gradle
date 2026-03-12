@@ -14,7 +14,7 @@ pluginManagement {
     }
 }
 plugins {
-  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
 boolean isCi = System.getenv().containsKey("CI")
@@ -45,5 +45,5 @@ if(("true").equals(getProperty('buildIntelliJPlugin'))){
   include(":umlp-intellij-plugin")
 }
 
-include "gradle-plugin"
+include ":gradle-plugin"
 include "sd2test-tool"

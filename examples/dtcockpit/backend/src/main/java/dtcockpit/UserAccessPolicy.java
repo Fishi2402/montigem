@@ -20,9 +20,14 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
 
     // get user and role
     Participant p = CommandManager.getInstance().getParticipant(command.getParticipantId());
-    Optional<User> userOpt = DtcockpitManager.getUserList().stream()
-        .filter(u -> u.getUsername().equals(p.getUsername())) // user name is unique
-        .findAny();
+    // user name is unique
+    Optional<User> userOpt = Optional.empty();
+    for (User u : DtcockpitManager.getUserList()) {
+      if (u.getUsername().equals(p.getUsername())) {
+        userOpt = Optional.of(u);
+        break;
+      }
+    }
 
     if (!userOpt.isPresent()) {
       return false;
@@ -57,9 +62,14 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
   public boolean checkCreatePermission(Command command) {
     // get user and role
     Participant p = CommandManager.getInstance().getParticipant(command.getParticipantId());
-    Optional<User> userOpt = DtcockpitManager.getUserList().stream()
-        .filter(u -> u.getUsername().equals(p.getUsername())) // user name is unique
-        .findAny();
+    // user name is unique
+    Optional<User> userOpt = Optional.empty();
+    for (User u : DtcockpitManager.getUserList()) {
+      if (u.getUsername().equals(p.getUsername())) {
+        userOpt = Optional.of(u);
+        break;
+      }
+    }
 
     if (!userOpt.isPresent()) {
       return false;
@@ -79,9 +89,14 @@ public class UserAccessPolicy extends UserAccessPolicyTOP {
   public boolean checkDeletePermission(Command command) {
     // get user and role
     Participant p = CommandManager.getInstance().getParticipant(command.getParticipantId());
-    Optional<User> userOpt = DtcockpitManager.getUserList().stream()
-        .filter(u -> u.getUsername().equals(p.getUsername())) // user name is unique
-        .findAny();
+    // user name is unique
+    Optional<User> userOpt = Optional.empty();
+    for (User u : DtcockpitManager.getUserList()) {
+      if (u.getUsername().equals(p.getUsername())) {
+        userOpt = Optional.of(u);
+        break;
+      }
+    }
 
     if (!userOpt.isPresent()) {
       return false;

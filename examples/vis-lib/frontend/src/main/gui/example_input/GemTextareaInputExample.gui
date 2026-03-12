@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import Domain.Person;
+
+import mc.fenix.input.GemTextareaInput;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
+
+page GemTextareaInputExample(List<Person> persons) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @iterate(Person p : persons) {
+        @GemTextareaInput(
+          labelText = p.name + ":",
+          entry = p.aboutMe
+        );
+      }
+    ]),
+    basePath = "example_input",
+    componentName = "GemTextareaInputExample"
+  );
+}

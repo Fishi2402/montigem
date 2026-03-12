@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_monaco;
+import example_input.GemChat;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.editor.MonacoEditor;
+import Domain.Person;
+import common.ExamplePage;
+
+page ExampleFromLib(Person p) {
+  @ExamplePage(
+    component = @GemColumn(width = "100%", components = [
+      @MonacoEditor(
+        width = "100%",
+        height = "200px",
+        entry=p.aboutMe,
+        disabled=false,
+        theme="vs-light",
+        highlighting = getHighlights(),
+        hoverContents=getHoverContents(),
+        initialScrollToLine = 20,
+        language="mySpecialLanguage"
+      )
+    ]),
+    basePath = "example_monaco",
+    componentName = "ExampleFromLib"
+  );
+}

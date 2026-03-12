@@ -1,0 +1,81 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "@umlp/common": [
+        "./common"
+      ],
+      "@umlp/commonj2ts": [
+        "./commonj2ts"
+      ],
+      "@umlp/arrange": [
+        "./arrange"
+      ],
+      "@umlp/basic": [
+        "./basic"
+      ],
+      "@umlp/charts": [
+        "./charts"
+      ],
+      "@umlp/fischertechnik": [
+        "./fischertechnik"
+      ],
+      "@umlp/input": [
+        "./input"
+      ],
+      "@umlp/cad": [
+        "./cad"
+      ],
+      "@umlp/table": [
+        "./table"
+      ],
+      "@umlp/theme": [
+        "./theme"
+      ],
+      "@umlp/navigation": [
+        "./networkgraph"
+      ],
+      "@umlp/networkgraph": [
+        "./networkgraph"
+      ],
+      "@umlp/editor": [
+        "./editor"
+      ]
+    },
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "noUnusedLocals": false,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
+  },
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

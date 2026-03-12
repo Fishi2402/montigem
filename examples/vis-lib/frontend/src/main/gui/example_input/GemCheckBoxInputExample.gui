@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import Domain.Person;
+
+import mc.fenix.input.GemCheckBoxInput;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
+
+page GemCheckBoxInputExample(List<Person> persons) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @iterate(Person p : persons) {
+        @GemCheckBoxInput(
+          labelText = p.name + " is employed",
+          checked = p.employed
+        );
+      }
+    ]),
+    basePath = "example_input",
+    componentName = "GemCheckBoxInputExample"
+  );
+}

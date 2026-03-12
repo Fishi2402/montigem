@@ -1,0 +1,101 @@
+<div [class.gem-vertical-range-box]="vertical">
+  <label
+    [ngClass]="{
+    'gem-range-label': !vertical,
+    'gem-range-label-vertical': vertical
+  }"
+    [for]="id + 'Range'"
+    #titleLabel
+  >
+    {{ labelText }}
+  </label>
+
+  <div
+    [class.gem-rotated-wrapper]="vertical"
+    [style.margin-bottom]="sliderBottomLength"
+  >
+    <div
+      class="gem-range-wrapper"
+      [class.gem-vertical-range-wrapper]="vertical"
+    >
+      <span [class.gem-vertical-range-min]="vertical" class="gem-range-min">
+        {{ minValue }}
+      </span>
+
+      <div class="gem-range-container dual">
+        <div class="gem-range-track"></div>
+
+        <div
+          class="gem-range-bar"
+          [style.left.%]="((startValue - minValue) / (maxValue - minValue)) * 100"
+          [style.width.%]="((endValue - startValue) / (maxValue - minValue)) * 100"
+        ></div>
+
+        <div
+          #rangeVStart
+          [class.gem-vertical-range-value]="vertical"
+          class="gem-range-value gem-range-value-low"
+        ></div>
+
+        <div
+          #rangeVEnd
+          [class.gem-vertical-range-value]="vertical"
+          class="gem-range-value gem-range-value-high"
+        ></div>
+
+        <input
+          #sliderLow
+          class="gem-range"
+          type="range"
+          [min]="minValue"
+          [max]="maxValue"
+          [style.width]="size"
+          [ngModel]="startValue ?? minValue"
+          (ngModelChange)="onStartChange($event)"
+          [step]="step"
+          (change)="snapToTick()"
+        />
+
+        <input
+          #sliderHigh
+          class="gem-range gem-range-high"
+          type="range"
+          [min]="minValue"
+          [max]="maxValue"
+          [style.width]="size"
+          [ngModel]="endValue ?? maxValue"
+          (ngModelChange)="onEndChange($event)"
+          [step]="step"
+          (change)="snapToTick()"
+        />
+
+        <div class="gem-range-ticks">
+          <div
+            *ngFor="let marker of visibleTicks"
+            [class.gem-range-tick]="!vertical"
+            [class.gem-vertical-tick]="vertical"
+            [style.left]="getTickPosition(marker)"
+            [style.top]="'100%'"
+          >
+            <div
+              [class.gem-range-tick-mark]="!vertical"
+              [class.gem-vertical-tick-mark]="vertical"
+            ></div>
+            <div
+              *ngIf="marker.getLabel()"
+              [class.gem-range-tick-label]="!vertical"
+              [class.gem-vertical-tick-label]="vertical"
+              #tickLabel
+            >
+              {{ marker.getLabel() }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <span [class.gem-vertical-range-max]="vertical" class="gem-range-max">
+        {{ maxValue }}
+      </span>
+    </div>
+  </div>
+</div>

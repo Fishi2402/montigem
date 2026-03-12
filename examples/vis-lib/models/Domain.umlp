@@ -5,6 +5,10 @@ import mc.fenix.charts.GemPieChartTypes.GemPieChartData;
 
 classdiagram Domain {
 
+  class Data {
+    /Optional<GemBarChartData> bcData;
+  }
+
   class Conversation {
     String conversationid;
   }
@@ -52,24 +56,49 @@ classdiagram Domain {
 
   <<singleton>>
   class FischertechnikSortingLineState{
-    boolean pumpRunning = false;
-    boolean pusherIndicator1On = false;
-    boolean pusherIndicator2On = false;
-    boolean pusherIndicator3On = false;
-    int speedIndicatorPercentage = 0;
+      boolean pumpRunning = false;
+      boolean pusher1Extended = false;
+      boolean pusher2Extended = false;
+      boolean pusher3Extended = false;
+      boolean beltRunning = false;
+
+      boolean barrierIndicator1On = false;
+      boolean barrierIndicator2On = false;
+      boolean barrierIndicator3On = false;
+      boolean barrierIndicatorFeed1On = false;
+      boolean barrierIndicatorFeed2On = false;
+
+      String colorSensor = "white";
   }
 
   <<singleton>>
   class FischertechnikMultiProcessingStationState {
-    int positionIndicatorPercentage = 0;
-    int beltSpeedIndicatorPercentage = 0;
-    int drillSpeedIndicatorPercentage = 0;
-    int rotationIndicatorDeg = 0;
-    boolean lightBarrier = false;
+    // Outputs of the machine (sensors)
+    boolean refSwitchTurnTableAtVacuum = false;
+    boolean refSwitchTurnTableAtBelt = false;
+    boolean refSwitchTurnTableAtSaw = false;
+    boolean lightBarrierConveyorEnd = false;
+    boolean refSwitchFeederInside = false;
+    boolean refSwitchFeederOutside = false;
+    boolean refSwitchVacuumAtTurnTable = false;
+    boolean refSwitchVacuumAtOven = false;
     boolean lightBarrierOven = false;
-    boolean pusher = false;
-    boolean gripper = false;
-    boolean pumpRunning = false;
+
+    // Inputs of the machine (actuators)
+    boolean moveTurnTableClockwise = false;
+    boolean moveTurnTableCounterclockwise = false;
+    boolean moveConveyorForward = false;
+    boolean enableSaw = false;
+    boolean moveOvenFeederRetract = false;
+    boolean moveOvenFeederExtend = false;
+    boolean moveVacuumToOven = false;
+    boolean moveVacuumToTurnTable = false;
+    boolean enableOvenLight = false;
+    boolean enableCompressor = false;
+    boolean enableValveVacuum = false;
+    boolean enableValveMoveVacuum = false;
+    boolean enableValveMoveOvenDoor = false;
+    boolean enableValveMoveFeeder = false;
   }
 
   <<singleton>>

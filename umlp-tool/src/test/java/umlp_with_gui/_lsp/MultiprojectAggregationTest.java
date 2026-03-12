@@ -2,7 +2,8 @@ package umlp_with_gui._lsp;
 
 import de.mclsg.lsp.FileExtensionAlreadyRegisteredException;
 import de.mclsg.lsp.modelpath.multiproject.MultiProjectLayout;
-import de.mclsg.lsp.modelpath.multiproject.SubprojectLayout;
+import de.mclsg.lsp.modelpath.multiproject.ProjectLayout;
+import de.mclsg.lsp.modelpath.multiproject.ProjectLayoutBuilder;
 import de.mclsg.lsp.util.AsyncUtilWithSyncExec;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
@@ -21,9 +22,11 @@ import org.junit.jupiter.api.Test;
 import umlp_with_gui._lsp.language_aggregation.UMLPWithGUILanguageAggrServer;
 import umlp_with_gui._lsp.language_aggregation.multiproject.UMLPWithGUILanguageAggrMultiProjectServer;
 import umlp_with_gui._lsp.mock.MockLanguageClient;
+import umlp_with_gui._lsp.mock.EmptyMockModelPathResolver;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,8 +46,8 @@ public class MultiprojectAggregationTest {
   public Hover hoverRegularAggregation1(Position position) {
     UMLPWithGUILanguageAggrServer languageServer;
     try {
-      Path p1 = Path.of("src/test/resources/lsp/multiproject/subproject1");
-      languageServer = new UMLPWithGUILanguageAggrServer(new MCPath(p1));
+      Path p1 = Path.of("src/test/resources/lsp/multiproject/subproject1").toAbsolutePath();
+      languageServer = new UMLPWithGUILanguageAggrServer(new ProjectLayoutBuilder().resources(p1).build());
 
       // (1)
       AsyncUtilWithSyncExec.init(); // Run everything synchronous for test
@@ -79,13 +82,14 @@ public class MultiprojectAggregationTest {
       languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1)){
         @Override
         protected void initResolver() {
-          super.initResolver();
+          //noinspection unchecked
+          resolver = new EmptyMockModelPathResolver();
           multiProjectLayout = new MultiProjectLayout();
-          SubprojectLayout subprojectLayout = new SubprojectLayout();
+          ProjectLayout subprojectLayout = new ProjectLayout();
           subprojectLayout.name = "multiproject";
-          subprojectLayout.projectpath = p1.toAbsolutePath().toString();
+          subprojectLayout.projectpath = Optional.of(p1.toAbsolutePath().toString());
           subprojectLayout.resources = new String[]{p1.toAbsolutePath().toString()};
-          multiProjectLayout.subprojects = new SubprojectLayout[]{
+          multiProjectLayout.subprojects = new ProjectLayout[]{
               subprojectLayout
           };
         }
@@ -115,8 +119,8 @@ public class MultiprojectAggregationTest {
 
 
     try {
-      Path p1 = Path.of("src/test/resources/lsp/multiproject/subproject1");
-      languageServer = new UMLPWithGUILanguageAggrServer(new MCPath(p1));
+      Path p1 = Path.of("src/test/resources/lsp/multiproject/subproject1").toAbsolutePath();
+      languageServer = new UMLPWithGUILanguageAggrServer(new ProjectLayoutBuilder().resources(p1).build());
 
       // (1)
       AsyncUtilWithSyncExec.init(); // Run everything synchronous for test
@@ -147,13 +151,14 @@ public class MultiprojectAggregationTest {
       languageServer = new UMLPWithGUILanguageAggrMultiProjectServer(new MCPath(p1)){
         @Override
         protected void initResolver() {
-          super.initResolver();
+          //noinspection unchecked
+          resolver = new EmptyMockModelPathResolver();
           multiProjectLayout = new MultiProjectLayout();
-          SubprojectLayout subprojectLayout = new SubprojectLayout();
+          ProjectLayout subprojectLayout = new ProjectLayout();
           subprojectLayout.name = "multiproject";
-          subprojectLayout.projectpath = p1.toAbsolutePath().toString();
+          subprojectLayout.projectpath = Optional.of(p1.toAbsolutePath().toString());
           subprojectLayout.resources = new String[]{p1.toAbsolutePath().toString()};
-          multiProjectLayout.subprojects = new SubprojectLayout[]{
+          multiProjectLayout.subprojects = new ProjectLayout[]{
               subprojectLayout
           };
         }

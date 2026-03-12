@@ -1,0 +1,101 @@
+/* (c) https://github.com/MontiCore/monticore */
+package common;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.editor.MonacoEditor;
+import mc.fenix.basic.GemText;
+
+component CodeViewer(
+  String basePath,
+  String componentName,
+
+  // State for visibility (all false by default)
+  boolean isGuiVisible = false,
+  boolean isJavaVisible = false,
+  boolean isScssVisible = false,
+
+  // Content
+  String guiCode = "",
+  String javaCode = "",
+  String scssCode = "",
+
+  // Layout
+  boolean vertical = false,
+  String height = "auto",
+  boolean autoHeight = true
+) {
+      @GemCard(title = "Source Code", height = height, component =
+        @GemColumn(height = "100%", components = [
+
+          // Toggle Buttons for Files
+          @GemRow(components = [
+            @guard(isGuiVisible) {
+                activeGuiBtn@GemButton(label = "Hide GUI", leftClick = toggleGui());
+            } else {
+                inactiveGuiBtn@GemButton(label = "Show GUI", leftClick = toggleGui());
+            },
+
+            @guard(isJavaVisible) {
+                activeJavaBtn@GemButton(label = "Hide Java", leftClick = toggleJava());
+            } else {
+                inactiveJavaBtn@GemButton(label = "Show Java", leftClick = toggleJava());
+            },
+
+            @guard(isScssVisible) {
+                activeScssBtn@GemButton(label = "Hide SCSS", leftClick = toggleScss());
+            } else {
+                inactiveScssBtn@GemButton(label = "Show SCSS", leftClick = toggleScss());
+            }
+          ]),
+
+          // Editors Container
+          @guard(vertical) {
+              editorsCol@GemColumn(height = "100%", components = [
+                @guard(isGuiVisible) {
+                    guiContainerVert@GemColumn(height = getEditorContainerHeight(), components = [
+                        @GemText(value = "GUI Model:", height = "auto"),
+                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
+                    ]);
+                },
+                @guard(isJavaVisible) {
+                    javaContainerVert@GemColumn(height = getEditorContainerHeight(), components = [
+                        @GemText(value = "Java Logic:", height = "auto"),
+                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
+                    ]);
+                },
+                @guard(isScssVisible) {
+                    scssContainerVert@GemColumn(height = getEditorContainerHeight(), components = [
+                        @GemText(value = "SCSS Style:", height = "auto"),
+                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
+                    ]);
+                }
+              ]);
+          } else {
+              editorsRow@GemRow(wrap = "wrap", height = "100%", components = [
+                @guard(isGuiVisible) {
+                    guiContainerHoriz@GemColumn(height = getEditorContainerHeight(), components = [
+                        @GemText(value = "GUI Model:", height = "auto"),
+                        @MonacoEditor(entry = guiCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
+                    ]);
+                },
+                @guard(isJavaVisible) {
+                    javaContainerHoriz@GemColumn(height = getEditorContainerHeight(), components = [
+                        @GemText(value = "Java Logic:", height = "auto"),
+                        @MonacoEditor(entry = javaCode, language = "java", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
+                    ]);
+                },
+                @guard(isScssVisible) {
+                    scssContainerHoriz@GemColumn(height = getEditorContainerHeight(), components = [
+                        @GemText(value = "SCSS Style:", height = "auto"),
+                        @MonacoEditor(entry = scssCode, language = "scss", disabled = true, theme = "vs", glyphMargin = false, autoHeight = autoHeight)
+                    ]);
+                }
+              ]);
+          }
+
+        ])
+      );
+}

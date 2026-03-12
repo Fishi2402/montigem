@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import Domain.Person;
+import mc.fenix.charts.GemGaugeChart;
+import common.ExamplePage;
+
+page GemGaugeChartExample(List<Person> persons) {
+  @ExamplePage(
+    component = @GemGaugeChart(
+      data = getData(),
+      min = 0,
+      max = 50,
+      unit = "#friends",
+      textValue = "average number of friends for age group",
+      textPosition = "bottom"
+    ),
+    basePath = "example_charts",
+    componentName = "GemGaugeChartExample"
+  );
+}

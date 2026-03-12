@@ -39,6 +39,11 @@ public class MockLanguageClient implements LanguageClient {
 
   }
 
+  @Override
+  public CompletableFuture<Void> refreshSemanticTokens() {
+    return CompletableFuture.completedFuture(null);
+  }
+
   public Map<String, PublishDiagnosticsParams> getDiagnostics() {
     return diagnostics;
   }

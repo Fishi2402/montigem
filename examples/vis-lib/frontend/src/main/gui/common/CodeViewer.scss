@@ -1,0 +1,105 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+:host ::ng-deep {
+
+  /* Layout: Card fills host */
+  .gem-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gem-card-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  /* Toggle Buttons Styling */
+  .activeGuiBtn .gem-button,
+  .activeJavaBtn .gem-button,
+  .activeScssBtn .gem-button {
+    background-color: #0056b3;
+    color: white;
+  }
+
+  .inactiveGuiBtn .gem-button,
+  .inactiveJavaBtn .gem-button,
+  .inactiveScssBtn .gem-button {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .gem-button {
+    margin-right: 10px;
+    min-width: 100px;
+  }
+
+  /* Horizontal Layout (Default/Bottom) */
+  .editorsRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+    height: auto;
+    align-items: flex-start;
+    align-content: flex-start;
+    margin-top: 10px;
+  }
+
+  /* Vertical Layout (Right Sidebar) */
+  .editorsCol {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    height: 100%;
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
+
+  /* Editor Containers */
+  .guiContainerHoriz, .javaContainerHoriz, .scssContainerHoriz {
+    flex: 1 1 400px;
+    min-width: 350px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* height is set in GUI (400px) */
+  }
+
+  .guiContainerVert, .javaContainerVert, .scssContainerVert {
+    flex: 1 1 auto;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* height is set in GUI (300px) */
+  }
+
+  /* Headers */
+  .gem-text {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+      flex-shrink: 0;
+  }
+
+  /* Monaco Editor Overrides */
+  .minimap, .decorationsOverviewRuler {
+      display: none !important;
+  }
+
+  .monaco-editor {
+      width: 100% !important;
+      height: 100% !important;
+      flex: 1;
+  }
+}

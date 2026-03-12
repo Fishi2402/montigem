@@ -13,41 +13,21 @@
 //   * there can only be a single running server. A second server cannot start.
 //
 plugins {
-  id 'java' // Setup Java Compiler
-  id 'application'  // ensures that the JAR can be executed
+  id 'de.rwth.se.montigem-backend' // Makes the task-types `UMLPTask` and `MergeTask` available
 
   id 'com.google.cloud.tools.jib' version '3.4.4'
   // Spring Plugins
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
-
-  id 'de.rwth.se.umlp-tool-backend' // Makes the task-types `UMLPTask` and `UMLPMergeTask` available
 }
 
 description 'Demolition Recyling Database'
-
-application {
-  // Set Entrypoint of Application
-  mainClass = 'demorec.DemoRecServerApplication'
-}
 
 jib {
   container.mainClass = application.mainClass.get()
   from.image = "$container_from_image"
   to.image = "${container_target_image_base}demorec_backend:latest"
 }
-
-/*repositories {
-  flatDir {
-    dirs 'C:\\Users\\Margarita\\Documents\\bpmn\\bpmn-dsl\\WorkflowDSL\\target\\libs\\'
-  }
-}
-
-repositories {
-  flatDir {
-    dirs 'C:\\Users\\Margarita\\Documents\\bpmn\\bpmn-dsl\\TimeExpressions\\target\\libs\\'
-  }
-}*/
 
 dependencies {
   //implementation name: 'WorkflowDSL-7.7.0-SNAPSHOT'
@@ -58,7 +38,8 @@ dependencies {
   implementation 'com.h2database:h2:2.1.214'  // In-Memory database written in java
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
-  developmentOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version  // Required for Hot-Reload
+  developmentOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
+  // Required for Hot-Reload
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
@@ -67,22 +48,9 @@ dependencies {
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 
   implementation group: 'de.monticore.lang', name: 'WorkflowDSL', version: mc_version
-  implementation group: 'de.monticore.expressions', name: 'TimeExpressions', version: mc_version
+  // TODO: No longer published? implementation group: 'de.monticore.expressions', name: 'TimeExpressions', version: mc_version
 
   implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
 
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
-}
-
-generateUmlpBackend {
-  input = file("../models/DemoRec.umlp")
-  symbolOutDir = file("${project.buildDir}/symbols")
-  tmplDir = file("../templates")
-  useSpring = true
-}
-
-task runServer {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
 }

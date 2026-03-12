@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_charts;
+
+import Domain.Person;
+import mc.fenix.charts.GemTimelineChart;
+import common.ExamplePage;
+
+page GemTimelineChartExample (List<Person> persons) {
+  @ExamplePage(
+    component = @GemTimelineChart(
+      data = computeDate(persons),
+      blockClick = getBlockClick()
+    ),
+    basePath = "example_charts",
+    componentName = "GemTimelineChartExample"
+  );
+}

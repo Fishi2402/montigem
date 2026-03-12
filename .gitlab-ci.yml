@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7-chromium-deps
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:8-jdk21-chromium-installed
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
@@ -20,16 +20,47 @@ stages:
   - deploy
   - testDeployed
 
+genimg:
+  stage: build
+  needs: ["build_with_deploy"]
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
+  script:
+    - export CHROME_BIN=/usr/bin/google-chrome-stable
+    - gradle :examples:vis-lib:frontend:screenshot -P mavenPassword=$pass -P mavenUser=$user
+  cache:
+    key: vis-lib-cache-$CI_COMMIT_REF_NAME
+    policy: pull
+  artifacts:
+    paths:
+      - docs/gendoc_img
+    expire_in: 1 hour
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  allow_failure: true
+
+gendoc:
+  stage: build
+  needs: ["genimg"]
+  script:
+    - gradle comment2doc:md --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user
+  artifacts:
+    paths:
+      - docs/gendoc_components
+      - docs/gendoc_img
+    expire_in: 1 hour
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  allow_failure: true
+
 pages:
   stage: build
-  needs: []
+  needs: ["gendoc"]
   image: python:alpine
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
-      changes:
-      - mkdocs.yml
-      - README.md
-      - docs/**
   before_script:
     - apk add gcc musl-dev python3-dev
     - pip install cython
@@ -41,10 +72,16 @@ pages:
   artifacts:
     paths:
       - public
+  allow_failure: true
 
 build_no_containers:
   stage: build
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
+    - export CHROME_BIN=/usr/bin/google-chrome-stable
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
@@ -52,13 +89,15 @@ build_no_containers:
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
     - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+  after_script:
+    - "cp -r /root/.npm/_logs/ ."
   cache:
     paths:
       - .gradle/nodejs
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/build/app/node_modules
+      - examples/sehub/frontend/build/app/node_modules
+      - examples/dtcockpit/frontend/build/app/node_modules
+      - products/demorec/frontend/build/app/node_modules
   artifacts:
     when: always
     paths:
@@ -66,6 +105,7 @@ build_no_containers:
       - umlp-tool/build/generated-sources/UMLPWithGUI/**/*.vsix
       - ./**/build/reports/tests/test/**
       - build.log
+      - ./_logs
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -75,16 +115,24 @@ build_no_containers:
       - dev
 
 build_intellij_plugin:
-  image: gradle:8.5
   stage: build
   script:
     - "cd umlp-tool"
-    - "gradle buildPlugin -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+    # MontiGem Template is used for IntelliJ plugin integration tests
+    - "git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/umlp-anwendungen/montigem-templates/montigem-template.git umlp-intellij-plugin/src/test/montigem-template"
+    # CI Credentials for Gradle project import
+    - "echo mavenUser=$user >> umlp-intellij-plugin/src/test/montigem-template/gradle.properties"
+    - "echo mavenPassword=$pass >> umlp-intellij-plugin/src/test/montigem-template/gradle.properties"
+    # Make lsp logs accessible for artifacts
+    - mkdir "${CI_PROJECT_DIR}/tmpdir"
+    - "export _JAVA_OPTIONS=-Djava.io.tmpdir=${CI_PROJECT_DIR}/tmpdir"
+    - "gradle :umlp-intellij-plugin:build -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
     when: always
     paths:
       - umlp-tool/umlp-intellij-plugin/build/distributions/**
       - build.log
+      - tmpdir/**
     reports:
       # Lets gitlab render infos about failed tests
       junit: "**/test/**/TEST-*.xml"
@@ -92,18 +140,22 @@ build_intellij_plugin:
 
 build_with_deploy:
   stage: build
+  variables:
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+    CHROME_BIN: "/usr/bin/google-chrome-stable"
+    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
     # Build project + examples
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
     - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     # Deploy RTEs
-    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-test-rte:publish :umlp-rte:umlp-jsweet:publish :umlp-rte:client:publish :modules:publishModules :experiments:python-client:publish -P mavenPassword=$pass -P mavenUser=$user 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-rte:backend:publish :umlp-rte:frontend:publish :umlp-test-rte:publish :umlp-jsweet:publish :modules:publishModules :experiments:python-client:backend:publish -P mavenPassword=$pass -P mavenUser=$user 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     # Build editor plugin
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    # monticore/monticore#4743 - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
     - "cd .."
     # Build containers
     # Backends
@@ -111,7 +163,6 @@ build_with_deploy:
       :examples:weather:backend:jib \
       :examples:sehub:backend:jib \
       :examples:stat:jib \
-      :examples:dtcockpit:backend:jib \
       :products:demorec:backend:jib \
       :examples:vis-lib:backend:jib \
       :experiments:server-performance:backend:jib \
@@ -126,18 +177,25 @@ build_with_deploy:
     - "gradle \
       :examples:weather:frontend:deployImageCI \
       :examples:sehub:frontend:deployImageCI \
-      :examples:dtcockpit:frontend:deployImageCI \
       :products:demorec:frontend:deployImageCI \
       :examples:vis-lib:frontend:deployImageCI \
       -P mavenPassword=$pass \
       -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
   cache:
-    paths:
+    - paths:
       - .gradle/nodejs
-      - examples/weather/frontend/build/frontendGen/node_modules
-      - examples/sehub/frontend/build/frontendGen/node_modules
-      - examples/dtcockpit/frontend/build/frontendGen/node_modules
-      - products/demorec/frontend/build/frontendGen/node_modules
+      - examples/weather/frontend/build/app/node_modules
+      - examples/sehub/frontend/build/app/node_modules
+      - examples/dtcockpit/frontend/build/app/node_modules
+      - products/demorec/frontend/build/app/node_modules
+    - key: vis-lib-cache-$CI_COMMIT_REF_NAME
+      policy: push
+      paths:
+        - examples/vis-lib/frontend/build
+        - examples/vis-lib/backend/build
+        - umlp-tool/build
+        - umlp-rte/frontend/node_modules
+        - .gradle
   artifacts:
     when: always
     paths:
@@ -178,14 +236,14 @@ slowtest:
       junit: "**/slowtest/**/TEST-*.xml"
     expire_in: 1 week
 
-trigger-doppelkopf:
-  stage: testDeployed
-  allow_failure: false # Failure is not an option
-  trigger:
-    project: monticore/umlp-anwendungen/doppelkopf
-    branch: main
-  only:
-    - dev
+#trigger-doppelkopf:
+#  stage: testDeployed
+#  allow_failure: false # Failure is not an option
+#  trigger:
+#    project: monticore/umlp-anwendungen/doppelkopf
+#    branch: main
+#  only:
+#    - dev
 
 trigger-dtmm:
   stage: testDeployed
@@ -259,6 +317,15 @@ trigger-template:
   only:
     - dev
 
+trigger-digital-twin:
+  stage: testDeployed
+  allow_failure: false
+  trigger:
+    project: monticore/umlp-anwendungen/digital-twin
+    branch: main
+  only:
+    - dev
+
 checkMDLinks:
   stage: check
   script:
@@ -276,6 +343,7 @@ deploy-python-package:
   script:
     - cd experiments/python-client/runtime-package
     - pip install --upgrade hatch
+    - export HATCH_BUILD_METADATA="gitlab.${CI_PIPELINE_ID}"
     - python -m hatch build
     - python -m hatch publish
   variables:

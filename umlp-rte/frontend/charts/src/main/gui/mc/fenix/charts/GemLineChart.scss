@@ -1,0 +1,51 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+.wholeChartContainer {
+  width: auto;
+  height: 100%; /* Changed from 500px */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ensure canvas fills container */
+:host ::ng-deep canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.wholeChartWithLegendLeftContainer {
+  width: 100%;
+  height: 100%; /* Changed from fit-content */
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.wholeChartWithLegendTopContainer {
+  width: 100%;
+  height: 100%; /* Changed from fit-content */
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.wholeChartWithLegendBottomContainer {
+  width: 100%;
+  height: 100%; /* Changed from fit-content */
+  display: flex;
+  flex-direction: column;
+}
+
+.wholeChartWithLegendRightContainer {
+  width: 100%;
+  height: 100%; /* Changed from fit-content */
+  display: flex;
+  flex-direction: row;
+}
+
+.legendButtons {
+  display: flex;
+  column-gap: 10px;
+  justify-content: space-between;
+}
