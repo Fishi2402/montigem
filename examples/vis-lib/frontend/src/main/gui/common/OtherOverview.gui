@@ -23,7 +23,8 @@ page OtherOverview() {
             @ComponentCard(title = "Monaco Editor", icon = "code", description = "Powerful code editor.", click = goToMonaco()),
             @ComponentCard(title = "Fischertechnik", icon = "precision_manufacturing", description = "Control Fischertechnik models.", click = goToFischertechnik()),
             @ComponentCard(title = "CAD Viewer", icon = "3d_rotation", description = "View 3D CAD models.", click = goToCAD()),
-            @ComponentCard(title = "Person Overview", icon = "people", description = "Example domain overview.", click = goToPerson())
+            @ComponentCard(title = "Person Overview", icon = "people", description = "Example domain overview.", click = goToPerson()),
+            @ComponentCard(title = "Function Display", icon = "account_tree", description = "Show component functions.", click = goToFunctionDisplay())
         ]
       )
     ]

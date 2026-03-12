@@ -85,6 +85,7 @@ component Navigation(String activeCategory = "Basic") {
         @GemNavItem(title = "MonacoEditor", target = "/example_monaco/ExampleFromLib/3");
         @GemNavItem(title = "Fischertechnik", target = "/fischertechnik/FischertechnikExample");
         @GemNavItem(title = "CAD Viewer", target = "/example_cad/GemCADExample");
+        @GemNavItem(title = "Function Display", target = "/example_functiondisplay/FunctionDisplayExample");
       }
 
     ])

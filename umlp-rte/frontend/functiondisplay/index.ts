@@ -9,4 +9,7 @@ export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fe
 export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/Port4Display";
 export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/Port4DisplayBuilder";
 export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/Port4DisplayDeSer";
+export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/FunctionAction";
+export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/FunctionActionBuilder";
+export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/FunctionActionDeSer";
 export * from "./build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/FunctionStructure4FenixDeSer";

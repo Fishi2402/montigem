@@ -2,27 +2,44 @@
 package mc.fenix.functiondisplay;
 
 import java.time.LocalDate;
+import java.util.function.Consumer;
 
 /**
   Version of FunctionStructure.umlp where some details are adapted for usage within Fenix.
  */
 classdiagram FunctionStructure4Fenix {
+    /**
+      Represents a function or component in the diagram.
+    */
     class Function4Display {
+      /** Name of the function, displayed as label. */
       String name;
+      /** CSS color for the border. */
       String borderColor = "black";
+      /** CSS color for the border when hovered or selected. */
       String borderColorHover = "#407fb7";
+      /** CSS color for the background area. */
       String backgroundColor = "white";
-      boolean visible = true;
-    }
-
-    class Channel4Display{
-      String lineColor = "black";
-      String lineColorHover = "#407fb7";
+      /** Optional URL to an image/icon to be displayed inside the component. */
+      String imageUrl = "";
+      /** If false, the component and its children are hidden. */
       boolean visible = true;
     }
 
     /**
-     Since Fenix currently does not support qualified associations, we emulate them using the `Port`
+      Represents a connection between ports.
+    */
+    class Channel4Display{
+      /** CSS color for the connection line. */
+      String lineColor = "black";
+      /** CSS color for the line when hovered or selected. */
+      String lineColorHover = "#407fb7";
+      /** If false, the channel is not rendered. */
+      boolean visible = true;
+    }
+
+    /**
+     Since MontiGem currently does not support qualified associations, we emulate them using the `Port`
      class:
      For each qualifier from `Function4Display` to a Channel in the original model, here the `Function4Display`
      contains an instance of port, which contains the relevant name qualifing the channel from the
@@ -33,17 +50,33 @@ classdiagram FunctionStructure4Fenix {
      qualified.
     */
     class Port4Display {
+      /** Name of the port, displayed as label. */
       String name;
+      /** CSS color for the port border. */
       String borderColor = "black";
+      /** CSS color for the port border when hovered. */
       String borderColorHover = "#407fb7";
+      /** CSS color for the port background. */
       String backgroundColor = "white";
+      /** If false, the port is not rendered. */
       boolean visible = true;
+      /** If false, the text label of the port is hidden. */
       boolean labelVisible = true;
     }
 
     association [0..1] Function4Display (ownerIn) <-> (in) Port4Display [*];
     association [0..1] Function4Display (ownerOut) <-> (out) Port4Display [*];
     association [*] Port4Display <-> Channel4Display [1];
+
+    /**
+      Definition of a custom action in the context menu.
+    */
+    class FunctionAction {
+      /** Label displayed in the menu. */
+      String label;
+      /** Callback executed when the action is clicked, receiving the target function. */
+      Consumer<Function4Display> functionClick;
+    }
 
     composition [0..1] Function4Display (owner) <-> (subFunction) Function4Display [*];
 

@@ -30,6 +30,7 @@ classdiagram Domain {
     String aboutMe;
     ?boolean employed;
     Optional<Role> role;
+    Optional<String> tempStatus;
   }
 
   class Address {
