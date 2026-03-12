@@ -1,5 +1,7 @@
+import de.montigem.gradle.specific.UMLP2JavaTask
+
 plugins {
-  id 'de.rwth.se.umlp-tool-backend-test' // suffix "-test" adds aditional tests of the UMLPGenerator to "build" task
+  id 'de.rwth.se.montigem-backend'
   id 'application'
   id 'com.google.cloud.tools.jib' version '3.4.4'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -41,8 +43,7 @@ dependencies {
   implementation "de.monticore.lang:cd4analysis:${mc_version}"
 }
 
-generateUmlpBackend {
-  input = file("../models/Webshop.umlp")
+tasks.named("umlp2java", UMLP2JavaTask) {
   useSpring = true
 }
 
