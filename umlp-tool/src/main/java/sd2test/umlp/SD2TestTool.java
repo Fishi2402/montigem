@@ -107,7 +107,6 @@ public class SD2TestTool extends SD4DevelopmentTool {
       @Override
       public void visit(ASTCDClass node) {
         if(node.getModifier().isAbstract()) {
-          System.out.println("Found abstract class " + node.getName());
           glex.replaceTemplate("cd2java.Annotations", node, new StringHookPoint("@org.junit.jupiter.api.Disabled"));
         }
       }
