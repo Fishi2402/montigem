@@ -387,24 +387,35 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
         params, returnType, call, asType);
   }
 
-  protected void addImportsForCommands(ASTCDClass domainType, ASTCDType cdType) {
+  protected void addImportsForCommands(ASTCDClass domainType, ASTCDClass cdType) {
     if (TagLookUp.isSingleton(domainType) && !domainType.getCDMethodList().isEmpty()) {
       getCD4C().addImport(cdType, PathUtil.getBackendRTECommandPath("CommandManager"));
       domainType.getCDMethodList().forEach(m -> {
+        // Add import for generated command
         getCD4C().addImport(cdType,
             getPackageName(UMLPSymbolTables.getDiagramFor(domainType), "commands.") +
                 StringTransformations.capitalize(m.getName()));
 
-        SymTypeExpression type = m.getSymbol().getType();
-        if (type.isVoidType()) return;
+        // Add imports for parameters
+        m.getCDParameterList().forEach(p -> {
+          SymTypeExpression type = p.getSymbol().getType();
+          addImport(type, cdType);
+        });
 
-        if (GenService.isJavaType(type)){
-          addJavaImport(domainType, type);
-        }else if (GenService.isDomainType(type) || GenService.isPojoCDType(type)){
-          getCD4C().addImport(cdType, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
-        }
-
+        // Add import for return type
+        SymTypeExpression returnType = m.getSymbol().getType();
+        addImport(returnType, cdType);
       });
+    }
+  }
+
+  protected void addImport(SymTypeExpression type, ASTCDClass ast) {
+    if(type.isVoidType()) return;
+
+    if (GenService.isJavaType(type)){
+      addJavaImport(ast, type);
+    }else if (GenService.isDomainType(type) || GenService.isPojoCDType(type)){
+      getCD4C().addImport(ast, Joiners.DOT.join(type.getTypeInfo().getPackageName().toLowerCase(), type.print()));
     }
   }
 

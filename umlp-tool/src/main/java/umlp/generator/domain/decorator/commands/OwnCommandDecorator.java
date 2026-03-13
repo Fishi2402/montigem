@@ -214,10 +214,11 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
       else if (GenService.isCDEnum(type)) {
         getCD4C().addImport(ast, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + type.print());
       }
-      else if (GenService.isJavaType(type)) {
-        addJavaImport(ast, type);
-      }
-    } else {
+    }
+    else if (GenService.isJavaType(type)) {
+      addJavaImport(ast, type);
+    }
+    else {
       // Assume guiLib Import?
       if(GenService.isPojoCDType(type) && type.getTypeInfo().getFullName().startsWith("mc.fenix")) {
         System.out.println(type.getTypeInfo().getFullName());
