@@ -57,7 +57,7 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     UMLPMill.init();
     BuiltInTypes.addBuiltInTypes(UMLPMill.globalScope());
 
-    ASTCDCompilationUnit cdAST = parse("de/monticore/A.umlp");
+    ASTCDCompilationUnit cdAST = parse(getModel());
 
     // execute some basic CD-AST trafos (e.g., put everything in packages)
     (new CD4CodeAfterParseTrafo()).transform(cdAST);
@@ -81,6 +81,10 @@ abstract public class DecoratorTest extends AbstractUMLPTest {
     genSetup.getGlex().setGlobalValue("genService", new GenService());
     AbstractDecorator decorator = getDecorator(glex);
     decorator.transform(cdAST, decoratedAST);
+  }
+
+  protected String getModel() {
+    return "de/monticore/A.umlp";
   }
 
   protected abstract AbstractDecorator getDecorator(GlobalExtensionManagement glex);
