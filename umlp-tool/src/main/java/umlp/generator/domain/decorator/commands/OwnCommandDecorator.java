@@ -163,16 +163,16 @@ public class OwnCommandDecorator extends AbstractDeSerDecorator implements OwnCo
 
     addImports(ast);
 
-    List<SymTypeExpression> domainParameters = new ArrayList<>();
+    List<SymTypeExpression> accessPolicyParameters = new ArrayList<>();
     meth.getCDParameterList().forEach(p -> {
       SymTypeExpression type = p.getSymbol().getType();
-      if (GenService.isDomainType(type)) {
-        domainParameters.add(type);
+      if (GenService.isDomainType(type) && !GenService.isCDEnum(type)) {
+        accessPolicyParameters.add(type);
       }
       addImport(type, ast);
     });
 
-    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), domainParameters);
+    getCD4C().addMethod(ast, getCheckAccessPolicyTemplate(), accessPolicyParameters);
 
     return ast;
   }
