@@ -134,7 +134,7 @@ export type RawEdgeDirectionAttributes = {
 };
 
 /** Supported edge program types */
-export type EdgePrograms = "line" | "arrow" | "fastLine";
+export type EdgePrograms = "line" | "arrow" | "fastLine" | "polyline";
 
 /** Supported node program types */
 export type NodePrograms = "circle" | "image" | "triangle" | "square";
@@ -177,6 +177,9 @@ export type RawEdgeSpecificAttributes = {
 
   /** Program used to render the edge. */
   edgeProgram?: EdgePrograms;
+
+  /** Waypoints for polyline edge routing (set by HierarchicalLayout). */
+  waypoints?: { x: number; y: number }[];
 };
 
 /**
