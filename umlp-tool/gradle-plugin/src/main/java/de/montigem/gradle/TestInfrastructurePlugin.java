@@ -1,5 +1,6 @@
 package de.montigem.gradle;
 
+import de.montigem.gradle.specific.ODs2DataTask;
 import de.montigem.gradle.specific.SD2TestTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import de.montigem.gradle.specific.UMLP2TestInfrastructureTask;
@@ -15,9 +16,10 @@ import org.gradle.api.tasks.compile.AbstractCompile;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
 import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
@@ -42,6 +44,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
 
   protected static final String UMLP_TEST_INFRASTRUCTURE_TASK_NAME = "generateTestInfrastructure";
   protected static final String SD2TEST_TASK_NAME = "generateSDTests";
+  protected static final String ODS2DATA_TASK_NAME = "generateODData";
   protected static final String UMLP_GROUP_NAME = "umlp";
   protected static final String TEST_IMPLEMENTATION = "testImplementation";
   protected static final String COMPILE_ONLY = "compileOnly";
@@ -54,7 +57,8 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     pluginManager.apply("java");
 
     var umlpTestInfrastructureTask = createUmlpTestInfrastructureTask(project);
-    var sd2testTask = createSD2TestTask(project, umlpTestInfrastructureTask);
+    var ods2dataTask = createODs2DataTask(project, umlpTestInfrastructureTask);
+    var sd2testTask = createSD2TestTask(project, umlpTestInfrastructureTask, ods2dataTask);
     var mainSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
     var testSourceSet = project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME);
     //generate test infrastructure must run before compiling the tests
@@ -66,11 +70,13 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
         .configureEach(testTask -> {
           testTask.dependsOn(umlpTestInfrastructureTask);
           testTask.dependsOn(sd2testTask);
+          testTask.dependsOn(ods2dataTask);
         });
 
     // TODO: Introduce test-fixtures and generate the "test-infra" into the test source set instead of the main source set
     mainSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
     testSourceSet.getJava().srcDir(sd2testTask.get().getOutputDir());
+    testSourceSet.getJava().srcDir(ods2dataTask.get().getOutputDir());
 
     //TODO: add generated source files to "test" source set
 //    testSourceSet.getJava().srcDir(umlpTestInfrastructureTask.get().getOutputDir());
@@ -108,6 +114,17 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     TaskProvider<UMLP2TestInfrastructureTask> testInfrastructureTask = project.getTasks()
         .register(UMLP_TEST_INFRASTRUCTURE_TASK_NAME, UMLP2TestInfrastructureTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
+          task.getGenerateMonitor().set(project.provider(() -> {
+            var t = (SD2TestTask) project.getTasks().getByName(SD2TEST_TASK_NAME);
+            Set<File> files = t.getInput().getAsFileTree().getFiles().stream()
+                .filter(it -> it.getName().endsWith(".sd"))
+                .filter(File::exists)
+                .collect(Collectors.toSet());
+
+            boolean res = !files.isEmpty();
+            System.out.println("GeneratorMonitor is " + res + " with files " + files);
+            return res;
+          }));
 
           UMLP2JavaTask backendTask = (UMLP2JavaTask) project.getTasks().findByName(
               BackendPlugin.UMLP2JAVA_TASK
@@ -150,7 +167,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
     return testInfrastructureTask;
   }
 
-  public static TaskProvider<SD2TestTask> createSD2TestTask(Project project, TaskProvider<UMLP2TestInfrastructureTask> testInfraTask) {
+  public static TaskProvider<SD2TestTask> createSD2TestTask(Project project, TaskProvider<UMLP2TestInfrastructureTask> testInfraTask, TaskProvider<ODs2DataTask> ods2dataTask) {
     return project.getTasks().register(SD2TEST_TASK_NAME, SD2TestTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
@@ -167,14 +184,29 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
       }
 
       task.dependsOn(testInfraTask);
-      task.getTestSymbolDirectory().set(testInfraTask.get().getSymbolOutDir());
+      task.dependsOn(ods2dataTask);
+      task.getTestSymbolDirectory().from(testInfraTask.get().getSymbolOutDir());
+      task.getTestSymbolDirectory().from(ods2dataTask.get().getSymbolOutDir());
 
-      System.out.println("Set output dir to " + project.getLayout().getBuildDirectory().dir("umlp/sdtests"));
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp/sdtests"));
 
       String projectDirPath = project.getProjectDir().getAbsolutePath();
       setIfPathExists(path -> task.getHwcDirectory().set(path),
           Path.of(projectDirPath, "src", "test", "java"));
+    });
+  }
+
+  public static TaskProvider<ODs2DataTask> createODs2DataTask(Project project, TaskProvider<UMLP2TestInfrastructureTask> testInfraTask) {
+    return project.getTasks().register(ODS2DATA_TASK_NAME, ODs2DataTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+
+      Directory models = project.getLayout().getProjectDirectory().dir("../test-models");
+      task.getInput().from(models);
+
+      task.dependsOn(testInfraTask);
+      task.getSymbolOutDir().set(project.getLayout().getBuildDirectory().dir("umlp/od-symbols"));
+      task.getSymbolPath().from(testInfraTask.get().getSymbolOutDir());
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("umlp/oddata"));
     });
   }
 

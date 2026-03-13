@@ -11,20 +11,20 @@ public final class SD2TestToolArgs {
   private final String domainModelPath;
   private final List<String> modelPaths;
   private final String backendSymbolDirectoryPath;
-  private final String testSymbolDirectoryPath;
+  private final List<String> testSymbolDirectoryPaths;
   private final String outputDirectoryPath;
   private final String hwcDirectoryPath;
 
   public SD2TestToolArgs(String domainModelPath,
       List<String> modelPaths,
       String backendSymbolDirectoryPath,
-      String testSymbolDirectoryPath,
+      List<String> testSymbolDirectoryPaths,
       String outputDirectoryPath,
       String hwcDirectoryPath) {
     this.domainModelPath = domainModelPath;
     this.modelPaths = modelPaths;
     this.backendSymbolDirectoryPath = backendSymbolDirectoryPath;
-    this.testSymbolDirectoryPath = testSymbolDirectoryPath;
+    this.testSymbolDirectoryPaths = testSymbolDirectoryPaths;
     this.outputDirectoryPath = outputDirectoryPath;
     this.hwcDirectoryPath = hwcDirectoryPath;
   }
@@ -45,8 +45,8 @@ public final class SD2TestToolArgs {
     return backendSymbolDirectoryPath;
   }
 
-  public String testSymbolDirectoryPath() {
-    return testSymbolDirectoryPath;
+  public List<String> testSymbolDirectoryPaths() {
+    return testSymbolDirectoryPaths;
   }
 
   public String outputDirectoryPath() {
@@ -64,7 +64,7 @@ public final class SD2TestToolArgs {
     return Objects.equals(domainModelPath, that.domainModelPath) &&
            Objects.equals(modelPaths, that.modelPaths) &&
            Objects.equals(backendSymbolDirectoryPath, that.backendSymbolDirectoryPath) &&
-           Objects.equals(testSymbolDirectoryPath, that.testSymbolDirectoryPath) &&
+           Objects.equals(testSymbolDirectoryPaths, that.testSymbolDirectoryPaths) &&
            Objects.equals(outputDirectoryPath, that.outputDirectoryPath) &&
            Objects.equals(hwcDirectoryPath, that.hwcDirectoryPath);
   }
@@ -74,7 +74,7 @@ public final class SD2TestToolArgs {
     return Objects.hash(domainModelPath,
                         modelPaths,
                         backendSymbolDirectoryPath,
-                        testSymbolDirectoryPath,
+                        testSymbolDirectoryPaths,
                         outputDirectoryPath,
                         hwcDirectoryPath);
   }
@@ -95,9 +95,16 @@ public final class SD2TestToolArgs {
     private final Option<String> backendSymbolDirectoryPath = optionParser.addOption(
         "backendSymbolDirectory",
         Context::getNext);
-    private final Option<String> testSymbolDirectoryPath = optionParser.addOption(
+    private final Option<List<String>> testSymbolDirectoryPath = optionParser.addOption(
         "testSymbolDirectory",
-        Context::getNext);
+        ctx -> {
+          List<String> paths = new ArrayList<>(List.of(ctx.getNext()));
+          while (ctx.nextIsValue()) paths.add(ctx.getNext());
+          return paths;
+        }).withMergeFunction((currentValue, additionalValue) -> {
+      currentValue.addAll(additionalValue);
+      return currentValue;
+    });
     private final Option<String> outputDirectoryPath = optionParser.addOption("outputDirectory",
                                                                               Context::getNext);
     private final Option<String> hwcDirectoryPath = optionParser.addOption("hwcDirectory",
@@ -109,9 +116,9 @@ public final class SD2TestToolArgs {
       return new SD2TestToolArgs(domainModelPath.expectValue(),
                                  modelPath.expectValue(),
                                  backendSymbolDirectoryPath.getValue().orElse(null),
-                                 testSymbolDirectoryPath.getValue().orElse(null),
+                                 testSymbolDirectoryPath.getValue().orElse(List.of()),
                                  outputDirectoryPath.expectValue(),
-                                 hwcDirectoryPath.expectValue());
+                                 hwcDirectoryPath.getValue().orElse(null));
     }
   }
 }

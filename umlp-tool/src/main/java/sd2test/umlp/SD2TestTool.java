@@ -20,18 +20,22 @@ import de.monticore.lang.sd4development.SD4DevelopmentMill;
 import de.monticore.lang.sd4development.SD4DevelopmentTool;
 import de.monticore.lang.sd4development._symboltable.SD4DevelopmentSymbolTableCompleter;
 import de.monticore.lang.sdbasis._ast.ASTSDArtifact;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.se_rwth.commons.logging.Log;
 import sd2test.umlp.args.SD2TestToolArgs;
-import sd2test.umlp.generator.domain.decorator.SD2TestDecorator;import umlp.UMLPTool;
+import sd2test.umlp.generator.domain.decorator.SD2TestDecorator;
+import umlp.UMLPTool;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class SD2TestTool extends SD4DevelopmentTool {
 
@@ -66,7 +70,7 @@ public class SD2TestTool extends SD4DevelopmentTool {
     SD4DevelopmentMill.init();
 
     for (var modelPath : args.modelPaths()) {
-      var model = parseModel(modelPath, args.backendSymbolDirectoryPath(), args.testSymbolDirectoryPath());
+      var model = parseModel(modelPath, args.backendSymbolDirectoryPath(), args.testSymbolDirectoryPaths());
       generateUnitTest(model, domainCD, args.outputDirectoryPath(), args.hwcDirectoryPath());
     }
   }
@@ -90,14 +94,14 @@ public class SD2TestTool extends SD4DevelopmentTool {
     var generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
-    MCPath hwcPath = new MCPath(hwcDirectoryPath);
+    MCPath hwcPath = hwcDirectoryPath != null ? new MCPath(hwcDirectoryPath) : new MCPath();
     generatorSetup.setHandcodedPath(hwcPath);
     CD4C.init(generatorSetup);
     CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
 
     //call decorators
     var sd2testDecorator = new SD2TestDecorator(glex);
-    sd2testDecorator.transform(model, domainCD, decoratedCD);
+    sd2testDecorator.transform(model, domainCD, decoratedCD, Optional.ofNullable(hwcDirectoryPath));
 
     TopDecorator topDecorator = new TopDecorator(hwcPath);
     topDecorator.decorate(decoratedCD);
@@ -121,11 +125,11 @@ public class SD2TestTool extends SD4DevelopmentTool {
 
   public ASTSDArtifact parseModel(String modelPath,
       String backendSymbolDirectoryPath,
-      String testSymbolDirectoryPath) {
+      List<String> testSymbolDirectoryPaths) {
 
 
     var model = parse(modelPath);
-    populateGlobalScope(model, backendSymbolDirectoryPath, testSymbolDirectoryPath);
+    populateGlobalScope(model, backendSymbolDirectoryPath, testSymbolDirectoryPaths);
 
     //make sure the model is valid
     checkAllCoCos(model);
@@ -135,13 +139,13 @@ public class SD2TestTool extends SD4DevelopmentTool {
 
   private void populateGlobalScope(ASTSDArtifact model,
       String backendSymbolDirectoryPath,
-      String testSymbolDirectoryPath) {
+      List<String> testSymbolDirectoryPaths) {
     var globalScope = SD4DevelopmentMill.globalScope();
     var symbolPaths = new ArrayList<Path>();
     if (backendSymbolDirectoryPath != null) {
       symbolPaths.add(checkPath(backendSymbolDirectoryPath, "backend symbol directory"));
     }
-    if (testSymbolDirectoryPath != null) {
+    for (String testSymbolDirectoryPath : testSymbolDirectoryPaths) {
       var testSymbolDirectoryPathObject = toPath(testSymbolDirectoryPath);
       if (exists(testSymbolDirectoryPathObject)) {
         symbolPaths.add(testSymbolDirectoryPathObject);
@@ -153,12 +157,17 @@ public class SD2TestTool extends SD4DevelopmentTool {
     globalScope.setSymbolPath(symbolPath);
 
     //symbol DeSers
+    // Types from CDs
     globalScope.putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol",
                                new OOTypeSymbolDeSer());
     globalScope.putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
                                new MethodSymbolDeSer());
     globalScope.putSymbolDeSer("de.monticore.cdassociation._symboltable.CDRoleSymbol",
                                new FieldSymbolDeSer());
+    // Variables from ODs
+    globalScope.putSymbolDeSer("de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+        new VariableSymbolDeSer());
+
     BuiltInTypes.addBuiltInTypes(globalScope);
 
     //artifact scope

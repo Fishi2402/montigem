@@ -46,4 +46,3 @@ if(("true").equals(getProperty('buildIntelliJPlugin'))){
 }
 
 include ":gradle-plugin"
-include "sd2test-tool"

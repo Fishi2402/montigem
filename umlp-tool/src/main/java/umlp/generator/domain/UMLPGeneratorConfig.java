@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLine;
 
 import java.util.Optional;
 
+import static umlp.UMLPToolOptions.GEN_MONITOR;
 import static umlp.UMLPToolOptions.GEN_NEO4J;
 import static umlp.UMLPToolOptions.GUI_GEN_FOR_TS_LIB;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
@@ -21,6 +22,7 @@ public class UMLPGeneratorConfig {
   private boolean useShell;
   private boolean genNeo4j;
   private boolean useNeo4j;
+  private boolean generateMonitor;
 
   private String tslib;
 
@@ -97,6 +99,15 @@ public class UMLPGeneratorConfig {
     return this;
   }
 
+  public boolean isGenerateMonitor() {
+    return generateMonitor;
+  }
+
+  public UMLPGeneratorConfig setGenerateMonitor(boolean generateMonitor) {
+    this.generateMonitor = generateMonitor;
+    return this;
+  }
+
   public UMLPGeneratorConfig initFromCmd(CommandLine cmd) {
     if (GUI_GEN_FOR_TS_LIB.isSelected(cmd)) {
       this.setTSLib(GUI_GEN_FOR_TS_LIB.getValue(cmd));
@@ -105,6 +116,7 @@ public class UMLPGeneratorConfig {
         .setUseShell(USE_SHELL.isSelected(cmd))
         .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd))
         .setGenNeo4j(GEN_NEO4J.isSelected(cmd))
-        .setUseNeo4j(USE_NEO4J.isSelected(cmd));
+        .setUseNeo4j(USE_NEO4J.isSelected(cmd))
+        .setGenerateMonitor(GEN_MONITOR.isSelected(cmd));
   }
 }

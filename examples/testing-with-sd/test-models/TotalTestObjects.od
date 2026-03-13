@@ -1,6 +1,6 @@
 import Webshop.*;
 
-objectdiagram TotalTest {
+objectdiagram TotalTestObjects {
   item:Item {
     amount = 2;
     perUnitCost = 3;

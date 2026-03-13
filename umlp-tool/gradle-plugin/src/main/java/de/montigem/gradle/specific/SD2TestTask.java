@@ -22,8 +22,8 @@ public abstract class SD2TestTask extends MGAllFilesTask {
   @InputFile
   public abstract RegularFileProperty getDomainModel();
 
-  @InputDirectory
-  public abstract DirectoryProperty getTestSymbolDirectory();
+  @org.gradle.api.tasks.InputFiles
+  public abstract org.gradle.api.file.ConfigurableFileCollection getTestSymbolDirectory();
 
   @InputDirectory
   @org.gradle.api.tasks.Optional
@@ -50,8 +50,10 @@ public abstract class SD2TestTask extends MGAllFilesTask {
       result.add(handlePath.apply(f.toPath()));
     }
 
-    result.add("--testSymbolDirectory");
-    result.add(handlePath.apply(getTestSymbolDirectory().get().getAsFile().toPath()));
+    for (File f : getTestSymbolDirectory().getFiles()) {
+      result.add("--testSymbolDirectory");
+      result.add(handlePath.apply(f.toPath()));
+    }
 
     result.add("--outputDirectory");
     result.add(handlePath.apply(getOutputDir().get().getAsFile().toPath()));

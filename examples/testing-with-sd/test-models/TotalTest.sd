@@ -1,4 +1,5 @@
 import Webshop.*;
+import TotalTestObjects.item;
 import umlp.backendrte.common.NotificationScope;
 
 sequencediagram TotalTest {

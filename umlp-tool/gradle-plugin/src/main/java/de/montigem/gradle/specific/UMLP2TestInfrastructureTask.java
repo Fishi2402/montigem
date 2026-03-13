@@ -18,10 +18,15 @@ public abstract class UMLP2TestInfrastructureTask extends UMLP2JavaTask {
   @org.gradle.api.tasks.Optional
   public abstract Property<Boolean> getUsePlaywright();
 
+  @Input
+  @org.gradle.api.tasks.Optional
+  public abstract Property<Boolean> getGenerateMonitor();
+
   public UMLP2TestInfrastructureTask() {
     super("UMLP2TestInfrastructureTask");
 
     getUsePlaywright().convention(false);
+    getGenerateMonitor().convention(false);
   }
 
   @Override
@@ -33,6 +38,10 @@ public abstract class UMLP2TestInfrastructureTask extends UMLP2JavaTask {
 
     if (getUsePlaywright().get()) {
       result.add("-" + UMLPToolOptions.USE_PLAYWRIGHT.getCMD());
+    }
+
+    if(getGenerateMonitor().get()){
+      result.add("-" + UMLPToolOptions.GEN_MONITOR.getCMD());
     }
 
     return result;

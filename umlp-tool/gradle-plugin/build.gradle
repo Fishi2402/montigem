@@ -23,7 +23,6 @@ dependencies {
   umlpTool group: 'de.monticore.lang', name: 'od', version: mc_version
   umlpTool group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version, classifier: 'cdmerge'
   umlpTool "umlp:umlp-tool:$version"
-  umlpTool project(":sd2test-tool")
   umlpTool(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.1-UMLP-SNAPSHOT'){
     exclude(group: "com.kohlschutter.jdk", module: "standalone-home") // conflict with standalone-jdk21
     exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21

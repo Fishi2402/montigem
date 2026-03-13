@@ -15,12 +15,14 @@ import java.util.StringJoiner;
 public class TestInfrastructureDecorator extends BEDecorator {
 
   boolean playwright = false;
+  boolean generateMonitor = false;
 
   public TestInfrastructureDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex, hwPath);
 
     if (glex.hasGlobalVar("UMLPGeneratorConfig")) {
       playwright = UMLPGeneratorConfig.getInstance().isUsePlaywright();
+      generateMonitor = UMLPGeneratorConfig.getInstance().isGenerateMonitor();
     }
   }
 
@@ -51,14 +53,20 @@ public class TestInfrastructureDecorator extends BEDecorator {
     testSetupDecorator.transform(cdAST, decoratedAST);
     Log.info("After decorator: TestSetupDecorator", logName);
 
-    var monitorDecorator = new MonitorDecorator(glex, redecoratedCD);
-    monitorDecorator.transform(cdAST, decoratedAST);
-    Log.info("After decorator: MonitorDecorator", logName);
+    if(generateMonitor) {
+      var monitorDecorator = new MonitorDecorator(glex, redecoratedCD);
+      monitorDecorator.transform(cdAST, decoratedAST);
+      Log.info("After decorator: MonitorDecorator", logName);
+    } else {
+      Log.info("Skipped decorator: MonitorDecorator", logName);
+    }
 
     if (playwright) {
       E2ETestDecorator e2ETestDecorator = new E2ETestDecorator(glex);
       e2ETestDecorator.transform(cdAST, decoratedAST);
       Log.info("After decorator: E2ETestDecorator", logName);
+    } else {
+      Log.info("Skipped decorator: E2ETestDecorator", logName);
     }
   }
 

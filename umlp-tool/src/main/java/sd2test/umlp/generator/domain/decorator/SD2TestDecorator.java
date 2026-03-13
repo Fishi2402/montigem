@@ -15,7 +15,9 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.lang.sd4development.SD4DevelopmentMill;
 import de.monticore.lang.sd4development._visitor.SD4DevelopmentVisitor2;
 import de.monticore.lang.sdbasis._ast.ASTSDArtifact;
+import de.monticore.lang.sdbasis._ast.ASTSDObject;
 import de.monticore.lang.sdbasis._visitor.SDBasisVisitor2;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
@@ -47,12 +49,20 @@ import sd2test.umlp.generator.domain.visitor.state.VisitorState;
 import sd2test.umlp.generator.domain.visitor.state.VisitorStateVariantMatcher;
 import umlp.generator.util.PathUtil;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -72,14 +82,16 @@ public class SD2TestDecorator {
 
   public void transform(ASTSDArtifact sdAst,
                         ASTCDDefinition domainCd,
-                        ASTCDCompilationUnit decoratedCD) {
+                        ASTCDCompilationUnit decoratedCD,
+                        Optional<String> hwcDirectoryPath) {
     var name = sdAst.getSequenceDiagram().getName();
     var targetPackage = getPackage(name.toLowerCase(), decoratedCD);
-    targetPackage.addCDElement(createTest(sdAst, domainCd));
+    targetPackage.addCDElement(createTest(sdAst, domainCd, hwcDirectoryPath));
   }
 
-  private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd) {
+  private ASTCDElement createTest(ASTSDArtifact model, ASTCDDefinition domainCd, Optional<String> hwcDirectoryPath) {
     //logModel(model); //currently here for debug purposes
+    SD4DevelopmentMill.globalScope().putVariableSymbolDeSer("de.monticore.symbols.basicsymbols._symboltable.VariableSymbol");
 
     var diagramName = model.getSequenceDiagram().getName();
     var domainName = domainCd.getName();
@@ -101,8 +113,6 @@ public class SD2TestDecorator {
 
     //override initBackendManager
     cd4c.addMethod(testClass, "sd2test.InitBackendManager", domainName);
-
-    //TODO figure out which objects have been declared in a corresponding object diagram
 
     //apply a visitor to the model
     var visitor = new SDVisitor();
@@ -150,13 +160,62 @@ public class SD2TestDecorator {
       cd4c.addAttribute(testClass, String.format("%s %s", attribute.type(), attribute.name()));
     }
 
+    // workaround until SD scopes are fixed: remove attributes, check if they are loaded via OD
+    Map<ASTSDObject, VariableSymbol> tmp = new HashMap<>();
+    for (ASTSDObject o : model.getSequenceDiagram().getSDObjectList()) {
+      VariableSymbol s = o.getSymbol();
+      tmp.put(o, s);
+      o.setSymbolAbsent();
+      s.getEnclosingScope().remove(s);
+    }
+
+    //check if a corresponding object diagram exists
+    Set<String> objectsInOD = new HashSet<>();
+    Set<String> odDiagramNames = new HashSet<>();
+    for (Variable variable : attributes) {
+      List<VariableSymbol> variableSymbols = model.getEnclosingScope().resolveVariableMany(variable.name);
+      if(!variableSymbols.isEmpty()){
+        objectsInOD.add(variable.name);
+        for (VariableSymbol vs : variableSymbols) {
+          odDiagramNames.add(vs.getEnclosingScope().getName());
+        }
+      }
+    }
+
+    if (!objectsInOD.isEmpty()) {
+      if(odDiagramNames.isEmpty()){
+        throw new IllegalStateException("Can not find OD for objects " + objectsInOD);
+      }
+
+      if(odDiagramNames.size() > 1){
+        throw new IllegalStateException("Can not uniquely identify OD from " + odDiagramNames + " for objects" + objectsInOD);
+      }
+
+      String odDiagramName = odDiagramNames.iterator().next();
+      //add instances attribute
+      cd4c.addAttribute(testClass, String.format("%sODInstances instances", odDiagramName));
+      cd4c.addImport(testClass, odDiagramName.toLowerCase() + "." + odDiagramName + "ODInstances");
+      cd4c.addImport(testClass, odDiagramName.toLowerCase() + "." + odDiagramName + "Instantiator");
+
+      //add @BeforeEach method to instantiate OD data
+      var createODDataMethod = cd4c.addMethod(testClass, "sd2test.CreateODData", odDiagramName);
+      glex.addAfterTemplate("cd2java.Annotations", createODDataMethod, new StringHookPoint("@BeforeEach"));
+    }
+
     //add create methods
     for (var sdObject : sdObjects) {
-      cd4c.addMethod(testClass,
-                     "sd2test.CreateObject",
-                     sdObject.name(),
-                     sdObject.qualifiedTypeName(),
-                     domainName);
+      if (objectsInOD.contains(sdObject.name())) {
+        cd4c.addMethod(testClass,
+                       "sd2test.CreateObjectFromOD",
+                       sdObject.name(),
+                       sdObject.qualifiedTypeName());
+      } else {
+        cd4c.addMethod(testClass,
+                       "sd2test.CreateObject",
+                       sdObject.name(),
+                       sdObject.qualifiedTypeName(),
+                       domainName);
+      }
     }
 
     //processor name
@@ -199,6 +258,7 @@ public class SD2TestDecorator {
     cd4c.addImport(testClass, Joiners.DOT.join(domainPackageName, "test_infrastructure", "*"));
     cd4c.addImport(testClass, Joiners.DOT.join(PathUtil.getTestInfrastructurePath(), "*"));
     cd4c.addImport(testClass, "org.junit.jupiter.api.Test");
+    cd4c.addImport(testClass, "org.junit.jupiter.api.BeforeEach");
     cd4c.addImport(testClass, "umlp.test_rte.monitor.InteractionProcessor");
     cd4c.addImport(testClass, "umlp.test_rte.monitor.model.MatchingStrategy");
     cd4c.addImport(testClass, "umlp.test_rte.monitor.MethodMonitor");
@@ -494,6 +554,13 @@ public class SD2TestDecorator {
   private void addImports(CD4C cd4c, ASTCDClass testClass, SDTest sdTest) {
     //copy import statements of the diagram
     for (var importStatement : sdTest.imports()) {
+      if(!importStatement.isStar()){
+        if(SD4DevelopmentMill.globalScope().resolveVariable(importStatement.getQName()).isPresent()){
+          // ignore imported objects
+          continue;
+        }
+      }
+
       var signature = createJavaSignature(importStatement);
       cd4c.addImport(testClass, signature);
     }
