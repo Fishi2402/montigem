@@ -108,8 +108,8 @@ public final class SD2TestToolArgs {
 
       return new SD2TestToolArgs(domainModelPath.expectValue(),
                                  modelPath.expectValue(),
-                                 backendSymbolDirectoryPath.expectValue(),
-                                 testSymbolDirectoryPath.expectValue(),
+                                 backendSymbolDirectoryPath.getValue().orElse(null),
+                                 testSymbolDirectoryPath.getValue().orElse(null),
                                  outputDirectoryPath.expectValue(),
                                  hwcDirectoryPath.expectValue());
     }

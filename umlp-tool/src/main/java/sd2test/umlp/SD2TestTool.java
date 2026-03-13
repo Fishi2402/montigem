@@ -3,12 +3,18 @@ package sd2test.umlp;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cdbasis.CDBasisMill;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._visitor.CDBasisTraverser;
+import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.lang.sd4development.SD4DevelopmentMill;
 import de.monticore.lang.sd4development.SD4DevelopmentTool;
@@ -26,7 +32,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class SD2TestTool extends SD4DevelopmentTool {
 
@@ -85,13 +90,31 @@ public class SD2TestTool extends SD4DevelopmentTool {
     var generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(outputDirectoryPath));
-    generatorSetup.setHandcodedPath(new MCPath(hwcDirectoryPath));
+    MCPath hwcPath = new MCPath(hwcDirectoryPath);
+    generatorSetup.setHandcodedPath(hwcPath);
     CD4C.init(generatorSetup);
     CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
 
     //call decorators
     var sd2testDecorator = new SD2TestDecorator(glex);
     sd2testDecorator.transform(model, domainCD, decoratedCD);
+
+    TopDecorator topDecorator = new TopDecorator(hwcPath);
+    topDecorator.decorate(decoratedCD);
+
+    // disable abstract tests
+    CDBasisVisitor2 testDisablingVisitor = new CDBasisVisitor2() {
+      @Override
+      public void visit(ASTCDClass node) {
+        if(node.getModifier().isAbstract()) {
+          System.out.println("Found abstract class " + node.getName());
+          glex.replaceTemplate("cd2java.Annotations", node, new StringHookPoint("@org.junit.jupiter.api.Disabled"));
+        }
+      }
+    };
+    CDBasisTraverser t = CDBasisMill.inheritanceTraverser();
+    t.add4CDBasis(testDisablingVisitor);
+    decoratedCD.accept(t);
 
     var generator = new CDGenerator(generatorSetup);
     generator.generate(decoratedCD);
@@ -115,10 +138,15 @@ public class SD2TestTool extends SD4DevelopmentTool {
       String backendSymbolDirectoryPath,
       String testSymbolDirectoryPath) {
     var globalScope = SD4DevelopmentMill.globalScope();
-    var symbolPaths = new ArrayList<>(List.of(checkPath(backendSymbolDirectoryPath, "backend symbol directory")));
-    var testSymbolDirectoryPathObject = toPath(testSymbolDirectoryPath);
-    if (exists(testSymbolDirectoryPathObject)) {
-      symbolPaths.add(testSymbolDirectoryPathObject);
+    var symbolPaths = new ArrayList<Path>();
+    if (backendSymbolDirectoryPath != null) {
+      symbolPaths.add(checkPath(backendSymbolDirectoryPath, "backend symbol directory"));
+    }
+    if (testSymbolDirectoryPath != null) {
+      var testSymbolDirectoryPathObject = toPath(testSymbolDirectoryPath);
+      if (exists(testSymbolDirectoryPathObject)) {
+        symbolPaths.add(testSymbolDirectoryPathObject);
+      }
     }
 
     //symbol-path
