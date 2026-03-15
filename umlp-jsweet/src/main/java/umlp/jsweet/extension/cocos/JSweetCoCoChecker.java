@@ -10,14 +10,18 @@ import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
+import standalone.com.sun.source.tree.NewClassTree;
+import standalone.com.sun.source.tree.Tree;
 import standalone.com.sun.source.tree.VariableTree;
+import standalone.com.sun.source.util.TreePath;
 import standalone.com.sun.source.util.Trees;
 import standalone.com.sun.tools.javac.code.Symbol;
+import de.se_rwth.commons.SourcePosition;
 
 import java.util.List;
 
 /**
- * This class does not adapt anything but throws errors when finding Java Concepts that we cannot
+ * This class does not adapt anything but throws warnings when finding Java Concepts that we cannot
  * transpile.
  */
 public class JSweetCoCoChecker extends AbstractTreeScanner {
@@ -67,7 +71,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
     Symbol.VarSymbol varSymbol = (Symbol.VarSymbol) trees.getElement(
         trees.getPath(getCurrentPath().getCompilationUnit(), variableTree));
     if(varSymbol.enclClass() == null || !(varSymbol.owner instanceof Symbol.ClassSymbol)) {
-      // Not a global field variable
+      super.visitVariable(variableTree, trees);
       return null;
     }
     methodOrAttrIsBackendOnlyOrErased = varSymbol.getAnnotationMirrors().stream()
@@ -81,26 +85,60 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
 
   /**
    * Delegates method invocations to the unsupported APIs checker.
-   * * @param invocation
-   * @param trees
-   * @return
+   *
+   * @param invocation the method invocation tree
+   * @param trees the trees instance
+   * @return null
    */
   @Override
   public Void visitMethodInvocation(MethodInvocationTree invocation, Trees trees) {
     if (!surroundingExcludedFromTranspilation()) {
-      checkUnsupportedApis(invocation, trees);
+      Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) trees.getElement(
+          trees.getPath(getCurrentPath().getCompilationUnit(), invocation.getMethodSelect()));
+      checkUnsupportedApis(invocation, methodSymbol);
     }
     super.visitMethodInvocation(invocation, trees);
     return null;
   }
 
+  @Override
+  public Void visitNewClass(NewClassTree newClassTree, Trees trees) {
+    if (!surroundingExcludedFromTranspilation()) {
+      TreePath path = getCurrentPath();
+      Symbol.MethodSymbol methodSymbol = null;
+
+      // Attempt 1: Direct path
+      if (path != null && path.getLeaf() == newClassTree) {
+        Object element = trees.getElement(path);
+        // Safe type check replaces the error-prone cast
+        if (element instanceof Symbol.MethodSymbol) {
+          methodSymbol = (Symbol.MethodSymbol) element;
+        }
+      }
+
+      // Attempt 2: Fallback to searching from root
+      if (methodSymbol == null) {
+        TreePath fallbackPath = trees.getPath(getCurrentPath().getCompilationUnit(), newClassTree);
+        // Null check prevents exceptions in getElement()
+        if (fallbackPath != null) {
+          Object element = trees.getElement(fallbackPath);
+          if (element instanceof Symbol.MethodSymbol) {
+            methodSymbol = (Symbol.MethodSymbol) element;
+          }
+        }
+      }
+
+      checkUnsupportedApis(newClassTree, methodSymbol);
+    }
+    super.visitNewClass(newClassTree, trees);
+    return null;
+  }
+
   /**
-   * Checks for usages of Java APIs, die laut User Guide nicht oder nur teilweise unterstützt werden,
-   * und gibt entsprechende Warnungen aus.
+   * Checks the use of Java APIs that are not or only partially supported according to the User Guide
+   * and issues corresponding warnings.
    */
-  protected void checkUnsupportedApis(MethodInvocationTree invocation, Trees trees) {
-    Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) trees.getElement(
-        trees.getPath(getCurrentPath().getCompilationUnit(), invocation.getMethodSelect()));
+  protected void checkUnsupportedApis(Tree tree, Symbol.MethodSymbol methodSymbol) {
 
     if (methodSymbol == null) {
       return;
@@ -111,20 +149,18 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         ? methodSymbol.owner.getQualifiedName().toString()
         : "";
 
-    // 1) Java 9+ Factory-Methoden wie List.of / Map.of / Set.of
+    // 1) Java 9+ factory methods like List.of / Map.of / Set.of
     if (methodName.equals("of")
         && ("java.util.List".equals(ownerFqn)
         || "java.util.Map".equals(ownerFqn)
         || "java.util.Set".equals(ownerFqn))) {
-      Log.warn("0xEE005: at "
-          + getStartSourcePosition(invocation)
-          + " " + ownerFqn + ".of(...) is not supported by our transpilation. "
-          + "Use Collections.* helpers (e.g., Collections.emptyList/singletonList) "
-          + "or Guava's Lists.newArrayList instead.");
+      Log.warn("0xEE005: " + ownerFqn + ".of(...) is not supported by our transpilation. "
+              + "Use Collections.* helpers (e.g., Collections.emptyList/singletonList) "
+              + "or Guava's Lists.newArrayList instead.",
+          getStartSourcePosition(tree));
       return;
     }
 
-    // 2) Collections-Hilfsmethoden, die wir NICHT explizit unterstützen
     if ("java.util.Collections".equals(ownerFqn)) {
       switch (methodName) {
         case "emptySet":
@@ -154,17 +190,14 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         case "synchronizedMap":
         case "synchronizedSet":
         case "synchronizedSortedSet":
-          Log.warn("0xEE006: at "
-              + getStartSourcePosition(invocation)
-              + " java.util.Collections." + methodName + "(...) is not supported by our transpilation. "
-              + "Use simple list/map operations or custom helpers instead.");
+          Log.warn("0xEE006: java.util.Collections." + methodName + "(...) is not supported by our transpilation. "
+                  + "Use simple list/map operations or custom helpers instead.",
+              getStartSourcePosition(tree));
           return;
         default:
-          // emptyList/singletonList/unmodifiableList/unmodifiableCollection/nCopies sind explizit unterstützt
       }
     }
 
-    // 3) Kritische Objects-Methoden, die wir nicht explizit unterstützen
     if ("java.util.Objects".equals(ownerFqn)) {
       switch (methodName) {
         case "hash":
@@ -174,68 +207,63 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         case "compareUnsigned":
         case "requireNonNullElse":
         case "requireNonNullElseGet":
-          Log.warn("0xEE008: at "
-              + getStartSourcePosition(invocation)
-              + " java.util.Objects." + methodName + "(...) is not explicitly supported "
-              + "and may not behave as expected in transpiled code. "
-              + "Prefer requireNonNull/equals or implement comparison/hash logic explicitly.");
+          Log.warn("0xEE008: java.util.Objects." + methodName + "(...) is not explicitly supported "
+                  + "and may not behave as expected in transpiled code. "
+                  + "Prefer requireNonNull/equals or implement comparison/hash logic explicitly.",
+              getStartSourcePosition(tree));
           return;
         default:
-          // requireNonNull / equals sind explizit unterstützt
       }
     }
 
-    // 4) Andere java.time-Typen als LocalDateTime/LocalDate/java.util.Date
     if (ownerFqn.startsWith("java.time.")
         && !ownerFqn.equals("java.time.LocalDateTime")
         && !ownerFqn.equals("java.time.LocalDate")) {
-      Log.warn("0xEE009: at "
-          + getStartSourcePosition(invocation)
-          + " Calls to " + ownerFqn + "." + methodName + "(...) are not explicitly supported. "
-          + "Only java.time.LocalDateTime, java.time.LocalDate and java.util.Date "
-          + "with their standard methods are supported in transpiled code.");
+      Log.warn("0xEE009: Calls to " + ownerFqn + "." + methodName + "(...) are not explicitly supported. "
+              + "Only java.time.LocalDateTime, java.time.LocalDate and java.util.Date "
+              + "with their standard methods are supported in transpiled code.",
+          getStartSourcePosition(tree));
       return;
     }
 
-    // 5) Pakete, die grundsätzlich nicht für transpilierten Code unterstützt werden
     if (ownerFqn.startsWith("java.io.")
         || ownerFqn.startsWith("java.net.")
         || ownerFqn.startsWith("java.sql.")
         || ownerFqn.startsWith("java.security.")
         || ownerFqn.startsWith("java.lang.reflect.")) {
-      Log.warn("0xEE003: at "
-          + getStartSourcePosition(invocation)
-          + " Calls to " + ownerFqn + "." + methodName + " are not supported in transpiled code. "
-          + "Move this logic to backend-only code or mark it with @BackendOnly/@Erased.");
+      Log.warn("0xEE003: Calls to " + ownerFqn + "." + methodName + " are not supported in transpiled code. "
+              + "Move this logic to backend-only code or mark it with @BackendOnly/@Erased.",
+          getStartSourcePosition(tree));
       return;
     }
 
-    // 6) java.util.concurrent – nur sehr eingeschränkt erlaubt
     if (ownerFqn.startsWith("java.util.concurrent.")) {
-      // Whitelist: AtomicReference (Typ ist bekannt, aber ohne echte Concurrency-Semantik)
       if (!ownerFqn.equals("java.util.concurrent.atomic.AtomicReference")) {
-        Log.warn("0xEE004: at "
-            + getStartSourcePosition(invocation)
-            + " java.util.concurrent APIs are not supported in transpiled code. "
-            + "Use async/await and @Synchronized instead of Java threads or executors.");
+        Log.warn("0xEE004: java.util.concurrent APIs are not supported in transpiled code. "
+                + "Use async/await and @Synchronized instead of Java threads or executors.",
+            getStartSourcePosition(tree));
       }
     }
   }
 
-  public String getStartSourcePosition(standalone.com.sun.source.tree.Tree tree) {
+  public SourcePosition getStartSourcePosition(standalone.com.sun.source.tree.Tree tree) {
     long startSP = getContext().trees.getSourcePositions()
         .getStartPosition(getCurrentPath().getCompilationUnit(), tree);
     CompilationUnitTree cu = getCurrentPath().getCompilationUnit();
-    String sourcePosition = "";
+
     if(cu != null &&
         cu.getLineMap() != null &&
         cu.getSourceFile() != null) {
-      sourcePosition =
-          "file://" +cu.getSourceFile().toUri().getPath()+":"+
-              cu.getLineMap().getLineNumber(startSP) + ":"+
-              cu.getLineMap().getColumnNumber(startSP);
+
+      String fileName = cu.getSourceFile().toUri().getPath();
+      int line = (int) cu.getLineMap().getLineNumber(startSP);
+      int column = (int) cu.getLineMap().getColumnNumber(startSP);
+
+      return new SourcePosition(line, column, fileName);
     }
-    return sourcePosition;
+
+    // Return a default position if the exact source cannot be determined
+    return SourcePosition.getDefaultSourcePosition();
   }
 
   public boolean surroundingExcludedFromTranspilation() {

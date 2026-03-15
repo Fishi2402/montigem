@@ -4,7 +4,6 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 
 import gui.test.TestNav;
-import Jsweettest.LocalDateTimeTest;
 
 page LocalDateTime() {
   inputTestField@GemTextInput(

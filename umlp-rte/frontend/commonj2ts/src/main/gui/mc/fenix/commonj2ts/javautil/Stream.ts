@@ -187,6 +187,38 @@ export class Stream<T> implements Iterable<T> {
     return true;
   }
 
+  public min(comparator: (a: T, b: T) => number): T | null {
+    let min: T | null = null;
+    let found = false;
+    for (const item of this.iterable) {
+      if (!found) {
+        min = item;
+        found = true;
+      } else {
+        if (comparator(item, min!) < 0) {
+          min = item;
+        }
+      }
+    }
+    return min;
+  }
+
+  public max(comparator: (a: T, b: T) => number): T | null {
+    let max: T | null = null;
+    let found = false;
+    for (const item of this.iterable) {
+      if (!found) {
+        max = item;
+        found = true;
+      } else {
+        if (comparator(item, max!) > 0) {
+          max = item;
+        }
+      }
+    }
+    return max;
+  }
+
   public findFirst(): T | null {
     for (const item of this.iterable) {
       return item; // Pulls the very first element and immediately aborts
@@ -227,21 +259,34 @@ export class Stream<T> implements Iterable<T> {
     if (collector && collector.name === 'toList') {
       return Array.from(this.iterable) as unknown as R;
     }
+    if (collector && collector.name === 'toSet') {
+      return new Set(this.iterable) as unknown as R;
+    }
     if (collector && collector.name === 'joining') {
       return Array.from(this.iterable).join(collector.delimiter || '') as unknown as R;
+    }
+    if (collector && collector.name === 'counting') {
+      return Array.from(this.iterable).length as unknown as R;
     }
 
     return Array.from(this.iterable) as unknown as R;
   }
 }
 
-// Collector class remains unchanged
 export class Collectors {
   public static toList() {
     return { name: 'toList' };
   }
 
+  public static toSet() {
+    return { name: 'toSet' };
+  }
+
   public static joining(delimiter: string = '') {
     return { name: 'joining', delimiter: delimiter };
+  }
+
+  public static counting() {
+    return { name: 'counting' };
   }
 }
