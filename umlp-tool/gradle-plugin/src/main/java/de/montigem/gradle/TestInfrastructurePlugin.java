@@ -121,9 +121,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
                 .filter(File::exists)
                 .collect(Collectors.toSet());
 
-            boolean res = !files.isEmpty();
-            System.out.println("GeneratorMonitor is " + res + " with files " + files);
-            return res;
+            return !files.isEmpty();
           }));
 
           UMLP2JavaTask backendTask = (UMLP2JavaTask) project.getTasks().findByName(
