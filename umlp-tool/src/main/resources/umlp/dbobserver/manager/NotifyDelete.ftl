@@ -1,3 +1,3 @@
-${tc.signature("cdName","initializationTypeName")}
-${cd4c.method("public void notify${initializationTypeName}Deleted(Long gemId)")}
-${cdName}DAOFactory.get${initializationTypeName}DAO().delete${initializationTypeName}(gemId);
+${tc.signature("cdName","className")}
+${cd4c.method("public void notify${className}Deleted(Long gemId)")}
+${cdName}DAOFactory.get${className}DAO().delete${className}(gemId);

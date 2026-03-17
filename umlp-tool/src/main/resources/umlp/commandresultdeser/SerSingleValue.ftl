@@ -3,9 +3,9 @@ ${cd4c.method("protected void serSingleValue(Object o, JsonPrinter printer, Stri
 
 switch (tp){
 // Java type system restrictions force us to use casts here
-<#list classList as initializationTypeName>
-  case "${initializationTypeName}": {
-    new ${initializationTypeName}DeSer().buildJson((${initializationTypeName})o, printer);
+<#list classList as className>
+  case "${className}": {
+    new ${className}DeSer().buildJson((${className})o, printer);
   break;
   }
 </#list>

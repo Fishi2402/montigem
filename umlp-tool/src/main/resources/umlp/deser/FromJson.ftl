@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName")}
-${cd4c.method("public Optional<${initializationTypeName}> fromJson(JsonElement jsonElement)")}
+${tc.signature("className")}
+${cd4c.method("public Optional<${className}> fromJson(JsonElement jsonElement)")}
 
 return deserialize(jsonElement.getAsJsonObject());

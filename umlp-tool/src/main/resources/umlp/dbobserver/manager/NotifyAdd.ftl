@@ -1,3 +1,3 @@
-${tc.signature("cdName", "initializationTypeName")}
-${cd4c.method("public void notify${initializationTypeName}Added(${initializationTypeName} ${initializationTypeName?uncap_first})")}
-${cdName}DAOFactory.get${initializationTypeName}DAO().insert${initializationTypeName}(${initializationTypeName?uncap_first});
+${tc.signature("cdName", "className")}
+${cd4c.method("public void notify${className}Added(${className} ${className?uncap_first})")}
+${cdName}DAOFactory.get${className}DAO().insert${className}(${className?uncap_first});

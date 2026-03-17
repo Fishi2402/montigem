@@ -1,11 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("initializationTypeName", "attr", "fieldType", "jsonStr", "isList", "innerType", "isOptional", "useDeSer", "objectMapperName")}
+  ${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType", "isOptional", "useDeSer", "objectMapperName")}
 <#assign fieldName=attr.getName()>
 <#if !jsonStr?has_content && !useDeSer>
 <#--    TODO Kommentar einfuegen, wie das zu fixen waere-->
-    ${cd4c.method("abstract protected void serialize" + fieldName?cap_first + "(" + initializationTypeName + " obj, JsonPrinter printer)")}
+    ${cd4c.method("abstract protected void serialize" + fieldName?cap_first + "(" + className + " obj, JsonPrinter printer)")}
 <#else>
-    ${cd4c.method("public void serialize" + fieldName?cap_first + "(" + initializationTypeName + " obj, JsonPrinter printer)")}
+    ${cd4c.method("public void serialize" + fieldName?cap_first + "(" + className + " obj, JsonPrinter printer)")}
 
     <#if isList>
       printer.beginArray("${fieldName}");

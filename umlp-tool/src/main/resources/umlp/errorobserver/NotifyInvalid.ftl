@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "initializationTypeName")}
-${cd4c.method("void notify${name?cap_first}Invalid(${initializationTypeName} ${initializationTypeName?uncap_first}, String msg)")}
+${tc.signature("name", "className")}
+${cd4c.method("void notify${name?cap_first}Invalid(${className} ${className?uncap_first}, String msg)")}

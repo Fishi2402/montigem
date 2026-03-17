@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "initializationTypeName")}
+${tc.signature("name", "className")}
 if(idx < 0){
   throw new IllegalStateException("idx must be 0 or higher");
 }
@@ -15,4 +15,4 @@ if(this.${name}.size() > idx){
 }
 
 this.${name}.set(idx, o);
-${initializationTypeName?uncap_first}Observers.forEach(obs -> obs.maybeNotifySet${name?cap_first}((${initializationTypeName}) this, idx, oldValue, o.getGemId(), scope));
+${className?uncap_first}Observers.forEach(obs -> obs.maybeNotifySet${name?cap_first}((${className}) this, idx, oldValue, o.getGemId(), scope));

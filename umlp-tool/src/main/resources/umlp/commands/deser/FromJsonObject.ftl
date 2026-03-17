@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "command")}
+${tc.signature("className", "command")}
 ${cd4c.method("protected Optional<${command}> fromJsonObject(JsonObject jsonObject)")}
 
-Optional<${initializationTypeName}> o = new ${initializationTypeName}DeSer().deserialize(jsonObject.getObjectMember("${initializationTypeName?uncap_first}"));
+Optional<${className}> o = new ${className}DeSer().deserialize(jsonObject.getObjectMember("${className?uncap_first}"));
 if(o.isEmpty()){
   return Optional.empty();
 }

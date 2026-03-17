@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "fieldName")}
-${cd4c.method("protected void serialize" + fieldName?cap_first + "(" + initializationTypeName + " obj, JsonPrinter printer)")}
+${tc.signature("className", "fieldName")}
+${cd4c.method("protected void serialize" + fieldName?cap_first + "(" + className + " obj, JsonPrinter printer)")}
   printer.beginArray("${fieldName}");
   for(long gemId : obj._internal_get${fieldName?cap_first}GemList().getIDs()){
       printer.value(gemId);

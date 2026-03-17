@@ -1,8 +1,8 @@
 
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
-${cd4c.method("public Optional<${initializationTypeName}ValidationResult> deserialize(JsonObject jsonObject)")}
-${initializationTypeName}ValidationResult result = new ${initializationTypeName}ValidationResult();
+${tc.signature("className", "attributes", "assocTypes", "assocs", "listAssocTypes", "listAssocs")}
+${cd4c.method("public Optional<${className}ValidationResult> deserialize(JsonObject jsonObject)")}
+${className}ValidationResult result = new ${className}ValidationResult();
 <#list attributes as attr>
   for(var o : jsonObject.getArrayMember("${attr}Messages")) {
     Optional<ValidationMessage> message = new ValidationMessageDeSer().deserialize(o.getAsJsonObject());

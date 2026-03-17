@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "gemAssocs", "listAssocs")}
+${tc.signature("className", "gemAssocs", "listAssocs")}
 ${cd4c.method("public boolean TESTING_deepEquals(Object o)")}
 if(this == o){
   return true;
 }
 
-if (o instanceof ${initializationTypeName?cap_first}) {
-${initializationTypeName?cap_first} other = (${initializationTypeName?cap_first}) o;
+if (o instanceof ${className?cap_first}) {
+${className?cap_first} other = (${className?cap_first}) o;
 
 return this.equals(other) &&
   <#list gemAssocs as gemAssoc>

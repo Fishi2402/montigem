@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "attributes", "assocs")}
-${cd4c.method("public void buildJson(${initializationTypeName} obj, JsonPrinter jsonPrinter)")}
+${tc.signature("className", "attributes", "assocs")}
+${cd4c.method("public void buildJson(${className} obj, JsonPrinter jsonPrinter)")}
 <#list attributes as attr>
   serialize${attr?cap_first}(obj, jsonPrinter);
 </#list>

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "attr", "fieldType", "jsonStr", "isList", "innerType", "isOptional", "useDeSer", "objectMapperName")}
+${tc.signature("className", "attr", "fieldType", "jsonStr", "isList", "innerType", "isOptional", "useDeSer", "objectMapperName")}
 <#assign fieldName=attr.getName()>
 <#if !jsonStr?has_content && !useDeSer>
 <#--    TODO Kommentar einfuegen, wie das zu fixen waere-->

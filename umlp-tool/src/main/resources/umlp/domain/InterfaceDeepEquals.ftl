@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("initializationTypeName", "gemAssocs", "listAssocs")}
+${tc.signature("className", "gemAssocs", "listAssocs")}
 ${cd4c.method("public abstract boolean TESTING_deepEquals(Object o)")}
