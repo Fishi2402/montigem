@@ -9,6 +9,7 @@ import {NodeLabelDrawingFunction} from "sigma/rendering";
 import {NodeHoverDrawingFunction} from "sigma/rendering";
 import NodeTriangleProgram from "../custom-programs/node-triangle/NodeTriangle";
 import NodeSquareProgram from "../custom-programs/node-square/NodeSquare";
+import EdgePolylineProgram from "../custom-programs/edge-polyline/EdgePolyline";
 
 /**
  * Function to construct and return new default graph settings object. The use of a function rather than one `settings
@@ -55,8 +56,9 @@ export function getDefaultGraphSettings(): GraphSettings {
       square: NodeSquareProgram
     },
     edgeProgramClasses: {
-      ...DEFAULT_EDGE_PROGRAM_CLASSES
+      ...DEFAULT_EDGE_PROGRAM_CLASSES,
       // This line led to runtime issues in sigma Version 3.0.0-beta.6: fastLine: EdgeLineProgram,
+      polyline: EdgePolylineProgram,
     },
     highlightNeighboursOnNodeHover: true,
     draggableNodes: true,

@@ -1,0 +1,64 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_functiondisplay;
+
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Channel4Display;
+import mc.fenix.functiondisplay.FunctionStructure4Fenix.Port4Display;
+import mc.fenix.functiondisplay.FunctionAction;
+import mc.fenix.functiondisplay.FunctionDisplay;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import common.ExamplePage;
+
+page FunctionDisplayExample(List<Channel4Display> selectedChannels, List<Function4Display> selectedFunctions, List<Port4Display> selectedPorts, List<FunctionAction> contextMenuActions, String clickedInfo) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @GemText(value = "Status: " + clickedInfo, size = "1.5rem"),
+      @FunctionDisplay(
+        data = getData(),
+        selectedChannels = selectedChannels,
+        selectedFunctions = selectedFunctions,
+        selectedPorts = selectedPorts,
+        contextMenuActions = contextMenuActions,
+        channelClick = onChannelClick(),
+        functionClick = onFunctionClick(),
+        portClick = onPortClick(),
+        outsideClick = onOutsideClick()
+      ),
+      @FunctionDisplay(
+        data = getColoredData(),
+        selectedChannels = selectedChannels,
+        selectedFunctions = selectedFunctions,
+        selectedPorts = selectedPorts,
+        showMinimap = false,
+        showResetButton = false,
+        channelClick = onChannelClick(),
+        functionClick = onFunctionClick(),
+        portClick = onPortClick(),
+        outsideClick = onOutsideClick()
+      ),
+      @FunctionDisplay(
+        data = getWideData(),
+        selectedChannels = selectedChannels,
+        selectedFunctions = selectedFunctions,
+        selectedPorts = selectedPorts,
+        channelClick = onChannelClick(),
+        functionClick = onFunctionClick(),
+        portClick = onPortClick(),
+        outsideClick = onOutsideClick()
+      ),
+      @FunctionDisplay(
+        data = getImageData(),
+        selectedChannels = selectedChannels,
+        selectedFunctions = selectedFunctions,
+        selectedPorts = selectedPorts,
+        channelClick = onChannelClick(),
+        functionClick = onFunctionClick(),
+        portClick = onPortClick(),
+        outsideClick = onOutsideClick()
+      )
+    ]),
+    basePath = "example_functiondisplay",
+    componentName = "FunctionDisplayExample"
+  );
+}

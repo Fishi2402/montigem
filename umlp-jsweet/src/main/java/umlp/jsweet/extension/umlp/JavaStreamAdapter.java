@@ -53,7 +53,7 @@ public class JavaStreamAdapter extends AbstractAdapter {
     // 1. collection.stream() -> Stream.of(await collection.toArraySync())
     if (methodName.equals("stream") && isCollection(invocation.getTargetType())) {
       boolean isAsync = isAsyncCollection(invocation.getTargetType());
-      print("Stream.of(");
+      print("new Stream(");
       if (isAsync) {
         print("await ");
       }
@@ -86,7 +86,15 @@ public class JavaStreamAdapter extends AbstractAdapter {
       // Map mapToInt etc. to simple map/flatMap
       if (NUMERICAL_MAP_METHODS.contains(methodName)) {
         String newName = methodName.startsWith("flatMap") ? "flatMap" : "map";
+        print(invocation.getTargetExpression()); // Fix: ensure target is printed
         print(".").print(newName).print("(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      }
+
+      // Explicitly handle toArray to avoid potential issues with default transpilation
+      if (methodName.equals("toArray")) {
+        print(invocation.getTargetExpression());
+        print(".toArray()");
         return true;
       }
 
@@ -111,12 +119,29 @@ public class JavaStreamAdapter extends AbstractAdapter {
       }
     }
 
-    // 3. Collectors.toList() -> Collectors.toList()
+    // 3. Collectors...
     if (targetTypeFqn.equals("java.util.stream.Collectors")) {
-      if (methodName.equals("toList")) {
-        print("Collectors.toList()");
-        getPrinter().useModule(new ModuleImportDescriptor("Collectors", getLibraryLocation()));
-        return true;
+      switch (methodName) {
+        case "toList" -> {
+          print("Collectors.toList()");
+          getPrinter().useModule(new ModuleImportDescriptor("Collectors", getLibraryLocation()));
+          return true;
+        }
+        case "toSet" -> {
+          print("Collectors.toSet()");
+          getPrinter().useModule(new ModuleImportDescriptor("Collectors", getLibraryLocation()));
+          return true;
+        }
+        case "joining" -> {
+          print("Collectors.joining(").printArgList(invocation.getArguments()).print(")");
+          getPrinter().useModule(new ModuleImportDescriptor("Collectors", getLibraryLocation()));
+          return true;
+        }
+        case "counting" -> {
+          print("Collectors.counting()");
+          getPrinter().useModule(new ModuleImportDescriptor("Collectors", getLibraryLocation()));
+          return true;
+        }
       }
     }
 

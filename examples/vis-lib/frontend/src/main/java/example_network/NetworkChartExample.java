@@ -46,9 +46,9 @@ public class NetworkChartExample extends NetworkChartExampleTOP {
     node = createGraphNode("5", "Node 5", "Cluster A", Optional.of(54), Optional.empty()); //fixed:true, x:0, y:0, size:54, tooltip: "custom Tooltip!"
     if (node.isPresent()) {
       node.get().setTooltip(Optional.of("custom Tooltip!"));
-      node.get().setFixed(Optional.of(true));
-      node.get().setX(Optional.of(0.0));
-      node.get().setY(Optional.of(0.0));
+      //node.get().setFixed(Optional.of(true));
+      //node.get().setX(Optional.of(0.0));
+      //node.get().setY(Optional.of(0.0));
       nodes.add(node.get());
     }
     node = createGraphNode("6", "Node 6", "Cluster B", Optional.empty(), Optional.empty());
@@ -113,6 +113,25 @@ public class NetworkChartExample extends NetworkChartExampleTOP {
     edge = createGraphEdge("20", "7", "10", "Edge 7-10", Optional.empty());
     edge.ifPresent(e -> edges.add(e));
     edge = createGraphEdge("21", "9", "6", "Edge 9-6", Optional.empty());
+    edge.ifPresent(e -> edges.add(e));
+
+    // Second disconnected component
+    node = createGraphNode("A", "Node A", "Cluster C", Optional.empty(), Optional.empty());
+    node.ifPresent(n -> nodes.add(n));
+    node = createGraphNode("B", "Node B", "Cluster C", Optional.empty(), Optional.empty());
+    node.ifPresent(n -> nodes.add(n));
+    node = createGraphNode("C", "Node C", "Cluster C", Optional.empty(), Optional.empty());
+    node.ifPresent(n -> nodes.add(n));
+    node = createGraphNode("D", "Node D", "Cluster C", Optional.empty(), Optional.empty());
+    node.ifPresent(n -> nodes.add(n));
+
+    edge = createGraphEdge("22", "A", "B", "Edge A-B", Optional.of("#4c9ffc"));
+    edge.ifPresent(e -> edges.add(e));
+    edge = createGraphEdge("23", "A", "C", "Edge A-C", Optional.of("#4c9ffc"));
+    edge.ifPresent(e -> edges.add(e));
+    edge = createGraphEdge("24", "B", "D", "Edge B-D", Optional.of("#4c9ffc"));
+    edge.ifPresent(e -> edges.add(e));
+    edge = createGraphEdge("25", "A", "D", "Edge A-D", Optional.of("#4c9ffc"));
     edge.ifPresent(e -> edges.add(e));
 
     super.init();

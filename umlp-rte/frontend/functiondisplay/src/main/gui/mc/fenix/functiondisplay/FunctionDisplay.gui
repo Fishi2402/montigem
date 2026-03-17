@@ -3,21 +3,100 @@ package mc.fenix.functiondisplay;
 
 //import mc.fenix.functiondisplay.FunctionDisplayTypes.Function;
 import mc.fenix.functiondisplay.FunctionStructure4Fenix.Function4Display;
+import mc.fenix.functiondisplay.FunctionAction;
 
 
+/**
+  FunctionDisplay component for rendering C&C models.
+*/
 component FunctionDisplay(
+
+  /**
+    The root function containing all subfunctions and channels to be displayed.
+  */
   Function4Display data,
+
+  /**
+    List of actions available in the context menu for functions.
+  */
+  List<FunctionAction> contextMenuActions,
+
+  /**
+    Callback executed when a function is clicked.
+  */
   Event<Function4Display> functionClick,
+
+  /**
+    Callback executed when the mouse enters a function.
+  */
   Event<Function4Display> functionMouseover,
+  /**
+    Callback executed when the mouse leaves a function.
+  */
   Event<Function4Display> functionMouseout,
+
+  /**
+    Callback executed when a channel is clicked.
+  */
   Event<Channel4Display> channelClick,
+
+  /**
+    Callback executed when the mouse enters a channel.
+  */
   Event<Channel4Display> channelMouseover,
+
+  /**
+    Callback executed when the mouse leaves a channel.
+  */
   Event<Channel4Display> channelMouseout,
+
+  /**
+    Callback executed when an area outside of any element is clicked.
+  */
   Event<Void> outsideClick,
+
+  /**
+    Callback executed when a port is clicked.
+  */
   Event<Port4Display> portClick,
+
+  /**
+    Callback executed when the mouse enters a port.
+  */
   Event<Port4Display> portMouseover,
+
+  /**
+    Callback executed when the mouse leaves a port.
+  */
   Event<Port4Display> portMouseout,
+
+  /**
+    List of functions that should be visually highlighted as selected.
+  */
   List<Function4Display> selectedFunctions,
+
+  /**
+    List of channels that should be visually highlighted as selected.
+  */
   List<Channel4Display> selectedChannels,
-  List<Port4Display> selectedPorts
+
+  /**
+    List of ports that should be visually highlighted as selected.
+  */
+  List<Port4Display> selectedPorts,
+
+  /**
+    If true (or omitted), a minimap is displayed in the bottom left corner.
+  */
+  Boolean showMinimap,
+
+  /**
+    If true (or omitted), a home button is displayed in the bottom right corner.
+  */
+  Boolean showResetButton,
+
+  /**
+    If true (or omitted) and context menu actions are present, a burger menu icon is displayed on each function.
+  */
+  Boolean showBurgerMenu
 )

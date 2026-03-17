@@ -31,6 +31,7 @@ public class ArrayStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     assertThat(page.locator(RESULT_INPUT_SELECTOR)).hasValue(expectedExactValue);
   }
 
+
   @Test
   void testBasicStreamOperations(Page page) {
     setInput(page, "10, 20, 30");
@@ -68,5 +69,50 @@ public class ArrayStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
   void testPeek(Page page) {
     setInput(page, "8, 9");
     checkActionExact(page, "peek", "peek(): 8;9;");
+  }
+
+  @Test
+  void testNewTerminalOperations(Page page) {
+    setInput(page, "1, 2, 10, 20");
+    checkActionExact(page, "count", "count(>5): 2");
+
+    setInput(page, "1, 2, 3, 4");
+    checkActionExact(page, "reduce", "reduce(sum): 10");
+
+    setInput(page, "1, 2, 3");
+    checkActionExact(page, "match", "any>2: true, all<5: true");
+
+    setInput(page, "1, 2, 3, 99, 100, 101");
+    checkActionExact(page, "findFirst", "findFirst(>5): 99");
+
+    setInput(page, "10, 5, 20, 3");
+    checkActionExact(page, "min", "min(): 3");
+
+    setInput(page, "10, 5, 20, 3");
+    checkActionExact(page, "max", "max(): 20");
+
+    setInput(page, "Apple, Banana, Cherry");
+    checkActionExact(page, "collectJoining", "collect(joining): Apple - Banana - Cherry");
+
+    setInput(page, "one, two, three");
+    checkActionExact(page, "btnToArray", "toArray(): [one, two, three]");
+
+    setInput(page, "1, 2, 10");
+    checkActionExact(page, "btnFindAny", "findAny(): 10");
+
+    setInput(page, "1, 2, 3");
+    checkActionExact(page, "forEach", "forEach(): 1!2!3!");
+
+    setInput(page, "1, 2, 3");
+    checkActionExact(page, "noneMatch", "noneMatch(>10): true");
+  }
+
+  @Test
+  void testNewCollectors(Page page) {
+    setInput(page, "1, 2, 2, 3, 3");
+    checkActionExact(page, "collectToSet", "collect(toSet): [1, 2, 3]");
+
+    setInput(page, "1, 2, 3, 4, 5");
+    checkActionExact(page, "collectCounting", "collect(counting): 5");
   }
 }

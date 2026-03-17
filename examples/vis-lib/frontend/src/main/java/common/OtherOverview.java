@@ -23,4 +23,8 @@ public class OtherOverview extends OtherOverviewTOP {
   public Consumer<Void> goToPerson() { 
       return v -> Router.navigate("person", "SimpleOverview"); 
   }
+
+  public Consumer<Void> goToFunctionDisplay() {
+      return v -> Router.navigate("example_functiondisplay", "FunctionDisplayExample");
+  }
 }

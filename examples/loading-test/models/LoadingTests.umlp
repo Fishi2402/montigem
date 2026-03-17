@@ -110,4 +110,12 @@ classdiagram LoadingTests {
   enum MyEnum {
     A,B,C;
   }
+
+  <<singleton>>
+  class TestCommandUpdates {
+    CommandTestResult doTestCommand(boolean doBuild);
+  }
+  class CommandTestResult {
+    String field;
+  }
 }
