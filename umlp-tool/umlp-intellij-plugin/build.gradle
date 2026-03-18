@@ -46,8 +46,8 @@ dependencies {
   implementation "de.monticore.language-server.plugin:monticore-language-server-runtime-intellij:$mclsg_version"
 
   // Standard JUnit 5 dependencies
-  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter:$junit_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
 
   intellijPlatform {
     intellijIdeaCommunity("2024.2")
