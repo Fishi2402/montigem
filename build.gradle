@@ -49,9 +49,10 @@ subprojects {
 
 
     dependencies {
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
+      testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+      testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
+      testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+      testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   }
 
 
