@@ -6,7 +6,7 @@ plugins {
   id 'de.rwth.se.montigem-backend-test'
 
   id 'com.google.cloud.tools.jib' version '3.4.4'
-  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  // id 'io.spring.dependency-management' version '1.0.15.RELEASE''
   id 'org.springframework.boot' version "${spring_version}"
 }
 
