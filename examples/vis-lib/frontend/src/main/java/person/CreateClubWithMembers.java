@@ -20,7 +20,7 @@ public class CreateClubWithMembers extends CreateClubWithMembersTOP {
 
   @Override
   public Consumer<Void> createClub(Club arg) {
-    return (Void) -> {
+    return $ -> {
       this.getClub().build();
       Router.navigate("/person/ClubMembers/" + this.getClub().getGemId());
     };
@@ -33,7 +33,7 @@ public class CreateClubWithMembers extends CreateClubWithMembersTOP {
 
   @Override
   public Consumer<Void> createAlice() {
-    return (Void) -> {
+    return $ -> {
       Optional<Address> address = DomainManager.addressBuilder()
           .street("Elmstreet")
           .house(13)

@@ -24,8 +24,13 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
   @Override
   public void init() throws IOException {
     super.init();
-    JsweettestManager.aBuilder().value("Malte").build();
-    JsweettestManager.aBuilder().value("Alex").build();
+    A a1 = JsweettestManager.aBuilder().value("Malte").build().get();
+    A a2 = JsweettestManager.aBuilder().value("Alex").build().get();
+    A a3 = JsweettestManager.aBuilder().value("Sebastian").build().get();
+    
+    JsweettestManager.eBuilder().value("e1").a(a1).build();
+    JsweettestManager.eBuilder().value("e2").a(a2).build();
+    JsweettestManager.eBuilder().value("e3").a(a3).build();
 
     JsweettestManager.getGlobalState().setState(JsweettestManager.stateBuilder().name("State A").build().get());
     JsweettestManager.typesBuilder().timestamp(LocalDateTime.now()).build();

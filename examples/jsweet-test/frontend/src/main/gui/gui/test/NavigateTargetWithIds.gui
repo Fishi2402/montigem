@@ -1,0 +1,11 @@
+package gui.test;
+
+import mc.fenix.basic.GemText;
+
+import Jsweettest.A;
+import Jsweettest.E;
+
+page NavigateTargetWithIds(E e, int i, A a) {
+  @GemText(value = "Value 1 " + e.value);
+  @GemText(value = "Value 2 " + a.value);
+}

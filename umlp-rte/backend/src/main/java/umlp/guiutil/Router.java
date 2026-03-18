@@ -4,5 +4,6 @@ package umlp.guiutil;
 public class Router {
 
   public static void navigate(String... paths) { }
+  public static void navigateTo(String... paths) { }
 
 }

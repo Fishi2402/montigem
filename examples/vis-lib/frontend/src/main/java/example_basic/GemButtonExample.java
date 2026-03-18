@@ -10,6 +10,8 @@ public class GemButtonExample extends GemButtonExampleTOP {
 
   @Override
   public Consumer<Void> alert() {
-    return (Void) -> HTMLUtils.alert("Hello");
+    return $ -> {
+      HTMLUtils.alert("Hello");
+    };
   }
 }

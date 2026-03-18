@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 public class GemChat extends GemChatTOP {
   @Override
   public Consumer<Void> sendMessage(Message message) {
-    return (Void) -> this.messageHandler(message);
+    return $ -> this.messageHandler(message);
   }
 
   private void messageHandler(Message message) {

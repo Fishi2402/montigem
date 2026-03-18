@@ -14,6 +14,11 @@ classdiagram Jsweettest {
     String value;
   }
 
+  class E {
+    String value;
+    A a;
+  }
+
   association [1] A -> B [*];
   association [1] B -> D [*];
 

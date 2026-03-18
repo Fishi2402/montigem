@@ -21,6 +21,7 @@ import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genhtml.GUI2HtmlGenerator;
+import umlp.generator.gui.genjava.AppRouterGenerator;
 import umlp.generator.gui.genjava.GUI2JavaGenerator;
 import umlp.generator.gui.gentypescript.GUI2TSGenerator;
 import umlp.generator.gui.gentypescript.config.GUI2ConfigGenerator;
@@ -287,6 +288,12 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
           importMapGenerator.generate(tslib.get(), data.getASTs());
         }
       };
+  
+  public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> model_pipe_router_generator =
+      data -> {
+        AppRouterGenerator routerGenerator = new AppRouterGenerator(data.getGenSetup());
+        routerGenerator.generate(data.getASTs());
+      };
 
   Pipeline<DataWithGenSetupAndRouting> createConfigurationPipeline() {
     Pipeline<DataWithGenSetupAndRouting> pipe = new Pipeline<>();
@@ -294,6 +301,7 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
     pipe.register("config_pipe_init_modules", config_pipe_init_modules);
     pipe.register("config_pipe_generate", config_pipe_generate);
     pipe.register("import_map_pipe_generate", import_map_pipe_generate);
+    pipe.register("model_pipe_router_generator", model_pipe_router_generator);
     return pipe;
   }
 

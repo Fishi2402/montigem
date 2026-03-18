@@ -1,0 +1,17 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+
+import gui.test.Test0;
+import gui.test.Test1;
+import Jsweettest.A;
+
+page NavigateSource(List<E> es) {
+	navTest0@GemButton(label = "Navigate to Test0", leftClick = navigate(@Test0()));
+	navTest1@GemButton(label = "Navigate to Test1", leftClick = navigate(@Test1()));
+	navTestString@GemButton(label = "Navigate to Test0", leftClick = navigate("/gui/test/Test0"));
+	@iterate(E e : es) {
+		navTestE@GemButton(label = "Navigate to " + e.value, leftClick = navigate(@NavigateTargetWithId(e = e)));
+		navTestEA@GemButton(label = "Navigate to " + e.value + " " + e.a.value, leftClick = navigate(@NavigateTargetWithIds(e = e, i = 42, a = e.a)));
+	}
+}

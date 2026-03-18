@@ -23,7 +23,7 @@ public class GUIComponentBasicsAdapter extends PrinterAdapter {
   @Override
   public void beforeTypeBody(TypeElement type) {
     if (adapterUtils.hasDirectiveAnnotation(type)) {
-      println().printIndent().print("protected router: Router;").println().println();
+      println().printIndent().print("protected _router: Router;").println().println();
     }
 
     super.beforeTypeBody(type);

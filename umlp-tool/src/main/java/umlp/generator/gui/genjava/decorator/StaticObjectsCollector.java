@@ -293,7 +293,9 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
                   + ". Please rename one of the methods."
               );
             }
-            guiMethod = m;
+            if (!isPredefined) {
+              guiMethod = m;
+            }
             break;
           }
           else if (!guiMethod.compatibleReturnType(m) && guiMethod.compatibleParamTypes(m)) {

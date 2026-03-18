@@ -40,7 +40,7 @@ public class CreatePerson extends CreatePersonTOP {
   // But here is somewhat a possible interpretation in Java.
   @Override
   public Consumer<Void> doCancel() {
-    return (Void) -> {
+    return $ -> {
 //      this.cancel.emit(this.getPerson());
       // MH TODO: Wie soll das hier funktionieren?
     };

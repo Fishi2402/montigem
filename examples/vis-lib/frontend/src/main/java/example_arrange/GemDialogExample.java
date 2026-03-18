@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public class GemDialogExample extends GemDialogExampleTOP {
   @Override
   public Consumer<Void> openDialog() {
-    return (Void) -> this.setDialogOpen(true);
+    return $ -> this.setDialogOpen(true);
   }
 
   @Override

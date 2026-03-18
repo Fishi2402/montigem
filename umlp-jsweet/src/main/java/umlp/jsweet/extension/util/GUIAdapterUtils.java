@@ -46,7 +46,7 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
   public static final String UMLP_COMMON_POINTER = "@umlp/commonj2ts";
 
   public static final String STATEVAR_PREFIX = "_";
-
+  
   public GUIAdapterUtils(PrinterAdapter adapter, Types types, JSweetContext context, Util util) {
     super(adapter, types, context, util);
   }

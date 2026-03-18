@@ -14,21 +14,17 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.guidsl.GUIDSLMill;
-import de.monticore.guidsl._ast.ASTGUICompilationUnit;
-import de.monticore.guidsl._ast.ASTGUIComponent;
-import de.monticore.guidsl._ast.ASTGUIComponentDeclaration;
-import de.monticore.guidsl._ast.ASTGUIGuard;
-import de.monticore.guidsl._ast.ASTGUIIterate;
-import de.monticore.guidsl._ast.ASTGUINamedArg;
-import de.monticore.guidsl._ast.ASTGUIParam;
-import de.monticore.guidsl._ast.ASTGUIShortIterateControl;
+import de.monticore.guidsl._ast.*;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
+import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
@@ -57,15 +53,7 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -367,6 +355,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             + " - " + arg.get_SourcePositionEnd().toString()
         );
       }
+
       SymTypeExpression typeSTE = argumentTypeMap.get(arg);
       // exclude GUIViewElement
       if (util.isViewElement(typeSTE)
@@ -392,7 +381,25 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
       String nullCheck = nullCheckPrinter.prettyprint(arg.getExpression());
-      String getterValue = getterPrinter.prettyprint(arg.getExpression());
+      
+      ASTExpression argExpr = arg.getExpression();
+      if (GUIDSLMill.typeDispatcher().isCommonExpressionsASTCallExpression(argExpr)) {
+        ASTCallExpression methodCall = GUIDSLMill.typeDispatcher().asCommonExpressionsASTCallExpression(argExpr);
+        if (methodCall.getArguments().sizeExpressions() > 0) {
+          boolean hasViewElementArg = false;
+          List<ASTExpression> expressions = methodCall.getArguments().getExpressionList();
+          for(ASTExpression expr : expressions) {
+            if (GUIDSLMill.typeDispatcher().isGUIDSLASTGUIComponent(expr)) {
+              hasViewElementArg = true;
+              break;
+            }
+          }
+          if (hasViewElementArg) {
+            continue;
+          }
+        }
+      }
+      String getterValue = getterPrinter.prettyprint(argExpr);
 
       List<ASTCDParameter> params = getIterationItemParameters(arg);
 
@@ -859,14 +866,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           // TODO AGe: check type correctness
           PredefinedFunction fun = PredefinedFunction.getMember(name).get();
           String manager = getAndImportManager();
-
           switch (fun) {
             case CREATE:
               if (method.getParamTypes().size() != 1
                   || !util.isDomainType(method.getParamTypes().get(0))) {
-                Log.error("0x0001A Function 'create' expects a single domain type argument"
-                    + " at " + node.get_SourcePositionStart().toString()
-                    + " - " + node.get_SourcePositionEnd().toString());
+                Log.error("0xD001A Function 'create' expects a single domain type argument",
+                    node.get_SourcePositionStart(),
+                    node.get_SourcePositionEnd());
               }
               if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
                 addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
@@ -877,9 +883,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             case DELETE:
               if (method.getParamTypes().size() != 1
                   || !util.isDomainType(method.getParamTypes().get(0))) {
-                Log.error("0x0001A Function 'delete' expects a single domain type argument"
-                    + " at " + node.get_SourcePositionStart().toString()
-                    + " - " + node.get_SourcePositionEnd().toString());
+                Log.error("0xD001B Function 'delete' expects a single domain type argument",
+                    node.get_SourcePositionStart(),
+                    node.get_SourcePositionEnd());
               }
               if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
                 addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
@@ -901,6 +907,40 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             }
             case ASSOC_SET_ABSENT: {
               addAssocMethod(method, node, getAssocSetAbsentTemplate());
+              break;
+            }
+            case NAVIGATE: {
+              if ((method.getParamTypes().size() != 1 && node.getArguments().sizeExpressions() != 1) ||
+                  (!util.isViewElement(method.getParamTypes().getFirst()) &&
+                      !util.isStringLiteral(node.getArguments().getExpression(0)))) {
+                Log.error("0xD001C Function 'navigate' expects one argument that is either of type GUIViewElement, "
+                    + "e.g. '@MyPage(param = val)', or an URL as String",
+                    node.get_SourcePositionStart(),
+                    node.get_SourcePositionEnd());
+              }
+              ASTExpression navArgExpr = node.getArguments().getExpression(0);
+              
+              if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
+                addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
+              }
+              if (TypeScriptTypes.APP_ROUTER.getJavaQName().isPresent()) {
+                addImport(TypeScriptTypes.APP_ROUTER.getJavaQName().get());
+              }
+              if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
+                addImport(TypeScriptTypes.ROUTER.getJavaQName().get());
+              }
+              
+              if (util.isStringLiteral(navArgExpr)) {
+                ASTLiteralExpression routingUrlExpr = GUIDSLMill.typeDispatcher().asExpressionsBasisASTLiteralExpression(navArgExpr);
+                ASTStringLiteral routingUrl = GUIDSLMill.typeDispatcher().asMCCommonLiteralsASTStringLiteral(routingUrlExpr.getLiteral());
+                getCD4C().addMethod(clazz, getNavigateStringTemplate(),
+                    method.getAlias(), routingUrl.getValue());
+              }
+              else if (util.isViewElement(method.getParamTypes().getFirst())) {
+                ASTGUIComponent guiComponent = GUIDSLMill.typeDispatcher().asGUIDSLASTGUIComponent(navArgExpr);
+                printNavigateMethod(method, node, guiComponent);
+                prepareNavigateEventCaller(node, guiComponent);
+              }
               break;
             }
           }
@@ -1236,6 +1276,45 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected String getConvertedValueAssignment(String type, String varName, String value) {
     return type + " " + varName + " = " + value;
   }
+  
+  private void printNavigateMethod(Method method, ASTCallExpression node, ASTGUIComponent guiComponent) {
+    String pageName = guiComponent.getName();
+    ASTGUINamedArgs guiCompArgs = guiComponent.getGUINamedArgs();
+    if (guiCompArgs.sizeGUINamedArgs() > 0 && guiCompArgs.getGUINamedArgList().stream().anyMatch(arg -> {
+      // Check if arguments have at least one domain type argument
+      SymTypeExpression typeSTE = guiComponent.getArgumentTypes().get(arg);
+      return util.isDomainType(typeSTE);
+    })) {
+      // @FooPage(Foo foo, int i, Bar bar) -> navigate_0(Foo foo, /*ignore primitive type int,*/ Bar bar)
+      List<ASTMCType> navArgTypes = guiCompArgs.getGUINamedArgList().stream()
+          .map(arg -> guiComponent.getArgumentTypes().get(arg))
+          .filter(util::isDomainType)
+          .map(domainTypeSTE -> getSimpleType(createTypeAndAddImports(domainTypeSTE)))
+          .toList();
+      getCD4C().addMethod(clazz, getNavigateWithIdTemplate(), method.getAlias(), pageName, navArgTypes);
+    }
+    else {
+      // @FooPage(int i) -> navigate_1()
+      getCD4C().addMethod(clazz, getNavigateTemplate(), method.getAlias(), pageName);
+    }
+  }
+  
+  private void prepareNavigateEventCaller(ASTCallExpression node, ASTGUIComponent guiComponent) {
+    // remove GUIViewElement argument
+    if (node.getArguments().sizeExpressions() == 1) {
+      node.getArguments().removeExpression(0);
+    }
+    
+    if (guiComponent.getGUINamedArgs().sizeGUINamedArgs() > 0) {
+      for (ASTGUINamedArg namedArg : guiComponent.getGUINamedArgs().getGUINamedArgList()) {
+        SymTypeExpression typeSTE = guiComponent.getArgumentTypes().get(namedArg);
+        if (util.isDomainType(typeSTE)) {
+          // add actual navigation arguments
+          node.getArguments().addExpression(namedArg.getExpression());
+        }
+      }
+    }
+  }
 
   // TODO AGe: replace with RTE functions and specific components
   public Function<String, String> getConversion(
@@ -1561,5 +1640,17 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getCommandExecutionTemplate() {
     return "umlp.gui2java.GUI2JavaExecuteCommandMethod";
+  }
+  
+  protected String getNavigateTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaNavigate";
+  }
+  
+  protected String getNavigateStringTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaNavigateString";
+  }
+  
+  protected String getNavigateWithIdTemplate() {
+    return "umlp.gui2java.predefined.GUI2JavaNavigateWithId";
   }
 }

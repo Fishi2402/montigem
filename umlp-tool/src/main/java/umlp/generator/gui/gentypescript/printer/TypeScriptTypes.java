@@ -16,8 +16,9 @@ public enum TypeScriptTypes {
   TEMPLATE_REF(BuiltInTypes.GUI_VIEW_ELEMENT.getName(), "TemplateRef",
       BuiltInTypes.GUI_VIEW_ELEMENT.getQName(), "@angular/core"),
   // TODO: set proper router service when implemented
-  ROUTER("RouterService", "Router",
-      "RouterService", "@angular/router"),
+  ROUTER("Router", "Router",
+      "umlp.guiutil.Router", "@angular/router"),
+  APP_ROUTER("AppRouter", "AppRouter", "app.AppRouter"),
   LIST("List", "Array", "java.util.List"),
   ARRAY_LIST("ArrayList", "Array", "java.util.ArrayList"),
   COLLECTION("Collection", "Array", "java.util.Collection"),

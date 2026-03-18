@@ -1,0 +1,9 @@
+package gui.test;
+
+import mc.fenix.basic.GemText;
+
+import Jsweettest.E;
+
+page NavigateTargetWithId(E e) {
+  @GemText(value = "Value " + e.value);
+}
