@@ -31,7 +31,7 @@ dependencies {
 
   // Used for umlp._infrastructure.TestSetup
   // Alternative: testing-rte + generate a testing module for each cd
-  compileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  compileOnly "org.junit.jupiter:junit-jupiter:$junit_version" // depend on not only the api, as otherwise spring-boot-starter-test destroys everything
   // Used for AbstractPlaywrightE2ETest
   compileOnly 'com.microsoft.playwright:playwright:1.44.0'
   compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
