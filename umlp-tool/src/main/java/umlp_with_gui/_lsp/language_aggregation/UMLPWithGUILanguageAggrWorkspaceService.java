@@ -61,6 +61,12 @@ public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguage
           TextEdit edit = new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), content);
           changes.put(uriStr, List.of(edit));
         }
+      } else if (uriStr.endsWith(".umlp")) {
+        String content = generateMinimalUmlpModel(uriStr);
+        if (content != null) {
+          TextEdit edit = new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), content);
+          changes.put(uriStr, List.of(edit));
+        }
       }
     }
 
@@ -91,6 +97,26 @@ public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguage
         sb.append("package ").append(packageName).append(";\n\n");
       }
       sb.append("page ").append(name).append("() {\n\n}\n");
+      return sb.toString();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  protected String generateMinimalUmlpModel(String uriStr) {
+    try {
+      URI uri = new URI(uriStr);
+      Path path = Paths.get(uri).toAbsolutePath().normalize();
+      String fileName = path.getFileName().toString();
+      String name = fileName.substring(0, fileName.lastIndexOf('.'));
+
+      String packageName = calculatePackage(path);
+
+      StringBuilder sb = new StringBuilder();
+      if (packageName != null && !packageName.isEmpty()) {
+        sb.append("package ").append(packageName).append(";\n\n");
+      }
+      sb.append("classdiagram ").append(name).append(" {\n\n}\n");
       return sb.toString();
     } catch (Exception e) {
       return null;

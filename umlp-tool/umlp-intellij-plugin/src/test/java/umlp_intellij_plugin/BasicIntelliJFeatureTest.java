@@ -290,12 +290,14 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
       PsiDocumentManager.getInstance(codeInsightFixture.getProject()).commitAllDocuments();
     });
 
-    PlatformTestUtil.waitWithEventsDispatching("Content not filled", () -> {
-      return ReadAction.compute(() -> {
-        Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
-        return doc != null && doc.getText().contains("package gui;");
-      });
-    }, 30);
+    EdtTestUtil.runInEdtAndWait(() -> {
+      PlatformTestUtil.waitWithEventsDispatching("Content not filled", () -> {
+        return ReadAction.compute(() -> {
+          Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
+          return doc != null && doc.getText().contains("package gui;");
+        });
+      }, 30);
+    });
 
     String content = ReadAction.compute(() -> {
       Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
@@ -303,6 +305,41 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
     });
     assertTrue(content.contains("package gui;"), "Package statement missing. Content: " + content);
     assertTrue(content.contains("page NewComponent"), "Component name missing. Content: " + content);
+  }
+
+  @Test
+  public void testUMLPCreateFileAutofill() throws IOException {
+    openFile("models/Mydomain.umlp");
+    waitForLspIndexing();
+
+    String newUmlpRelativePath = "models/newpackage/NewModel.umlp";
+
+    PsiFile newFile = EdtTestUtil.runInEdtAndGet(() -> {
+      return codeInsightFixture.addFileToProject(newUmlpRelativePath, "");
+    });
+
+    openFile(newUmlpRelativePath);
+
+    EdtTestUtil.runInEdtAndWait(() -> {
+      PlatformTestUtil.dispatchAllEventsInIdeEventQueue();
+      PsiDocumentManager.getInstance(codeInsightFixture.getProject()).commitAllDocuments();
+    });
+
+    EdtTestUtil.runInEdtAndWait(() -> {
+      PlatformTestUtil.waitWithEventsDispatching("Content not filled", () -> {
+        return ReadAction.compute(() -> {
+          Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
+          return doc != null && doc.getText().contains("package newpackage;");
+        });
+      }, 30);
+    });
+
+    String content = ReadAction.compute(() -> {
+      Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
+      return doc.getText();
+    });
+    assertTrue(content.contains("package newpackage;"), "Package statement missing. Content: " + content);
+    assertTrue(content.contains("classdiagram NewModel {"), "Umlp model name missing. Content: " + content);
   }
 }
 
