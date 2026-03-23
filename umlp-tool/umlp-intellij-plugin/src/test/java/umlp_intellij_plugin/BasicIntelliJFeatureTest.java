@@ -4,7 +4,13 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.testFramework.EdtTestUtil;
+import com.intellij.testFramework.PlatformTestUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -265,4 +271,38 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
     List<HighlightInfo> errors = highlights.stream().filter(it -> it.type.equals(HighlightInfoType.ERROR)).toList();
     assertTrue(errors.isEmpty(), "Error(s) found for correct model:\n" + errors.stream().map(Objects::toString).collect(Collectors.joining("\n")));
   }
+
+  @Test
+  public void testGUICreateFileAutofill() throws IOException {
+    openFile("frontend/src/main/gui/gui/Start.gui");
+    waitForLspIndexing();
+
+    String newGuiRelativePath = "frontend/src/main/gui/gui/NewComponent.gui";
+
+    PsiFile newFile = EdtTestUtil.runInEdtAndGet(() -> {
+      return codeInsightFixture.addFileToProject(newGuiRelativePath, "");
+    });
+
+    openFile(newGuiRelativePath);
+
+    EdtTestUtil.runInEdtAndWait(() -> {
+      PlatformTestUtil.dispatchAllEventsInIdeEventQueue();
+      PsiDocumentManager.getInstance(codeInsightFixture.getProject()).commitAllDocuments();
+    });
+
+    PlatformTestUtil.waitWithEventsDispatching("Content not filled", () -> {
+      return ReadAction.compute(() -> {
+        Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
+        return doc != null && doc.getText().contains("package gui;");
+      });
+    }, 30);
+
+    String content = ReadAction.compute(() -> {
+      Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
+      return doc.getText();
+    });
+    assertTrue(content.contains("package gui;"), "Package statement missing. Content: " + content);
+    assertTrue(content.contains("page NewComponent"), "Component name missing. Content: " + content);
+  }
 }
+
