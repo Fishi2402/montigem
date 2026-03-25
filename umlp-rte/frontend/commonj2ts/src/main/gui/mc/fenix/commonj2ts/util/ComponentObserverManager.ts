@@ -23,6 +23,7 @@ export abstract class ComponentObserverManager {
   // Domain-specific mapping from a type name to a function that create an AllObserver for that type
   protected abstract getObserverFactory(): Map<string, ((update: () => void) => any)>;
 
+  // TODO this can probably be removed
   // Domain-specific mapping from a type name to a function that gets an object of that type
   protected abstract getObjectGetterFactory(): Map<string, ((gemId: number) => Promise<GemIdentifiable>)>;
 
@@ -48,7 +49,7 @@ export abstract class ComponentObserverManager {
   // GUI Component Name, Domain Object GemId, Method Name, AllObserver
   public componentDomainObjectObservers: Map<string, Map<number, Map<string, any>>> = new Map();
   // Maps gemIds to types
-  public objectTypes: Map<number, string> = new Map();
+  public observedObjects: Map<number, GemIdentifiable> = new Map();
 
   public __addDomainObjectObserver<T extends GemIdentifiable>(obj: T, update: () => void, updateName: string, componentName: string): T {
     if (obj === undefined || obj === null) {
@@ -66,8 +67,8 @@ export abstract class ComponentObserverManager {
     let updateObservers: Map<number, Map<string, any>> = this.componentDomainObjectObservers.get(componentName);
     if (!updateObservers.has(obj.getGemId())) {
       updateObservers.set(obj.getGemId(), new Map<string, any>());
-      if (!this.objectTypes.has(obj.getGemId())) {
-        this.objectTypes.set(obj.getGemId(), realType);
+      if (!this.observedObjects.has(obj.getGemId())) {
+        this.observedObjects.set(obj.getGemId(), obj);
       }
     }
     if (!updateObservers.get(obj.getGemId()).has(updateName)) {
@@ -112,7 +113,8 @@ export abstract class ComponentObserverManager {
     if (this.componentDomainObjectObservers.has(componentName)) {
       this.componentDomainObjectObservers.get(componentName).forEach((updates, gemId) => {
         updates.forEach((observer, name) => {
-          this.getObjectGetterFactory().get(this.objectTypes.get(gemId))(gemId).then((obj: any) => obj?.removeObserver(observer));
+          const obj : any = this.observedObjects.get(gemId);
+          obj?.removeObserver(observer);
         });
         updates.clear();
       });
