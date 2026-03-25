@@ -66,7 +66,7 @@ public class RentCar extends RentCarTOP {
     extensions will have missing symbols without the generated code.
 
 The singleton can then be used in the frontend and backend code. The example
-`RentItem` command is sent using a `CommandManager`:
+`RentCar` command is sent using a `CommandManager`:
 ```java
 CommandManager.executeCommand(new RentCar(car.getGemId()));
 ```

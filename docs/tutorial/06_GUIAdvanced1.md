@@ -190,7 +190,7 @@ better option is to use a service that would execute necessary actions.
 [Previously](./05_ClassDiagramAdvanced.md) we defined such a service. We can use
 it by executing corresponding commands via the `CommandManager`. For example: 
 ```java
-import carrental.commands.RentItem;
+import carrental.commands.RentCar;
 import umlp.backendrte.command.CommandManager;
 /*other imports*/
 

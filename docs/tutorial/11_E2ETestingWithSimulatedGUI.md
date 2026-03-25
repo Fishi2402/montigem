@@ -160,21 +160,20 @@ void testAgeDistribution() {
 The data itself contains only the entries, so you can directly extract those:
 
 ```java
-GemPieChartData data = overview.getAgeDistribtionData();
+GemPieChartData data = overview.getAgeDistributionData();
 List<GemPieChartEntry> entries = data.getEntriesList();
 ```
 
 !!! note
-    The entries are in the order, in which they are shown in the chart. 
+    The entries are in the order, in which they are shown in the chart.
     So '18 and below' is first, then 'other' and finally '60 and older'.
 
 You can then perform assertions on the entries' values and even labels:
 ```java
 //make sure that there are two customers in the 'other' category
-GemPieChartEntry other = entires.get(1);
+GemPieChartEntry other = entries.get(1);
 assertEquals(2, other.getValue());
 ```
-
 ### Interacting with a GUI
 
 So far we've only validated a GUI components contents, but we have not interacted with it yet. 
