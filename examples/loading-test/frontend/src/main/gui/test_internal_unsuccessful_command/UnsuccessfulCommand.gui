@@ -1,0 +1,9 @@
+package test_internal_unsuccessful_command;
+
+import mc.fenix.basic.GemButton;
+
+page UnsuccessfulCommand() {
+
+  // Button with hwc behavior that triggers an unsuccessful command
+  @GemButton(label="Trigger", leftClick=triggerUnsuccessfulCommand());
+}

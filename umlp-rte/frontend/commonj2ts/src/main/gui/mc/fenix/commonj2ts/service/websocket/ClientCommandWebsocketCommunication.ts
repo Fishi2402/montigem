@@ -126,6 +126,18 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
   }
 
   public init(): Promise<number> {
+    this.onCommandResultReceived(
+      (result : CommandResult<any>) => {
+        result.isSuccessful().then(
+          success => {
+            if(!success) {
+              Log.error("Command with id "+result.getCommandId()+ " was not successful.");
+            }
+          }
+        )
+      }
+    );
+
     this.socket = webSocket({
       url: this.uri,
       openObserver: {
@@ -258,7 +270,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
         }
         // this.messages.set(commandResult.getCommandId(), commandResult);
         for (const observer of this.commandResultObserver) {
-          // observer(commandResult);
+          observer(commandResult);
         }
       } else {
         let commandOptional: Command<Object> = null;
