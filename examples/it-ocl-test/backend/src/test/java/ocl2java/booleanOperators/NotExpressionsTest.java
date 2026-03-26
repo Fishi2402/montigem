@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Tag;
 
 import mydomain.MydomainManager;
 import mydomain.Person;
-import notexpressions.NotExpression1;
+import mydomain.notexpressions.NotExpression1;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;

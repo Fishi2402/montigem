@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package gui;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemCard;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextareaInput;
@@ -13,6 +13,14 @@ import mc.fenix.input.GemRadioInput;
 import mc.fenix.basic.GemImage;
 import gui.navigation.NavContainer;
 
-page Start() {
-  /* component usages, control statements, etc. */
+import Mydomain.Person;
+import gui.PersonEdit;
+
+page Start(List<Person> persons) {
+  @GemButton(label="Add Person", leftClick=createPerson());
+  @iterate(Person p : persons){
+    @GemCard(
+      component=@PersonEdit(p=p)
+    );
+  }
 }

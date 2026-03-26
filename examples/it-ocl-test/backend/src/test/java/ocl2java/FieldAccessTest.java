@@ -27,12 +27,12 @@ public interface FieldAccessTest extends IOCL2XTest {
 
         @Override
         protected void _initConstraints() {
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleFieldAccess"), fieldaccess.SimpleFieldAccess::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ListFieldAccess"), fieldaccess.ListFieldAccess::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "DomainFieldAccess"), fieldaccess.DomainFieldAccess::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "DomainListFieldAccess"), fieldaccess.DomainListFieldAccess::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleAssocFieldAccess"), fieldaccess.SimpleAssocFieldAccess::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "AssocListFieldAccess"), fieldaccess.AssocListFieldAccess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleFieldAccess"), mydomain.fieldaccess.SimpleFieldAccess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ListFieldAccess"), mydomain.fieldaccess.ListFieldAccess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "DomainFieldAccess"), mydomain.fieldaccess.DomainFieldAccess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "DomainListFieldAccess"), mydomain.fieldaccess.DomainListFieldAccess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleAssocFieldAccess"), mydomain.fieldaccess.SimpleAssocFieldAccess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "AssocListFieldAccess"), mydomain.fieldaccess.AssocListFieldAccess::checkInv0);
         }
     }
 

@@ -1,20 +1,26 @@
 package umlp.generator.ocl;
 
+import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.gradle.common.GradleLog;
 import de.monticore.io.paths.MCPath;
-import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
-import de.monticore.ocl.ocl._ast.ASTOCLConstraint;
-import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
 import de.monticore.ocl.ocl._symboltable.IOCLGlobalScope;
+import de.monticore.ocl.ocl._symboltable.OCLSymbolTableCompleter;
+import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
+import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.ocl.types.check.types3wrapper.TypeCheck3AsOCLDeriver;
+import de.monticore.ocl.types.check.types3wrapper.TypeCheck3AsOCLSynthesizer;
 import de.monticore.ocl.util.SymbolTableUtil;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
+import oclwitherrormessages.OCLWithErrorMessagesMill;
+import oclwitherrormessages._symboltable.OCLWithErrorMessagesScopesGenitorDelegator;
+import oclwitherrormessages._visitor.OCLWithErrorMessagesTraverser;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -69,11 +75,18 @@ public class OCL2JavaGeneratorTool {
         .desc("Comma-separated list of domain models")
         .build();
 
+    Option prefixPackageOption = Option.builder("prefixPackage")
+        .required(false)
+        .hasArg()
+        .desc("Prefix package for the generated code")
+        .build();
+
     options.addOption(oclOption);
     options.addOption(symbolsOption);
     options.addOption(outputOption);
     options.addOption(preloadDiamgrasOption);
     options.addOption(domainOption);
+    options.addOption(prefixPackageOption);
 
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
@@ -105,23 +118,29 @@ public class OCL2JavaGeneratorTool {
         ? List.of(cmd.getOptionValues("domain"))
         : List.of();
 
+    String prefixPackage = cmd.getOptionValue("prefixPackage");
+
     OCL2JavaGeneratorTool tool = new OCL2JavaGeneratorTool();
-    tool.generate(oclFiles, symbolPaths, outputDir, preloadDiagrams, domainModels);
+    tool.generate(oclFiles, symbolPaths, outputDir, preloadDiagrams, domainModels, prefixPackage);
   }
 
-  public void generate(List<Path> oclFiles, List<Path> symbolPaths, Path outputDir, List<String> preloadDiagrams, List<String> domainModels) {
+  public void generate(List<Path> oclFiles, List<Path> symbolPaths, Path outputDir, List<String> preloadDiagrams, List<String> domainModels, String prefixPackage) {
     initSymtab(symbolPaths, preloadDiagrams, domainModels);
     for (Path oclFile : oclFiles) {
       Log.info("Processing " + oclFile, "ocl2java");
       try {
-        Optional<ASTOCLCompilationUnit> astOpt = OCLMill.parser().parse(oclFile.toString());
+        Optional<ASTOCLCompilationUnit> astOpt = OCLWithErrorMessagesMill.parser().parse(oclFile.toString());
         if (astOpt.isPresent()) {
           ASTOCLCompilationUnit ast = astOpt.get();
 
-          Path outputPath = outputDir.resolve(ast.getPackage().replace(".", "/")).resolve(ast.getOCLArtifact().getName() + ".java");
+          String fullPackage = (prefixPackage != null && !prefixPackage.isEmpty())
+              ? (ast.isPresentPackage() && !ast.getPackage().isEmpty() ? prefixPackage + "." + ast.getPackage() : prefixPackage)
+              : ast.getPackage();
+
+          Path outputPath = outputDir.resolve(fullPackage.replace(".", "/")).resolve(ast.getOCLArtifact().getName() + ".java");
           createSymtab(ast);
           outputPath.toFile().getParentFile().mkdirs();
-          AdaptedOCL2JavaGenerator.generate(ast, outputPath.toString());
+          OCL2UMLPJavaGenerator.generate(ast, fullPackage, outputPath.toString());
         } else {
           Log.error("Can not parse from ocl " + oclFile);
         }
@@ -131,21 +150,50 @@ public class OCL2JavaGeneratorTool {
     }
   }
 
+  @SuppressWarnings("removal")
   protected void createSymtab(ASTOCLCompilationUnit ocl) {
-    SymbolTableUtil.runSymTabGenitor(ocl);
-    SymbolTableUtil.runSymTabCompleter(ocl);
-    // for (ASTOCLConstraint c : ocl.getOCLArtifact().getOCLConstraintList()) {
-    //   System.out.println("Type is " + TypeCheck3.typeOf(((ASTOCLInvariant)c).getExpression()));
-    // }
+    OCLWithErrorMessagesScopesGenitorDelegator genitor = OCLWithErrorMessagesMill.scopesGenitorDelegator();
+    SymbolTableUtil.addDefaultImports(genitor.createFromAST(ocl));
+
+
+    OCLSymbolTableCompleter stCompleter =
+        new OCLSymbolTableCompleter(ocl.getMCImportStatementList(), ocl.getPackage());
+    stCompleter.setSynthesizer(new TypeCheck3AsOCLSynthesizer());
+    OCLExpressionsSymbolTableCompleter stCompleter2 = new OCLExpressionsSymbolTableCompleter();
+    stCompleter2.setDeriver(new TypeCheck3AsOCLDeriver());
+    stCompleter2.setSynthesizer(new TypeCheck3AsOCLSynthesizer());
+    SetExpressionsSymbolTableCompleter stCompleter3 = new SetExpressionsSymbolTableCompleter();
+    stCompleter3.setDeriver(new TypeCheck3AsOCLDeriver());
+    stCompleter3.setSynthesizer(new TypeCheck3AsOCLSynthesizer());
+
+    OCLWithErrorMessagesTraverser t = OCLWithErrorMessagesMill.inheritanceTraverser();
+    t.add4BasicSymbols(stCompleter);
+    t.add4OCL(stCompleter);
+    t.setOCLHandler(stCompleter);
+    t.setOCLExpressionsHandler(stCompleter2);
+    t.setSetExpressionsHandler(stCompleter3);
+    t.add4BasicSymbols(stCompleter2);
+    t.add4OCLExpressions(stCompleter2);
+    t.add4BasicSymbols(stCompleter3);
+    t.add4SetExpressions(stCompleter3);
+    ocl.accept(t);
   }
 
   public void initSymtab(List<Path> symbolPaths, List<String> preloadDiagrams, List<String> domainModels) {
-    SymbolTableUtil.prepareMill();
+    OCLWithErrorMessagesMill.reset();
+    OCLWithErrorMessagesMill.init();
+    OCLWithErrorMessagesMill.globalScope().clear();
+    BasicSymbolsMill.initializePrimitives();
+
+    Class2MCResolver resolver = new Class2MCResolver();
+    OCLWithErrorMessagesMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
+    SymbolTableUtil.addOclpLibrary();
+
     NoRegexOCLTypeCheck3.init();
 
     TypeUtil.getInstance().init(domainModels);
 
-    IOCLGlobalScope gs = OCLMill.globalScope();
+    IOCLGlobalScope gs = OCLWithErrorMessagesMill.globalScope();
 
     gs.putTypeSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol");
     gs.putFunctionSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
@@ -154,7 +202,7 @@ public class OCL2JavaGeneratorTool {
       @Override
       public SymTypeExpression deserializeType(IBasicSymbolsScope scope, JsonObject symbolJson) {
         if (symbolJson.getStringMember("cardinality").equals("[*]")) {
-          return SymTypeExpressionFactory.createGenerics(OCLMill.globalScope().resolveType("List").get(), List.of(super.deserializeType(scope, symbolJson)));
+          return SymTypeExpressionFactory.createGenerics(OCLWithErrorMessagesMill.globalScope().resolveType("List").get(), List.of(super.deserializeType(scope, symbolJson)));
         } else {
           return super.deserializeType(scope, symbolJson);
         }

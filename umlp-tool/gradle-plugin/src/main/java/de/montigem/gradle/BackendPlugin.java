@@ -135,6 +135,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
       task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("ocl2java"));
       task.getDomainModels().add(umlpName);
+      task.getPrefixPackage().set(umlpName.map(String::toLowerCase));
 
       task.onlyIf(t -> ((OCL2JavaTask) t).getInput().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".ocl")));
     });

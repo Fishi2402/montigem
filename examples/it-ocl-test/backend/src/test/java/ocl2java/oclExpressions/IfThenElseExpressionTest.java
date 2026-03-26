@@ -2,7 +2,7 @@ package ocl2java.oclExpressions;
 
 import org.junit.jupiter.api.Tag;
 
-import ifthenelse.IfThenElseExpression1;
+import mydomain.ifthenelse.IfThenElseExpression1;
 import mydomain.MydomainManager;
 import mydomain.Student;
 import util.AbstractOCL2CypherTest;

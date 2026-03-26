@@ -1,4 +1,4 @@
-package ocl2java;
+package ocl2cypher;
 
 import de.monticore.ocl.ocl.OCLMill;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;

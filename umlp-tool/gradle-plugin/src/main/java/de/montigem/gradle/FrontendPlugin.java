@@ -43,6 +43,7 @@ import java.util.Set;
 
 import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_DIR;
 import static de.montigem.gradle.BackendPlugin.MERGE_UMLP_TASK;
+import static de.montigem.gradle.BackendPlugin.OCL2JAVA_TASK;
 import static de.montigem.gradle.BackendPlugin.UMLP2JAVA_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.CREATE_SYMLINK_TASK;
 import static de.montigem.gradle.FrontendBasePlugin.GUI_TYPES_CONFIG;
@@ -239,6 +240,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
 
     if (backend.isPresent()) {
       umlpJava2ts.configure(t -> t.dependsOn(backend.get().getTasks().named(UMLP2JAVA_TASK)));
+      umlpJava2ts.configure(t -> t.dependsOn(backend.get().getTasks().named(OCL2JAVA_TASK)));
     }
 
     TaskProvider<CD2JavaTask> cd2java = project.getTasks().register(CD2JAVA_TASK, CD2JavaTask.class);

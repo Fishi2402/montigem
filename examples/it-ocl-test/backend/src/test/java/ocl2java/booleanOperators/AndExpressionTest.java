@@ -1,9 +1,9 @@
 package ocl2java.booleanOperators;
 
-import andExpression.AndExpression2;
+import mydomain.andExpression.AndExpression2;
 import org.junit.jupiter.api.Tag;
 
-import andExpression.AndExpression1;
+import mydomain.andExpression.AndExpression1;
 import mydomain.MydomainManager;
 import mydomain.Person;
 import util.AbstractOCL2CypherTest;

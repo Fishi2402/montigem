@@ -2,7 +2,7 @@ package ocl2java.oclExpressions;
 
 import org.junit.jupiter.api.Tag;
 
-import anyexpression.AnyMember_isActive_singletonGroups;
+import mydomain.anyexpression.AnyMember_isActive_singletonGroups;
 import mydomain.Group;
 import mydomain.MydomainManager;
 import util.AbstractOCL2CypherTest;

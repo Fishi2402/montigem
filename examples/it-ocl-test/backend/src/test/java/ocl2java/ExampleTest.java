@@ -28,7 +28,7 @@ public interface ExampleTest extends IOCL2XTest {
 
     @Override
     protected void _initConstraints() {
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleConstraint"), example.SimpleConstraint::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleConstraint"), mydomain.example.SimpleConstraint::checkInv0);
     }
   }
 

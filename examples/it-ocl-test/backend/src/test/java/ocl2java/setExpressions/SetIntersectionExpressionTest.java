@@ -3,7 +3,7 @@ package ocl2java.setExpressions;
 import org.junit.jupiter.api.Tag;
 
 import mydomain.*;
-import setIntersectionExpression.*;
+import mydomain.setIntersectionExpression.*;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;

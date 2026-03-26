@@ -12,6 +12,6 @@ configurations {
 
 umlpJava2ts {
   excludeSource.addAll([
-      "glob:**/ocl2java/**"
+      "glob:**/ocl2cypher/**"
   ])
 }

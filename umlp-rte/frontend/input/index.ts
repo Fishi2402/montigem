@@ -26,3 +26,8 @@ export * from './build/gui2java2ts/mc/fenix/input/gemtextinputtypes/GemTextInput
 export * from './build/gui2java2ts/mc/fenix/input/gemtextinputtypes/GemTextInputValidityBuilder';
 export * from './build/gui2java2ts/mc/fenix/input/gemtextinputtypes/GemTextInputValidityDeSer';
 export * from './build/gui2java2ts/mc/fenix/input/gemtextinputtypes/GemTextInputTypesDeSer';
+
+export * from './build/gui2java2ts/mc/fenix/input/geminputbasetypes/GemInputBaseTypesDeSer';
+export * from './build/gui2java2ts/mc/fenix/input/geminputbasetypes/ValidationError';
+export * from './build/gui2java2ts/mc/fenix/input/geminputbasetypes/ValidationErrorBuilder';
+export * from './build/gui2java2ts/mc/fenix/input/geminputbasetypes/ValidationErrorDeSer';

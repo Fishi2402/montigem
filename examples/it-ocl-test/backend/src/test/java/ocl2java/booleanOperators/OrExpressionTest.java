@@ -1,11 +1,11 @@
 package ocl2java.booleanOperators;
 
-import orexpression.OrExpression2;
+import mydomain.orexpression.OrExpression2;
 import org.junit.jupiter.api.Tag;
 
 import mydomain.MydomainManager;
 import mydomain.Person;
-import orexpression.OrExpression1;
+import mydomain.orexpression.OrExpression1;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;

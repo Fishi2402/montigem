@@ -2,7 +2,7 @@ package ocl2java.oclExpressions;
 
 import org.junit.jupiter.api.Tag;
 
-import equivalent.EquivalentExpression1;
+import mydomain.equivalent.EquivalentExpression1;
 import mydomain.MydomainManager;
 import mydomain.Student;
 import util.AbstractOCL2CypherTest;

@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Tag;
 
 import mydomain.MydomainManager;
 import mydomain.Group;
-import setEnumeration.InvalidGroupWithConstSet;
-import setEnumeration.ValidGroupWithConstSet;
+import mydomain.setEnumeration.InvalidGroupWithConstSet;
+import mydomain.setEnumeration.ValidGroupWithConstSet;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;

@@ -1,0 +1,11 @@
+package gui;
+
+import Mydomain.Person;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+component PersonEdit(Person p) {
+  @GemTextInput(labelText="name", entry=p.name);
+  @GemTextInput(labelText="age", inputType = "number", entry=p.age, validity=null /*hwc*/);
+  @GemCheckBoxInput(labelText="adult", checked=p.adult);
+}

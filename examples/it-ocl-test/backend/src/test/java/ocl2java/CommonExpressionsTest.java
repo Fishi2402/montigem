@@ -33,35 +33,35 @@ public interface CommonExpressionsTest extends IOCL2XTest {
     @Override
     protected void _initConstraints() {
       // LesserEqual has 2 invariants - combine with AND (conjunction)
-      Predicate<Object> lesserEqualPred = commonexpressions.LesserEqual::checkInv0;
-      lesserEqualPred = lesserEqualPred.and(commonexpressions.LesserEqual::checkInv1);
+      Predicate<Object> lesserEqualPred = mydomain.commonexpressions.LesserEqual::checkInv0;
+      lesserEqualPred = lesserEqualPred.and(mydomain.commonexpressions.LesserEqual::checkInv1);
       constraints.put(getOclFromFile(RESOURCE_FOLDER, "LesserEqual"), lesserEqualPred);
 
       // GreaterEqual has 2 invariants - combine with AND (conjunction)
-      Predicate<Object> greaterEqualPred = commonexpressions.GreaterEqual::checkInv0;
-      greaterEqualPred = greaterEqualPred.and(commonexpressions.GreaterEqual::checkInv1);
+      Predicate<Object> greaterEqualPred = mydomain.commonexpressions.GreaterEqual::checkInv0;
+      greaterEqualPred = greaterEqualPred.and(mydomain.commonexpressions.GreaterEqual::checkInv1);
       constraints.put(getOclFromFile(RESOURCE_FOLDER, "GreaterEqual"), greaterEqualPred);
 
       // LesserThen has 2 invariants - combine with AND (conjunction)
-      Predicate<Object> lesserThenPred = commonexpressions.LesserThen::checkInv0;
-      lesserThenPred = lesserThenPred.and(commonexpressions.LesserThen::checkInv1);
+      Predicate<Object> lesserThenPred = mydomain.commonexpressions.LesserThen::checkInv0;
+      lesserThenPred = lesserThenPred.and(mydomain.commonexpressions.LesserThen::checkInv1);
       constraints.put(getOclFromFile(RESOURCE_FOLDER, "LesserThen"), lesserThenPred);
 
       // GreaterThen has 2 invariants - combine with AND (conjunction)
-      Predicate<Object> greaterThenPred = commonexpressions.GreaterThen::checkInv0;
-      greaterThenPred = greaterThenPred.and(commonexpressions.GreaterThen::checkInv1);
+      Predicate<Object> greaterThenPred = mydomain.commonexpressions.GreaterThen::checkInv0;
+      greaterThenPred = greaterThenPred.and(mydomain.commonexpressions.GreaterThen::checkInv1);
       constraints.put(getOclFromFile(RESOURCE_FOLDER, "GreaterThen"), greaterThenPred);
 
       // Equals has 3 invariants - combine with AND (conjunction)
-      Predicate<Object> equalsPred = commonexpressions.Equals::checkInv0;
-      equalsPred = equalsPred.and(commonexpressions.Equals::checkInv1);
-      equalsPred = equalsPred.and(commonexpressions.Equals::checkInv2);
+      Predicate<Object> equalsPred = mydomain.commonexpressions.Equals::checkInv0;
+      equalsPred = equalsPred.and(mydomain.commonexpressions.Equals::checkInv1);
+      equalsPred = equalsPred.and(mydomain.commonexpressions.Equals::checkInv2);
       constraints.put(getOclFromFile(RESOURCE_FOLDER, "Equals"), equalsPred);
 
       // NotEquals has 3 invariants - combine with AND (conjunction)
-      Predicate<Object> notEqualsPred = commonexpressions.NotEquals::checkInv0;
-      notEqualsPred = notEqualsPred.and(commonexpressions.NotEquals::checkInv1);
-      notEqualsPred = notEqualsPred.and(commonexpressions.NotEquals::checkInv2);
+      Predicate<Object> notEqualsPred = mydomain.commonexpressions.NotEquals::checkInv0;
+      notEqualsPred = notEqualsPred.and(mydomain.commonexpressions.NotEquals::checkInv1);
+      notEqualsPred = notEqualsPred.and(mydomain.commonexpressions.NotEquals::checkInv2);
       constraints.put(getOclFromFile(RESOURCE_FOLDER, "NotEquals"), notEqualsPred);
     }
   }*/

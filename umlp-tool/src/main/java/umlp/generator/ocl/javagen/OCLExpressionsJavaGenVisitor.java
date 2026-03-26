@@ -189,7 +189,7 @@ public class OCLExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
     } else {
       Log.error("'iterate' without 'in' source expression is not supported.");
     }
-    getPrinter().print(").stream().sequential().<" + javaAccType + ">reduce(");
+    getPrinter().print(").stream().<" + javaAccType + ">reduce(");
 
     if (init.isPresentExpression()) {
       init.getExpression().accept(getTraverser());

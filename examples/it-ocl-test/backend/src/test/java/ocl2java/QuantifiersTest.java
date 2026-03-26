@@ -27,12 +27,12 @@ public interface QuantifiersTest extends IOCL2XTest {
 
     @Override
     protected void _initConstraints() {
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleForAll"), quantifiers.SimpleForAll::checkInv0);
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "DoubleForAll"), quantifiers.DoubleForAll::checkInv0);
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "NestedForAll"), quantifiers.NestedForAll::checkInv0);
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleExists"), quantifiers.SimpleExists::checkInv0);
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "DoubleExists"), quantifiers.DoubleExists::checkInv0);
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "NestedExists"), quantifiers.NestedExists::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleForAll"), mydomain.quantifiers.SimpleForAll::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "DoubleForAll"), mydomain.quantifiers.DoubleForAll::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "NestedForAll"), mydomain.quantifiers.NestedForAll::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimpleExists"), mydomain.quantifiers.SimpleExists::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "DoubleExists"), mydomain.quantifiers.DoubleExists::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "NestedExists"), mydomain.quantifiers.NestedExists::checkInv0);
     }
   }
 

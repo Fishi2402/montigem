@@ -3,7 +3,7 @@ package ocl2java.setExpressions;
 import mydomain.*;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import setUnionExpressionTest.*;
+import mydomain.setUnionExpressionTest.*;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;

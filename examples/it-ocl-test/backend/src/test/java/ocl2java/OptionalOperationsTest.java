@@ -28,15 +28,15 @@ public interface OptionalOperationsTest extends IOCL2XTest {
 
         @Override
         protected void _initConstraints() {
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisEquals1"), optionalOperations.ElvisEquals1::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisEquals2"), optionalOperations.ElvisEquals2::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisGreaterEqual"), optionalOperations.ElvisGreaterEqual::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisGreaterThan"), optionalOperations.ElvisGreaterThan::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisLess"), optionalOperations.ElvisLess::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisLessEquals"), optionalOperations.ElvisLessEquals::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisNotEquals1"), optionalOperations.ElvisNotEquals1::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisNotEquals2"), optionalOperations.ElvisNotEquals2::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisOptionalExpressionPrefix"), optionalOperations.ElvisOptionalExpressionPrefix::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisEquals1"), mydomain.optionalOperations.ElvisEquals1::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisEquals2"), mydomain.optionalOperations.ElvisEquals2::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisGreaterEqual"), mydomain.optionalOperations.ElvisGreaterEqual::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisGreaterThan"), mydomain.optionalOperations.ElvisGreaterThan::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisLess"), mydomain.optionalOperations.ElvisLess::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisLessEquals"), mydomain.optionalOperations.ElvisLessEquals::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisNotEquals1"), mydomain.optionalOperations.ElvisNotEquals1::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisNotEquals2"), mydomain.optionalOperations.ElvisNotEquals2::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ElvisOptionalExpressionPrefix"), mydomain.optionalOperations.ElvisOptionalExpressionPrefix::checkInv0);
         }
     }
 

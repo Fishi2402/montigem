@@ -3,7 +3,7 @@ package ocl2java.setExpressions;
 import org.junit.jupiter.api.Tag;
 
 import mydomain.*;
-import setexpressions.*;
+import mydomain.setexpressions.*;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;
@@ -26,7 +26,7 @@ public interface SetNotInExpressionTest extends IOCL2XTest {
 
         @Override
         protected void _initConstraints() {
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "MemberCheck"), setexpressions.MemberCheck::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "MemberCheck"), mydomain.setexpressions.MemberCheck::checkInv0);
             constraints.put(getOclFromFile(RESOURCE_FOLDER, "GivenSet"), GivenSet::checkInv0);
             // TODO: not implemented
             constraints.put(getOclFromFile(RESOURCE_FOLDER, "SimplePropertyCheck"), SimplePropertyCheck::checkInv0);

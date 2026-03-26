@@ -28,9 +28,9 @@ public interface CombinedTest extends IOCL2XTest {
 
         @Override
         protected void _initConstraints() {
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "VariableDeclarationAndSetExpression"), combined.VariableDeclarationAndSetExpression::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "VariableDeclarationAndSetExpression_OptionalValues"), combined.VariableDeclarationAndSetExpression_OptionalValues::checkInv0);
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "VariableDeclarationAndSetExpression_Multiple"), combined.VariableDeclarationAndSetExpression_Multiple::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "VariableDeclarationAndSetExpression"), mydomain.combined.VariableDeclarationAndSetExpression::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "VariableDeclarationAndSetExpression_OptionalValues"), mydomain.combined.VariableDeclarationAndSetExpression_OptionalValues::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "VariableDeclarationAndSetExpression_Multiple"), mydomain.combined.VariableDeclarationAndSetExpression_Multiple::checkInv0);
         }
     }
 

@@ -1,4 +1,4 @@
-package ocl2java.utils;
+package ocl2cypher.utils;
 
 import jsweet.lang.Erased;
 

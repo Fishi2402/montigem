@@ -27,7 +27,7 @@ public interface ImpliesExpressionsTest extends IOCL2XTest {
 
         @Override
         protected void _initConstraints() {
-            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ImpliesExpression1"), implies.ImpliesExpression1::checkInv0);
+            constraints.put(getOclFromFile(RESOURCE_FOLDER, "ImpliesExpression1"), mydomain.implies.ImpliesExpression1::checkInv0);
         }
     }
 

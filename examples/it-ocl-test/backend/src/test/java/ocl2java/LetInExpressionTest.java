@@ -2,7 +2,7 @@ package ocl2java;
 
 import org.junit.jupiter.api.Tag;
 
-import letinexpressions.*;
+import mydomain.letinexpressions.*;
 import mydomain.IntNumber;
 import mydomain.MydomainManager;
 import org.junit.jupiter.api.BeforeEach;

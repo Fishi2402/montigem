@@ -7,7 +7,7 @@ import mydomain.MydomainManager;
 import mydomain.Student;
 import mydomain.University;
 import org.junit.jupiter.api.Test;
-import setexpressions.MultiLevelPropertyAccess;
+import mydomain.setexpressions.MultiLevelPropertyAccess;
 import util.AbstractOCL2CypherTest;
 import util.AbstractOCL2JavaGenTest;
 import util.IOCL2XTest;

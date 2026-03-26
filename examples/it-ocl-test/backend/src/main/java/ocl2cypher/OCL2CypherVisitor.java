@@ -1,4 +1,4 @@
-package ocl2java;
+package ocl2cypher;
 
 import de.monticore.expressions.bitexpressions._ast.ASTLeftShiftExpression;
 import de.monticore.expressions.bitexpressions._ast.ASTLogicalRightShiftExpression;
@@ -42,9 +42,9 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import jsweet.lang.Erased;
-import ocl2java.utils.CypherQueryBuilder;
-import ocl2java.utils.LiteralUtils;
-import ocl2java.utils.SetContainmentUtils;
+import ocl2cypher.utils.CypherQueryBuilder;
+import ocl2cypher.utils.LiteralUtils;
+import ocl2cypher.utils.SetContainmentUtils;
 
 import java.util.ArrayList;
 import java.util.List;

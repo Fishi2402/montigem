@@ -10,8 +10,6 @@ import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressi
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
 import de.monticore.literals.mccommonliterals.codegen.javagen.MCCommonLiteralsJavaGenVisitor;
-import de.monticore.ocl.ocl.OCLMill;
-import de.monticore.ocl.ocl._visitor.OCLTraverser;
 import de.monticore.ocl.types3.OCLCollectionSymTypeRelations;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -27,6 +25,8 @@ import de.monticore.types3.TypeCheck3;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import oclwitherrormessages.OCLWithErrorMessagesMill;
+import oclwitherrormessages._visitor.OCLWithErrorMessagesTraverser;
 import umlp.generator.ocl.TypeUtil;
 import umlp.generator.ocl.javagen.field_access.FieldAccessInfo;
 
@@ -35,16 +35,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
-public class OCL2JavaCodeGenerator extends AbstractCodeGenVisitor {
-  OCLTraverser traverser;
+public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
+  OCLWithErrorMessagesTraverser traverser;
+  protected String fullPackage;
 
-  public OCL2JavaCodeGenerator(IndentPrinter printer) {
+  public OCL2UMLPJavaCodeGenerator(IndentPrinter printer) {
     super(printer);
     init();
   }
 
+  public OCL2UMLPJavaCodeGenerator(IndentPrinter printer, String fullPackage) {
+    super(printer);
+    this.fullPackage = fullPackage;
+    init();
+  }
+
   public void init() {
-    traverser = OCLMill.traverser();
+    traverser = OCLWithErrorMessagesMill.traverser();
     Map<String, Stack<SymTypeExpression>> knowTypeOfVar = new HashMap<>();
 
     JavaGenSymTypeExpressionConverter.init();
@@ -64,11 +71,11 @@ public class OCL2JavaCodeGenerator extends AbstractCodeGenVisitor {
     CommonExpressionsJavaGenVisitor visCommonExpressions = new CommonExpressionsJavaGenVisitor(getPrinter()) {
       @Override
       public void handle(ASTCallExpression node) {
-        boolean isFieldAccess = OCLMill.typeDispatcher().isCommonExpressionsASTFieldAccessExpression(node.getExpression());
+        boolean isFieldAccess = OCLWithErrorMessagesMill.typeDispatcher().isCommonExpressionsASTFieldAccessExpression(node.getExpression());
         boolean handled = false;
 
         if (isFieldAccess) {
-          ASTFieldAccessExpression fa = OCLMill.typeDispatcher().asCommonExpressionsASTFieldAccessExpression(node.getExpression());
+          ASTFieldAccessExpression fa = OCLWithErrorMessagesMill.typeDispatcher().asCommonExpressionsASTFieldAccessExpression(node.getExpression());
           if ("asSet".equals(fa.getName())) {
             getPrinter().print("new HashSet<>(");
             fa.getExpression().accept(getTraverser());
@@ -231,8 +238,12 @@ public class OCL2JavaCodeGenerator extends AbstractCodeGenVisitor {
     traverser.setSetExpressionsHandler(visSetExpressions);
 
     // OCL
-    OCLJavaGenVisitor oclJavaGenVisitor = new OCLJavaGenVisitor(getPrinter());
+    OCLJavaGenVisitor oclJavaGenVisitor = new OCLJavaGenVisitor(getPrinter(), fullPackage);
     traverser.setOCLHandler(oclJavaGenVisitor);
+
+    // OCLWithErrorMessages
+    OCLWithErrorMessagesJavaGenVisitor oclWithErrorMessagesJavaGenVisitor = new OCLWithErrorMessagesJavaGenVisitor(getPrinter());
+    traverser.setOCLWithErrorMessagesHandler(oclWithErrorMessagesJavaGenVisitor);
   }
 
   @Override

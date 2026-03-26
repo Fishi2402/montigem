@@ -10,12 +10,17 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 public class OCLJavaGenVisitor implements OCLHandler {
-  private OCLTraverser traverser;
-  private IndentPrinter printer;
-  int anonymousInvCounter = 0;
+  protected OCLTraverser traverser;
+  protected IndentPrinter printer;
+  protected String fullPackage;
 
   public OCLJavaGenVisitor(IndentPrinter printer) {
     this.printer = printer;
+  }
+
+  public OCLJavaGenVisitor(IndentPrinter printer, String fullPackage) {
+    this.printer = printer;
+    this.fullPackage = fullPackage;
   }
 
   @Override
@@ -30,7 +35,10 @@ public class OCLJavaGenVisitor implements OCLHandler {
 
   @Override
   public void traverse(ASTOCLCompilationUnit node) {
-    if(node.isPresentPackage()){
+    if (fullPackage != null && !fullPackage.isEmpty()) {
+      printer.println("package " + fullPackage + ";");
+      printer.println();
+    } else if (node.isPresentPackage()) {
       printer.println("package " + node.getPackage() + ";");
       printer.println();
     }
@@ -43,6 +51,7 @@ public class OCLJavaGenVisitor implements OCLHandler {
     printer.println("import java.util.HashSet;");
     printer.println("import java.util.Objects;");
     printer.println("import java.util.function.Function;");
+    printer.println("import mc.fenix.input.geminputbasetypes.ValidationError;");
     printer.println();
 
     if (null != node.getOCLArtifact()) {
@@ -61,43 +70,6 @@ public class OCLJavaGenVisitor implements OCLHandler {
 
     printer.unindent();
     printer.println();
-    printer.println("}");
-  }
-
-  @Override
-  public void handle(ASTOCLInvariant node) {
-    printer.print("public static boolean check");
-    if(node.isPresentName()) {
-       printer.print(node.getName());
-    } else {
-      printer.print("Inv" + anonymousInvCounter++);
-    }
-
-    printer.print("(");
-
-    List<ASTOCLContextDefinition> oclContextDefinitionList = node.getOCLContextDefinitionList();
-    for (int i = 0; i < oclContextDefinitionList.size(); i++) {
-      ASTOCLContextDefinition t1 = oclContextDefinitionList.get(i);
-      if(i != 0){
-        printer.print(", ");
-      }
-      t1.accept(getTraverser());
-
-      // Anonymous parameter
-      if(t1.isPresentMCType()){
-        printer.print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(t1.getMCType()));
-        printer.print(" _this");
-      }
-    }
-
-    printer.println(") {");
-    printer.indent();
-    printer.print("return ");
-
-    node.getExpression().accept(getTraverser());
-
-    printer.println(";");
-    printer.unindent();
     printer.println("}");
   }
 

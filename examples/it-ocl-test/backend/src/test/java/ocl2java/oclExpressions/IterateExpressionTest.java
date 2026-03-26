@@ -2,7 +2,7 @@ package ocl2java.oclExpressions;
 
 import org.junit.jupiter.api.Tag;
 
-import iterate.Iterate_countActiveMembersInGroup;
+import mydomain.iterate.Iterate_countActiveMembersInGroup;
 import mydomain.Group;
 import mydomain.MydomainManager;
 import util.AbstractOCL2CypherTest;

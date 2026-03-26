@@ -7,7 +7,7 @@ import mydomain.MydomainManager;
 import mydomain.MydomainManagerImpl;
 import mydomain.MydomainTestContext;
 import mydomain.test_infrastructure.MydomainDBTestSetup;
-import ocl2java.OCL2Cypher;
+import ocl2cypher.OCL2Cypher;
 import org.junit.jupiter.api.BeforeAll;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;

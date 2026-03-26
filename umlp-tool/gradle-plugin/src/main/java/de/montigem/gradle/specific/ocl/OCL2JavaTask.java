@@ -5,6 +5,7 @@ import de.montigem.gradle.common.MGAllFilesTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
 
 import java.io.File;
@@ -16,6 +17,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class OCL2JavaTask extends MGAllFilesTask {
+
+  @Input
+  @Optional
+  public abstract Property<String> getPrefixPackage();
 
   @Input
   public abstract ListProperty<String> getPreloadDiagrams();
@@ -56,6 +61,11 @@ public abstract class OCL2JavaTask extends MGAllFilesTask {
     if(getDomainModels().isPresent() && !getDomainModels().get().isEmpty()){
       args.add("-domain");
       args.addAll(getDomainModels().get());
+    }
+
+    if(getPrefixPackage().isPresent() && !getPrefixPackage().get().isEmpty()){
+      args.add("-prefixPackage");
+      args.add(getPrefixPackage().get());
     }
 
     return args;

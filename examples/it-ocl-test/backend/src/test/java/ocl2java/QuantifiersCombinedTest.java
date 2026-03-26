@@ -27,7 +27,7 @@ public interface QuantifiersCombinedTest extends IOCL2XTest {
 
     @Override
     protected void _initConstraints() {
-      constraints.put(getOclFromFile(RESOURCE_FOLDER, "Combined"), quantifiers.Combined::checkInv0);
+      constraints.put(getOclFromFile(RESOURCE_FOLDER, "Combined"), mydomain.quantifiers.Combined::checkInv0);
     }
   }
 

@@ -1,0 +1,27 @@
+grammar OCLWithErrorMessages extends de.monticore.ocl.OCL {
+  start OCLCompilationUnit;
+
+  @Override
+  OCLInvariant implements OCLConstraint =
+    Stereotype*
+    // class context
+    (
+      (["context"] | ["import"])
+      (OCLContextDefinition || ",")+
+    )?
+
+    // invariant
+    "inv" Name?
+    ("(" (OCLParamDeclaration || ",")* ")")? ":"
+
+    // expression: we can chain multiple expressions using &&
+    Expression ";"
+
+    InvErrorMessages?
+  ;
+
+  InvErrorMessages =
+    "shortError" ":" shortError:Expression ";"
+    "error" ":" fullError:Expression ";"
+  ;
+}
