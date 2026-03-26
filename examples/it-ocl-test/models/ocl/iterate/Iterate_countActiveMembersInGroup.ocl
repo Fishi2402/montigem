@@ -1,0 +1,9 @@
+package iterate;
+
+import Mydomain.*;
+
+
+ocl Iterate_countActiveMembersInGroup { 
+  context Group g inv: 
+    iterate{ Student s in g.members; int acc = 0 : acc = acc + (if s.isActive then 1 else 0) } >= 1;
+}

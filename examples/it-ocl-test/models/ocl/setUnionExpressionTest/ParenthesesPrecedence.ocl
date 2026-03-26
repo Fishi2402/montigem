@@ -1,0 +1,8 @@
+package setUnionExpressionTest;
+
+import Mydomain.*;
+
+ocl ParenthesesPrecedence {
+   context Group g inv:
+   "Alice" isin ((g.members.name.asSet() union {"Admin"}) union g.supervisor.name.asSet());
+}

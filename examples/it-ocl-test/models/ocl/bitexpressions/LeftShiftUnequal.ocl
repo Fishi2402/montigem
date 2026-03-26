@@ -1,0 +1,11 @@
+package bitexpressions;
+
+import Mydomain.*;
+
+
+ocl LeftShiftUnequal {
+
+    context IntNumber iNum inv:
+			iNum.value << 2 != 16;
+
+}

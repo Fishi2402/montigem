@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl ParenthesesPrecedenceWithIntersection {
+   context Group g inv:
+      "Alice" isin (({"Admin", "Alice"} intersect g.members.name.asSet()) intersect {"Alice"});
+}

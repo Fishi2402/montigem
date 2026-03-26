@@ -1,0 +1,11 @@
+package bitexpressions;
+
+import Mydomain.*;
+
+
+ocl LogicalRightShiftCountWrapNeg {
+
+		context IntNumber iNum inv:
+      iNum.value >>> (-31) == 2;
+
+}

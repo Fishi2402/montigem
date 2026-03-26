@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl DifferentSizeUnionWithBracketSyntax {
+   context Group g inv:
+      "Alice" isin union {{"Alice"}, {"Bob", "Charlie", "Diana"}};
+}

@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl IntersectionOfTwoGivenSets {
+context Group g inv:
+  g.name isin {"Guo", "Richard"} intersect {"Richard", "Mohammed"} ;
+}

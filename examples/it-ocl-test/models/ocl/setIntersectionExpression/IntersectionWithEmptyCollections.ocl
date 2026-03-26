@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl IntersectionWithEmptyCollections {
+   context Group g inv:
+      "Alice" isin (g.members.name.asSet() intersect g.supervisor.name.asSet());
+}

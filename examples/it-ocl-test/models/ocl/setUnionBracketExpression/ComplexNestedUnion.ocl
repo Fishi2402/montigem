@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl ComplexNestedUnion {
+   context Group g inv:
+   "Target" isin union {union {g.members.name.asSet(), {"Admin"}}, {"Target", "Moderator"}};
+}

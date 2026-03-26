@@ -1,0 +1,11 @@
+package quantifiers;
+
+import Mydomain.*;
+
+
+ocl Combined {
+  context IntList list inv:
+    forall int i in list.listInt:
+      exists int e in {1,2,3,5,6,7,8,9}:
+        i == e;
+}

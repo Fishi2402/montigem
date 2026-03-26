@@ -1,0 +1,11 @@
+package combined;
+
+import Mydomain.*;
+
+
+ocl VariableDeclarationAndSetExpression {
+  context Person p inv:let
+    ages = Set{20, 21}
+in
+  p.age isin ages;
+}

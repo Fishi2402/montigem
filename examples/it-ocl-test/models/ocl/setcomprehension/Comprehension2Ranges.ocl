@@ -1,0 +1,9 @@
+package setcomprehension;
+
+import Mydomain.*;
+
+
+ocl Comprehension2Ranges {
+  context IntList list inv:
+    list.listInt == [3..5, 7..9];
+}

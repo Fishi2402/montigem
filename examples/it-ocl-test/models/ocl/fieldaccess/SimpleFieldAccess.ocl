@@ -1,0 +1,9 @@
+package fieldaccess;
+
+import Mydomain.*;
+
+
+ocl SimpleFieldAccess {
+  context FieldAccess fA inv:
+      fA.name == "test FA";
+}

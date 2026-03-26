@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl NumericUnionWithBracketSyntax {
+   context Group g inv:
+   25 isin union {g.members.age.asSet(), {30, 35}};
+}

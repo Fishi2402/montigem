@@ -1,0 +1,9 @@
+package setminus;
+
+import Mydomain.*;
+
+
+ocl MemberMinusSupervisor {
+  context Group g inv:
+    "Alice" isin (g.members.name.asSet() \ g.supervisor.name.asSet());
+}

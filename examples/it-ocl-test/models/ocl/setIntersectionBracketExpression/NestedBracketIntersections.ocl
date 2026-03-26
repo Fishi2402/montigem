@@ -1,0 +1,12 @@
+package setIntersectionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl NestedBracketIntersections {
+  context Group g inv:
+    g.name isin intersect {
+        intersect {{"A", "B", "C"}, {"B", "C", "D"}},
+        intersect {{"C", "D", "E"}, {"C", "F"}}
+    };
+}

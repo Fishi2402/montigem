@@ -1,0 +1,9 @@
+package optionalOperations;
+
+import Mydomain.*;
+
+
+ocl ElvisOptionalExpressionPrefix_NullValues {
+  context Person p inv:
+    (p.birthplace ?: p.presumedBirthplace) == "Berlin";
+}

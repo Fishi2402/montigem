@@ -1,0 +1,9 @@
+package setIntersectionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl EmptyBracketIntersection {
+  context Group g inv:
+    g.name isin intersect {{"Guo"}, {"Richard"}};
+}

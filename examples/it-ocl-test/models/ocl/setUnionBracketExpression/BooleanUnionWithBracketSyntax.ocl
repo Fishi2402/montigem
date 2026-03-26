@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl BooleanUnionWithBracketSyntax {
+   context Group g inv:
+   true isin union {g.members.isActive.asSet(), g.supervisor.isActive.asSet()};
+}

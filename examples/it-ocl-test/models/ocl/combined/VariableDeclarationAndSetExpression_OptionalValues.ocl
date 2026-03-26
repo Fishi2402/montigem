@@ -1,0 +1,11 @@
+package combined;
+
+import Mydomain.*;
+
+
+ocl VariableDeclarationAndSetExpression_OptionalValues {
+  context Person p inv:let
+    birthplaces = Set{"Berlin", "York"}
+in
+    (p.birthplace ?: "") isin birthplaces;
+}

@@ -1,0 +1,10 @@
+package quantifiers;
+
+import Mydomain.*;
+
+
+ocl DoubleExists {
+  context University u inv:
+    exists Student s1 in u.students, Student s2 in u.students:
+      s1 != s2 && s1.matrNr == s2.matrNr;
+}

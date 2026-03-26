@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl IntersectionOfTwoBooleanPropertyCollections {
+   context Group g inv:
+      true isin (g.members.isActive.asSet() intersect g.supervisor.isActive.asSet());
+}

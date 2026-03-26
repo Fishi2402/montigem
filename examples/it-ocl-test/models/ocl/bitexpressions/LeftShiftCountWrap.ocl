@@ -1,0 +1,11 @@
+package bitexpressions;
+
+import Mydomain.*;
+
+
+ocl LeftShiftCountWrap {
+
+		context IntNumber iNum inv:
+      iNum.value << 34 == 16;
+
+}

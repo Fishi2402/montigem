@@ -1,0 +1,9 @@
+package setUnionExpressionTest;
+
+import Mydomain.*;
+
+
+ocl UnionOfDeeplyNestedGivenSets {
+    context Group g inv:
+        g.name isin ({"A"} union ({"B"} union ({"C"} union {"D"})));
+}

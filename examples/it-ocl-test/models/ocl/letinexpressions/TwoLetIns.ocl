@@ -1,0 +1,14 @@
+package letinexpressions;
+
+import Mydomain.*;
+
+
+ocl TwoLetIns {
+
+		context IntNumber iNum inv:
+      let
+        iV = iNum.value;
+        iVSquared = iV*iV
+      in
+        iVSquared == 4;
+}

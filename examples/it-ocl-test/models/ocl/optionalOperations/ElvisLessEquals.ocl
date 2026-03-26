@@ -1,0 +1,9 @@
+package optionalOperations;
+
+import Mydomain.*;
+
+
+ocl ElvisLessEquals {
+  context Person p inv:
+    p.birthHour ?<= 12;
+}

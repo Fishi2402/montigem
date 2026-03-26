@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl ComplexMultiLevelCheck {
+context University u inv:
+    "StudyGroup" notin u.students.group.name;
+}

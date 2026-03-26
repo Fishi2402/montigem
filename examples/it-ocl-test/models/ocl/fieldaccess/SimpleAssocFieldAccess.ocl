@@ -1,0 +1,9 @@
+package fieldaccess;
+
+import Mydomain.*;
+
+
+ocl SimpleAssocFieldAccess {
+  context FieldAccess fA inv:
+      fA.iNumAssoc.value == 1;
+}

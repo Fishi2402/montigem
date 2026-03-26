@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl GivenSet {
+context Group g inv:
+g.name isin ["Guo", "Richard", "Mohammed"];
+}

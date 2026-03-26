@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl IntersectionOfMixedDataTypeCollections {
+   context Group g inv:
+      25 isin ((g.members.age.asSet() intersect {25, 30}) intersect ({25, 22} intersect {25, 23}));
+}

@@ -1,0 +1,9 @@
+package implies;
+
+import Mydomain.*;
+
+
+ocl ImpliesExpressionWithTwoParametersContextCondition {
+  context Student s1, Student s2 inv:
+    s1 != s2 implies s1.matrNr != s2.matrNr;
+}

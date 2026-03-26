@@ -1,0 +1,16 @@
+package letinexpressions;
+
+import Mydomain.*;
+
+
+ocl LetInNested {
+
+		context IntNumber iNum inv:
+      let
+        iV = iNum.value
+      in
+	      let
+	        iVSquared = iV*iV
+	          in
+	            iVSquared == 4;
+}

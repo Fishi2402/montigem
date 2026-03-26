@@ -1,0 +1,9 @@
+package anyexpression;
+
+import Mydomain.*;
+
+
+ocl AnyMember_isActive_singletonGroups { 
+  context Group g inv: 
+    (any g.members).isActive;
+}

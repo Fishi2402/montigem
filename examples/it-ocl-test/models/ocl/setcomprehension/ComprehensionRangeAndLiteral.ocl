@@ -1,0 +1,9 @@
+package setcomprehension;
+
+import Mydomain.*;
+
+
+ocl ComprehensionRangeAndLiteral {
+  context IntList list inv:
+    list.listInt == [3, 5..7, 2];
+}

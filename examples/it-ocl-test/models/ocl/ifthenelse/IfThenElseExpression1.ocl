@@ -1,0 +1,9 @@
+package ifthenelse;
+
+import Mydomain.*;
+
+
+ocl IfThenElseExpression1 {
+  context Student s inv:
+    if s.age >= 18 then s.adult else !s.adult;
+}

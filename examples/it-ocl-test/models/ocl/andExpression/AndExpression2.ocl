@@ -1,0 +1,9 @@
+package andExpression;
+
+import Mydomain.*;
+
+
+ocl AndExpression2 {
+  context Person inv:
+    this.age >= 18 && this.age < 65;
+}

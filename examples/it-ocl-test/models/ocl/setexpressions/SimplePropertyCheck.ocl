@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl SimplePropertyCheck {
+context Group g inv:
+    "Alice" notin g.members.name;
+}

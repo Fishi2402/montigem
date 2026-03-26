@@ -1,0 +1,9 @@
+package typeif;
+
+import Mydomain.*;
+
+
+ocl ContextStudent_makesElseIrrelevant {
+  context Student s inv:
+    typeif s instanceof Student then s.matrNr > 0 else false;
+}

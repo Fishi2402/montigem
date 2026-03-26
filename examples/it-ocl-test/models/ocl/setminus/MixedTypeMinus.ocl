@@ -1,0 +1,9 @@
+package setminus;
+
+import Mydomain.*;
+
+
+ocl MixedTypeMinus {
+  context Group g inv:
+    25 isin ((g.members.age.asSet() \ {30}) \ ({22}));
+}

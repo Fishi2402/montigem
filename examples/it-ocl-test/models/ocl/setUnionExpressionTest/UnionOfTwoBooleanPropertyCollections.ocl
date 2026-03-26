@@ -1,0 +1,9 @@
+package setUnionExpressionTest;
+
+import Mydomain.*;
+
+
+ocl UnionOfTwoBooleanPropertyCollections {
+   context Group g inv:
+   true isin (g.members.isActive.asSet() union g.supervisor.isActive.asSet());
+}

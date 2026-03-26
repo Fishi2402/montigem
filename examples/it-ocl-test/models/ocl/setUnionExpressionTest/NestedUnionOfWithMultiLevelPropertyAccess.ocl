@@ -1,0 +1,9 @@
+package setUnionExpressionTest;
+
+import Mydomain.*;
+
+
+ocl NestedUnionOfWithMultiLevelPropertyAccess {
+   context University u inv:
+   "Alice" isin ((u.students.name.asSet() union {"Admin"}) union (u.students.group.name.asSet() union {"DefaultGroup"}));
+}

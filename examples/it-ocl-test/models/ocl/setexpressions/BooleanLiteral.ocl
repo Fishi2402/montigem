@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl BooleanLiteral {
+context Group g inv:
+true isin g.members.isActive;
+}

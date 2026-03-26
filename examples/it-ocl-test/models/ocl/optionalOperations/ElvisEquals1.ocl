@@ -1,0 +1,9 @@
+package optionalOperations;
+
+import Mydomain.*;
+
+
+ocl ElvisEquals1 {
+  context Person p inv:
+    p.birthplace ?== "Berlin";
+}

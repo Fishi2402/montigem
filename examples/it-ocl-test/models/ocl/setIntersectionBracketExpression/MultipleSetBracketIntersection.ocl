@@ -1,0 +1,9 @@
+package setIntersectionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl MultipleSetBracketIntersection {
+  context Group g inv:
+    g.name isin intersect {{"A", "B", "C"}, {"B", "C", "D"}, {"C", "D", "E"}};
+}

@@ -1,0 +1,10 @@
+package quantifiers;
+
+import Mydomain.*;
+
+
+ocl SimpleForAll {
+  context University u inv:
+    forall Student s in u.students:
+      s.matrNr >= 0;
+}

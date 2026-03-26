@@ -1,0 +1,13 @@
+package letinexpressions;
+
+import Mydomain.*;
+
+
+ocl SimpleLetIn {
+
+		context IntNumber iNum inv:
+      let
+        iV = iNum.value
+      in
+        iV == 1;
+}

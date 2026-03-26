@@ -1,0 +1,11 @@
+package typeif;
+
+import Mydomain.*;
+
+
+ocl Boundaries_thenElseBranches {
+  context Person p inv:
+    typeif p instanceof Student
+    then p.matrNr > 0
+    else p.age >= 18;
+}

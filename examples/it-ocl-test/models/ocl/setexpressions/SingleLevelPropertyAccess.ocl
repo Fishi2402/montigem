@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl SingleLevelPropertyAccess {
+context Group g inv:
+"Alice" isin g.members.name;
+}

@@ -1,0 +1,9 @@
+package setUnionExpressionTest;
+
+import Mydomain.*;
+
+
+ocl UnionOfMixedDataTypeCollections {
+   context Group g inv:
+     21 isin ((g.members.age.asSet() union {25, 30}) union ({22} union {23, 24}));
+}

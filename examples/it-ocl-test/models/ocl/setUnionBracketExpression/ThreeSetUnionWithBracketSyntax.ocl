@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl ThreeSetUnionWithBracketSyntax {
+  context Group g inv:
+    g.name isin union {{"Guo"}, {"Richard"}, {"Mohammed"}};
+}

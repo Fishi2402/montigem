@@ -1,0 +1,14 @@
+package setIntersectionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl MixedTypeBracketIntersection {
+  context Group g inv:
+    25 isin intersect {
+        g.members.age.asSet(),
+        {25, 30, 35},
+        {20, 25, 30},
+        intersect {{25, 30}, {25, 40}}
+    };
+}

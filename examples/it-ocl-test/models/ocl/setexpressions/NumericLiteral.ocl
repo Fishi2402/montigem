@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl NumericLiteral {
+context Group g inv:
+21 isin g.members.age;
+}

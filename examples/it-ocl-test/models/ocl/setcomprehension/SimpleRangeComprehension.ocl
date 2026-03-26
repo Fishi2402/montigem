@@ -1,0 +1,9 @@
+package setcomprehension;
+
+import Mydomain.*;
+
+
+ocl SimpleRangeComprehension {
+  context IntList list inv:
+    list.listInt == [-2..2];
+}

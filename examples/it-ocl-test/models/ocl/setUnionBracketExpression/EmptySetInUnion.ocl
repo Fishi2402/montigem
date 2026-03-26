@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl EmptySetInUnion {
+   context Group g inv:
+   "Alice" isin union {g.members.name.asSet(), g.supervisor.name.asSet()};
+}

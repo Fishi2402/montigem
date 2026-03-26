@@ -1,0 +1,9 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl MixedPropertyAndLiteralUnion {
+   context Group g inv:
+   "Admin" isin union {g.members.name.asSet(), {"Admin"}, {"Moderator"}};
+}

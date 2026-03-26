@@ -1,0 +1,9 @@
+package optionalOperations;
+
+import Mydomain.*;
+
+
+ocl ElvisNotEquals2 {
+  context Person p inv:
+    p.birthHour ?!~ 12;
+}

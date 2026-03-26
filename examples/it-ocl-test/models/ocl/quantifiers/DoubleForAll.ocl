@@ -1,0 +1,10 @@
+package quantifiers;
+
+import Mydomain.*;
+
+
+ocl DoubleForAll {
+  context University u inv:
+    forall Student s1 in u.students, Student s2 in u.students:
+      s1 != s2 implies s1.matrNr != s2.matrNr;
+}

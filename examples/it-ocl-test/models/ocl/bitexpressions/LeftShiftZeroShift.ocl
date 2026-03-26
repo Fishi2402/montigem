@@ -1,0 +1,11 @@
+package bitexpressions;
+
+import Mydomain.*;
+
+
+ocl LeftShiftZeroShift {
+
+		context IntNumber iNum inv:
+      iNum.value << 0 == iNum.value;
+
+}

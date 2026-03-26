@@ -1,0 +1,11 @@
+package bitexpressions;
+
+import Mydomain.*;
+
+
+ocl LogicalRightShiftEqual {
+
+		context IntNumber iNum inv:
+      iNum.value >>> 1 == 2;
+
+}

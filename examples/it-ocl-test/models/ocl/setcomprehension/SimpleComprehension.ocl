@@ -1,0 +1,9 @@
+package setcomprehension;
+
+import Mydomain.*;
+
+
+ocl SimpleComprehension {
+  context IntList list inv:
+    list.listInt == [x * x | x in [1,2,3,4,5]];
+}

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import de.montigem.gradle.specific.GUI2Java2TSTask
+
+plugins {
+  id "de.rwth.se.montigem-frontend"
+}
+
+configurations {
+  testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
+}
+
+umlpJava2ts {
+  excludeSource.addAll([
+      "glob:**/ocl2java/**"
+  ])
+}

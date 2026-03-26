@@ -1,0 +1,12 @@
+package commonexpressions;
+
+import Mydomain.*;
+
+
+ocl GreaterEqual {
+    context IntNumber i inv:
+      i.value >= 1;
+
+    context DoubleNumber d inv:
+      d.value >= 1.0;
+}

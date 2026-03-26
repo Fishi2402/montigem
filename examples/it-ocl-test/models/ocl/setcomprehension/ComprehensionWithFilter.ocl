@@ -1,0 +1,9 @@
+package setcomprehension;
+
+import Mydomain.*;
+
+
+ocl ComprehensionWithFilter {
+  context IntList list inv:
+    list.listInt == [x * x | x in [1 .. 8], x % 2 != 0];
+}

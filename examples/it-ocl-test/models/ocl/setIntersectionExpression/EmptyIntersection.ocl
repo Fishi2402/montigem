@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl EmptyIntersection {
+  context Group g inv:
+    g.name isin {"Guo"} intersect {"Richard"};
+}

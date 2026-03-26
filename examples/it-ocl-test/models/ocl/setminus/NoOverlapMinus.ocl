@@ -1,0 +1,9 @@
+package setminus;
+
+import Mydomain.*;
+
+
+ocl NoOverlapMinus {
+context Group g inv:
+  g.name isin {"Guo"} \ {"Richard"};
+}

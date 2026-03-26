@@ -4,6 +4,7 @@ package de.montigem.gradle;
 import de.monticore.gradle.common.CommonMCTask;
 import de.montigem.gradle.specific.UMLP2JavaTask;
 import de.montigem.gradle.specific.merge.MergeTask;
+import de.montigem.gradle.specific.ocl.OCL2JavaTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -42,6 +43,7 @@ import static de.montigem.gradle.module.ModulePlugin.GENERATOR_EXTENSION_COMPILE
 public abstract class BackendPlugin implements Plugin<Project> {
 
   public final static String UMLP2JAVA_TASK = "umlp2java";
+  public final static String OCL2JAVA_TASK = "ocl2java";
   public final static String MERGE_UMLP_TASK = "mergeUMLP";
 
   public static final String MERGE_UMLP_DIR = "mergeUMLP/Domain.umlp";
@@ -126,17 +128,35 @@ public abstract class BackendPlugin implements Plugin<Project> {
       task.getModelDir().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
     });
 
+    TaskProvider<OCL2JavaTask> ocl2java = project.getTasks().register(OCL2JAVA_TASK, OCL2JavaTask.class, task -> {
+      task.setGroup(UMLP_GROUP_NAME);
+      task.getInput().from(getModels(project).dir("ocl"));
+      task.getSymbolPath().from(umlp2java.flatMap(UMLP2JavaTask::getSymbolOutDir));
+      task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
+      task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("ocl2java"));
+      task.getDomainModels().add(umlpName);
+
+      task.onlyIf(t -> ((OCL2JavaTask) t).getInput().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".ocl")));
+    });
+
     mainSourceSet.configure(sourceSet -> {
       project.getTasks().withType(AbstractCompile.class)
           .matching(t -> t.getName().equals(sourceSet.getCompileJavaTaskName()))
-          .configureEach(compile -> compile.dependsOn(umlp2java));
+          .configureEach(compile -> {
+            compile.dependsOn(umlp2java);
+            compile.dependsOn(ocl2java);
+          });
 
       // Generate Backend must run before ProcessResources (e.g. for SQL schemata)
       project.getTasks().withType(ProcessResources.class)
           .matching(t -> t.getName().equals(sourceSet.getProcessResourcesTaskName()))
-          .configureEach(procResMain -> procResMain.dependsOn(umlp2java));
+          .configureEach(procResMain -> {
+            procResMain.dependsOn(umlp2java);
+            procResMain.dependsOn(ocl2java);
+          });
 
       sourceSet.getJava().srcDir(umlp2java.flatMap(CommonMCTask::getOutputDir));
+      sourceSet.getJava().srcDir(ocl2java.flatMap(CommonMCTask::getOutputDir));
       // Add generated resources. e.g. SQL-Schemata
       sourceSet.getResources().srcDir(umlp2java.flatMap(t -> t.getOutputDir().dir("resources")));
     });
@@ -145,6 +165,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
     project.getTasks().register("generate", task -> {
       task.setGroup(UMLP_GROUP_NAME);
       task.dependsOn(umlp2java);
+      task.dependsOn(ocl2java);
     });
 
     // Lifecycle task "runServer" which depends on Backend-Creation

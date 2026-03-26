@@ -1,0 +1,9 @@
+package setEnumeration;
+
+import Mydomain.*;
+
+
+ocl InvalidGroupWithConstSet {
+context Group g inv:
+g.name notin ["Guo", "Richard", "Mohammed"];
+}

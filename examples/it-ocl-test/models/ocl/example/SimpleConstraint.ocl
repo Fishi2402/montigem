@@ -1,0 +1,9 @@
+package example;
+
+import Mydomain.*;
+
+
+ocl SimpleConstraint {
+  context Person p inv:
+    p.age >= -1;
+}

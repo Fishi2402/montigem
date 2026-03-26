@@ -1,0 +1,9 @@
+package setIntersectionExpression;
+
+import Mydomain.*;
+
+
+ocl IntersectionOfDeeplyNestedGivenSets {
+  context Group g inv:
+    g.name isin ({"A", "B"} intersect ({"B", "C"} intersect {"B", "D"}));
+}

@@ -1,0 +1,10 @@
+package quantifiers;
+
+import Mydomain.*;
+
+
+ocl SimpleExists {
+  context University u inv:
+    exists Student s in u.students:
+      s.matrNr == 1;
+}

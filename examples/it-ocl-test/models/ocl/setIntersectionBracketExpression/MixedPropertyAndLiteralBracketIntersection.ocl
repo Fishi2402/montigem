@@ -1,0 +1,9 @@
+package setIntersectionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl MixedPropertyAndLiteralBracketIntersection {
+  context Group g inv:
+    "Alice" isin intersect {g.members.name.asSet(), g.supervisor.name.asSet(), {"Alice", "Admin"}};
+}

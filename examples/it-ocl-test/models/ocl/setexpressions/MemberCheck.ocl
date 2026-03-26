@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl MemberCheck {
+context Group g inv:
+    g.name notin ["Guo", "Richard", "Mohammed"];
+}

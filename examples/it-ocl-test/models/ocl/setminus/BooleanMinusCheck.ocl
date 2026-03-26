@@ -1,0 +1,9 @@
+package setminus;
+
+import Mydomain.*;
+
+
+ocl BooleanMinusCheck {
+  context Group g inv:
+    true isin (g.members.isActive.asSet() \ g.supervisor.isActive.asSet());
+}

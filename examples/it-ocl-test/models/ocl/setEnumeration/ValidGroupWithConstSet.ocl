@@ -1,0 +1,9 @@
+package setEnumeration;
+
+import Mydomain.*;
+
+
+ocl ValidGroupWithConstSet {
+context Group g inv:
+g.name isin ["Guo", "Richard", "Mohammed"];
+}

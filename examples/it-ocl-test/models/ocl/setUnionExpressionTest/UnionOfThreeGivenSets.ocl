@@ -1,0 +1,9 @@
+package setUnionExpressionTest;
+
+import Mydomain.*;
+
+
+ocl UnionOfThreeGivenSets {
+context Group g inv:
+	g.name isin {"Guo"} union {"Richard"} union {"Mohammed"} ;
+}

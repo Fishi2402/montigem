@@ -1,0 +1,9 @@
+package equivalent;
+
+import Mydomain.*;
+
+
+ocl EquivalentExpression1 {
+  context Student s1, Student s2 inv:
+    s1 != s2 <=> s1.matrNr != s2.matrNr;
+}

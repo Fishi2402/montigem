@@ -1,0 +1,9 @@
+package notexpressions;
+
+import Mydomain.*;
+
+
+ocl NotExpression2 {
+  context Person inv:
+    !(this.age < 0);
+}

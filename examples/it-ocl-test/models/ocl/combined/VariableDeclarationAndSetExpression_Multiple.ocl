@@ -1,0 +1,12 @@
+package combined;
+
+import Mydomain.*;
+
+
+ocl VariableDeclarationAndSetExpression_Multiple {
+  context Person p inv:let
+    ages = Set{20, 21}; birthplaces = Set{"Berlin", "York"}
+in
+    p.age isin ages &&
+    (p.birthplace ?: "") isin birthplaces;
+}

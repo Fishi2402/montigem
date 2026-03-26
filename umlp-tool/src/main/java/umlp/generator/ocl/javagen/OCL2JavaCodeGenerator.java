@@ -1,0 +1,242 @@
+package umlp.generator.ocl.javagen;
+
+import de.monticore.codegen.AbstractCodeGenVisitor;
+import de.monticore.codegen.javagen.JavaGenSymTypeExpressionConverter;
+import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
+import de.monticore.expressions.bitexpressions.codegen.javagen.BitExpressionsJavaGenVisitor;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressionsJavaGenVisitor;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
+import de.monticore.literals.mccommonliterals.codegen.javagen.MCCommonLiteralsJavaGenVisitor;
+import de.monticore.ocl.ocl.OCLMill;
+import de.monticore.ocl.ocl._visitor.OCLTraverser;
+import de.monticore.ocl.types3.OCLCollectionSymTypeRelations;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.TypeCheck3;
+import de.monticore.visitor.ITraverser;
+import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import umlp.generator.ocl.TypeUtil;
+import umlp.generator.ocl.javagen.field_access.FieldAccessInfo;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
+
+public class OCL2JavaCodeGenerator extends AbstractCodeGenVisitor {
+  OCLTraverser traverser;
+
+  public OCL2JavaCodeGenerator(IndentPrinter printer) {
+    super(printer);
+    init();
+  }
+
+  public void init() {
+    traverser = OCLMill.traverser();
+    Map<String, Stack<SymTypeExpression>> knowTypeOfVar = new HashMap<>();
+
+    JavaGenSymTypeExpressionConverter.init();
+    SymTypeExpression2UMLPJavaConverter.init();
+    OCL2JavaOperationPrinter.init();
+
+    // Literals
+
+    MCCommonLiteralsJavaGenVisitor visMCCommonLiterals = new MCCommonLiteralsJavaGenVisitor(getPrinter());
+    traverser.setMCCommonLiteralsHandler(visMCCommonLiterals);
+
+    // Expressions
+
+    BitExpressionsJavaGenVisitor visBitExpressions = new BitExpressionsJavaGenVisitor(getPrinter());
+    traverser.setBitExpressionsHandler(visBitExpressions);
+
+    CommonExpressionsJavaGenVisitor visCommonExpressions = new CommonExpressionsJavaGenVisitor(getPrinter()) {
+      @Override
+      public void handle(ASTCallExpression node) {
+        boolean isFieldAccess = OCLMill.typeDispatcher().isCommonExpressionsASTFieldAccessExpression(node.getExpression());
+        boolean handled = false;
+
+        if (isFieldAccess) {
+          ASTFieldAccessExpression fa = OCLMill.typeDispatcher().asCommonExpressionsASTFieldAccessExpression(node.getExpression());
+          if ("asSet".equals(fa.getName())) {
+            getPrinter().print("new HashSet<>(");
+            fa.getExpression().accept(getTraverser());
+            getPrinter().print(")");
+            handled = true;
+          } else if ("asList".equals(fa.getName())) {
+            getPrinter().print("new ArrayList<>(");
+            fa.getExpression().accept(getTraverser());
+            getPrinter().print(")");
+            handled = true;
+          }
+        }
+
+        if (!handled) {
+          super.handle(node);
+        }
+      }
+
+      @Override
+      public void handle(ASTFieldAccessExpression node) {
+        // UMLP specific field access
+        node.getExpression().accept(getTraverser());
+
+        FieldAccessInfo info = FieldAccessInfo.from(node);
+
+        SymTypeExpression lhsType = TypeCheck3.typeOf(node.getExpression());
+        SymTypeExpression fullType = TypeCheck3.typeOf(node);
+        if (OCLCollectionSymTypeRelations.isOCLCollection(lhsType) && OCLCollectionSymTypeRelations.isOCLCollection(fullType)) {
+          // flattening
+
+          // check if source type
+          boolean isCollectionType = false;
+          boolean isDomainType = false;
+          boolean isBoolean = false;
+          SymTypeExpression varType = null;
+          Optional<ISymbol> sourceSymbolOpt = fullType.getSourceInfo().getSourceSymbol();
+          if (sourceSymbolOpt.isEmpty()) {
+            Log.warn("Can not convert field access since source symbol is not available", node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+            return;
+          }
+          ISymbol sourceSymbol = sourceSymbolOpt.get();
+          if (BasicSymbolsMill.typeDispatcher().isBasicSymbolsVariable(sourceSymbol)) {
+            VariableSymbol varSymbol = BasicSymbolsMill.typeDispatcher().asBasicSymbolsVariable(sourceSymbol);
+            varType = varSymbol.getType();
+            isCollectionType = TypeUtil.getInstance().isCollectionType(varType);
+            isDomainType = TypeUtil.getInstance().isDomainType(varType);
+            isBoolean = SymTypeRelations.isBoolean(varType);
+          }
+
+          // - variable with simple type
+          if (!isCollectionType && !isDomainType) {
+            printer.print(".stream().map(it -> it.");
+            printer.print(isBoolean ? "is" : "get");
+            printer.print(StringTransformations.capitalize(node.getName()));
+            printer.print("()).to");
+            if (OCLCollectionSymTypeRelations.isList(lhsType)) {
+              printer.print("List()");
+            } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
+              printer.print("Set()");
+            } else {
+              printer.print("Collection()");
+            }
+          }
+
+          // - variable with collection simple type
+          if (isCollectionType && !isDomainType) {
+            Log.warn("Not translating flattening for attribute list of simple type");
+            return;
+          }
+
+          // - association with opt or one cardinality
+          if (!isCollectionType && isDomainType) {
+            // TODO: opt needs extra check
+            printer.print(".stream().map(it -> it.");
+            printer.print("get");
+            printer.print(StringTransformations.capitalize(node.getName()));
+            printer.print("()).to");
+            if (OCLCollectionSymTypeRelations.isList(lhsType)) {
+              printer.print("List()");
+            } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
+              printer.print("Set()");
+            } else {
+              printer.print("Collection()");
+            }
+          }
+
+          // - association with opt mult cardinality
+          if (isCollectionType && isDomainType) {
+            printer.print(".stream().flatMap(it -> it.");
+            printer.print("get");
+            printer.print(StringTransformations.capitalize(node.getName()));
+            printer.print("List().stream()).to");
+            if (OCLCollectionSymTypeRelations.isList(lhsType)) {
+              printer.print("List()");
+            } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
+              printer.print("Set()");
+            } else {
+              printer.print("Collection()");
+            }
+          }
+        } else {
+          // normal access
+          printFieldAccess(info, node.getName());
+        }
+      }
+
+      private void printFieldAccess(FieldAccessInfo info, String nodeName) {
+        switch (info.getKind()) {
+          case TO_ONE_DOMAIN -> printer.print(".get" + StringTransformations.capitalize(nodeName) + "()");
+          case TO_MANY_DOMAIN, COLLECTION_OF_SIMPLE_VALUE ->
+              printer.print(".get" + StringTransformations.capitalize(nodeName) + "List()");
+          case SIMPLE_VALUE -> {
+            if (SymTypeRelations.isBoolean(info.getFieldType())) {
+              printer.print(".is" + StringTransformations.capitalize(nodeName) + "()");
+            } else {
+              printer.print(".get" + StringTransformations.capitalize(nodeName) + "()");
+            }
+          }
+        }
+      }
+    };
+    traverser.setCommonExpressionsHandler(visCommonExpressions);
+
+    ExpressionsBasisJavaGenVisitor visExpressionBasis = new ExpressionsBasisJavaGenVisitor(getPrinter()) {
+      @Override
+      public void handle(ASTNameExpression node) {
+        Optional<VariableSymbol> symbol = ((IBasicSymbolsScope) node.getEnclosingScope()).resolveVariableMany(node.getName()).stream().findAny();
+        Optional<TypeSymbol> type = ((IBasicSymbolsScope) node.getEnclosingScope()).resolveTypeMany(node.getName()).stream().findAny();
+        if (symbol.isPresent() && OOSymbolsMill.typeDispatcher().isOOSymbolsField(symbol.get()) && ((FieldSymbol) symbol.get()).isIsStatic()) {
+          getPrinter().print(symbol.get().getFullName());
+        } else if (type.isPresent() && OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(type.get())) {
+          getPrinter().print(type.get().getFullName());
+        } else {
+          // Handle scoped casts, e.g. from type if expression
+          if (!knowTypeOfVar.getOrDefault(node.getName(), new Stack<>()).isEmpty()) {
+            getPrinter().print("((");
+            getPrinter().print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(knowTypeOfVar.get(node.getName()).peek()));
+            getPrinter().print(")");
+            getPrinter().print(node.getName());
+            getPrinter().print(")");
+          } else {
+            if ("this".equals(node.getName())) {
+              getPrinter().print("_this");
+            } else {
+              getPrinter().print(node.getName());
+            }
+          }
+        }
+      }
+    };
+    traverser.setExpressionsBasisHandler(visExpressionBasis);
+
+    OCLExpressionsJavaGenVisitor visOCLExpressions = new OCLExpressionsJavaGenVisitor(getPrinter(), knowTypeOfVar);
+    traverser.setOCLExpressionsHandler(visOCLExpressions);
+
+    OptionalOperatorsJavaGenVisitor visOptionalOperators = new OptionalOperatorsJavaGenVisitor(getPrinter());
+    traverser.setOptionalOperatorsHandler(visOptionalOperators);
+
+    SetExpressionsJavaGenVisitor visSetExpressions = new SetExpressionsJavaGenVisitor(getPrinter());
+    traverser.setSetExpressionsHandler(visSetExpressions);
+
+    // OCL
+    OCLJavaGenVisitor oclJavaGenVisitor = new OCLJavaGenVisitor(getPrinter());
+    traverser.setOCLHandler(oclJavaGenVisitor);
+  }
+
+  @Override
+  public ITraverser getTraverser() {
+    return traverser;
+  }
+}

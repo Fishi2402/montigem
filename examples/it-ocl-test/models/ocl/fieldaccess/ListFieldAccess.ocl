@@ -1,0 +1,9 @@
+package fieldaccess;
+
+import Mydomain.*;
+
+
+ocl ListFieldAccess {
+  context FieldAccess fA inv:
+      fA.intList == [1,2,3];
+}

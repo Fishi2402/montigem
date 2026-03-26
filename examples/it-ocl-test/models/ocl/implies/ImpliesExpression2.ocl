@@ -1,0 +1,9 @@
+package implies;
+
+import Mydomain.*;
+
+
+ocl ImpliesExpression2 {
+  context Person inv:
+    this.age >= 18 implies this.adult;
+}

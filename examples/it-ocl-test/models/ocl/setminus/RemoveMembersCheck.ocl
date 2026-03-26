@@ -1,0 +1,9 @@
+package setminus;
+
+import Mydomain.*;
+
+
+ocl RemoveMembersCheck {
+context Group g inv:
+  g.name isin {"Guo", "Richard"} \ {"Richard"}  ;
+}

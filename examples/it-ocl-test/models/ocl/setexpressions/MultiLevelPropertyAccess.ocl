@@ -1,0 +1,9 @@
+package setexpressions;
+
+import Mydomain.*;
+
+
+ocl MultiLevelPropertyAccess {
+context University u inv:
+"StudyGroup" isin u.students.group.name;
+}

@@ -1,0 +1,9 @@
+package typeif;
+
+import Mydomain.*;
+
+
+ocl ThenBranchPropertyAccess_safeForNonStudents {
+  context Person p inv:
+    typeif p instanceof Student then p.matrNr > 0 else p.age >= 10;
+}

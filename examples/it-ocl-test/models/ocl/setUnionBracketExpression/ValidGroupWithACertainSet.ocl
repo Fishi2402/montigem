@@ -1,0 +1,10 @@
+package setUnionBracketExpression;
+
+import Mydomain.*;
+
+
+ocl ValidGroupWithACertainSet {
+  context Group g inv:
+    g.name isin union {{"Guo", "Richard"}, {"Mohammed"}};
+}
+

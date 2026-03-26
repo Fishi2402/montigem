@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp Mydomain {
+
+  class Person {
+    String name;
+    int age;
+    boolean adult;
+    Optional<String> birthplace;
+    Optional<String> presumedBirthplace;
+    Optional<int> birthHour;
+  }
+
+	class Student extends Person {
+		int matrNr;
+
+    boolean isActive;
+  }
+
+  class Supervisor{
+    int alias;
+    String name;
+    int age;
+    boolean isActive;
+  }
+
+  class Group {
+    String name;
+  }
+  association  [*] Student (members)<-> Group [*];
+  association [1] Group -> Supervisor [*];
+
+	class University {
+    String name;
+  }
+  association [1] University -> (students) Student [*];
+
+  // Class for integer
+  class IntNumber {
+    int value;
+  }
+
+  // Class for Double
+  class DoubleNumber {
+    double value;
+  }
+
+  // Class for String
+  class Text {
+    String value;
+  }
+
+  // Class for List of ints
+  class IntList {
+    List<int> listInt;
+  }
+
+  // Class with different parameter types to test field access
+  class FieldAccess {
+    String name;
+    List<int> intList;
+    IntNumber iNum;
+    List<IntNumber> iNumList;
+  }
+  association [1] FieldAccess -> (iNumAssoc) IntNumber [1];
+  association [1] FieldAccess -> (iNumAssocList) IntNumber [*];
+
+
+}
