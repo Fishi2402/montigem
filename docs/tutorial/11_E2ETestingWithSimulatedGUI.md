@@ -107,6 +107,9 @@ After instantiating a component, do not forget to call its `init()` method in or
 overview.init();
 ```
 
+!!! warning "Don't forget `init()`!"
+    The `init()` method of a page (which contains startup logic) is **not** called automatically in unit tests (unlike in the running app). Always call `page.init()` manually in your test setup or test method to avoid `NullPointerException` or unexpected behavior.
+
 Done! Now you can query data from the component by just calling its methods. 
 In order to get all shown customers, you can just call the `getCustomers()` method:
 

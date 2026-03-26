@@ -71,7 +71,7 @@ association [1] User (owner) <-> (documents) Document [*];
 ```
 
 **Generated Methods (User):**
-*   `List<Document> getDocuments()`
+*   `List<Document> getDocumentsList()`: **Use this to get the full list.** Calling `getDocuments()` without arguments on a `[*]` association will cause a Java compiler error.
 *   `void addDocument(Document d)`: Adds `d` and sets `d.owner = this`.
 *   `void removeDocument(Document d)`: Removes `d` and sets `d.owner = null`.
 *   `boolean containsDocument(Document d)`

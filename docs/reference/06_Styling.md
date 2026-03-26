@@ -34,7 +34,12 @@ To style elements inside a child component (e.g., inside a `GemCard`), you often
 }
 ```
 
-## 6.4 GUI Design Patterns
+## 6.4 Mixins vs. Extend
+
+Due to Angular's View Encapsulation, using `@extend` to inherit from global classes defined in `styles.scss` often fails or produces unexpected results. 
+*   **Best Practice:** Use SCSS Mixins (`@mixin` / `@include`) defined in a shared file (e.g., `_mixins.scss`) and import them in each component where needed.
+
+## 6.5 GUI Design Patterns
 
 For best practices on structuring your GUI and applying styles consistently, see [GUI Design Patterns](../designpatterns/GUIPatterns.md).
 

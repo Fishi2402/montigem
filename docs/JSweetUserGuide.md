@@ -141,11 +141,13 @@ lead to module imports on exactly this TS path. This is relevant, for example, f
 
 #### `@BackendOnly`
 
-Methods with `@umlp.jsweet.extension.annotation.BackendOnly` are **never executed normally** in the browser at runtime. Instead, the body is replaced by generated code:
+Methods with `@umlp.jsweet.extension.annotation.BackendOnly` are **never executed normally** in the browser at runtime. Instead, the body is replaced by generated code depending on the `BackendOnlyModes` value used:
 
-* if annotation value (`STATUS_OK`) → `StatusResult.ok(this.getId())`
-* if (`STATUS_ERROR`) → `StatusResult.error(this.getId())`
-* otherwise → `throw new Error('This method can only be called in the backend!');`
+* `STATUS_OK` → Returns `StatusResult.ok(this.getId())`
+* `STATUS_ERROR` → Returns `StatusResult.error(this.getId())`
+* `THROW_ERROR` (or default) → Throws `new Error('This method can only be called in the backend!');`
+
+This is extremely useful when sharing classes (like Singletons) between backend and frontend, but certain methods rely on backend-only libraries.
 
 #### `@Synchronized`
 
@@ -189,6 +191,22 @@ For advanced use cases where direct JavaScript/TypeScript code is required (e.g.
     }
     ```
 *   **Warning:** The code in the `@Replace` string is not validated. Syntax errors lead to errors in the generated TypeScript.
+
+---
+
+### 2.7 Excluding Files from Transpilation
+
+Sometimes, backend classes (like utilities or services) are shared with the frontend source path but contain dependencies that JSweet cannot handle (e.g., external libraries). To exclude these files from transpilation, configure the `excludeSource` property in your `frontend/build.gradle`.
+
+```groovy
+tasks.named("umlpJava2ts") {
+  excludeSource.add("glob:**/MyBackendOnlyUtil.java")
+}
+
+tasks.named("gui2java2ts") {
+  excludeSource.add("glob:**/MyBackendOnlyUtil.java")
+}
+```
 
 ---
 
@@ -660,3 +678,10 @@ Other `Collections` helper functions not specifically supported by us (e.g., `Co
 | `java.util.concurrent` | ⚠️ | Only `AtomicReference` as container type; otherwise prefer `async/await` + `@Synchronized`. |
 | `java.io`, `java.net`, `java.sql`, `java.security` | ⚠️/⛔ | Do not use in transpiled code. |
 | `java.lang.reflect` | ⛔ | Do not use in transpiled code. |
+
+---
+
+### 7.4 JSweet Quirks and Limitations
+
+*   **Avoid `var`:** Do not use the `var` keyword for complex generated MontiGem types (especially lists or builders). JSweet's type inference may fail, leading to compilation errors in the generated TypeScript. Use explicit type declarations instead.
+*   **Avoid `getLast()`:** Calling `list.getLast()` on MontiGem lists may fail during transpilation or at runtime. Always use `list.get(list.size() - 1)` instead.

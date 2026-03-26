@@ -36,6 +36,15 @@ This applies to:
 *   **Commands:** `RentItem extends RentItemTOP`
 *   **Frontend Components:** `CarOverview extends CarOverviewTOP`
 
+### 1.3 Packages & Imports
+
+There is a strict distinction between referencing models in the GUI DSL and referencing generated classes in Java.
+
+*   **In GUI DSL (`.gui`):** You reference the **Model**.
+    *   Syntax: `import models.MyModel.MyEntity;` (assuming `.umlp` file is in `models/`).
+*   **In Java HWC (`.java`):** You reference the **Generated Class**.
+    *   Syntax: `import mymodel.MyEntity;` (Package is usually lowercase and without `models` prefix).
+
 ---
 
 ## 2. Data Modeling (CD4A)
@@ -73,8 +82,8 @@ class Customer extends Person { String customerId; }
 | `long`, `Long` | `long`, `Long` | `number` | JS numbers are doubles; precision loss possible for large longs. |
 | `double`, `Double` | `double`, `Double` | `number` | |
 | `String` | `String` | `string` | |
-| `LocalDateTime` | `java.time.LocalDateTime` | `Date` | Mapped to native JS Date. |
 | `LocalDate` | `java.time.LocalDate` | `Date` | |
+| `LocalDateTime` | `java.time.LocalDateTime` | `Date` | Mapped to native JS Date. |
 | `List<T>` | `java.util.List<T>` | `Array<T>` | Only `List` is supported as a generic collection. |
 | `Optional<T>` | `java.util.Optional<T>` | `T` | `undefined` represents empty. |
 
@@ -111,7 +120,7 @@ association [1] User (owner) <-> (documents) Document [*];
 ```
 
 **Generated Methods (User):**
-*   `List<Document> getDocuments()`
+*   `List<Document> getDocumentsList()`
 *   `void addDocument(Document d)`: Adds `d` and sets `d.owner = this`.
 *   `void removeDocument(Document d)`: Removes `d` and sets `d.owner = null`.
 *   `boolean containsDocument(Document d)`
@@ -175,7 +184,16 @@ Parameters defined in the component signature become **Inputs** in Angular.
 *   `title`: Available as `this.getTitle()` in Java HWC.
 *   `isVisible`: Available as `this.isIsVisible()` (boolean convention).
 
-### 3.2 Component Usage
+### 3.2 Expressions & Helper Methods
+
+The GUI DSL supports basic Java expressions, but has limitations with complex types like Enums or String concatenation.
+
+*   **Avoid:** `@GemText(value = "Status: " + project.status)` (Often fails with Enums).
+*   **Prefer:** Delegate to a Java helper method.
+    *   **GUI:** `@GemText(value = getStatusLabel(project))`
+    *   **Java:** `public String getStatusLabel(Project p) { return "Status: " + p.getStatus(); }`
+
+### 3.3 Component Usage
 
 Components are instantiated using the `@` syntax inside another component's body.
 
@@ -189,7 +207,7 @@ Components are instantiated using the `@` syntax inside another component's body
 *   **Named Arguments:** Arguments must be passed by name (`param = value`).
 *   **Identifiers:** An instance can be given a name: `myInstance@MyComponent(...)`. This name is used as a CSS class and for referencing the component in the HWC.
 
-### 3.3 Layout Components
+### 3.4 Layout Components
 
 MontiGem provides standard layout components in `mc.fenix.arrange`.
 
@@ -235,7 +253,7 @@ A container with a title and content area.
 );
 ```
 
-### 3.4 Control Structures
+### 3.5 Control Structures
 
 #### `@iterate`
 Renders the block for each element in a list.
@@ -265,7 +283,7 @@ Renders the block only if the condition is true.
     ]
     ```
 
-### 3.5 Navigation
+### 3.6 Navigation
 
 *   **URLs:** A page `gui.CarUpdate` is accessible at `/gui/CarUpdate`.
 *   **Parameters:** If a page takes a domain object as a parameter (e.g., `page CarUpdate(Car car)`), the URL includes the object's ID: `/gui/CarUpdate/:carId`.
@@ -274,7 +292,7 @@ Renders the block only if the condition is true.
     Router.navigate("gui", "CarUpdate", String.valueOf(car.getGemId()));
     ```
 
-## 3.6 Generating GUIs from Data Models (CD2GUI)
+## 3.7 Generating GUIs from Data Models (CD2GUI)
 
 For rapid prototyping, MontiGem can generate basic CRUD (Create, Read, Update, Delete) views directly from your class diagram.
 
@@ -367,6 +385,10 @@ public void nativeAlert(String msg) {
 
 The body of the annotated method is discarded, and the string value is injected into the generated TypeScript.
 
+**Common Use Cases:**
+*   **Scrolling:** `document.querySelector(selector).scrollIntoView({behavior: 'smooth'})`
+*   **Navigation:** `window.open(url, '_blank')`
+
 ---
 
 ## 5. Runtime Environment (RTE) & Synchronization
@@ -380,7 +402,26 @@ The `Manager` (e.g., `CarrentalManager`) is a singleton available in both Backen
 *   **Identity Map:** Ensures that for a given ID, only one object instance exists in memory.
 *   **CRUD:** `getById(id)`, `getAll()`, `create()`, `delete()`.
 
-### 5.2 The Command System
+### 5.2 Creating Objects (Builder Pattern)
+
+To create new domain objects, use the generated Builder from the Manager class. This ensures the object is correctly instantiated and synchronized with the backend.
+
+**Pattern:**
+```java
+MyEntity newObj = MyModelManager.myEntityBuilder()
+    .attribute1("Value")
+    .attribute2(123)
+    .build(); // Creates and syncs the object
+```
+
+**Example:**
+```java
+Employee newEmp = SEOrgaManager.employeeBuilder()
+    .firstName("Alice")
+    .build();
+```
+
+### 5.3 The Command System
 
 Synchronization is based on the **Command Pattern**.
 
@@ -395,7 +436,7 @@ Synchronization is based on the **Command Pattern**.
 6.  **Broadcast:** The backend sends the command JSON to all *other* connected clients.
 7.  **Execution (Remote):** Other clients receive the JSON, deserialize it, and execute it locally.
 
-### 5.3 The Observer Pattern
+### 5.4 The Observer Pattern
 
 The frontend uses an Observer pattern to automatically update the UI.
 

@@ -85,6 +85,7 @@ public class PersonEditGUITest extends AbstractGUITest {
     // Create simulated GUI page 
     PersonEdit e = new PersonEdit();
     e.setP(p1); // Link GUI to the Person object
+    e.init(); // IMPORTANT: init() must be called manually in tests to trigger startup logic!
 
     // Check initial GUI values
     assertEquals("theo", e.getGemTextInput4Entry());
