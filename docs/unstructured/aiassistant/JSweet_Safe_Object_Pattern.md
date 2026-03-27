@@ -1,31 +1,31 @@
-# JSweet & MontiGem Besonderheiten: Das "Safe-Object" Architekturmuster
+# JSweet & MontiGem Specifics: The "Safe-Object" Architecture Pattern
 
-Um `NullPointerException` und `ClassCastException` während der JSweet-Transpilation (besonders bei komplexen Domänenobjekten) zu vermeiden, nutzt MontiGem häufig spezielle Architektur-Patterns. Diese sind essentiell, um Abstürze des JSweet-Transpilers oder Fehler zur Laufzeit im Browser zu verhindern.
+To avoid `NullPointerException` and `ClassCastException` during JSweet transpilation (especially with complex domain objects), MontiGem often utilizes specific architecture patterns. These are essential to prevent JSweet transpiler crashes or runtime errors in the browser.
 
-## 1. Das "Safe-Object" Architekturmuster
-*   **Async Loading:** Daten werden in `init()` asynchron geladen, der UI-Status wird über generierte `setVariable()` Methoden aktualisiert.
-*   **List-Mapping:** `IUMLPList` Objekte werden innerhalb von `@Replace`-Blöcken mittels `.toArray()` in native JS-Arrays konvertiert, um Standard-Methoden wie `find()` oder `filter()` in TypeScript nutzen zu können.
-*   **Typ-Entkopplung:** Komplexe Typen werden in `.gui`-Signaturen oft als generisches `Object` oder unspezifischer Typ geführt. Die Logik in Java-HWC Klassen arbeitet dann über `@Replace` sauber mit expliziten TypeScript-Casts, um Typprobleme beim Transpilieren zu umgehen.
+## 1. The "Safe-Object" Architecture Pattern
+*   **Async Loading:** Data is loaded asynchronously in `init()`, and the UI state is updated via generated `setVariable()` methods.
+*   **List-Mapping:** `IUMLPList` objects are converted into native JS arrays within `@Replace` blocks using `.toArray()`. This allows the use of standard TypeScript methods like `find()` or `filter()`.
+*   **Type-Decoupling:** Complex types in `.gui` signatures are often defined as a generic `Object` or an unspecific type. The logic in Java HWC classes then uses `@Replace` to perform clean TypeScript casts, bypassing type issues during transpilation.
 
-## 2. JSweet-Schutz-Strategie & Limits (HWC)
-Um Abstürze des JSweet-Transpilers zu verhindern:
-*   **Empty Method Bodies:** Java-Methodenrümpfe in HWC-Klassen, die durch JSweet im Frontend genutzt werden, MÜSSEN leer sein (z.B. `return null;`), wenn sie in TypeScript durch `@Replace` ersetzt werden oder wenn sie intern zu komplex für JSweet sind.
-*   **Logik-Delegation:** Komplexe Java-Logik für HWCs sollte in statische Hilfsmethoden innerhalb eines `internal`-Packages (z.B. `myproject.internal.*`) ausgelagert werden. **Dieses Package wird vom JSweet-Transpiler ignoriert.**
-*   **Kein `var` bei Listen:** Vermeide `var` bei komplexen generierten Typen (insb. Listen), da JSweet bei der Typ-Inferenz scheitern kann.
-*   **Kein `getLast()`:** Nutze `list.get(list.size() - 1)` anstelle von `list.getLast()` für MontiGem-Listen.
-*   **Dateien komplett ausschließen:** Wenn Backend-Utility-Klassen im Frontend-Pfad liegen, schließe sie in der `build.gradle` aus:
+## 2. JSweet Protection Strategy & Limits (HWC)
+To prevent JSweet transpiler crashes:
+*   **Empty Method Bodies:** Java method bodies in HWC classes used by JSweet in the frontend MUST be empty (e.g., `return null;`) if they are replaced in TypeScript via `@Replace` or if they are internally too complex for JSweet.
+*   **Logic Delegation:** Complex Java logic for HWCs should be moved to static helper methods within an `internal` package (e.g., `myproject.internal.*`). **This package is ignored by the JSweet transpiler.**
+*   **No `var` with Lists:** Avoid using `var` with complex generated types (especially lists), as JSweet may fail with type inference.
+*   **No `getLast()`:** Use `list.get(list.size() - 1)` instead of `list.getLast()` for MontiGem lists.
+*   **Exclude Files Completely:** If backend utility classes are located in the frontend path, exclude them in the `build.gradle`:
     `tasks.named("umlpJava2ts") { excludeSource.add("glob:**/MyBackendOnlyUtil.java") }`
-*   **Backend-Only Methoden:** Nutze `@BackendOnly(BackendOnlyModes.THROW_ERROR)` (oder `STATUS_OK` / `STATUS_ERROR` für Commands), damit JSweet die Methode im Frontend durch einen einfachen Error-Throw oder Result ersetzt.
+*   **Backend-Only Methods:** Use `@BackendOnly(BackendOnlyModes.THROW_ERROR)` (or `STATUS_OK` / `STATUS_ERROR` for commands), so JSweet replaces the method in the frontend with a simple error throw or result.
 
-## 3. Asynchronität & Imports in JSweet
-*   **RTE Listen iterieren:** Die Iteration über `IUMLPList` ist asynchron. Nutze in TS: `for await (const item of myList)`.
-*   **Assoziationen laden:** Getter für Assoziationen geben ein Promise zurück. Nutze `await` (z.B. `await myObject.getCorrespondsTo()`).
-*   **@Async Annotation:** Jede Java-HWC Methode, die TS-Code mit `await` generiert (via `@Replace`), **muss** in Java mit `@jsweet.lang.Async` annotiert werden.
-*   **Imports in @Replace:** Statische Imports für `@Replace` Blöcke müssen zwingend über `@Component(tsImports = {"MyService, from 'path/to/MyService'"})` deklariert werden.
+## 3. Asynchronicity & Imports in JSweet
+*   **Iterating RTE Lists:** Iteration over `IUMLPList` is asynchronous. In TS, use: `for await (const item of myList)`.
+*   **Loading Associations:** Getters for associations return a Promise. Use `await` (e.g., `await myObject.getCorrespondsTo()`).
+*   **@Async Annotation:** Every Java HWC method that generates TS code with `await` (via `@Replace`) **must** be annotated with `@jsweet.lang.Async` in Java.
+*   **Imports in @Replace:** Static imports for `@Replace` blocks must be declared via `@Component(tsImports = {"MyService, from 'path/to/MyService'"})`.
 
-## 4. Shadowing-Regel
-Erstelle KEINE Java-HWC-Datei für Komponenten, die rein in TypeScript implementiert sind (z.B. `FileUpload.ts`). Die Java-Datei würde die TypeScript-Implementierung im Build-Prozess "beschatten" (shadowing) und deaktivieren, da der Transpiler die `.java` Datei nimmt und daraus eine neue `.ts` Datei generiert, welche die manuell erstellte `.ts` Datei überschreibt.
+## 4. Shadowing Rule
+DO NOT create a Java HWC file for components implemented purely in TypeScript (e.g., `FileUpload.ts`). The Java file would "shadow" and deactivate the TypeScript implementation during the build process, as the transpiler takes the `.java` file and generates a new `.ts` file from it, overwriting the manually created `.ts` file.
 
-## 5. GUI-DSL Einschränkungen
-*   **Parser Bugs:** Vermeide verschachtelte `@iterate` Blöcke innerhalb von `components = [...]`.
-*   **Optional Handling:** Vermeide funktionale Operationen auf `Optional` (`map`, `flatMap`). Nutze klassische `if (opt.isPresent())` Checks in transpiliertem Code.
+## 5. GUI-DSL Restrictions
+*   **Parser Bugs:** Avoid nested `@iterate` blocks within `components = [...]`.
+*   **Optional Handling:** Avoid functional operations on `Optional` (`map`, `flatMap`). Use classic `if (opt.isPresent())` checks in transpiled code.

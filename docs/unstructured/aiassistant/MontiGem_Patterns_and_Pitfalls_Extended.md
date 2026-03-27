@@ -1,81 +1,81 @@
 # MontiGem Patterns & Pitfalls
 
-Dieses Dokument beschreibt häufige Fehler bei der Entwicklung mit MontiGem/JSweet und die daraus resultierenden Best-Practice-Patterns.
+This document describes common mistakes during development with MontiGem/JSweet and the resulting best-practice patterns.
 
 ---
 
 ## 1. GUI Modeling & Layout Patterns
 
-### 1.1 Komplexe Logik in Guards
-*   ❌ **Fehleranfälliger Weg:** Komplexe Java-Ausdrücke direkt im `@guard`: `@guard(p.status == ACTIVE && searchTerm != null)`.
-*   ✅ **Der MontiGem-Weg:** Die Logik in eine Java-Methode auslagern: `@guard(isVisible(p, searchTerm))`.
+### 1.1 Complex Logic in Guards
+*   ❌ **Error-prone way:** Complex Java expressions directly in the `@guard`: `@guard(p.status == ACTIVE && searchTerm != null)`.
+*   ✅ **The MontiGem way:** Move logic to a Java method: `@guard(isVisible(p, searchTerm))`.
 
-### 1.2 String-Konkatenation in Argumenten
-*   ❌ **Fehleranfälliger Weg:** Strings in der GUI-DSL addieren: `@GemText(value = "Status: " + p.status)`.
-*   ✅ **Der MontiGem-Weg:** Eine "String Factory" Methode in Java erstellen: `@GemText(value = getStatusLabel(p))`.
+### 1.2 String Concatenation in Arguments
+*   ❌ **Error-prone way:** Adding strings in the GUI DSL: `@GemText(value = "Status: " + p.status)`.
+*   ✅ **The MontiGem way:** Create a "String Factory" method in Java: `@GemText(value = getStatusLabel(p))`.
 
-### 1.3 Semikolons & Kommas in Component Lists
-*   ❌ **Fehleranfälliger Weg:** Fehlende Trennzeichen nach `@guard` oder `@iterate` innerhalb von `components = [...]`.
-*   ✅ **Der MontiGem-Weg:** Beende Statements im Block mit `;` und trenne die Blöcke im Array mit `,`:
+### 1.3 Semicolons & Commas in Component Lists
+*   ❌ **Error-prone way:** Missing delimiters after `@guard` or `@iterate` within `components = [...]`.
+*   ✅ **The MontiGem way:** Terminate statements in the block with `;` and separate blocks in the array with `,`:
     ```java
     components = [
-        @guard(cond) { @GemText(...); }, // Komma als Trenner!
+        @guard(cond) { @GemText(...); }, // Comma as separator!
         @iterate(item : list) { @GemText(...); }
     ]
     ```
 
-### 1.4 Korrekte Verwendung von GemDialog
-*   ❌ **Fehleranfälliger Weg:** Den Dialog via `@guard` komplett aus dem DOM entfernen (z.B. `@guard(isOpen) { @GemDialog(...) }`).
-*   ✅ **Der MontiGem-Weg:** Einen Boolean-Parameter an die Page übergeben und an `isOpen` binden: `myDialog@GemDialog(isOpen = isMyDialogOpen)`. Event-Handler steuern dann das Feld `this.setIsMyDialogOpen(true)`.
+### 1.4 Correct Use of GemDialog
+*   ❌ **Error-prone way:** Removing the dialog completely from the DOM via `@guard` (e.g., `@guard(isOpen) { @GemDialog(...) }`).
+*   ✅ **The MontiGem way:** Pass a boolean parameter to the page and bind it to `isOpen`: `myDialog@GemDialog(isOpen = isMyDialogOpen)`. Event handlers then control the field `this.setIsMyDialogOpen(true)`.
 
 ### 1.5 Flexbox & Height 0
-*   ❌ **Fehleranfälliger Weg:** `height: 100%` auf ein Kind setzen, wenn der Parent keine explizite Höhe hat (Element kollabiert).
-*   ✅ **Der MontiGem-Weg:** Sicherstellen, dass die Parent-Chain Höhen hat, oder Fallback nutzen: `min-height: 400px;`.
+*   ❌ **Error-prone way:** Setting `height: 100%` on a child when the parent has no explicit height (element collapses).
+*   ✅ **The MontiGem way:** Ensure the parent chain has heights, or use a fallback: `min-height: 400px;`.
 
 ---
 
 ## 2. Java HWC & JSweet Patterns
 
 ### 2.1 Boolean Getters
-*   ❌ **Fehleranfälliger Weg:** Für das Attribut `boolean isSelected` den Getter `getIsSelected()` aufrufen.
-*   ✅ **Der MontiGem-Weg:** MontiCore generiert standardmäßig `isIsSelected()`.
+*   ❌ **Error-prone way:** For the attribute `boolean isSelected`, call the getter `getIsSelected()`.
+*   ✅ **The MontiGem way:** MontiCore generates `isIsSelected()` by default.
 
 ### 2.2 Package Naming
-*   ❌ **Fehleranfälliger Weg:** Das kapitalisierte CD-Modell als Java-Package nutzen (`import Dtmm.Assessment;`).
-*   ✅ **Der MontiGem-Weg:** Java-Packages sind immer kleingeschrieben (`import dtmm.Assessment;`). Nur in der `.gui` wird direkt auf das Modell referenziert (`Dtmm.Assessment`).
+*   ❌ **Error-prone way:** Using the capitalized CD model as a Java package (`import Dtmm.Assessment;`).
+*   ✅ **The MontiGem way:** Java packages are always lowercase (`import dtmm.Assessment;`). Only in the `.gui` is the model referenced directly (`Dtmm.Assessment`).
 
 ### 2.3 Primitive vs. Wrapper Return Types
-*   ❌ **Fehleranfälliger Weg:** Eine TOP-Methode überschreiben und `boolean` zurückgeben, obwohl die TOP-Klasse `java.lang.Boolean` erwartet.
-*   ✅ **Der MontiGem-Weg:** Immer Wrapper-Klassen (`Boolean`, `Integer`) für HWC-Rückgaben an die GUI nutzen.
+*   ❌ **Error-prone way:** Overriding a TOP method and returning `boolean`, even though the TOP class expects `java.lang.Boolean`.
+*   ✅ **The MontiGem way:** Always use wrapper classes (`Boolean`, `Integer`) for HWC returns to the GUI.
 
-### 2.4 Aufruf von Singleton-Befehlen aus dem Frontend
-*   ❌ **Fehleranfälliger Weg:** `App.getInstance().myMethod()` aus dem Frontend-HWC aufrufen.
-*   ✅ **Der MontiGem-Weg:** Singleton-Methoden werden zu Commands. Nutze den generierten statischen Aufruf: `App.executeMyMethod(param);`.
+### 2.4 Calling Singleton Commands from the Frontend
+*   ❌ **Error-prone way:** Calling `App.getInstance().myMethod()` from the frontend HWC.
+*   ✅ **The MontiGem way:** Singleton methods become commands. Use the generated static call: `App.executeMyMethod(param);`.
 
-### 2.5 Das "List-Item-State" Problem
-*   ❌ **Fehleranfälliger Weg:** UI-Zustand (z.B. Dropdown-Auswahl in einer Liste) in einer Page-Variable speichern. Ändert man eins, ändern sich alle.
-*   ✅ **Der MontiGem-Weg:** Den UI-Zustand in das Domänenobjekt (CD) als `temp...` Feld aufnehmen: `class Task { String tempStatus; }`.
+### 2.5 The "List-Item-State" Problem
+*   ❌ **Error-prone way:** Storing UI state (e.g., dropdown selection in a list) in a page variable. Changing one changes all.
+*   ✅ **The MontiGem way:** Include the UI state in the domain object (CD) as a `temp...` field: `class Task { String tempStatus; }`.
 
-### 2.6 Manuelle Listen-Verwaltung
-*   ❌ **Fehleranfälliger Weg:** Liste manuell via `SEOrgaManager.getProjectList()` laden und speichern. Es findet keine Live-Synchronisierung statt.
-*   ✅ **Der MontiGem-Weg:** Die Liste als Parameter in den Page-Header der `.gui` aufnehmen. MontiGem initialisiert und synchronisiert sie automatisch.
+### 2.6 Manual List Management
+*   ❌ **Error-prone way:** Loading and saving a list manually via `SEOrgaManager.getProjectList()`. No live synchronization occurs.
+*   ✅ **The MontiGem way:** Include the list as a parameter in the page header of the `.gui`. MontiGem initializes and synchronizes it automatically.
 
-### 2.7 Java Streams und JSweet
-*   ❌ **Fehleranfälliger Weg:** `myGemList.stream().filter(...).collect(...)`. (Gibt JS-Runtime-Fehler).
-*   ✅ **Der MontiGem-Weg:** Klassische `for`-Schleifen verwenden.
+### 2.7 Java Streams and JSweet
+*   ❌ **Error-prone way:** `myGemList.stream().filter(...).collect(...)`. (Results in JS runtime errors).
+*   ✅ **The MontiGem way:** Use classic `for` loops.
 
-### 2.8 Mandatory Felder in Buildern
-*   ❌ **Fehleranfälliger Weg:** Objekt via `builder().build().get()` erzeugen und Pflichtfelder danach setzen. Führt oft sofort zu Validierungsfehlern beim Build.
-*   ✅ **Der MontiGem-Weg:** Alle Pflichtfelder direkt in die Builder-Chain packen.
+### 2.8 Mandatory Fields in Builders
+*   ❌ **Error-prone way:** Creating an object via `builder().build().get()` and setting mandatory fields afterwards. This often leads immediately to validation errors during the build.
+*   ✅ **The MontiGem way:** Put all mandatory fields directly into the builder chain.
 
 ---
 
-## 3. Architektur & Performance Patterns
+## 3. Architecture & Performance Patterns
 
-### 3.1 Manager-Architektur (TOP vs. Impl)
-*   ❌ **Fehleranfälliger Weg:** Methoden direkt im HWC Manager überschreiben und vermischen.
-*   ✅ **Der MontiGem-Weg:** Die Impl-Klasse mit `@jsweet.lang.Erased` markieren und Backend-Methoden mit `@BackendOnly` versehen.
+### 3.1 Manager Architecture (TOP vs. Impl)
+*   ❌ **Error-prone way:** Overriding and mixing methods directly in the HWC Manager.
+*   ✅ **The MontiGem way:** Mark the Impl class with `@jsweet.lang.Erased` and mark backend methods with `@BackendOnly`.
 
 ### 3.2 Responsive Charts (ResizeObserver)
-*   ❌ **Fehleranfälliger Weg:** Chart-Größe nur in `ngOnInit` berechnen. (Charts verschwinden bei Layout-Änderungen).
-*   ✅ **Der MontiGem-Weg:** In TypeScript einen `ResizeObserver` auf den Container setzen, um bei Änderungen (z.B. Sidebar Toggle) den Chart neu zu zeichnen.
+*   ❌ **Error-prone way:** Calculating chart size only in `ngOnInit`. (Charts disappear during layout changes).
+*   ✅ **The MontiGem way:** In TypeScript, set a `ResizeObserver` on the container to redraw the chart upon changes (e.g., sidebar toggle).
