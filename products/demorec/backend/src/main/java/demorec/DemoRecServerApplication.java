@@ -1,10 +1,6 @@
 package demorec;
 
 import de.se_rwth.commons.logging.Log;
-import demorec.processmodeling.InitialProcessModelCreator;
-import demorec.processmodeling.InstructionsGenerator;
-import demorec.processmodeling.ProcessModelExporter;
-import demorec.processmodeling.ProcessModelTagger;
 import org.h2.tools.Server;
 
 import java.io.IOException;
@@ -148,19 +144,19 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
       pack.addAllKinds(component.getIsA());
       pack.addAllKinds(component2.getIsA());
 
-      JoinConnectionKind kind = DemoRecManager.joinConnectionKindBuilder()
-          .joinConnectionType(JoinConnectionType.SCREW)
+      JointConnectionKind kind = DemoRecManager.jointConnectionKindBuilder()
+          .jointConnectionType(JointConnectionType.SCREW)
           .connectsAdd(component)
           .connectsAdd(component2)
           .build().get();
 
-      JoinConnection connection = DemoRecManager.joinConnectionBuilder()
+      JointConnection connection = DemoRecManager.jointConnectionBuilder()
           .condition(State.OTHER)
           .conditionDescription(Optional.of("Korrodiert"))
           .xPos(Optional.of(65.8))
           .yPos(Optional.of(5.1))
           .zPos(Optional.of(-89.5622))
-          .joinConnectionKind(kind)
+          .jointConnectionKind(kind)
           .build().get();
 
       pack.addAllConnections(kind);

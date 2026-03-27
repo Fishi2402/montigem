@@ -4,19 +4,19 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.basic.GemText;
-import mc.fenix.basic.GemLink;
+import mc.fenix.basic.GemButton;
 
 component Navigation() {
   @GemRow(
     colGap="5px",
     components=[
-      @GemLink(url="gui/Start", text="Processes"),
-      @GemLink(url="gui/process/ProcessCreate", text="Start new Process"),
-      @GemLink(url="gui/pack/AllPacksOverview", text="Battery Packs"),
-      @GemLink(url="gui/endeffector/EndEffectorOverview", text="End Effectors"),
-      @GemLink(url="gui/dimension/DimensionOverview", text="Dimensions"),
-      //@GemLink(url="gui/editprocessmodels/ProcessModels", text="Process Models"),
-      @GemLink(url="generalinfo/About", text="About")
+      @GemButton(label="Processes", leftClick=navigateToProcesses()),
+      @GemButton(label="Start new Process", leftClick=navigateToNewProcess()),
+      @GemButton(label="Battery Packs", leftClick=navigateToBatteryPacks()),
+      @GemButton(label="End Effectors", leftClick=navigateToEndEffectors()),
+      @GemButton(label="Dimensions", leftClick=navigateToDimensions()),
+      //@GemButton(label="Process Models", leftClick=navigateToProcessModels()),
+      @GemButton(label="About", leftClick=navigateToAbout())
     ]
   );
 

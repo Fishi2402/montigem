@@ -29,7 +29,7 @@ public class ProcessOverview extends ProcessOverviewTOP {
       this.getP().addConsistsOf(step);
 
       if(step.getDeconstructsGem().isPresent()) {
-        for (DemoRecComponent component : step.getDeconstructs().getJoinConnectionKind().getConnectsList()) {
+        for (DemoRecComponent component : step.getDeconstructs().getJointConnectionKind().getConnectsList()) {
           if(!this.getP().getDeconstructionOf().containsAllComponents(component)) {
             this.getP().getDeconstructionOf().addAllComponents(component);
           }

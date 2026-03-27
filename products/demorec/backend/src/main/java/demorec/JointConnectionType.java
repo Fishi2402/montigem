@@ -1,7 +1,7 @@
 package demorec;
 
 // TOPing this Enum because of JSweet
-public enum JoinConnectionType {
+public enum JointConnectionType {
   SCREW
 
   ,

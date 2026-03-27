@@ -29,8 +29,8 @@ public class ProcessModelTagger {
   public final static String taskGemIdTagName = "taskGemId";
   public final static String taskDurationTagName = "taskDurationSeconds";
   public final static String taskEndEffectorTagName = "taskUsedEndEffectorName";
-  public final static String taskJoinConnection3DPositionTagName = "taskJoinConnection3DPosition";
-  //public final static String taskJoinConnectionTypeTagName = "taskJoinConnectionType";
+  public final static String taskJointConnection3DPositionTagName = "taskJointConnection3DPosition";
+  //public final static String taskJointConnectionTypeTagName = "taskJointConnectionType";
 
   public ProcessModelTagger() {
     this.tag_definition_file_extension = STANDARD_TAG_DEFINITION_FILE_ENDING;
@@ -93,12 +93,12 @@ public class ProcessModelTagger {
         positionBuilder.append("|");
         positionBuilder.append(task.getDeconstructs().getZPos().map(String::valueOf).orElse("undefined"));
         positionBuilder.append(")");
-        ASTValuedTag joinConnectionPositionTag = TagsMill.valuedTagBuilder().setName(taskJoinConnection3DPositionTagName).setValue(positionBuilder.toString()).build();
-        tagger.addTag(activitySymbol, joinConnectionPositionTag);
+        ASTValuedTag jointConnectionPositionTag = TagsMill.valuedTagBuilder().setName(taskJointConnection3DPositionTagName).setValue(positionBuilder.toString()).build();
+        tagger.addTag(activitySymbol, jointConnectionPositionTag);
       }
 
-      /*ASTValuedTag joinConnectionTypeTag = TagsMill.valuedTagBuilder().setName(taskJoinConnectionTypeTagName).setValue(task.getDeconstructs().getJoinConnectionKind().getJoinConnectionType().name()).build();
-      tagger.addTag(cu.getProcess().getLane(0).getEnclosingScope().resolveAtomicActivity(grammarTaskName).get(), joinConnectionTypeTag);*/
+      /*ASTValuedTag jointConnectionTypeTag = TagsMill.valuedTagBuilder().setName(taskJointConnectionTypeTagName).setValue(task.getDeconstructs().getJointConnectionKind().getJointConnectionType().name()).build();
+      tagger.addTag(cu.getProcess().getLane(0).getEnclosingScope().resolveAtomicActivity(grammarTaskName).get(), jointConnectionTypeTag);*/
     }
 
     String result = TagsMill.prettyPrint(tagUnit, true);

@@ -5,7 +5,7 @@ import demorec.DemoRecComponent;
 import umlp.jsweet.extension.annotation.Component;
 // Otherwise JSweet fucks up the import
 import demorec.ProcessStepType;
-import demorec.JoinConnectionType;
+import demorec.JointConnectionType;
 
 import java.util.ArrayList;
 
@@ -35,30 +35,30 @@ public class ProcessStepView extends ProcessStepViewTOP {
     return "None";
   }
 
-  public Boolean getHasJoinConnectionCondition () {
+  public Boolean getHasJointConnectionCondition () {
     if (this.getProcessStep() != null) {
       return (this.getProcessStep().getDeconstructs() != null);
     }
     return false;
   }
 
-  public String getJoinConnectionLabelText () {
-    if (this.getHasJoinConnectionCondition()) {
-      if (this.getProcessStep().getDeconstructs().getJoinConnectionKind() != null) {
-        return "Dissolved Components of Join Connection of Type '"
-            + this.getProcessStep().getDeconstructs().getJoinConnectionKind().getJoinConnectionType().toString()
+  public String getJointConnectionLabelText () {
+    if (this.getHasJointConnectionCondition()) {
+      if (this.getProcessStep().getDeconstructs().getJointConnectionKind() != null) {
+        return "Dissolved Components of Joint Connection of Type '"
+            + this.getProcessStep().getDeconstructs().getJointConnectionKind().getJointConnectionType().toString()
             + "':";
       }
     }
-    return "Dissolved Components of Join Connection";
+    return "Dissolved Components of Joint Connection";
   }
 
-  public String getJoinConnectionComponents () {
-    if (this.getHasJoinConnectionCondition()) {
-      if (this.getProcessStep().getDeconstructs().getJoinConnectionKind() != null) {
-        if (this.getProcessStep().getDeconstructs().getJoinConnectionKind().getConnectsList() != null) {
+  public String getJointConnectionComponents () {
+    if (this.getHasJointConnectionCondition()) {
+      if (this.getProcessStep().getDeconstructs().getJointConnectionKind() != null) {
+        if (this.getProcessStep().getDeconstructs().getJointConnectionKind().getConnectsList() != null) {
           var componentNames = new ArrayList<>();
-          for (DemoRecComponent component : this.getProcessStep().getDeconstructs().getJoinConnectionKind().getConnectsList()) {
+          for (DemoRecComponent component : this.getProcessStep().getDeconstructs().getJointConnectionKind().getConnectsList()) {
             componentNames.add(component.getName());
           }
           return componentNames.toString();

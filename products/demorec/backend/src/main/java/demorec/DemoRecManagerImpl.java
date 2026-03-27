@@ -9,11 +9,11 @@ import java.util.Optional;
 public class DemoRecManagerImpl extends DemoRecManagerImplTOP {
 
   @Override
-  protected  boolean _doDeletePhoto(Long gemId, NotificationScope scope){
-    Optional<Photo> optPhoto = getPhotoWithoutDoOpt(gemId);
-    String fileName = optPhoto.get().getFilename();
+  protected  boolean _doDeleteLocalPhoto(Long gemId, NotificationScope scope){
+    Optional<LocalPhoto> optLocalPhoto = getPhotoWithoutDoOpt(gemId);
+    String fileName = optLocalPhoto.get().getFilename();
     Log.info("Deleting photo with GemId "+gemId, this.getClass().getName());
-    if(super._doDeletePhoto(gemId, scope)) {
+    if(super._doDeleteLocalPhoto(gemId, scope)) {
       boolean deleteSuccessful = deleteActualFile(fileName);
       if(deleteSuccessful) {
         return true;
@@ -34,19 +34,19 @@ public class DemoRecManagerImpl extends DemoRecManagerImplTOP {
   }
 
 
-  private Optional<Photo> getPhotoWithoutDoOpt(long gemId) {
+  private Optional<LocalPhoto> getPhotoWithoutDoOpt(long gemId) {
 
-    if(knownPhotos.containsKey(gemId)){
-      return Optional.ofNullable(knownPhotos.get(gemId));
+    if(knownLocalPhotos.containsKey(gemId)){
+      return Optional.ofNullable(knownLocalPhotos.get(gemId));
     }
     {
-      Optional<Photo> res = DemoRecDAOFactory.getPhotoDAO().selectPhoto(gemId);
+      Optional<LocalPhoto> res = DemoRecDAOFactory.getLocalPhotoDAO().selectLocalPhoto(gemId);
       if(res.isPresent()){
-        Photo h = res.get();
-        if(!h.containsObserver(thePhotoDbObserver)){
-          h.addObserver(thePhotoDbObserver);
+        LocalPhoto h = res.get();
+        if(!h.containsObserver(theLocalPhotoDbObserver)){
+          h.addObserver(theLocalPhotoDbObserver);
         }
-        knownPhotos.put(h.getGemId(), h);
+        knownLocalPhotos.put(h.getGemId(), h);
         return Optional.of(h);
       }
     }

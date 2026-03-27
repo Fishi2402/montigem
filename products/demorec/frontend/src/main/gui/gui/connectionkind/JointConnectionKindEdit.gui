@@ -1,6 +1,6 @@
 package gui.connectionkind;
 
-import DemoRec.JoinConnectionKind;
+import DemoRec.JointConnectionKind;
 import DemoRec.DemoRecComponent;
 
 import mc.fenix.basic.GemText;
@@ -15,7 +15,7 @@ import gui.component.ComponentCreate;
 import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
 
-component JoinConnectionKindEdit(List<DemoRecComponent> components, JoinConnectionKind connectionKind,
+component JointConnectionKindEdit(List<DemoRecComponent> components, JointConnectionKind connectionKind,
     boolean showOptionalAttributes=true,
     boolean newCompGuard = false, String componentEntry) {
 
@@ -26,7 +26,7 @@ component JoinConnectionKindEdit(List<DemoRecComponent> components, JoinConnecti
       selectTypeOfConnection@GemDropdownInput(
         labelText = "Type of Connection",
         options = null,
-        entry = connectionKind.joinConnectionType,
+        entry = connectionKind.jointConnectionType,
         validity = checkConnectionType(),
         width="var(--smallDropDownWidth)"),
 
@@ -44,6 +44,16 @@ component JoinConnectionKindEdit(List<DemoRecComponent> components, JoinConnecti
         components = [
           @iterate(DemoRecComponent component : connectionKind.connects){
             removeComponent@GemButton(label=component.name, leftClick=removeSelectedComponent(component), disabled=false);
+          }
+        ]
+      ),
+
+      @GemColumn(
+        components = [
+          @iterate(DemoRecComponent comp : connectionKind.connects) {
+            @iterate(Photo photo : comp.photo) {
+              @GemText(value=photo.url);
+            }
           }
         ]
       ),

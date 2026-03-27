@@ -1,6 +1,6 @@
-package gui.joinconnection;
+package gui.jointconnection;
 
-import DemoRec.JoinConnection;
+import DemoRec.JointConnection;
 import DemoRec.ProcessModel;
 import DemoRec.DemoRecComponent;
 
@@ -13,27 +13,27 @@ import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemDropdownInput;
 
 import gui.component.ComponentCreate;
-import gui.connectionkind.JoinConnectionKindCreate;
-import gui.joinconnection.JoinConnectionEdit;
+import gui.connectionkind.JointConnectionKindCreate;
+import gui.jointconnection.JointConnectionEdit;
 
-component JoinConnectionCreateComplete(ProcessModel processModel, JoinConnection connection, Event<JoinConnection> createJoinConnection) {
+component JointConnectionCreateComplete(ProcessModel processModel, JointConnection connection, Event<JointConnection> createJointConnection) {
   @GemCard(
-    title = "Create Join Connection",
+    title = "Create JointConnection",
     component = @GemColumn(
       rowGap="5px",
       components = [
-        @JoinConnectionEdit(connection=connection),
+        @JointConnectionEdit(connection=connection),
 
-        selectJoinConnectionKind@GemDropdownInput(
-          labelText = "Join Connection Kind",
+        selectJointConnectionKind@GemDropdownInput(
+          labelText = "JointConnection Kind",
           options = null,
           entry = null,
-          validity=checkJoinConnectionKind(),
+          validity=checkJointConnectionKind(),
           width="var(--largeDropDownWidth)"
         ),
 
-        createNewJoinConnectionKind@guard(true) {
-          @JoinConnectionKindCreate(createJoinConnectionKind=addNewJoinConnectionKind());
+        createNewJointConnectionKind@guard(true) {
+          @JointConnectionKindCreate(createJointConnectionKind=addNewJointConnectionKind());
         },
 
         buildConnection@GemButton(label = "Save Connection", leftClick = createNewConnection(), disabled=true, width="var(--smallDropDownWidth)")

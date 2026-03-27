@@ -2,7 +2,7 @@
 package gui.connectionkind;
 
 import demorec.DemoRecManager;
-import demorec.JoinConnectionKind;
+import demorec.JointConnectionKind;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Component
-public class ChooseJoinConnectionKind extends ChooseJoinConnectionKindTOP {
+public class ChooseJointConnectionKind extends ChooseJointConnectionKindTOP {
 
   private String connectionKindEntry = "";
   private List<Option> connectionKindOptions = new ArrayList<>();
@@ -22,16 +22,16 @@ public class ChooseJoinConnectionKind extends ChooseJoinConnectionKindTOP {
     super.init();
     this.connectionKindOptions.add(new Option("NEW","NEW"));
 
-    for (JoinConnectionKind jCKind : DemoRecManager.getJoinConnectionKindList()) {
+    for (JointConnectionKind jCKind : DemoRecManager.getJointConnectionKindList()) {
       this.connectionKindOptions.add(new Option(String.valueOf(jCKind.getGemId()), jCKind.getName()));
     }
   }
 
-  public List<Option> getSelectJoinConnectionKindOptions() {
+  public List<Option> getSelectJointConnectionKindOptions() {
     return this.connectionKindOptions;
   }
 
-  public String getSelectJoinConnectionKindEntry() {
+  public String getSelectJointConnectionKindEntry() {
     // This logic ensure that the type is chosen if the currentType is only loaded much later
 /*    if(this.getCurrentKind() && this.chosenKindNotLoaded) {
       this.chosenKindNotLoaded = false;
@@ -40,18 +40,18 @@ public class ChooseJoinConnectionKind extends ChooseJoinConnectionKindTOP {
     return this.connectionKindEntry;
   }
 
-  public void setSelectJoinConnectionKindEntry(String value) {
+  public void setSelectJointConnectionKindEntry(String value) {
     this.connectionKindEntry = value;
-    JoinConnectionKind k = DemoRecManager.getJoinConnectionKindSure(Long.valueOf(value));
+    JointConnectionKind k = DemoRecManager.getJointConnectionKindSure(Long.valueOf(value));
     this.getChosenKind().accept(k);
   }
 
-  public Boolean getCreateJoinConnectionKindCondition() {
-    return this.getSelectJoinConnectionKindEntry().equals("NEW");
+  public Boolean getCreateJointConnectionKindCondition() {
+    return this.getSelectJointConnectionKindEntry().equals("NEW");
   }
 
-  public Consumer<JoinConnectionKind> addNewJoinConnectionKind() {
-    return (JoinConnectionKind newConnectionKind) -> {
+  public Consumer<JointConnectionKind> addNewJointConnectionKind() {
+    return (JointConnectionKind newConnectionKind) -> {
       this.connectionKindOptions.add(new Option(String.valueOf(newConnectionKind.getGemId()), newConnectionKind.getName()));
     };
   }

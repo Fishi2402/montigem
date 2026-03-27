@@ -51,7 +51,7 @@ public class InstructionsPrinter implements WorkflowVisitor2 {
       if (tags.containsKey(nodeName)) {
         printer.println("// Task: " + nodeName);
         printer.println("equip_endeffector(\"" + tags.get(nodeName).get(ProcessModelTagger.taskEndEffectorTagName) + "\");");
-        printer.println("move_to_position(\"" + tags.get(nodeName).get(ProcessModelTagger.taskJoinConnection3DPositionTagName) + "\");");
+        printer.println("move_to_position(\"" + tags.get(nodeName).get(ProcessModelTagger.taskJointConnection3DPositionTagName) + "\");");
         printer.println("dissolve_" + endEffectorsByCategory.getOrDefault(tags.get(nodeName).get(ProcessModelTagger.taskEndEffectorTagName), "manual") + "_connection();\n");
       }
     }

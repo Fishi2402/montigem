@@ -26,9 +26,9 @@ page ComponentsOfPack(BatteryPack pack) {
   );
 
   @GemCard(
-    title="Join Connections",
+    title="Joint Connections",
     component=connections@GemTreeNode(children = [
-      @iterate(JoinConnectionKind connKind : pack.allConnections) {
+      @iterate(JointConnectionKind connKind : pack.allConnections) {
         @ConnectionsTree(connKind=connKind);
       }
     ])

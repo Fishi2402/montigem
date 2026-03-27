@@ -4,9 +4,9 @@ package gui.step;
 import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.DemoRecManager;
-import demorec.JoinConnection;
-import demorec.JoinConnectionBuilder;
-import demorec.JoinConnectionKind;
+import demorec.JointConnection;
+import demorec.JointConnectionBuilder;
+import demorec.JointConnectionKind;
 import demorec.ProcessStep;
 import demorec.ProcessStepBuilder;
 import demorec.ProcessStepType;
@@ -25,8 +25,8 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
 
   public String endEffectorEntry = "";
 
-  public String joinConnectionKindEntry = "";
-  public List<Option> joinConnectionKindOptions = new ArrayList<>();
+  public String jointConnectionKindEntry = "";
+  public List<Option> jointConnectionKindOptions = new ArrayList<>();
 
   public boolean building = false;
 
@@ -38,10 +38,10 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   public void init() {
     super.init();
 
-    this.joinConnectionKindOptions.add(new Option("NEW", "NEW"));
-    List<JoinConnectionKind> kindList = DemoRecManager.getJoinConnectionKindList();
-    for (JoinConnectionKind kind : kindList) {
-      this.joinConnectionKindOptions.add(new Option(String.valueOf(kind.getGemId()), kind.getName()));
+    this.jointConnectionKindOptions.add(new Option("NEW", "NEW"));
+    List<JointConnectionKind> kindList = DemoRecManager.getJointConnectionKindList();
+    for (JointConnectionKind kind : kindList) {
+      this.jointConnectionKindOptions.add(new Option(String.valueOf(kind.getGemId()), kind.getName()));
     }
   }
 
@@ -70,29 +70,29 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     }
   }
 
-  // Select Join Connection
-  public List<Option> getSelectJoinConnectionKindOptions() {
-    return this.joinConnectionKindOptions;
+  // Select Joint Connection
+  public List<Option> getSelectJointConnectionKindOptions() {
+    return this.jointConnectionKindOptions;
   }
 
-  public String getSelectJoinConnectionKindEntry() {
+  public String getSelectJointConnectionKindEntry() {
     if(this.getKindOfConnections() != null) {
       return String.valueOf(this.getKindOfConnections().getName());
     }
-    return this.joinConnectionKindEntry;
+    return this.jointConnectionKindEntry;
   }
 
-  public void setSelectJoinConnectionKindEntry(String value) {
-    this.joinConnectionKindEntry = value;
+  public void setSelectJointConnectionKindEntry(String value) {
+    this.jointConnectionKindEntry = value;
     if(value == "NEW") {
-      this.setNewJoinConnection(true);
+      this.setNewJointConnection(true);
       this.setKindOfConnections(null);
       return;
     } else {
-      this.setNewJoinConnection(false);
+      this.setNewJointConnection(false);
     }
     if(value !=null) {
-      Optional<JoinConnectionKind> kind = DemoRecManager.joinConnectionKindOpt(Long.valueOf(value));
+      Optional<JointConnectionKind> kind = DemoRecManager.jointConnectionKindOpt(Long.valueOf(value));
       if(kind.isPresent()) {
         this.setKindOfConnections(kind.get());
       }
@@ -101,14 +101,14 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
 
   public Consumer<Void> createNewStep() {
     return $ -> {
-      JoinConnection joinConnection = null;
+      JointConnection jointConnection = null;
       if (this.getStep().getType() == ProcessStepType.DECONSTRUCTION) {
-        if(this.getSelectJoinConnectionKindEntry() != "NEW") {
-          joinConnection = DemoRecManager.joinConnectionBuilder().joinConnectionKind(
-              DemoRecManager.getJoinConnectionKindSure(Long.valueOf(this.joinConnectionKindEntry)))
+        if(this.getSelectJointConnectionKindEntry() != "NEW") {
+          jointConnection = DemoRecManager.jointConnectionBuilder().jointConnectionKind(
+              DemoRecManager.getJointConnectionKindSure(Long.valueOf(this.jointConnectionKindEntry)))
                   .condition(State.HEALTHY)
                   .build().get();
-          this.getStep().setDeconstructs(joinConnection);
+          this.getStep().setDeconstructs(jointConnection);
         }
       } else {
         this.getStep().setType(ProcessStepType.OTHER);
@@ -122,13 +122,13 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
         //this._create.accept(step.get());
         if(this.amountOfSteps > 1) {
           for(int i = 0; i < this.amountOfSteps-1; i++) {
-            this.createCopyOfConnectionAndStep(joinConnection, step.get());
+            this.createCopyOfConnectionAndStep(jointConnection, step.get());
           }
         }
         this.setStep(DemoRecManager.processStepBuilder());
         this.setSelectTypeEntry(ProcessStepType.OTHER.toString());
         this.endEffectorEntry = "";
-        this.joinConnectionKindEntry = "";
+        this.jointConnectionKindEntry = "";
         this.building = false;
         super.init();
       } else {
@@ -138,13 +138,13 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     };
   }
 
-  protected void createCopyOfConnectionAndStep(JoinConnection connection, ProcessStep step) {
+  protected void createCopyOfConnectionAndStep(JointConnection connection, ProcessStep step) {
     Log.info("Creating Copies!", this.getClass().getName());
-    JoinConnectionBuilder builder = DemoRecManager.joinConnectionBuilder();
-    Optional<JoinConnection> connectionCopy = Optional.empty();
+    JointConnectionBuilder builder = DemoRecManager.jointConnectionBuilder();
+    Optional<JointConnection> connectionCopy = Optional.empty();
     if(connection != null) {
       connectionCopy = builder.condition(connection.getCondition())
-          .joinConnectionKind(connection.getJoinConnectionKind())
+          .jointConnectionKind(connection.getJointConnectionKind())
           .xPos(connection.getXPos())
           .yPos(connection.getYPos())
           .zPos(connection.getZPos())
@@ -173,11 +173,11 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     return false;
   }
 
-  public Consumer<JoinConnectionKind> addNewJoinConnectionKind() {
-    return (JoinConnectionKind connectionKind) -> {
+  public Consumer<JointConnectionKind> addNewJointConnectionKind() {
+    return (JointConnectionKind connectionKind) -> {
       Log.warn("Adding new JointConnectionKind");
-      this.joinConnectionKindOptions.add(new Option(connectionKind.getGemId()+"", connectionKind.getName()));
-      this.setSelectJoinConnectionKindEntry(String.valueOf(connectionKind.getGemId()));
+      this.jointConnectionKindOptions.add(new Option(connectionKind.getGemId()+"", connectionKind.getName()));
+      this.setSelectJointConnectionKindEntry(String.valueOf(connectionKind.getGemId()));
     };
   }
 
@@ -186,7 +186,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     //return this.inputStep === 1;
   }
 
-  public Boolean getStepChooseJoinConnectionKindCondition() {
+  public Boolean getStepChooseJointConnectionKindCondition() {
     return true;
     //return this.inputStep === 2;
   }
@@ -225,9 +225,9 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     }
   }
 
-  public GemTextInputValidity checkJoinConnectionKind() {
-    if(this.joinConnectionKindEntry != null && this.getStep().getType() != null) {
-      if(this.joinConnectionKindEntry.equals("NEW")) {
+  public GemTextInputValidity checkJointConnectionKind() {
+    if(this.jointConnectionKindEntry != null && this.getStep().getType() != null) {
+      if(this.jointConnectionKindEntry.equals("NEW")) {
         return new GemTextInputValidity("Error", "Please Save the new Connection.");
       }
       return new GemTextInputValidity("Success",null );

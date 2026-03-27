@@ -2,6 +2,8 @@
 import { DemoRecManager } from 'demorec/DemoRecManager';
 import { DemoRecComponent } from 'demorec/DemoRecComponent';
 import { Photo } from 'demorec/Photo';
+import { LocalPhoto,} from 'demorec/LocalPhoto';
+import { ExternalPhoto } from 'demorec/ExternalPhoto';
 
 import { GemButton } from "@umlp/basic";
 
@@ -57,11 +59,19 @@ export class PhotoDisplay extends PhotoDisplayComponent {
 
   public deletePhoto(photo: Photo) : void {
     this.getComponent().removePhoto(photo)
-    DemoRecManager.deletePhoto(photo.getGemId())
+    if(photo instanceof LocalPhoto) {
+      DemoRecManager.deleteLocalPhoto(photo.getGemId());
+    } else {
+      DemoRecManager.deleteExternalPhoto(photo.getGemId());
+    }
   }
 
   public getPhotoPath(photo : Photo) : string {
-    return "umlp/api/images/"+photo.getFilename()
+    if(photo) {
+      return photo.getUrl();
+    } else {
+      return "";
+    }
   }
 
   public openImageInNewTab(photo: Photo) {

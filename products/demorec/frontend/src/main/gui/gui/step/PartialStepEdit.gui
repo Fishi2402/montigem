@@ -13,7 +13,7 @@ import DemoRec.ProcessStep;
 import DemoRec.Process;
 import DemoRec.MeasuringValue;
 
-import gui.connectionkind.JoinConnectionKindCreate;
+import gui.connectionkind.JointConnectionKindCreate;
 import gui.measuringvalues.MeasuringValueEdit;
 
 component PartialStepEdit(List<EndEffector> endEffectors, ProcessStep step,

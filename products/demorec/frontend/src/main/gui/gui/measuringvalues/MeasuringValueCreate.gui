@@ -12,7 +12,7 @@ import DemoRec.MeasuringValue;
 import DemoRec.Dimension;
 
 page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> measuringValueEvent,
-    List<Dimension> dimensions) {
+    List<Dimension> dimensions, String dimEntry = "") {
   @GemRow(
     wrap="nowrap",
     colGap="5px",
@@ -22,7 +22,7 @@ page MeasuringValueCreate(MeasuringValue measuringValue, Event<MeasuringValue> m
       selectDimensionUnit@GemDropdownInput(
         labelText = "Unit",
         options = getOpts(dimensions),
-        entry = null,
+        entry = dimEntry,
         width="var(--verySmallDropDownWidth)"
       ),
       addMeasuringValue@GemButton(label = "Add", leftClick = createNewMeasuringValue(), disabled=false, height="var(--gemButtonHeightAdjustedToInput)")

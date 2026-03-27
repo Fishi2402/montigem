@@ -12,8 +12,6 @@ import java.util.List;
 @Component
 public class PackChoose extends PackChooseTOP {
 
-  public String packEntry = "";
-
   @Override
   public List<Option> getOpts(List<BatteryPack> allPacks) {
     List<Option> packOptions = new ArrayList<>();
@@ -28,7 +26,7 @@ public class PackChoose extends PackChooseTOP {
 
   @Override
   public void setSelectPackEntry(String val) {
-    this.packEntry = val;
+    this.setChoice(val);
     if(val == "NEW") {
       this.setNewPack(true);
       this.setPack(null);
@@ -38,13 +36,5 @@ public class PackChoose extends PackChooseTOP {
       this.setPack(pack);
       this.getChosenPack().accept(pack);
     }
-  }
-
-  @Override
-  public String getSelectPackEntry() {
-    if(this.getPack() == null) {
-      return "NEW";
-    }
-    return this.getPack().getName();
   }
 }

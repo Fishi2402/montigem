@@ -7,12 +7,12 @@ import mc.fenix.input.GemDropdownInput;
 
 import gui.pack.PackCreate;
 
-page PackChoose(List<BatteryPack> allPacks, boolean newPack, BatteryPack pack, Event<BatteryPack> chosenPack) {
+page PackChoose(List<BatteryPack> allPacks, boolean newPack=false, String choice, BatteryPack pack, Event<BatteryPack> chosenPack) {
 
   selectPack@GemDropdownInput(
     labelText = "Pack",
     options = getOpts(allPacks),
-    entry = null,
+    entry = choice,
     width="15rem"
   );
   createPack@guard(newPack) {

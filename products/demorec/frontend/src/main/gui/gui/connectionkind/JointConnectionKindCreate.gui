@@ -1,6 +1,6 @@
 package gui.connectionkind;
 
-import DemoRec.JoinConnectionKind;
+import DemoRec.JointConnectionKind;
 import DemoRec.DemoRecComponent;
 
 import mc.fenix.basic.GemText;
@@ -11,15 +11,15 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.input.GemTextInput;
 
 import gui.component.ComponentCreate;
-import gui.connectionkind.JoinConnectionKindEdit;
+import gui.connectionkind.JointConnectionKindEdit;
 
-component JoinConnectionKindCreate(JoinConnectionKind connectionKind, Event<JoinConnectionKind> createJoinConnectionKind) {
+component JointConnectionKindCreate(JointConnectionKind connectionKind, Event<JointConnectionKind> createJointConnectionKind) {
   @GemCard(
     title = "Specify Connection",
     component = @GemColumn(
       rowGap="5px",
       components = [
-        @JoinConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=false),
+        @JointConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=false),
         buildConnection@GemButton(label = "Save ConnectionKind", leftClick = createNewConnectionKind(), disabled=isDisabled(connectionKind), width="var(--smallDropDownWidth)")
       ]
     )

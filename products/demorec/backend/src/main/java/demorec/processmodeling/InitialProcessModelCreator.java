@@ -2,9 +2,9 @@ package demorec.processmodeling;
 
 import demorec.DemoRecComponent;
 import demorec.DemoRecManager;
-import demorec.JoinConnection;
-import demorec.JoinConnectionKind;
-import demorec.JoinConnectionType;
+import demorec.JointConnection;
+import demorec.JointConnectionKind;
+import demorec.JointConnectionType;
 import demorec.Process;
 import demorec.ProcessModel;
 import demorec.ProcessModelBuilder;
@@ -49,8 +49,8 @@ public class InitialProcessModelCreator {
     Task previousTask = null;
 
     // Define a default join connection which gets used if an underlying process step has no join connection
-    JoinConnectionKind jck = DemoRecManager.joinConnectionKindBuilder().joinConnectionType(JoinConnectionType.UNDEFINED).build().get();
-    JoinConnection defaultConnection = DemoRecManager.joinConnectionBuilder().joinConnectionKind(jck).condition(State.HEALTHY).build().get();
+    JointConnectionKind jck = DemoRecManager.jointConnectionKindBuilder().jointConnectionType(JointConnectionType.UNDEFINED).build().get();
+    JointConnection defaultConnection = DemoRecManager.jointConnectionBuilder().jointConnectionKind(jck).condition(State.HEALTHY).build().get();
 
     for (ProcessStep processStep : processStepsSortedByIndex) {
       Task newTask = DemoRecManager.taskBuilder()
@@ -107,45 +107,45 @@ public class InitialProcessModelCreator {
       return processStep.getDescription().get();
     }
     else if (processStep.getDeconstructs() != null){
-      StringBuilder descriptionBasedOnJoinConnection = new StringBuilder();
+      StringBuilder descriptionBasedOnJointConnection = new StringBuilder();
 
-      if (processStep.getDeconstructs().getJoinConnectionKind() != null) {
-        if (processStep.getDeconstructs().getJoinConnectionKind().getJoinConnectionType() != null) {
-          descriptionBasedOnJoinConnection.append("Disassembly of a connection of type ");
-          descriptionBasedOnJoinConnection.append(processStep.getDeconstructs().getJoinConnectionKind().getJoinConnectionType().toString());
+      if (processStep.getDeconstructs().getJointConnectionKind() != null) {
+        if (processStep.getDeconstructs().getJointConnectionKind().getJointConnectionType() != null) {
+          descriptionBasedOnJointConnection.append("Disassembly of a connection of type ");
+          descriptionBasedOnJointConnection.append(processStep.getDeconstructs().getJointConnectionKind().getJointConnectionType().toString());
         }
         else {
-          descriptionBasedOnJoinConnection.append("Disassembly of a connection of type of Join Connection");
+          descriptionBasedOnJointConnection.append("Disassembly of a connection of type of Join Connection");
         }
 
-        if (processStep.getDeconstructs().getJoinConnectionKind().getConnectsList() != null) {
-          descriptionBasedOnJoinConnection.append(" between the following components: ");
-          descriptionBasedOnJoinConnection.append(processStep.getDeconstructs().getJoinConnectionKind().getConnectsList().stream()
+        if (processStep.getDeconstructs().getJointConnectionKind().getConnectsList() != null) {
+          descriptionBasedOnJointConnection.append(" between the following components: ");
+          descriptionBasedOnJointConnection.append(processStep.getDeconstructs().getJointConnectionKind().getConnectsList().stream()
               .map(DemoRecComponent::getName)
               .collect(Collectors.joining(", ")));
-          descriptionBasedOnJoinConnection.append(".\n");
+          descriptionBasedOnJointConnection.append(".\n");
         }
         else {
-          descriptionBasedOnJoinConnection.append(" between unknown components.");
+          descriptionBasedOnJointConnection.append(" between unknown components.");
         }
       }
 
       if (processStep.getUses() != null) {
-        descriptionBasedOnJoinConnection.append("The following end effector was used: ");
-        descriptionBasedOnJoinConnection.append(processStep.getUses().getName() + ".");
+        descriptionBasedOnJointConnection.append("The following end effector was used: ");
+        descriptionBasedOnJointConnection.append(processStep.getUses().getName() + ".");
       }
       else {
-        descriptionBasedOnJoinConnection.append("An unknown end effector was used");
+        descriptionBasedOnJointConnection.append("An unknown end effector was used");
       }
 
       if (processStep.getTimeConsumption() != null) {
-        descriptionBasedOnJoinConnection.append("The whole procedure took " + convertSecondsToMinutesAndRemainingSeconds(processStep.getTimeConsumption()) + ".");
+        descriptionBasedOnJointConnection.append("The whole procedure took " + convertSecondsToMinutesAndRemainingSeconds(processStep.getTimeConsumption()) + ".");
       }
       else {
-        descriptionBasedOnJoinConnection.append("The whole procedure took an unknown amount of time.");
+        descriptionBasedOnJointConnection.append("The whole procedure took an unknown amount of time.");
       }
 
-      return descriptionBasedOnJoinConnection.toString();
+      return descriptionBasedOnJointConnection.toString();
     }
     else {
       StringBuilder descriptionBasedOnEndEffector = new StringBuilder();

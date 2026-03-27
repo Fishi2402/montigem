@@ -4,6 +4,7 @@ import de.se_rwth.commons.logging.Log;
 import demorec.DemoRecComponent;
 import demorec.DemoRecManager;
 import demorec.DemoRecServerApplication;
+import demorec.LocalPhoto;
 import demorec.Photo;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +46,7 @@ public class BlobEndpoint {
       return ResponseEntity.badRequest().body("Please provide a file to upload");
     }
 
-    Optional<Photo> photoOpt = Optional.empty();
+    Optional<LocalPhoto> photoOpt = Optional.empty();
 
     try {
       // Get the bytes from the MultipartFile
@@ -62,7 +63,7 @@ public class BlobEndpoint {
       } while(imageOnServerFileSystem.exists());
 
       synchronized (BlobEndpoint.class) {
-        photoOpt = DemoRecManager.photoBuilder()
+        photoOpt = DemoRecManager.localPhotoBuilder()
             .name(name)
             .filename(fileName)
             .size((long) fileBytes.length).build();

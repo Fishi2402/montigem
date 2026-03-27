@@ -16,7 +16,7 @@ import gui.step.ProcessStepCreate;
 import gui.step.StepTable;
 import gui.pack.BatteryPackOverview;
 import gui.pack.ComponentsOfPack;
-import gui.joinconnection.JoinConnectionCreate;
+import gui.jointconnection.JointConnectionCreate;
 import gui.component.ComponentCreate;
 
 

@@ -1,14 +1,14 @@
-:host ::ng-deep gem-text.editJoinConnectionLabel, :host ::ng-deep gem-text.addJoinConnectionLabel {
+:host ::ng-deep gem-text.editJointConnectionLabel, :host ::ng-deep gem-text.addJointConnectionLabel {
   margin-top: 1rem;
   margin-bottom: .5rem;
   font-weight: bold;
 }
 
-:host ::ng-deep gem-row.editJoinConnectionRow, :host ::ng-deep gem-row.editJoinConnectionRow1 {
+:host ::ng-deep gem-row.editJointConnectionRow, :host ::ng-deep gem-row.editJointConnectionRow1 {
   margin-bottom: 1rem;
 }
 
-:host ::ng-deep gem-button.addJoinConnectionButton {
+:host ::ng-deep gem-button.addJointConnectionButton {
   margin-top: 1rem;
 
   > button.gem-button {

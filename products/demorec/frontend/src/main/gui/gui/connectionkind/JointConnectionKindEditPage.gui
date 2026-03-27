@@ -1,6 +1,6 @@
 package gui.connectionkind;
 
-import DemoRec.JoinConnectionKind;
+import DemoRec.JointConnectionKind;
 import DemoRec.DemoRecComponent;
 
 import mc.fenix.arrange.GemCard;
@@ -10,23 +10,23 @@ import mc.fenix.basic.GemButton;
 
 import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
-import gui.connectionkind.JoinConnectionKindEdit;
-import gui.joinconnection.JoinConnectionEdit;
+import gui.connectionkind.JointConnectionKindEdit;
+import gui.jointconnection.JointConnectionEdit;
 
-page JoinConnectionKindEditPage(JoinConnectionKind connectionKind) {
+page JointConnectionKindEditPage(JointConnectionKind connectionKind) {
   @NavContainer(
     content=[
-      @JoinConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=true),
+      @JointConnectionKindEdit(connectionKind=connectionKind, showOptionalAttributes=true),
       @GemCard(
         title="Connections",
         component=@GemColumn(
           rowGap="5px",
           components=[
-            @iterate(JoinConnection connection : connectionKind.joinConnection) {
+            @iterate(JointConnection connection : connectionKind.jointConnection) {
               @GemRow(
                 colGap="5px",
                 components=[
-                  @JoinConnectionEdit(connection = connection),
+                  @JointConnectionEdit(connection = connection),
                   @GemButton(label="Delete", leftClick=deleteConnection(connection), disabled=true)
                 ]
               );

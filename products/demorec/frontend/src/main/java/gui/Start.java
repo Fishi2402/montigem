@@ -23,4 +23,9 @@ public class Start extends StartTOP {
       }
     };
   }
+
+  @Override
+  public Boolean isProcessDisabled(Process p) {
+    return p.sizeConsistsOfs() > 0;
+  }
 }

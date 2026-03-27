@@ -17,6 +17,7 @@ component StepTable(Process process) {
 
   @GemGrid(
     rowGap="5px",
+    colGap="3px",
     x=["4rem","8rem","8rem","8rem","6rem","8rem","8rem","8rem","4rem"],
     rows=[
       [

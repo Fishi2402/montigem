@@ -3,6 +3,8 @@ package gui.component;
 import de.se_rwth.commons.logging.Log;
 import demorec.ComponentKind;
 import demorec.DemoRecComponent;
+import demorec.DemoRecManager;
+import demorec.ExternalPhoto;
 import demorec.Photo;
 import demorec.State;
 import mc.fenix.input.gemdropdowninputtypes.Option;
@@ -16,6 +18,15 @@ import java.util.function.Consumer;
 
 @Component
 public class ComponentEdit extends ComponentEditTOP {
+
+  @Override
+  public Consumer<Void> addImage(String externalURL) {
+    return $ -> {
+      ExternalPhoto photo = DemoRecManager.externalPhotoBuilder().externalUrl(externalURL).build().get();
+      this.getComponent().addPhoto(photo);
+      this.setNewExternalImageUrl("");
+    };
+  }
 
   @Override
   public Consumer<Photo> addPhoto(DemoRecComponent component) {

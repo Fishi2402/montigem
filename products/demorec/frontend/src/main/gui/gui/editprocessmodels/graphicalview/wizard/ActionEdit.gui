@@ -54,16 +54,16 @@ component ActionEdit(Task task, ProcessModel processModel) {
     entry = null
   );
 
-  joinConnectionRow@GemColumn(
+  jointConnectionRow@GemColumn(
     rowGap="5px",
     components=[
-      taskJoinConnection@GemDropdownInput(
-        labelText = "Dissolved Join Connection:",
+      taskJointConnection@GemDropdownInput(
+        labelText = "Dissolved Joint Connection:",
         options = null,
         entry = null
       ),
 
-      createNewJoinConnectionButton@GemButton(label = "Create a new Join Connection for this Action", leftClick = createNewConnection())
+      createNewJointConnectionButton@GemButton(label = "Create a new JointConnection for this Action", leftClick = createNewConnection())
     ]
   );
 }

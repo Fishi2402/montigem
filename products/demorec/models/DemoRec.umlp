@@ -17,7 +17,7 @@ classdiagram DemoRec {
   //association [1] BatteryPack -> (consistsOf) DemoRecComponent [*]; Replaced by composedOf
 
   association [0..1] BatteryPack <-> (allComponents) DemoRecComponent [*];
-  association [0..1] BatteryPack <-> (allConnections) JoinConnectionKind [*];
+  association [0..1] BatteryPack <-> (allConnections) JointConnectionKind [*];
 
   // Probably not clean, because a ComponentKind should be connected to the BatteryPackType
   association [0..1] BatteryPack <-> (allKinds) ComponentKind [*];
@@ -67,12 +67,52 @@ classdiagram DemoRec {
   association [*] MeasuringValue -> (dimension) Dimension [1];
   association [*] ProcessStep -> (measured) MeasuringValue [*];
   association [*] ProcessStep -> (uses) EndEffector [1];
-  association [*] ProcessStep <-> (deconstructs) JoinConnection [0..1];
+  association [*] ProcessStep <-> (deconstructs) JointConnection [0..1];
 
   // TODO what characterizes an EndEffector? What about dimensions or form? Is the set of endeffectors already known?
   class EndEffector {
     String name;
+    -> BoundingBox [0..1];
   }
+
+  class BoundingBox {
+    double width;
+    double length;
+    double height;
+  }
+
+  class ScrewDriver extends EndEffector {
+    double maxTorque;
+  }
+
+  class Gripper extends EndEffector {}
+
+  class TwoJawsGripper extends EndEffector {
+    double minSpan;
+    double maxSpan;
+  }
+
+  class VacuumGripper extends Gripper {
+
+  }
+
+  class MagneticGripper extends Gripper {
+
+  }
+
+  class SpecificGripper extends Gripper {
+    -> (designedFor) ComponentKind [0..1];
+  }
+
+  class Pincers extends EndEffector {
+
+  }
+
+  class RollingKnife extends EndEffector {
+
+  }
+
+
 
   class ComponentKind {
     String name;
@@ -98,7 +138,15 @@ classdiagram DemoRec {
 
   association [*] DemoRecComponent -> Photo [*];
 
-  class Photo {
+  abstract class Photo {
+    /String url;
+  }
+
+  class ExternalPhoto extends Photo {
+    String externalUrl;
+  }
+
+  class LocalPhoto extends Photo {
     String filename;
     String name;
     Long size;
@@ -106,7 +154,7 @@ classdiagram DemoRec {
 
   association [*] DemoRecComponent <-> (isA) ComponentKind [1]; // 1.2
 
-  class JoinConnection {
+  class JointConnection {
     State condition;
     Optional<String> conditionDescription;
 
@@ -118,16 +166,16 @@ classdiagram DemoRec {
   /**
    * Class representing the connection type, holding the connected components
    */
-  class JoinConnectionKind {
-    JoinConnectionType joinConnectionType;
+  class JointConnectionKind {
+    JointConnectionType jointConnectionType;
     //Optional<String> name; TODO later
   }
 
-  association [*] DemoRecComponent (connects) <-> (connectedBy) JoinConnectionKind [*];  // TODO should be 2..* on left side
+  association [*] DemoRecComponent (connects) <-> (connectedBy) JointConnectionKind [*];  // TODO should be 2..* on left side
 
-  association [*] JoinConnection <->  JoinConnectionKind [1];
+  association [*] JointConnection <->  JointConnectionKind [1];
 
-  enum JoinConnectionType {
+  enum JointConnectionType {
     SCREW,
     GLUE,
     WELDING,
@@ -158,7 +206,7 @@ classdiagram DemoRec {
   association [0..1] Task -> (underlyingProcessStep)  ProcessStep [0..1];
   association [*] Task -> (dependsOn) Task [*];
   association [*] Task -> (uses) EndEffector [1];
-  association [*] Task -> (deconstructs) JoinConnection [0..1];
+  association [*] Task -> (deconstructs) JointConnection [0..1];
 
   enum Eventtype {
     ERROR,

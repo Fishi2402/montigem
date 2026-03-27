@@ -2,8 +2,8 @@
 package gui.step;
 
 import demorec.DemoRecManager;
-import demorec.JoinConnection;
-import demorec.JoinConnectionKind;
+import demorec.JointConnection;
+import demorec.JointConnectionKind;
 import demorec.ProcessStepType;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import umlp.guiutil.Router;
@@ -15,16 +15,16 @@ import java.util.function.Consumer;
 
 @Component
 public class ProcessStepEdit extends ProcessStepEditTOP {
-  public String joinConnectionEntry = "";
-  public List<Option> joinConnectionOptions = new ArrayList<>();
-  public boolean addJoinConnectionClicked = false;
+  public String jointConnectionEntry = "";
+  public List<Option> jointConnectionOptions = new ArrayList<>();
+  public boolean addJointConnectionClicked = false;
 
   @Override
   public void init(){
     super.init();
     // Initialize connection kind options
-    for (JoinConnectionKind kind : this.getP().getDeconstructionOf().getAllConnectionsList()) {
-      this.joinConnectionOptions.add(new Option(kind.getGemId()+"", kind.getName()));
+    for (JointConnectionKind kind : this.getP().getDeconstructionOf().getAllConnectionsList()) {
+      this.jointConnectionOptions.add(new Option(kind.getGemId()+"", kind.getName()));
     }
   }
 
@@ -51,68 +51,68 @@ public class ProcessStepEdit extends ProcessStepEditTOP {
   }
 
   @Override
-  public Consumer<Void> editJoinConnection() {
-    return $ -> Router.navigate("gui/joinconnection/JoinConnectionEditPage/"+this.getStep().getDeconstructs().getGemId());
+  public Consumer<Void> editJointConnection() {
+    return $ -> Router.navigate("gui/jointconnection/JointConnectionEditPage/"+this.getStep().getDeconstructs().getGemId());
   }
 
   @Override
-  public List<Option> getSelectJoinConnectionOptions(){
-    return this.joinConnectionOptions;
+  public List<Option> getSelectJointConnectionOptions(){
+    return this.jointConnectionOptions;
   }
 
   @Override
-  public List<Option>  getSelectJoinConnection1Options(){
-    return this.getSelectJoinConnectionOptions();
+  public List<Option>  getSelectJointConnection1Options(){
+    return this.getSelectJointConnectionOptions();
   }
 
   @Override
-  public String getSelectJoinConnectionEntry()  {
-    if (!this.joinConnectionEntry.equals("")) {
-      return this.joinConnectionEntry;
+  public String getSelectJointConnectionEntry()  {
+    if (!this.jointConnectionEntry.equals("")) {
+      return this.jointConnectionEntry;
     }
     else {
-      this.joinConnectionEntry = this.getStep().getDeconstructs().getGemId() + "";
-      return this.joinConnectionEntry;
+      this.jointConnectionEntry = this.getStep().getDeconstructs().getGemId() + "";
+      return this.jointConnectionEntry;
     }
   }
 
   @Override
-  public String getSelectJoinConnection1Entry() {
+  public String getSelectJointConnection1Entry() {
     if (this.getStep().getDeconstructs() != null) {
       return "NONE";
     }
     else {
-      return this.getSelectJoinConnectionEntry();
+      return this.getSelectJointConnectionEntry();
     }
   }
 
   @Override
-  public void setSelectJoinConnectionEntry(String value) {
-    this.joinConnectionEntry = value;
+  public void setSelectJointConnectionEntry(String value) {
+    this.jointConnectionEntry = value;
 
-    if (this.getSelectJoinConnectionEntry() != null) {
-      if (this.getSelectJoinConnectionEntry().equals("NONE")) {
+    if (this.getSelectJointConnectionEntry() != null) {
+      if (this.getSelectJointConnectionEntry().equals("NONE")) {
         this.getStep().setDeconstructsAbsent();
       }
-      else if (!this.getSelectJoinConnectionEntry().equals("NEW")) {
-        this.getStep().setDeconstructs(DemoRecManager.getJoinConnectionSure(Long.valueOf(this.getSelectJoinConnectionEntry())));
+      else if (!this.getSelectJointConnectionEntry().equals("NEW")) {
+        this.getStep().setDeconstructs(DemoRecManager.getJointConnectionSure(Long.valueOf(this.getSelectJointConnectionEntry())));
       }
     }
   }
 
   @Override
-  public void setSelectJoinConnection1Entry(String value) {
-    this.setSelectJoinConnectionEntry(value);
+  public void setSelectJointConnection1Entry(String value) {
+    this.setSelectJointConnectionEntry(value);
   }
 
   @Override
-  public Boolean getCreateNewJoinConnectionCondition() {
-    return (this.getSelectJoinConnectionEntry().equals("NEW"));
+  public Boolean getCreateNewJointConnectionCondition() {
+    return (this.getSelectJointConnectionEntry().equals("NEW"));
   }
 
   @Override
-  public Boolean getCreateNewJoinConnection1Condition() {
-    return this.getCreateNewJoinConnectionCondition();
+  public Boolean getCreateNewJointConnection1Condition() {
+    return this.getCreateNewJointConnectionCondition();
   }
 
   @Override
@@ -121,45 +121,45 @@ public class ProcessStepEdit extends ProcessStepEditTOP {
   }
 
   @Override
-  public Boolean getHasJoinConnectionCondition() {
+  public Boolean getHasJointConnectionCondition() {
     return this.getStep().getDeconstructs() != null;
   }
 
-  private Option calculateDisplayValueOfJoinConnection(JoinConnection connection) {
-    return new Option(connection.getGemId() + "", connection.getJoinConnectionKind().getName());
+  private Option calculateDisplayValueOfJointConnection(JointConnection connection) {
+    return new Option(connection.getGemId() + "", connection.getJointConnectionKind().getName());
   }
 
   @Override
-  public Boolean getAddJoinConnectionClickedCondition() {
-    return this.addJoinConnectionClicked;
+  public Boolean getAddJointConnectionClickedCondition() {
+    return this.addJointConnectionClicked;
   }
 
   @Override
-  public Consumer<Void> addJoinConnection() {
-    return $ -> this.addJoinConnectionClicked = true;
+  public Consumer<Void> addJointConnection() {
+    return $ -> this.addJointConnectionClicked = true;
   }
 
   @Override
-  public Consumer<JoinConnection> addNewJoinConnection() {
-    return (JoinConnection connection) -> {
-      this.joinConnectionOptions.add(calculateDisplayValueOfJoinConnection(connection));
-      this.setSelectJoinConnectionEntry(String.valueOf(connection.getGemId()));
+  public Consumer<JointConnection> addNewJointConnection() {
+    return (JointConnection connection) -> {
+      this.jointConnectionOptions.add(calculateDisplayValueOfJointConnection(connection));
+      this.setSelectJointConnectionEntry(String.valueOf(connection.getGemId()));
     };
   }
 
   @Override
-  public Boolean getAddJoinConnectionButtonDisabled(){
-    return this.getAddJoinConnectionClickedCondition();
+  public Boolean getAddJointConnectionButtonDisabled(){
+    return this.getAddJointConnectionClickedCondition();
   }
 
   @Override
-  public Boolean getEditJoinConnectionButtonDisabled() {
-    return ((this.getSelectJoinConnectionEntry().equals("NONE") || (this.getSelectJoinConnectionEntry().equals("NEW"))));
+  public Boolean getEditJointConnectionButtonDisabled() {
+    return ((this.getSelectJointConnectionEntry().equals("NONE") || (this.getSelectJointConnectionEntry().equals("NEW"))));
   }
 
   @Override
-  public Boolean getEditJoinConnectionButton1Disabled()  {
-    return this.getEditJoinConnectionButtonDisabled();
+  public Boolean getEditJointConnectionButton1Disabled()  {
+    return this.getEditJointConnectionButtonDisabled();
   }
 
   @Override

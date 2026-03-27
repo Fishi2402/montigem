@@ -13,11 +13,11 @@ import DemoRec.ProcessStep;
 import DemoRec.Process;
 import DemoRec.MeasuringValue;
 
-import gui.connectionkind.JoinConnectionKindCreate;
+import gui.connectionkind.JointConnectionKindCreate;
 import gui.measuringvalues.MeasuringValueEdit;
 
 page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create, boolean deconstruct = false,
-  boolean newJoinConnection = false, JoinConnectionKind kindOfConnections = null) {
+  boolean newJointConnection = false, JointConnectionKind kindOfConnections = null) {
   @GemColumn(
     rowGap="5px",
     components=[
@@ -34,17 +34,17 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create, boolean deco
               validity=checkStepTypeSet(),
               width="var(--smallDropDownWidth)");
           },
-          stepChooseJoinConnectionKind@guard(true){
+          stepChooseJointConnectionKind@guard(true){
             isDeconstruction@guard(deconstruct) {
-              selectJoinConnectionKind@GemAutocompleteInput(
-                  labelText = "Deconstructing Join Connection",
+              selectJointConnectionKind@GemAutocompleteInput(
+                  labelText = "Deconstructing Joint Connection",
                   options = null,
                   entry = null,
-                  validity=checkJoinConnectionKind(),
+                  validity=checkJointConnectionKind(),
                   width="var(--largeDropDownWidth)");
             }
-            createNewJoinConnection@guard(deconstruct && newJoinConnection) {
-              @JoinConnectionKindCreate(createJoinConnectionKind=addNewJoinConnectionKind());
+            createNewJointConnection@guard(deconstruct && newJointConnection) {
+              @JointConnectionKindCreate(createJointConnectionKind=addNewJointConnectionKind());
             }
           },
           stepProcessStepRelated@guard(true) {

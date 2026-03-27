@@ -1,6 +1,6 @@
 package gui.component;
 
-import demorec.JoinConnectionKind;
+import demorec.JointConnectionKind;
 import umlp.guiutil.Router;
 
 import java.util.function.Consumer;
@@ -8,14 +8,14 @@ import java.util.function.Consumer;
 public class ComponentEditPage extends ComponentEditPageTOP {
 
   @Override
-  public String getConnectionKindName(JoinConnectionKind connectionKind) {
+  public String getConnectionKindName(JointConnectionKind connectionKind) {
     return connectionKind.getName();
   }
 
   @Override
-  public Consumer<Void> navigateToConnectionKind(JoinConnectionKind kind) {
+  public Consumer<Void> navigateToConnectionKind(JointConnectionKind kind) {
     return $ -> {
-      Router.navigate("gui/connectionkind/JoinConnectionKindEditPage/"+kind.getGemId());
+      Router.navigate("gui/connectionkind/JointConnectionKindEditPage/"+kind.getGemId());
     };
   }
 }

@@ -1,8 +1,10 @@
 package gui.process;/* (c) https://github.com/MontiCore/monticore */
 
+import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.DemoRecManager;
 import demorec.Process;
+import umlp.guiutil.HTMLUtils;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -27,11 +29,8 @@ public class ProcessCreate extends ProcessCreateTOP {
 
   public Consumer<Void> sendEverything() {
     return $ -> {
-      if (this.getP().getStartedAt() == null) {
-        return;
-      }
-
-      if (this.getP().getDeconstructionOf() == null) {
+      if (this.getP().getStartedAt() == null || !this.getP().getDeconstructionOfGem().isPresent()) {
+        HTMLUtils.alert("Please set a Started at Date and also set the pack you want to disassemble.");
         return;
       }
       Optional<Process> p = (Optional<Process>) this.getP().build();

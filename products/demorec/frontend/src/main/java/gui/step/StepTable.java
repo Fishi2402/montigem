@@ -41,7 +41,7 @@ public class StepTable extends StepTableTOP {
 
   public String getConnectionType(ProcessStep step)  {
     if(step.isPresentDeconstructs()) {
-      return step.getDeconstructs().getJoinConnectionKind().getName();
+      return step.getDeconstructs().getJointConnectionKind().getName();
     }
     return "";
   }
@@ -52,7 +52,7 @@ public class StepTable extends StepTableTOP {
     if(!step.isPresentDeconstructs()) {
       return "";
     }
-    for (DemoRecComponent component : step.getDeconstructs().getJoinConnectionKind().getConnectsList()) {
+    for (DemoRecComponent component : step.getDeconstructs().getJointConnectionKind().getConnectsList()) {
       if(!first) {
         components+=",";
       }

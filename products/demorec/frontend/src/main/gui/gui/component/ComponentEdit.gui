@@ -3,7 +3,7 @@ package gui.component;
 import DemoRec.BatteryPack;
 import DemoRec.DemoRecComponent;
 import DemoRec.ComponentKind;
-import DemoRec.JoinConnection;
+import DemoRec.JointConnection;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
@@ -23,7 +23,7 @@ import gui.staticcontainer.NavContainer;
 import gui.staticcontainer.StatTable;
 import gui.staticcontainer.StatTableRow;
 
-component ComponentEdit(DemoRecComponent component, boolean showOptionalValues=true, boolean editButton=true) {
+component ComponentEdit(DemoRecComponent component, String newExternalImageUrl ="", boolean showOptionalValues=true, boolean editButton=true) {
 
   @GemColumn(
     wrap="nowrap",
@@ -62,7 +62,12 @@ component ComponentEdit(DemoRecComponent component, boolean showOptionalValues=t
         );
         @PhotoDisplay(component=component);
         photoDragAndDrop@PhotoDragNDrop(createPhoto=addPhoto(component), attachedComponent = component.name);
+        @GemRow(
+          components=[
+            @GemTextInput(entry=newExternalImageUrl),
+            @GemButton(leftClick=addImage(newExternalImageUrl), label="Add External Photo")
+          ]
+        );
       }
-
   ]);
 }

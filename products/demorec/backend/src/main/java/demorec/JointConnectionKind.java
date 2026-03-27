@@ -1,14 +1,12 @@
 package demorec;
 
-import demorec.JoinConnectionType;
-
-public class JoinConnectionKind extends JoinConnectionKindTOP {
+public class JointConnectionKind extends JointConnectionKindTOP {
 
 
   public String getName() {
 
     String connectionType = "Undefined";
-    switch(this.getJoinConnectionType()) {
+    switch(this.getJointConnectionType()) {
       case SCREW:
         connectionType = "Screw";
         break;

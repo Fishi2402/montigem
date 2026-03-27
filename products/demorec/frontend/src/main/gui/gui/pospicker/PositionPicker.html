@@ -1,0 +1,13 @@
+<div class="pos-picker-container">
+  <img
+    #pickerImg
+    class="pos-picker-image"
+    [src]="imageUrl"
+    alt="Click to select a position"
+    draggable="false"
+  />
+  <div
+    class="pos-picker-overlay"
+    (click)="onImageClick($event, pickerImg)"
+  ></div>
+</div>

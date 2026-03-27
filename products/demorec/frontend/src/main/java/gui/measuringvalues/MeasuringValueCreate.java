@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 @Component
 public class MeasuringValueCreate extends MeasuringValueCreateTOP {
 
-  String dimEntry = "";
-
   @Override
   public List<Option> getOpts(List<Dimension> dimensions) {
     List<Option> opts = new ArrayList<>();
@@ -27,13 +25,8 @@ public class MeasuringValueCreate extends MeasuringValueCreateTOP {
   }
 
   @Override
-  public String getSelectDimensionUnitEntry() {
-    return dimEntry;
-  }
-
-  @Override
-  public void setSelectDimensionUnitEntry(String val) {
-    this.dimEntry = val;
+  public void setDimEntry(String val) {
+    super.setDimEntry(val);
     if(val == null) {
       return;
     }

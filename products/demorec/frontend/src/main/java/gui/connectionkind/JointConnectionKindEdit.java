@@ -5,7 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.DemoRecComponent;
 import demorec.DemoRecManager;
-import demorec.JoinConnectionType;
+import demorec.JointConnectionType;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
 import demorec.service.BatteryPackService;
@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 @Component
-public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
-  List<Option> joinConnectionTypeOptions = new ArrayList<>();
+public class JointConnectionKindEdit extends JointConnectionKindEditTOP {
+  List<Option> jointConnectionTypeOptions = new ArrayList<>();
   List<Option> componentOptions = new ArrayList<>();
   List<Option> filteredComponentOptions = new ArrayList<>();
   String connectsComponentEntry = "";
@@ -30,21 +30,21 @@ public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
   protected BatteryPack currentPack = null;
 
 
-  public JoinConnectionKindEdit(BatteryPackService service) {
+  public JointConnectionKindEdit(BatteryPackService service) {
     super();
     this.packService = service;
   }
 
   public void init() {
-    // Initialize joinConnectionTypeOptions
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.SCREW.toString(), "Screw"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.GLUE.toString(), "Glue"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.WELDING.toString(), "Welding"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.PLUG.toString(), "Plug"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.ELECTRICAL.toString(), "Electrical"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.CLIP.toString(), "Clip"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.RIVET.toString(), "Rivet"));
-    this.joinConnectionTypeOptions.add(new Option(JoinConnectionType.UNDEFINED.toString(), "Undefined"));
+    // Initialize jointConnectionTypeOptions
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.SCREW.toString(), "Screw"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.GLUE.toString(), "Glue"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.WELDING.toString(), "Welding"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.PLUG.toString(), "Plug"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.ELECTRICAL.toString(), "Electrical"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.CLIP.toString(), "Clip"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.RIVET.toString(), "Rivet"));
+    this.jointConnectionTypeOptions.add(new Option(JointConnectionType.UNDEFINED.toString(), "Undefined"));
 
     super.init();
     this.packService.addObserverFunction(this.getUpdaterFunction());
@@ -91,16 +91,16 @@ public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
 
   // Select Type of connection
   public List<Option> getSelectTypeOfConnectionOptions () {
-    Log.info("Slect Type Connection Options:"+this.joinConnectionTypeOptions, this.getClass().getName());
-    return this.joinConnectionTypeOptions;
+    Log.info("Slect Type Connection Options:"+this.jointConnectionTypeOptions, this.getClass().getName());
+    return this.jointConnectionTypeOptions;
   }
 
   public String getSelectTypeOfConnectionEntry () {
     if(this.getConnectionKind() != null) {
-      return this.getConnectionKind().getJoinConnectionType().toString();
+      return this.getConnectionKind().getJointConnectionType().toString();
     }
     // Default is Undefined
-    return JoinConnectionType.UNDEFINED.toString();
+    return JointConnectionType.UNDEFINED.toString();
   }
 
   // Select Connected Components
@@ -154,7 +154,7 @@ public class JoinConnectionKindEdit extends JoinConnectionKindEditTOP {
 
   public GemTextInputValidity checkConnectionType() {
     if(this.getConnectionKind() != null) {
-      if(this.getConnectionKind().getJoinConnectionType() != null) {
+      if(this.getConnectionKind().getJointConnectionType() != null) {
         return new GemTextInputValidity("Success", null);
       }
       return new GemTextInputValidity("Error", "Please choose a connection type.");

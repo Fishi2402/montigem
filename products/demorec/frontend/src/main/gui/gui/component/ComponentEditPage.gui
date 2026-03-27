@@ -2,7 +2,7 @@ package gui.component;
 
 import DemoRec.BatteryPack;
 import DemoRec.DemoRecComponent;
-import DemoRec.JoinConnectionKind;
+import DemoRec.JointConnectionKind;
 
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
@@ -26,7 +26,7 @@ page ComponentEditPage(DemoRecComponent component) {
       content=[
   @ComponentEdit(component=component),
   @GemCard(
-    title = "JoinConnections connected with this component",
+    title = "JointConnections connected with this component",
     component =
       @GemColumn(
         components=[
@@ -34,7 +34,7 @@ page ComponentEditPage(DemoRecComponent component) {
             @EvenlySpacedColumn(element = @GemText(value = "Connection")),
             @EvenlySpacedColumn(element = @GemText(value = "Edit"))
           ]),
-          @iterate(JoinConnectionKind connectionKind : component.connectedBy) {
+          @iterate(JointConnectionKind connectionKind : component.connectedBy) {
             @HorizontalStatTable(rows = [
               @EvenlySpacedColumn(element = @GemText(value = getConnectionKindName(connectionKind))),
               @EvenlySpacedColumn(element = @GemButton(label = "Edit", leftClick=navigateToConnectionKind(connectionKind)))

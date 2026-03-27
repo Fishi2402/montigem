@@ -1,6 +1,6 @@
 package gui.pack;
 
-import DemoRec.JoinConnectionKind;
+import DemoRec.JointConnectionKind;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.arrange.GemCard;

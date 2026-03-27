@@ -34,12 +34,12 @@ component ProcessStepView(ProcessStep processStep) {
        ]
     );
 
-    hasJoinConnection@guard(true) {
-      joinConnection@GemRow(
+    hasJointConnection@guard(true) {
+      jointConnection@GemRow(
         colGap="5px",
           components=[
-            joinConnectionLabel@GemText(value = getJoinConnectionLabelText()),
-            joinConnectionValue@GemText(value = getJoinConnectionComponents())
+            jointConnectionLabel@GemText(value = getJointConnectionLabelText()),
+            jointConnectionValue@GemText(value = getJointConnectionComponents())
           ]
       );
     }

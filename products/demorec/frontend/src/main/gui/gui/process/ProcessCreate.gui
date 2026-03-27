@@ -26,7 +26,7 @@ page ProcessCreate(Process p) {
             inputType = "date",
             entry = p.startedAt
             ),
-        @PackChoose(pack=p.deconstructionOf, chosenPack=changePack())
+        @PackChoose(pack=p.deconstructionOf,newPack=false,chosenPack=changePack())
       ]
     )
   ),
