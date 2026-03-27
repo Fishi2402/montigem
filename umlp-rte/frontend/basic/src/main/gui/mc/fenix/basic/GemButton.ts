@@ -13,10 +13,13 @@ import { config, GemButtonComponent } from '../../../../../../build/gui2java2ts/
 })
 export class GemButton extends GemButtonComponent {
   @HostBinding("style.width")
-  _width: string = "auto";
+  _width: string = "fit-content";
 
   @HostBinding("style.height")
-  _height: string = "auto";
+  _height: string = "fit-content";
+
+  @HostBinding("style.margin")
+  _margin: string = "0.5ch";
 
   public ngOnInit(): void { }
 }

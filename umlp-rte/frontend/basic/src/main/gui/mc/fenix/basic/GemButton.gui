@@ -10,12 +10,16 @@ component GemButton(
     Height of the component in `px`, `%`, `vh`. By default collapses to a
     minimal possible height or takes up all available space depending on context.
   */
-  String height = "auto",
+  String height = "fit-content",
   /**
     Width of the component in `px`, `%`, `vh`. By default collapses to a
     minimal possible width or takes up all available space depending on context.
   */
-  String width = "auto",
+  String width = "fit-content",
+  /**
+    Margin around the component. By default provides a small spacing.
+  */
+  String margin = "0.5ch",
   /** Button text. */
   String label = "",
   /**
