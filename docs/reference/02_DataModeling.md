@@ -90,13 +90,20 @@ Services are defined as classes with the `<<singleton>>` stereotype. They are us
 ```java
 <<singleton>>
 class RentalService {
+  int visitCounter = 0;
   void rentItem(RentableItem item);
   void returnItem(RentalTransaction transaction);
 }
 ```
 
-*   **Backend:** A singleton bean is generated. You must implement the logic in the corresponding HWC class (e.g., `RentalService.java`).
-*   **Frontend:** A proxy class is generated. Calling `RentalService.rentItem(item)` in the frontend sends a command to the backend.
+*   **Backend:** A singleton bean is generated. 
+    *   For methods, you must implement the logic in the corresponding HWC class (e.g., `RentalService.java`).
+    *   If you defined variables without a default value in the model, you also need to override the builder class 
+        (e.g. by extending `RentalServiceBuilderTOP` and setting the variable in the constructor)
+*   **Frontend:** A proxy class is generated.
+    *   Calling `RentalService.rentItem(item)` in the frontend sends a command to the backend.
+    *   Variables can be accessed by their getters and setters (e.g. `RentalService.getVisitCounter()`),
+        and will be synced between all clients.
 *   **Commands:** For each method, a `Command` class is generated (e.g., `RentalService_rentItem`).
 
 ## 2.5 Multiple Models & Merging
