@@ -14,7 +14,11 @@ if (${name?uncap_first}Instance == null) { // Fetch from DAO
 if (${name?uncap_first}Instance == null) { // Init new object
   ${name}Builder builder = this._do${name}BuilderFromId(this._doGetFreeGemId());
   if (builder.build().isEmpty())
-    throw new RuntimeException("Singleton ${name} was used before being initialized - override the builders constructor");
+    throw new RuntimeException(!builder.isBuildable()
+        ? "Singleton ${name} could not be built - make sure all variables are assigned "
+            + "a default value in the model, or override the builders constructor"
+        : "Singleton ${name} was used before being initialized - override the builders constructor");
+
   ${name?uncap_first}Instance = builder.build().get();
   _doAddRequiredObserver${name}(${name?uncap_first}Instance);
   ${managerName?uncap_first}Observers.forEach(obs -> obs.maybeNotify${name}Added(${name?uncap_first}Instance, NotificationScope.ALL));
