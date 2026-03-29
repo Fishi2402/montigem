@@ -98,7 +98,7 @@ class RentalService {
 
 *   **Backend:** A singleton bean is generated. 
     *   For methods, you must implement the logic in the corresponding HWC class (e.g., `RentalService.java`).
-    *   If you defined variables without a default value in the model, you also need to override the builder class 
+    *   If you defined variables *without* a default value in the data model, you also need to override the builder class 
         (e.g. by extending `RentalServiceBuilderTOP` and setting the variable in the constructor)
 *   **Frontend:** A proxy class is generated.
     *   Calling `RentalService.rentItem(item)` in the frontend sends a command to the backend.
