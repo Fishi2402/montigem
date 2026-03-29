@@ -8,7 +8,7 @@ import { GemHeatmapChartData } from '../../../../../../build/gui2java2ts/mc/feni
 
 @Component({
   standalone: true,
-  imports: [...config.imports, NgxChartsModule, GemChartOptions, NgxChartsModule],
+  imports: [...config.imports, GemChartOptions, NgxChartsModule],
   selector: config.selector,
   styleUrls: config.styleUrls,
   templateUrl: config.templateUrl,
@@ -307,7 +307,7 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
     //For each chunk
     for (var j = 0; j < this.num_seperations; j++) {
       //Array for counting occurence of "sensor_name" in time-chunk
-      var counts = new Array(names.length);
+      var counts = new Array(names.length).fill(0);
 
       //Define shape of inner array
       let temp_series: { name: string, value: number }[] = [];

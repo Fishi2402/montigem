@@ -2,6 +2,7 @@
 package mc.fenix.charts;
 
 import mc.fenix.charts.GemTimeSeriesChartTypes.TimeSeriesData;
+import mc.fenix.charts.GemTimeSeriesChartTypes.TimeSeriesEvent;
 import java.time.LocalDateTime;
 
 /**
@@ -35,5 +36,14 @@ component GemTimeSeriesChart(
     Optional end time for the visible range (zoom).
     If set, the chart will zoom to show data until this time.
   */
-  LocalDateTime showUntil
+  LocalDateTime showUntil,
+  /**
+    Optional viewport definition for a sliding window.
+    Examples: '60s' (last 60 seconds), '5m' (5 minutes), '100p' (last 100 points).
+  */
+  String viewPort = "",
+  /**
+    Callback triggered when an event annotation is clicked.
+  */
+  Event<TimeSeriesEvent> eventClick
 )

@@ -5,17 +5,21 @@ import Domain.Person;
 import mc.fenix.charts.GemTimeSeriesChart;
 import common.ExamplePage;
 import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 
-page GemTimeSeriesChartExmaple (List<Person> persons) {
+page GemTimeSeriesChartExmaple (List<Person> persons, String lastClickedEvent = "No event clicked yet") {
   @ExamplePage(
     component = @GemColumn(components = [
       chart1@GemTimeSeriesChart(
-        data = computeDate(persons),
+        data = computeData1(persons),
         hideLiveDataToggle = true
       ),
+      @GemText(value = "Clicked Annotation: " + lastClickedEvent, size = "1.2rem"),
       chart2@GemTimeSeriesChart(
-        data = computeDate(persons),
-        hideLiveDataToggle = true
+        data = computeData2(persons),
+        hideLiveDataToggle = false,
+        viewPort = "60s",
+        eventClick = onEventClick()
       )
     ]),
     basePath = "example_charts",
