@@ -24,4 +24,5 @@ if(known${subclass.name?cap_first}s.containsKey(gemId)){
   }
 }
 </#list>
+Log.warn("0x12002: Could not load ${name} with gemId "+gemId);
 return Optional.empty();

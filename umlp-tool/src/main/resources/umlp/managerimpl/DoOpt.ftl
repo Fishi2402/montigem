@@ -17,4 +17,5 @@ ${cd4c.method("protected Optional<${name}> _do${name}Opt(long gemId)")}
     }
   }
 </#list>
-  return Optional.empty();
+Log.warn("0x12002: Could not load ${name} with gemId "+gemId);
+return Optional.empty();

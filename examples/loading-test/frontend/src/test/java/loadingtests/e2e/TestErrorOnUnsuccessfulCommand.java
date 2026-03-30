@@ -31,13 +31,13 @@ public class TestErrorOnUnsuccessfulCommand extends AbstractLoadingTestsE2ETest 
 
     // Click button and thereby provoke unsuccessful command
     page.locator(GemButton.selector()).first().click();
-    waitForWebsocket(page);
-    waitForBackend();
-    waitForAngular(page);
+
+    // This is the only wait option that works, since a null error is caused in JavaScript which seems to break Angular or other waiting mechanisms
+    page.waitForTimeout(100);
 
     // Assert that an error was thrown
     boolean found = consoleErrors.stream()
-        .anyMatch(msg -> msg.matches(".*Command with id \\d+ was not successful\\..*"));
+        .anyMatch(msg -> msg.matches(".*0x12001: Could not load Animal with gemId .*"));
 
     assertTrue(found, "Expected console error for unsuccessful command. Errors were:\n"
         + String.join("\n", consoleErrors));

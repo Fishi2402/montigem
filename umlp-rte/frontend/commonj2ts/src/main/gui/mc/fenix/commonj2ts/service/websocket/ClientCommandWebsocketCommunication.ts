@@ -131,7 +131,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
         result.isSuccessful().then(
           success => {
             if(!success) {
-              Log.error("Command with id "+result.getCommandId()+ " was not successful.");
+              Log.debug("Command with id "+result.getCommandId()+ " was not successful.", "ClientCommandWebsocketCommunication");
             }
           }
         )

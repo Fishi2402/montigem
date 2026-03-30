@@ -11,7 +11,7 @@ public class UnsuccessfulCommand extends UnsuccessfulCommandTOP {
   @Override
   public Consumer<Void> triggerUnsuccessfulCommand() {
     return $ -> {
-      LoadingTestsManager.animalOpt(-1);
+      LoadingTestsManager.getAnimalSure(-1);
     };
   }
 }
