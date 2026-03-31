@@ -806,7 +806,9 @@ export class HierarchicalLayout  {
       ? layerIndex * this.levelSeparation
       : -layerIndex * this.levelSeparation;
     for (const nodeKey of layer) {
-      this.setCoord(g, nodeKey, axis, value);
+      if (!this.isFixed(g, nodeKey)) {
+        this.setCoord(g, nodeKey, axis, value);
+      }
     }
   }
 
