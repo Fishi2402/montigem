@@ -169,6 +169,14 @@ public class JavaBasicsAdapter extends AbstractAdapter {
         print(".trim().length === 0)");
         return true;
       }
+      case "split": {
+        print("StringHelper.split(");
+        print(invocation.getTargetExpression());
+        print(", ");
+        printArgList(invocation.getArguments());
+        print(")");
+        return true;
+      }
     }
     return false;
   }
