@@ -1,0 +1,32 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemTextareaInput;
+
+import gui.test.TestNav;
+
+page StringSplit() {
+  inputTestField@GemTextInput(
+    id = "inputTestFieldId",
+    labelText = "Test Input Field"
+  );
+  regexTestField@GemTextInput(
+    id = "regexTestFieldId",
+    labelText = "Test Regex Field"
+  );
+  limit@GemTextInput(
+    id = "limitTestFieldId",
+    labelText = "Test Limit Field"
+  );
+
+  split@GemButton(label = "Split (without limit)", leftClick = testSplit());
+  limitSplit@GemButton(label = "Split (with limit)", leftClick = testLimitSplit());
+
+  resultField@GemTextareaInput(
+    id = "resultId",
+    labelText = "Test Result",
+    height = "300px"
+  );
+}
+
