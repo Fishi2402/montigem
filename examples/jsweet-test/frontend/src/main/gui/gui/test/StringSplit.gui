@@ -7,9 +7,10 @@ import mc.fenix.input.GemTextareaInput;
 import gui.test.TestNav;
 
 page StringSplit() {
-  inputTestField@GemTextInput(
+  inputTestField@GemTextareaInput(
     id = "inputTestFieldId",
-    labelText = "Test Input Field"
+    labelText = "Test Input Field",
+    height = "300px"
   );
   regexTestField@GemTextInput(
     id = "regexTestFieldId",

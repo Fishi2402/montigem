@@ -14,7 +14,7 @@ public class StringSplit extends StringSplitTOP {
   private void setResultFieldEntry(String[] values) {
     HTMLTextAreaElement el = (HTMLTextAreaElement) document.getElementById(getResultFieldId());
     if (el != null) {
-      el.value = String.join("\n", values);
+      el.value = String.join("#", values);
     } else {
       System.err.println("Could not find input element with ID: " + getResultFieldId() + "Input");
     }
@@ -22,10 +22,10 @@ public class StringSplit extends StringSplitTOP {
 
   private String[] splitInput() {
     // ID of the input field from the .gui file (inputTestFieldId) + "Input"
-    HTMLInputElement inputEl = (HTMLInputElement) document.getElementById("inputTestFieldIdInput");
+    HTMLTextAreaElement inputEl = (HTMLTextAreaElement) document.getElementById("inputTestFieldId");
     HTMLInputElement regexEl = (HTMLInputElement) document.getElementById("regexTestFieldIdInput");
 
-    if (hasValue(inputEl) && hasValue(regexEl)) {
+    if (hasValue(inputEl) && hasValue2(regexEl)) {
       try {
         String input = inputEl.value;
         String regex = regexEl.value;
@@ -40,11 +40,11 @@ public class StringSplit extends StringSplitTOP {
 
   private String[] limitSplitInput() {
     // ID of the input field from the .gui file (inputTestFieldId) + "Input"
-    HTMLInputElement inputEl = (HTMLInputElement) document.getElementById("inputTestFieldIdInput");
+    HTMLTextAreaElement inputEl = (HTMLTextAreaElement) document.getElementById("inputTestFieldId");
     HTMLInputElement regexEl = (HTMLInputElement) document.getElementById("regexTestFieldIdInput");
     HTMLInputElement limitEl = (HTMLInputElement) document.getElementById("limitTestFieldIdInput");
 
-    if (hasValue(inputEl) && hasValue(regexEl) && hasValue(limitEl)) {
+    if (hasValue(inputEl) && hasValue2(regexEl) && hasValue2(limitEl)) {
       try {
         String input = inputEl.value;
         String regex = regexEl.value;
@@ -58,8 +58,12 @@ public class StringSplit extends StringSplitTOP {
     return new String[0];
   }
 
-  private boolean hasValue(HTMLInputElement el) {
-    return el != null && el.value != null && !el.value.isEmpty();
+  private boolean hasValue(HTMLTextAreaElement el) {
+    return el != null && el.value != null;
+  }
+
+  private boolean hasValue2(HTMLInputElement el) {
+    return el != null && el.value != null;
   }
 
   @Override
