@@ -64,8 +64,9 @@ export class StringHelper {
     // * The array also contains the captured groups for each separator match
 
     // add g flag so lastIndex gets updated
-    if (!re.global)
+    if (!re.global) {
       re = new RegExp(re, re.flags + "g");
+    }
 
     let matchCount = 0;
     let index = 0;
@@ -100,12 +101,14 @@ export class StringHelper {
     }
 
     // If no match was found, return this
-    if (index === 0)
+    if (index === 0) {
       return [input];
+    }
 
     // Add remaining segment
-    if (!matchLimited || matchCount < limit)
+    if (!matchLimited || matchCount < limit) {
       matchList.push(input.substring(index, input.length));
+    }
 
     // Construct result
     let resultSize = matchList.length;
@@ -120,8 +123,9 @@ export class StringHelper {
 
   private static findNext(re: RegExp, input: string, lastM: RegExpExecArray | null): RegExpExecArray {
     const lastMStart = lastM != null ? lastM.index : -1;
-    if (re.lastIndex === lastMStart)
+    if (re.lastIndex === lastMStart) {
       re.lastIndex++; // if the last match was zero-length, search from next index
+    }
 
     return re.exec(input);
   }
