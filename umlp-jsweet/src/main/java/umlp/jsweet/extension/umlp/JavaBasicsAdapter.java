@@ -159,10 +159,8 @@ public class JavaBasicsAdapter extends AbstractAdapter {
   public boolean substituteMethodInvocation_JavaLangString(MethodInvocationElement invocation) {
     switch (invocation.getMethodName()) {
       case "format":
-        if (invocation.getMethodName().equals("format")) {
-          this.print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
-          return true;
-        }
+        this.print("StringHelper.format(").printArgList(invocation.getArguments()).print(")");
+        return true;
       case "isBlank": {
         print("(");
         print(invocation.getTargetExpression());
