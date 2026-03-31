@@ -60,19 +60,21 @@ export class StringHelper {
   private static splitImpl(re: RegExp, input: string, limit: number, withDelimiters: boolean): string[] {
     // Port of java/util/regex/Pattern.java
     // This is necessary because String.prototype.split(..., limit) behaves differently:
-    // * It does not output the remaining substring after the last match.
+    // * It does not output the entire remaining substring after the last separator match.
     // * The array also contains the captured groups for each separator match
 
-    re = new RegExp(re, "g"); // add g flag so lastIndex gets updated
+    // add g flag so lastIndex gets updated
+    if (!re.global)
+      re = new RegExp(re, re.flags + "g");
 
     let matchCount = 0;
     let index = 0;
     const matchLimited = limit > 0;
     const matchList: string[] = [];
-    let m: RegExpExecArray | null;
+    let m: RegExpExecArray | null = null;
 
     // Add segments before each match found
-    while ((m = re.exec(input)) !== null) {
+    while ((m = this.findNext(re, input, m)) !== null) {
       const mStart = m.index;
       const mEnd = re.lastIndex;
 
@@ -114,5 +116,13 @@ export class StringHelper {
     }
 
     return matchList.slice(0, resultSize);
+  }
+
+  private static findNext(re: RegExp, input: string, lastM: RegExpExecArray | null): RegExpExecArray {
+    const lastMStart = lastM != null ? lastM.index : -1;
+    if (re.lastIndex === lastMStart)
+      re.lastIndex++; // if the last match was zero-length, search from next index
+
+    return re.exec(input);
   }
 }
