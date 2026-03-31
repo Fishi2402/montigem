@@ -50,4 +50,35 @@ public class TestStringTranspilation {
     assertEquals(5,occurrences);
   }
 
+  @Test
+  public void testStringSplit() throws IOException {
+    File input = Paths.get("src/test/resources/java/string/TestStringTranspilation.java").toFile();
+
+    testStringSplitPerConfig(input, Util.getDomainTranspiler());
+    testStringSplitPerConfig(input, Util.getGUITranspiler());
+  }
+
+  public void testStringSplitPerConfig(File input, JSweetTranspiler transpiler) throws IOException {
+    ErrorCountTranspilationHandler handler = new ErrorCountTranspilationHandler(
+        new ConsoleTranspilationHandler());
+    SourceFile[] files = getSourceFiles(input);
+    transpiler.transpile(handler,files);
+
+    assertEquals(0, handler.getErrorCount());
+    assertNotNull(files[0]);
+
+    File transpiledFile = files[0].getTsFile();
+    String transpiledContent = Files.readString(Paths.get(transpiledFile.getPath()));
+
+    int occurrences = 0;
+    int idx = 0;
+
+    String find = "StringHelper.split(";
+
+    while ((idx = transpiledContent.indexOf(find, idx)) != -1) {
+      occurrences++;
+      idx += find.length(); // move past last match
+    }
+    assertEquals(2,occurrences);
+  }
 }

@@ -30,4 +30,11 @@ public class TestStringTranspilation {
     // Do nothing
   }
 
+  public String[] testSplitRegex1() {
+    return "a|b|c".split("\\|");
+  }
+
+  public String[] testSplitRegex2() {
+    return "azbZcczdddZeee".split("(?i)z", 4);
+  }
 }
