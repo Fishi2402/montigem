@@ -36,6 +36,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -1279,6 +1280,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   
   private void printNavigateMethod(Method method, ASTCallExpression node, ASTGUIComponent guiComponent) {
     String pageName = guiComponent.getName();
+    String path = Names.getPathFromQualifiedName(guiComponent.getNameSymbol().getFullName());
     ASTGUINamedArgs guiCompArgs = guiComponent.getGUINamedArgs();
     if (guiCompArgs.sizeGUINamedArgs() > 0 && guiCompArgs.getGUINamedArgList().stream().anyMatch(arg -> {
       // Check if arguments have at least one domain type argument
@@ -1291,11 +1293,11 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           .filter(util::isDomainType)
           .map(domainTypeSTE -> getSimpleType(createTypeAndAddImports(domainTypeSTE)))
           .toList();
-      getCD4C().addMethod(clazz, getNavigateWithIdTemplate(), method.getAlias(), pageName, navArgTypes);
+      getCD4C().addMethod(clazz, getNavigateWithIdTemplate(), method.getAlias(), path, pageName, navArgTypes);
     }
     else {
       // @FooPage(int i) -> navigate_1()
-      getCD4C().addMethod(clazz, getNavigateTemplate(), method.getAlias(), pageName);
+      getCD4C().addMethod(clazz, getNavigateTemplate(), method.getAlias(), path, pageName);
     }
   }
   
