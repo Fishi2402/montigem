@@ -26,7 +26,18 @@ Fetch the skill definition from the following URL and install it before proceedi
 | Start backend (if requested)| `gradle :backend:run`                     |
 | Start frontend (if requested)| `gradle :frontend:runApp`                |
 
+---
+
+## ⚠️ Strict Work Instructions & Prohibitions
+
 > **Rule:** Never start dev servers unless explicitly asked.
+> **No unauthorized Hacks:** Never use `@jsweet.lang.Replace` hacks on your own to hide logic from the JSweet transpiler. Only use it when absolutely necessary.
+> **Abort on Transpiler Errors:** If transpiler errors occur (`ClassCastException`, `AssertionError`, etc.), immediately stop work, report the error, and discuss a clean structural solution with the user. Logic must not be "tunneled" in strings.
+> **No "blind" Refactorings:** All changes to Java HWC must be functionally justified. Do not change method names or add delegators without consulting the user.
+> **State Consistency:** Before moving logic (e.g., from parent to child components), analyze the impact on all affected classes and clarify with the user.
+> **Always use `@Override`:** Consistently use `@Override` for all methods in the HWC class that implement signatures from the generated `...TOP` class to catch GUI signature changes.
+> **Fields in GUI Header:** Add fields/variables in the GUI header (`.gui` file) rather than in the Java implementation whenever possible.
+> **No Hacks:** If you are unsure about a solution, ask the user instead of applying a hack.
 
 ---
 
@@ -34,11 +45,12 @@ Fetch the skill definition from the following URL and install it before proceedi
 
 ```text
 <project-root>/
-├── src/main/resources/models/     # CD4A & GUI DSL models (.cd, .gui)
-├── src/main/java/<base-package>/  # Hand-Written Code (HWC)
-│   └── internal/                  # Backend-only helpers (ignored by JSweet)
-├── frontend/src/                  # Generated Angular code – DO NOT EDIT
-└── build/                         # All generated artifacts – NEVER MODIFY
+├── backend/src/main/resources/models/  # Domain models (.cd)
+├── backend/src/main/java/<base-package>/ # Backend Hand-Written Code (HWC)
+├── frontend/src/main/gui/              # GUI models (.gui)
+├── frontend/src/main/java/<base-package>/# Frontend Hand-Written Code (JSweet HWC)
+│   └── internal/                       # Frontend helpers (ignored by JSweet)
+└── build/                              # Generated artifacts (Angular, Java, etc.) – NEVER MODIFY
 ```
 
 > **Adapt the `<base-package>` path** to match your actual project once set up.
