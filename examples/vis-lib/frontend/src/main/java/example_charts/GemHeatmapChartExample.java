@@ -2,7 +2,6 @@
 package example_charts;
 
 import domain.Person;
-import domain.Stock;
 import mc.fenix.charts.gemheatmapcharttypes.GemHeatmapChartData;
 import mc.fenix.charts.gemheatmapcharttypes.GemHeatmapChartEntry;
 import mc.fenix.charts.gemheatmapcharttypes.GemHeatmapChartEntryBuilder;
@@ -16,41 +15,27 @@ public class GemHeatmapChartExample extends GemHeatmapChartExampleTOP {
 
   @Override
   public GemHeatmapChartData getData() {
-    if (this.getPersons() == null) {
-      return null;
-    }
-
     List<GemHeatmapChartEntry> entries = new ArrayList<>();
-    entries.add(new GemHeatmapChartEntryBuilder().name("Older than 32").timestamp(0).build().get());
-    entries.add(new GemHeatmapChartEntryBuilder().name("Between 30 and 32").timestamp(0).build().get());
-    entries.add(new GemHeatmapChartEntryBuilder().name("Between 28 and 29").timestamp(0).build().get());
-    entries.add(new GemHeatmapChartEntryBuilder().name("Between 27 and 23").timestamp(0).build().get());
-    entries.add(new GemHeatmapChartEntryBuilder().name("Younger than 23").timestamp(0).build().get());
-
-    for (Person person : this.getPersons()) {
-      if (person.getStocksList().isEmpty()) {
-        continue;
+    // Generate 500 random points to show a distribution
+    // Use Math.random() for JSweet compatibility
+    for (int i = 0; i < 500; i++) {
+      // Create some clusters
+      double cluster = Math.random();
+      double temp, speed;
+      if (cluster < 0.3) {
+        temp = 30 + (Math.random() * 10 - 5);
+        speed = 1000 + (Math.random() * 400 - 200);
+      } else if (cluster < 0.7) {
+        temp = 60 + (Math.random() * 20 - 10);
+        speed = 2000 + (Math.random() * 600 - 300);
+      } else {
+        temp = 80 + (Math.random() * 10 - 5);
+        speed = 1500 + (Math.random() * 200 - 100);
       }
-      int birthday = person.getBirthday().getYear();
-      int sumStocks = 0;
-      for (Stock stock : person.getStocksList()) {
-        sumStocks += stock.getPrice();
-      }
-      if (birthday < 1992) {
-        entries.get(0).setTimestamp(entries.get(0).getTimestamp() + sumStocks);
-      }
-      else if (birthday < 1995) {
-        entries.get(1).setTimestamp(entries.get(1).getTimestamp() + sumStocks);
-      }
-      else if (birthday < 1997) {
-        entries.get(2).setTimestamp(entries.get(2).getTimestamp() + sumStocks);
-      }
-      else if (birthday < 2002) {
-        entries.get(3).setTimestamp(entries.get(3).getTimestamp() + sumStocks);
-      }
-      else {
-        entries.get(4).setTimestamp(entries.get(4).getTimestamp() + sumStocks);
-      }
+      entries.add(new GemHeatmapChartEntryBuilder()
+        .xValue(temp)
+        .yValue(speed)
+        .build().get());
     }
     return new GemHeatmapChartData(entries);
   }

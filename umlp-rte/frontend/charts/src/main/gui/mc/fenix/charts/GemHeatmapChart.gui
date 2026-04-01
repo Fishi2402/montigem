@@ -10,5 +10,6 @@ component GemHeatmapChart (
   GemHeatmapChartData data,
   String xLabel,
   String yLabel,
-  Boolean timestampdata
+  Integer xBins,
+  Integer yBins
 )

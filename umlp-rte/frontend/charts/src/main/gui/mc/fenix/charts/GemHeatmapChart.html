@@ -13,54 +13,24 @@
 			</label>
 			<br>
 			<label>
-				<input #box style="width:50px"
-					[value]=defaultColNum
-					(change)="enter_num_seperations(box.value)"
+				<input #boxX style="width:50px"
+					[value]="_xBins || xBins || defaultXBins"
+					(change)="enter_x_bins(boxX.value)"
 					type="number"
 					min="1"
 					max="32"
-				> Columns
+				> X-Bins
 			</label>
 			<br>
-
-			<div *ngIf="_timestampdata; then thenblock else elseblock"></div>
-
-			<ng-template #thenblock>
-				<label>
-					<input #checkbox1
-					[defaultChecked]="1"
-					(change)="enter_pretty_date(checkbox1.checked)"
-					type="checkbox"
-				> Pretty-Print timestamps
-				</label>
-				<br>
-				<label>
-					<input #checkbox2
-						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;"
-						type="checkbox"
-					> Group by grouping factor
-				</label>
-				<br>
-				<label [class.grayout]="!_hasGroupingFactor">
-					<input #loopbox class="numberSlider"
-						[value]="86400"
-						(change)="enter_num_loop_factor(loopbox.value)"
-						type="number"
-					> Select Grouping factor (86400 = 1day)
-				</label>
-			</ng-template>
-
-			<ng-template #elseblock>
-				<label>
-					<input #checkbox2
-						(change)="enter_loop_days(checkbox2.checked);  _hasGroupingFactor = !_hasGroupingFactor;"
-						type="checkbox"
-					> Group by grouping factor
-				</label>
-				<br />
-				<label>Select the desired grouping factor (modulo value): </label>
-				<input #loopbox [value]="10" (change)="enter_num_loop_factor(loopbox.value)" type="number">
-			</ng-template>
+			<label>
+				<input #boxY style="width:50px"
+					[value]="_yBins || yBins || defaultYBins"
+					(change)="enter_y_bins(boxY.value)"
+					type="number"
+					min="1"
+					max="32"
+				> Y-Bins
+			</label>
 		</li>
 	</gem-chart-options>
 </div>
@@ -75,8 +45,8 @@
     [legend]="displayLegend"
     [showXAxisLabel]="showXAxisLabel"
     [showYAxisLabel]="showYAxisLabel"
-    [xAxisLabel]="_xLabel"
-    [yAxisLabel]="_yLabel"
+    [xAxisLabel]="xLabel"
+    [yAxisLabel]="yLabel"
   	>
 	</ngx-charts-heat-map>
 </div>

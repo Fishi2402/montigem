@@ -9,8 +9,8 @@ classdiagram GemHeatmapChartTypes {
   }
 
   public class GemHeatmapChartEntry {
-    String name;
-    Integer timestamp;
+    Double xValue;
+    Double yValue;
   }
 
 }
