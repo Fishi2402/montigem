@@ -1,4 +1,9 @@
 export class StringHelper {
+  public static valueOf(obj: any) {
+    // TODO better matching of Java's obj.toString()?
+    return obj === null ? "null" : `${obj}`;
+  }
+
   public static format(str: string, ...val: string[]): string {
     let res = str;
     for (let v of val) {
