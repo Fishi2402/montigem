@@ -16,7 +16,7 @@ public class PlayerStatListControls extends PlayerStatListControlsTOP {
   @Override
   public Consumer<Void> reset() {
     return unused -> {
-      CommandManager.executeCommand(new Reset(this._gemIdForNav));
+      CommandManager.executeCommand(new Reset(this.getGemIdForNav()));
     };
   }
 
@@ -49,14 +49,14 @@ public class PlayerStatListControls extends PlayerStatListControlsTOP {
   @Override
   public Consumer<Void> addPlayer_Remote() {
     return unused -> {
-      CommandManager.executeCommand(new AddPlayerRemote(this._gemIdForNav));
+      CommandManager.executeCommand(new AddPlayerRemote(this.getGemIdForNav()));
     };
   }
 
   @Override
   public Consumer<Void> addStat_Remote() {
     return unused -> {
-      CommandManager.executeCommand(new AddStatRemote(this._gemIdForNav));
+      CommandManager.executeCommand(new AddStatRemote(this.getGemIdForNav()));
     };
   }
 }
