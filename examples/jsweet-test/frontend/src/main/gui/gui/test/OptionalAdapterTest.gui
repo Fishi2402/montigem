@@ -1,0 +1,33 @@
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+
+page OptionalAdapterTest() {
+  inputField@GemTextInput(
+    id = "inputFieldId",
+    labelText = "Test Input Field"
+  );
+
+  testOf@GemButton(label = "Test Optional.of()", leftClick = testOf());
+  testOfNullable@GemButton(label = "Test Optional.ofNullable()", leftClick = testOfNullable());
+  testEmpty@GemButton(label = "Test Optional.empty()", leftClick = testEmpty());
+  testIsPresent@GemButton(label = "Test isPresent()", leftClick = testIsPresent());
+  testIsEmpty@GemButton(label = "Test isEmpty()", leftClick = testIsEmpty());
+  testGet@GemButton(label = "Test get()", leftClick = testGet());
+  testOrElse@GemButton(label = "Test orElse()", leftClick = testOrElse());
+  testOrElseGet@GemButton(label = "Test orElseGet()", leftClick = testOrElseGet());
+  testMap@GemButton(label = "Test map()", leftClick = testMap());
+  testFlatMap@GemButton(label = "Test flatMap()", leftClick = testFlatMap());
+  testFilter@GemButton(label = "Test filter()", leftClick = testFilter());
+  testIfPresent@GemButton(label = "Test ifPresent()", leftClick = testIfPresent());
+  testIfPresentOrElse@GemButton(label = "Test ifPresentOrElse()", leftClick = testIfPresentOrElse());
+  testOr@GemButton(label = "Test or()", leftClick = testOr());
+  testStream@GemButton(label = "Test stream()", leftClick = testStream());
+  testOfNull@GemButton(label = "Test Optional.of(null)", leftClick = testOfNull());
+
+  resultField@GemTextInput(
+      id = "resultId",
+      labelText = "Test Result"
+    );
+}

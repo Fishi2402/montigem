@@ -14,7 +14,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -28,32 +27,6 @@ public class JavaBasicsAdapter extends AbstractAdapter {
   }
 
   private void initTypeMappings() {
-    getTypeMirrorMappings().add(0, computeJavaOptionalTypeMapping());
-  }
-
-  public Function<TypeMirror, String> computeJavaOptionalTypeMapping() {
-    return (TypeMirror type) -> {
-      TypeMirror mappedType = mapOptionalType(type);
-      if (mappedType != null) {
-        return this.getMappedType(mappedType);
-      }
-      return null;
-    };
-  }
-
-  public TypeMirror mapOptionalType(TypeMirror type) {
-    if (this.types().isSubtype(this.types().erasure(type), this.types().erasure(
-        this.util().getType(Optional.class)))
-        && type instanceof DeclaredType) {
-      List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
-      if (typeArgs.size() > 0) {
-        TypeMirror backingType = typeArgs.get(0);
-        if (backingType.getKind() == TypeKind.DECLARED) {
-          return backingType;
-        }
-      }
-    }
-    return null;
   }
 
   /**
@@ -86,36 +59,9 @@ public class JavaBasicsAdapter extends AbstractAdapter {
     if (targetClassName != null
         && (targetExpression != null || invocation.getMethod().getModifiers().contains(
         Modifier.STATIC))) {
-      switch (targetClassName) {
-        case "java.util.Optional":
-          if (substituteMethodInvocation_Optional(invocation)) {
-            return true;
-          }
-      }
     }
 
     return super.substituteMethodInvocation(invocation);
-  }
-
-  private boolean substituteMethodInvocation_Optional(MethodInvocationElement invocation) {
-    switch (invocation.getMethodName()) {
-      case "or":
-        Tree argumentTree = ExtendedElementFactory.toTree(invocation.getArgument(0));
-        boolean isAsync = argumentTree instanceof LambdaExpressionTree &&
-            context.isAsyncLambda((LambdaExpressionTree) argumentTree);
-        printMacroName(invocation.getMethodName());
-        if (isAsync) {
-          print("(await ");
-        }
-        print("((v, get) => v == null ? get() : v)(").print(invocation.getTargetExpression())
-            .print(",");
-        print(invocation.getArgument(0)).print(")");
-        if (isAsync) {
-          print(")");
-        }
-        return true;
-    }
-    return false;
   }
 
   public boolean substituteMethodInvocation_JavaUtilObjects(MethodInvocationElement invocation) {
@@ -181,7 +127,7 @@ public class JavaBasicsAdapter extends AbstractAdapter {
 
   @Override
   public TypeMirror mapType(TypeMirror type) {
-    return mapOptionalType(type);
+    return null;
   }
 
   @Override

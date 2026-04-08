@@ -53,7 +53,7 @@ public class OCLWithErrorMessagesJavaGenVisitor implements OCLWithErrorMessagesH
 
   protected void printErrorMsgMethod(ASTOCLInvariant node) {
     printer.println();
-    printMethodSignature(node, "ValidationError", "getError");
+    printMethodSignature(node, "Optional<ValidationError>", "getError");
     printer.println("{");
     printer.indent();
 
@@ -85,7 +85,7 @@ public class OCLWithErrorMessagesJavaGenVisitor implements OCLWithErrorMessagesH
     printer.println(")){");
     printer.indent();
 
-    printer.println("return new ValidationError(");
+    printer.println("return Optional.of(new ValidationError(");
     printer.indent();
 
     node.getInvErrorMessages().getShortError().accept(getTraverser());
@@ -94,11 +94,11 @@ public class OCLWithErrorMessagesJavaGenVisitor implements OCLWithErrorMessagesH
     node.getInvErrorMessages().getFullError().accept(getTraverser());
 
     printer.unindent();
-    printer.println(");");
+    printer.println("));");
     printer.unindent();
     printer.println("}");
 
-    printer.println("return null;");
+    printer.println("return Optional.empty();");
     printer.unindent();
     printer.println("}");
   }

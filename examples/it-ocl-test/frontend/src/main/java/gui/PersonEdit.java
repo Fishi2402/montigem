@@ -10,9 +10,10 @@ import java.util.Optional;
 public class PersonEdit extends PersonEditTOP {
   @Override
   public GemTextInputValidity getGemTextInput1Validity() {
-    ValidationError errorOpt = getP().getAgeValidationError();
-    if(errorOpt != null){
-      return new GemTextInputValidity("Error", errorOpt.getShortError());
+    Optional<ValidationError> errorOpt = getP().getAgeValidationError();
+    if(errorOpt.isPresent()){
+      ValidationError error = errorOpt.get();
+      return new GemTextInputValidity("Error", error.getShortError());
     }
 
     return null;

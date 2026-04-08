@@ -13,6 +13,7 @@ import umlp.jsweet.extension.umlp.JavaStreamAdapter;
 import umlp.jsweet.extension.umlp.JavaBasicsAdapter;
 import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 import umlp.jsweet.extension.umlp.MutexAdapter;
+import umlp.jsweet.extension.umlp.OptionalAdapter;
 import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 
 /**
@@ -24,15 +25,15 @@ public class UMLPAdapter extends PrinterAdapter {
         new JavaStreamAdapter(
             new GUITypesImportAdapter(
                 new CollectionsAdapter(
-                    new JavaBasicsAdapter(
-                        new UMLPRTEImportAdapter(
-                            // new RelativeImportAdapter(
-                            new JavaTimeAdapter(
-                                new BasicsAdapter(
-                                    new BackendOnlyAdapter(
-                                        new MutexAdapter(
-                                            new UMLPEnumAdapter(
-                                                new JavaStreamAdapter(
+                    new OptionalAdapter(
+                        new JavaBasicsAdapter(
+                            new UMLPRTEImportAdapter(
+                                // new RelativeImportAdapter(
+                                new JavaTimeAdapter(
+                                    new BasicsAdapter(
+                                        new BackendOnlyAdapter(
+                                            new MutexAdapter(
+                                                new UMLPEnumAdapter(
                                                     parentAdapter
                                                 )
                                             )
@@ -41,7 +42,6 @@ public class UMLPAdapter extends PrinterAdapter {
                                 )
                             )
                         )
-                        // )
                     )
                 )
             )

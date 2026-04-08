@@ -12,6 +12,7 @@ import umlp.jsweet.extension.umlp.BackendOnlyAdapter;
 import umlp.jsweet.extension.umlp.JavaStreamAdapter;
 import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 import umlp.jsweet.extension.umlp.MutexAdapter;
+import umlp.jsweet.extension.umlp.OptionalAdapter;
 import umlp.jsweet.extension.util.NeverCDAdapter;
 import umlp.jsweet.extension.util.OnlyCDAdapter;
 
@@ -22,8 +23,9 @@ public class ModuleGUIAdapter extends PrinterAdapter {
   public ModuleGUIAdapter(PrinterAdapter parentAdapter) {
     super(
         new JavaStreamAdapter(
-            new UMLPGUICollectionsAdapter(
-                new OnlyCDAdapter(new UMLPRTEImportAdapter(
+            new OptionalAdapter(
+                new UMLPGUICollectionsAdapter(
+                    new OnlyCDAdapter(new UMLPRTEImportAdapter(
                     new RelativeImportAdapter(
                         new NeverCDAdapter(new AnnotationToDecoratorAdapter(
                             new NeverCDAdapter(new DelegateGemListToArrayAdapter(
@@ -40,6 +42,6 @@ public class ModuleGUIAdapter extends PrinterAdapter {
                                                                         new MutexAdapter(
                                                                             new UMLPEnumAdapter(
                                                                                 parentAdapter
-                                                                            )))))))))))))))))))))))))))));
+                                                                            ))))))))))))))))))))))))))))));
   }
 }

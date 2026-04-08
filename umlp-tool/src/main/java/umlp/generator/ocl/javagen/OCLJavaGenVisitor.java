@@ -50,6 +50,7 @@ public class OCLJavaGenVisitor implements OCLHandler {
     printer.println("import java.util.Set;");
     printer.println("import java.util.HashSet;");
     printer.println("import java.util.Objects;");
+    printer.println("import java.util.Optional;");
     printer.println("import java.util.function.Function;");
     printer.println("import mc.fenix.input.geminputbasetypes.ValidationError;");
     printer.println();
