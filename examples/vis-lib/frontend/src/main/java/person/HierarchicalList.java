@@ -11,7 +11,7 @@ import java.util.List;
 public class HierarchicalList extends HierarchicalListTOP {
   @Override
   protected void initList() {
-    this._list = new ArrayList<>();
+    setList(new ArrayList<>());
     super.initList();
   }
 
