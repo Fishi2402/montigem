@@ -200,7 +200,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add attr
     ASTCDAttribute attr = getCDAttributeFacade().createAttribute(
-        CDModifier.PROTECTED.build(), type, name);
+        CDModifier.PRIVATE.build(), type, name);
     clazz.addCDMember(attr);
 
     // add getter
@@ -223,7 +223,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add set externally check attr
     String setExternName = name + "SetExternally";
-    getCD4C().addAttribute(clazz, "public boolean " + setExternName + " = false");
+    getCD4C().addAttribute(clazz, "private boolean " + setExternName + " = false");
 
     // add wait external value attr
     String externInitName = addExternInitAttr(name);
