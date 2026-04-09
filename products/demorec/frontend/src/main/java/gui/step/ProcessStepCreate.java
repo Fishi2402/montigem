@@ -48,7 +48,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   // We do not want a builder object here
   @Override
   protected void initKindOfConnections () {
-    this._kindOfConnections = null;
+    this.setKindOfConnections(null);
   }
 
   // Select Types
