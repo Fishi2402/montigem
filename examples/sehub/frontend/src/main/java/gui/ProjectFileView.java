@@ -17,7 +17,7 @@ public class ProjectFileView extends ProjectFileViewTOP {
 
   public Consumer<Void> goToArtifactsPage() {
     return $ -> {
-      Router.navigate("..", "artifacts", "ProjectPage"+ this.getParent().getGemId());};
+      Router.navigate( "gui", "ProjectPage", String.valueOf(this.getParent().getGemId()));};
   }
 
   public Boolean getParentDirGuardCondition() {
