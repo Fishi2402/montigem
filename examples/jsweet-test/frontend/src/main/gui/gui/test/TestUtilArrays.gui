@@ -1,0 +1,27 @@
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+
+page TestUtilArrays() {
+  asListArr@GemButton(label = "Test asList([1, 2, 3])", leftClick = testAsListArr());
+  asListParams@GemButton(label = "Test asList(1, 2, 3)", leftClick = testAsListParams());
+
+  copyOf@GemButton(label = "Test copyOf([6, 5, 4, 3, 2, 1], 3)", leftClick = testCopyOf());
+  copyOfRange@GemButton(label = "Test copyOfRange([6, 5, 4, 3, 2, 1], 1, 3)", leftClick = testCopyOfRange());
+
+  fill@GemButton(label = "Test fill([6, 5, 4, 3, 2, 1], 7)", leftClick = testFill());
+  fillRange@GemButton(label = "Test fill([6, 5, 4, 3, 2, 1], 1, 3, 7)", leftClick = testFillRange());
+
+  sort@GemButton(label = "Test sort([6, 5, 4, 3, 2, 1])", leftClick = testSort());
+
+  stream@GemButton(label = "Test stream([6, 5, 4, 3, 2, 1]).map(x^2)", leftClick = testStream());
+  streamRange@GemButton(label = "Test stream([6, 5, 4, 3, 2, 1], 1, 3).map(x^2)", leftClick = testStreamRange());
+
+  toString@GemButton(label = "Test toString([1, 2, null, 3])", leftClick = testToString());
+
+  resultField@GemTextInput(
+      id = "resultId",
+      labelText = "Test Result"
+    );
+}
