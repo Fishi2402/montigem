@@ -1,20 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.umlp;
 
+import org.jsweet.transpiler.JSweetProblem;
+import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
-import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.MethodInvocationElement;
-import standalone.com.sun.source.tree.LambdaExpressionTree;
-import standalone.com.sun.source.tree.Tree;
 import umlp.jsweet.extension.AbstractAdapter;
 
 import javax.lang.model.element.Modifier;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * This adapter is responsible to enable the usage of some additional {@link java.util} classes.
@@ -41,6 +37,12 @@ public class JavaBasicsAdapter extends AbstractAdapter {
     switch (targetType) {
       case "java.util.Objects":
         if (substituteMethodInvocation_JavaUtilObjects(invocation)) {
+          return true;
+        }
+        break;
+      case "java.util.Arrays":
+        if (substituteMethodInvocation_JavaUtilArrays(invocation)) {
+          getPrinter().useModule(new ModuleImportDescriptor("Arrays", getLibraryLocation()));
           return true;
         }
         break;
@@ -100,6 +102,80 @@ public class JavaBasicsAdapter extends AbstractAdapter {
         return true;
     }
     return false;
+  }
+
+  public boolean substituteMethodInvocation_JavaUtilArrays(MethodInvocationElement invocation) {
+    switch (invocation.getMethodName()) {
+      case "asList": {
+        if(invocation.getArgumentCount() == 1 && invocation.getArgument(0).getType().getKind() == TypeKind.ARRAY) {
+          // emulate Java varargs
+          this.print("Arrays.asList(...").print(invocation.getArgument(0)).print(")");
+          return true;
+        } else {
+          this.print("Arrays.asList(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        }
+      }
+      case "copyOf": {
+        if (invocation.getArgumentCount() == 2) {
+          this.print("Arrays.copyOf(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else {
+          report(invocation, JSweetProblem.USER_ERROR, "Signature not supported, use copyOf(T[], int) instead.");
+          return false;
+        }
+      }
+      case "copyOfRange": {
+        if (invocation.getArgumentCount() == 3) {
+          this.print("Arrays.copyOfRange(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else {
+          report(invocation, JSweetProblem.USER_ERROR, "Signature not supported, use copyOfRange(T[], int, int) instead.");
+          return false;
+        }
+      }
+      case "fill": {
+        if (invocation.getArgumentCount() == 2) {
+          this.print("Arrays.fill(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else if (invocation.getArgumentCount() == 4) {
+          this.print("Arrays.fillRange(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else {
+          report(invocation, JSweetProblem.USER_ERROR, "Parameter count mismatch.");
+          return false;
+        }
+      }
+      case "sort": {
+        if (invocation.getArgumentCount() == 1) {
+          this.print("Arrays.sort(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else {
+          report(invocation, JSweetProblem.USER_ERROR, "Signature not supported, use sort(T[])");
+          return false;
+        }
+      }
+      case "stream": {
+        if (invocation.getArgumentCount() == 1) {
+          this.print("Arrays.stream(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else if (invocation.getArgumentCount() == 3) {
+          this.print("Arrays.streamRange(").printArgList(invocation.getArguments()).print(")");
+          return true;
+        } else {
+          report(invocation, JSweetProblem.USER_ERROR, "Parameter count mismatch.");
+          return false;
+        }
+      }
+      case "toString": {
+        this.print("Arrays.toString(").printArgList(invocation.getArguments()).print(")");
+        return true;
+      }
+      default: {
+        report(invocation, JSweetProblem.USER_ERROR, "Unsupported method.");
+        return false;
+      }
+    }
   }
 
   public boolean substituteMethodInvocation_JavaLangString(MethodInvocationElement invocation) {
