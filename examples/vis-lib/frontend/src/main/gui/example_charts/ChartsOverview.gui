@@ -32,9 +32,9 @@ page ChartsOverview() {
             @ComponentCard(title = "Sunburst", icon = "donut_large", description = "Hierarchical data visualization.", click = goToSunburst()),
             @ComponentCard(title = "Timeline", icon = "view_timeline", description = "Events over time.", click = goToTimeline()),
             @ComponentCard(title = "Time Series", icon = "timeline", description = "Interactive time series data.", click = goToTimeSeries()),
-            wipBoxplot@ComponentCard(title = "Box Plot (WIP)", icon = "candlestick_chart", description = "Statistical distribution.", click = goToBoxPlot()),
-            wipBullet@ComponentCard(title = "Bullet Chart (WIP)", icon = "linear_scale", description = "Performance against target.", click = goToBulletChart()),
-            wipCandlestick@ComponentCard(title = "Candlestick (WIP)", icon = "waterfall_chart", description = "Financial data visualization.", click = goToCandlestick())
+            @ComponentCard(title = "Box Plot", icon = "candlestick_chart", description = "Statistical distribution.", click = goToBoxPlot()),
+            @ComponentCard(title = "Bullet Chart", icon = "linear_scale", description = "Performance against target.", click = goToBulletChart()),
+            @ComponentCard(title = "Candlestick", icon = "waterfall_chart", description = "Financial data visualization.", click = goToCandlestick())
         ]
       )
     ]

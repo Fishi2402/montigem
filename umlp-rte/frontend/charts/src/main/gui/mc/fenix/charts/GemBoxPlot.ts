@@ -8,6 +8,7 @@ import { GemBoxPlotEntry } from '../../../../../../build/gui2java2ts/mc/fenix/ch
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import { GemBoxPlotData } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemboxplottypes/GemBoxPlotData';
 
 @Component({
   standalone: true,
@@ -54,6 +55,10 @@ export class GemBoxPlot extends GemBoxPlotComponent {
   /**variable that enables or disables the legend */
   public displayLegend = true;
 
+  public colorScheme = {
+    domain: this.getColors()
+  };
+
   /**gives the colors from the constant autoColors */
   public getColors() {
     return autoColors;
@@ -95,17 +100,13 @@ export class GemBoxPlot extends GemBoxPlotComponent {
   }
 
   @Input()
-  public set entries(entries: GemBoxPlotEntry[]) {
-    if (!entries) {
+  public set data(data: GemBoxPlotData) {
+    if (!data || !data.getEntriesList()) {
       return;
     }
     const bgrColor = this.colorScheme.domain.map(x => x + "70");
-    /* this.values = data.entries.map(entry => entry.values);*/
-    this._entries = entries;
+    this._entries = data.getEntriesList();
 
-    /*    this.legendLabels = this.labels.filter(entry => {
-          return entry !== undefined;
-        });*/
     this.legendColors = bgrColor;
 
     this.updateValues();
@@ -115,21 +116,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
     super();
   }
 
-  public colorScheme = {
-    domain: this.getColors()
-  };
-
-  ngOnInit() {
-    this.colors = this.getColors();
-    this.updateValues();
-  }
-
   public get sets() {
     return this._entries;
-  }
-
-  private getColor(index: number) {
-    return this.colors[index % this.colors.length];
   }
 
   private updateValues() {
@@ -139,7 +127,6 @@ export class GemBoxPlot extends GemBoxPlotComponent {
 
     const element = this.componentRef.nativeElement
     let div = d3.select(element).select("#boxplot");
-    let tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
     const margin = { top: 10, right: 30, bottom: 30, left: 40 };
     const width = this._width;

@@ -62,9 +62,9 @@ component Navigation(String activeCategory = "Basic") {
       @guard(activeCategory == "Charts") {
         @GemNavItem(title = "Overview", target = "/example_charts/ChartsOverview");
         @GemNavItem(title = "BarChart", target = "/example_charts/GemBarChartExample");
-        wipBoxplot@GemNavItem(title = "BoxPlot (WIP)", target = "/example_charts/GemBoxPlotExample");
-        wipBullet@GemNavItem(title = "BulletChart (WIP)", target = "/example_charts/GemBulletChartExample");
-        wipCandlestick@GemNavItem(title = "CandlestickChart (WIP)", target = "/example_charts/GemCandlestickChartExample");
+        @GemNavItem(title = "BoxPlot", target = "/example_charts/GemBoxPlotExample");
+        @GemNavItem(title = "BulletChart", target = "/example_charts/GemBulletChartExample");
+        @GemNavItem(title = "CandlestickChart", target = "/example_charts/GemCandlestickChartExample");
         @GemNavItem(title = "GaugeChart", target = "/example_charts/GemGaugeChartExample");
         @GemNavItem(title = "LineChart", target = "/example_charts/GemLineChartExample");
         @GemNavItem(title = "GemTimeSeriesChart", target = "/example_charts/GemTimeSeriesChartExmaple");
