@@ -21,15 +21,14 @@ export * from "./build/gui2java2ts/mc/fenix/charts/gemboxplottypes/GemBoxPlotEnt
 export * from "./build/gui2java2ts/mc/fenix/charts/gemboxplottypes/GemBoxPlotEntryDeSer";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemboxplottypes/GemBoxPlotTypesDeSer";
 
-/*
-export * from "./build/gui2java2ts/mc/fenix/charts/GemCandlestickChart";
-export * from "./build/gui2java2ts/mc/fenix/charts/gmcandlestickcharttypes/GemData2CandlestickChart";
-export * from "./build/gui2java2ts/mc/fenix/charts/gmcandlestickcharttypes/GemData2CandlestickChartBuilder";
-export * from "./build/gui2java2ts/mc/fenix/charts/gmcandlestickcharttypes/GemData2CandlestickChartDeSer";
-export * from "./build/gui2java2ts/mc/fenix/charts/gmcandlestickcharttypes/GemCandlestickChartTypesDeSer";
-
-export * from "./build/gui2java2ts/mc/fenix/charts/GemBulletChart";
-/**/
+export * from "./src/main/gui/mc/fenix/charts/GemCandlestickChart";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartData";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartDataBuilder";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartDataDeSer";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartEntry";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartEntryBuilder";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartEntryDeSer";
+export * from "./build/gui2java2ts/mc/fenix/charts/gemcandlestickcharttypes/GemCandlestickChartTypesDeSer";
 
 export * from "./src/main/gui/mc/fenix/charts/GemChartLegend";
 export * from "./src/main/gui/mc/fenix/charts/GemChartOptions";
@@ -156,3 +155,6 @@ export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/Timelin
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineDataBuilder";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineDataDeSer";
 export * from "./build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/GemTimelineChartTypesDeSer";
+
+
+export * from "./src/main/gui/mc/fenix/charts/GemBulletChart";

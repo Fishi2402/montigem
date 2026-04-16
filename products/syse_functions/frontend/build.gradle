@@ -31,7 +31,7 @@ dependencies {
 }
 
 node {
-  nodeProjectDir = file("${buildDir}/app")
+  nodeProjectDir = layout.buildDirectory.dir("app").get().asFile
 }
 nodeSetup.dependsOn(setupFrontend)
 

@@ -224,7 +224,7 @@ build.dependsOn(umlp_check_report)
 subprojects {
   tasks.configureEach { task ->
     task.doLast {
-      def outputFile = new File("${buildDir}/artifacts_report/${project.name}_${task.name}.txt")
+      def outputFile = new File("${layout.buildDirectory.get().asFile}/artifacts_report/${project.name}_${task.name}.txt")
       outputFile.parentFile.mkdirs() // Ensure the directory exists
       outputFile.text = ""
 

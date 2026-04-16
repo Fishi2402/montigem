@@ -5,9 +5,30 @@ import java.util.List;
 <<pojoCD>>
 classdiagram GemCandlestickChartTypes {
 
-  public class GemData2CandlestickChart {
+  /**
+   * Represents the complete dataset for a candlestick chart, containing a collection of individual data entries.
+   */
+  public class GemCandlestickChartData {
+    /**
+     * The list of candlestick entries to be plotted on the chart.
+     */
+    List<GemCandlestickChartEntry> entries;
+  }
+
+  /**
+   * Represents a single data point (candlestick) in the chart.
+   */
+  public class GemCandlestickChartEntry {
+    /**
+     * The label for this specific entry, typically representing a time period or date on the horizontal axis.
+     */
     String label;
-    List<Integer> value;
+
+    /**
+     * The list of values defining the candlestick's shape.
+     * Expected order: open, high, low, close.
+     */
+    List<Float> value;
   }
 
 }

@@ -128,7 +128,7 @@ public abstract class TestInfrastructurePlugin implements Plugin<Project> {
               BackendPlugin.UMLP2JAVA_TASK
           );
 
-          String buildDirPath = project.getBuildDir().getAbsolutePath();
+          String buildDirPath = project.getLayout().getBuildDirectory().get().getAsFile().getAbsolutePath();
           String projectDirPath = project.getProjectDir().getAbsolutePath();
 
           if (backendTask != null) {

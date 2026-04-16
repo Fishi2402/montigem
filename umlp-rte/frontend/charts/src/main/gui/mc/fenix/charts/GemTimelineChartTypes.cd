@@ -1,28 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.fenix.charts;
 
-import java.util.Optional;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-classdiagram GemTimelineChartTypes {
-  class TimelineData {
-    -> (timeLine) Timeline [*];
+<<pojoCD>>
+public classdiagram GemTimelineChartTypes {
+  public class TimelineData {
+    List<Timeline> timeLine;
   }
 
-  class Timeline {
+  public class Timeline {
     Long identifier;
     String name;
     Optional<String> color;
     boolean hidden;
     boolean deactivated;
+    List<TimelineBlock> block;
   }
 
-  class TimelineBlock {
+  public class TimelineBlock {
     LocalDateTime start;
     LocalDateTime end;
     String lane;
   }
-
-  association [0..1] Timeline <-> (block) TimelineBlock [*];
 
 }

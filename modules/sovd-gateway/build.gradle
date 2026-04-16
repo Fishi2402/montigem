@@ -31,7 +31,7 @@ publishing {
   // TODO: correct repo
   repositories {
     maven {
-      url "file://${project.buildDir}/repo"
+      url "file://${project.layout.buildDirectory.get().asFile}/repo"
     }
   }
 }

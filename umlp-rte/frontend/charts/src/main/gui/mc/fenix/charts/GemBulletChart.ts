@@ -1,70 +1,44 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { config, GemBulletChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemBulletChartComponent';
-import { PlotlyViaCDNModule } from "angular-plotly.js";
 
 @Component({
   standalone: true,
-  imports: [...config.imports, PlotlyViaCDNModule],
+  imports: [CommonModule],
   selector: config.selector,
   styleUrls: config.styleUrls,
   templateUrl: config.templateUrl,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GemBulletChart extends GemBulletChartComponent {
+export class GemBulletChart extends GemBulletChartComponent implements AfterViewInit {
+  @ViewChild('chartContainer') chartContainer!: ElementRef;
+
+  private Plotly: any;
+  private plotInitialized = false;
 
   constructor() { super(); }
 
   topmargin: number = 20;
   bottommargin: number = 25;
-  leftmargin: number = 25;
+  leftmargin: number = 40;
   rightmargin: number = 0;
 
   automargins: boolean = true;
-
   stepcolors: string[] = ["#8EBAE5", "#fdd48f", "#b8d698", "#e69679", "#BCB5D7", "#FFF59B", "#7DA4A7", "#89CCCF", "#CD8B87", "#A8859E"];
 
-  /**
-   * Default position of the arrow indicator relative to the position of the value
-   */
   arrowposition: string = "top";
-
-  /**
-   * Font size of the title
-   */
   fonstsize: number = 15;
-
-  /**
-   * Thickness of the threshold line
-   */
   thresholdwidth: number = 3;
-
-  /**
-   * Default background color of the chart
-   */
   bgcolor: string = "white";
-
-  /**
-   * Default bar color
-   */
   brcolor: string = "#00549F";
-
-  /**
-   * Stores the length of the title for the adaptive left margin logic
-   */
   titlelength: number = 1;
 
-  /**
-   * Coefficient used in the adaptive left margin logic. Recommended value is 7
-   */
-  coef: number = 7;
+  private _rawTitle: string = "";
+  private _rawSubtitle: string = "";
 
-  /**
-   * Contains information about the chart, which is passed to plotly.js, such as:
-   * data, type of the chart, title, font sizes, colors etc.
-   */
-  _data = [
+  _data: any[] = [
     {
       type: "indicator",
       mode: "number+gauge+delta",
@@ -88,10 +62,6 @@ export class GemBulletChart extends GemBulletChartComponent {
     }
   ];
 
-  /**
-   * Contains information about the chart, which is passed to plotly.js, such as:
-   * margins.
-   */
   _layout = {
     margin: {
       r: this.rightmargin,
@@ -99,246 +69,194 @@ export class GemBulletChart extends GemBulletChartComponent {
       b: this.bottommargin,
       l: this.leftmargin
     }
+  };
+
+  ngAfterViewInit(): void {
+    if (this.chartContainer) {
+      // Small timeout to ensure the container has its final dimensions
+      setTimeout(() => {
+        this.loadPlotlyAndCreatePlot();
+      }, 100);
+    }
   }
 
-  /**
-   * Sets the main value to be displayed and warns if empty.
-   * Changes the color of the threshold line depending on the value.
-   */
+  private async loadPlotlyAndCreatePlot() {
+    try {
+      const plotlyModule = await import('plotly.js-dist-min/plotly.min.js');
+      this.Plotly = plotlyModule.default || plotlyModule;
+      this.createPlot();
+    } catch (error) {
+      console.error("Failed to load Plotly lazily:", error);
+    }
+  }
+
+  private createPlot(): void {
+    if (this.chartContainer && this._data && this._layout && this.Plotly) {
+      this.Plotly.newPlot(this.chartContainer.nativeElement, this._data, this._layout, { responsive: true });
+      this.plotInitialized = true;
+    }
+  }
+
+  private updatePlot(): void {
+    if (this.plotInitialized && this.chartContainer && this._data && this._layout && this.Plotly) {
+      this.Plotly.react(this.chartContainer.nativeElement, this._data, this._layout);
+    }
+  }
+
+  /** Helper method: Reconstructs the title string and calculates dynamic margin based on font size */
+  private updateTitleText() {
+    let combinedText = "";
+    this.titlelength = 0;
+
+    if (this._rawTitle) {
+      combinedText = "<b>" + this._rawTitle + "</b>";
+      this.titlelength = this._rawTitle.length;
+    }
+    if (this._rawSubtitle && this._rawTitle) {
+      combinedText += "<br><span style='color: gray; font-size:0.8em'>" + this._rawSubtitle + "</span>";
+      if (this._rawSubtitle.length > this.titlelength) {
+        this.titlelength = this._rawSubtitle.length;
+      }
+    }
+    this._data[0].title.text = combinedText;
+
+    if (this.automargins) {
+      const factor = 0.55;
+      const dynamicTextMargin = this.titlelength * this.fonstsize * factor;
+
+      this._layout.margin.l = dynamicTextMargin + this.leftmargin;
+    }
+  }
+
   @Input()
   public set value(value: number) {
     if (value != null) {
       this._data[0].value = value;
-      if (this._data[0].value >= this._data[0].gauge.threshold.value) {
-        this._data[0].gauge.threshold.line.color = "#11750e";
-      }
-      else {
-        this._data[0].gauge.threshold.line.color = "#cc071e";
-      }
+      this._data[0].gauge.threshold.line.color = (value >= this._data[0].gauge.threshold.value) ? "#11750e" : "#cc071e";
+      this.updatePlot();
     }
   }
 
-  /**
-   * Setter for a reference value (e.g. an old value, which the indicator
-   * used to hold, or a certain goal), which the chart compares to the current value
-   */
   @Input()
   public set reference(referencevalue: number) {
     this._data[0].delta.reference = referencevalue;
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the value of the threshold line.
-   * Changes the color of the threshold line depending on the main value.
-   */
   @Input()
   public set thresholdvalue(thresholdvalue: number) {
     this._data[0].gauge.threshold.value = thresholdvalue;
-    if (this._data[0].value >= this._data[0].gauge.threshold.value) {
-      this._data[0].gauge.threshold.line.color = "#11750e";
-    }
-    else {
-      this._data[0].gauge.threshold.line.color = "#cc071e";
-    }
+    this._data[0].gauge.threshold.line.color = (this._data[0].value >= thresholdvalue) ? "#11750e" : "#cc071e";
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the title of the chart.
-   * Formats the title in bold and adapts the size of the left margin,
-   * if no margins were specified explicitly.
-   */
   @Input()
   public set title(title: string) {
-    if (title != null && title.length != 0) {
-      this._data[0].title.text = "<b>" + title + "</b>";
-      this.titlelength = title.length;
-      if (this.automargins) {
-        // Adaptive left margin logic
-        this._layout.margin.l = this.titlelength * this.coef + this.leftmargin;
-      }
+    if (title != null) {
+      this._rawTitle = title;
+      this.updateTitleText();
+      this.updatePlot();
     }
   }
 
-  /**
-   * Setter for the subtitle of the chart.
-   * Formats the subtitle in a smaller, lighter colored font and adapts the size of the left margin,
-   * if no margins were specified explicitly.
-   */
   @Input()
   public set subtitle(subtitle: string) {
-    if (subtitle != null && this._data[0].title.text.length > 0) {
-      this._data[0].title.text += "</b><br><span style='color: gray; font-size:0.8em'>" + subtitle + "</span>";
-      if (subtitle.length > this.titlelength) {
-        this.titlelength = subtitle.length;
-      }
-      if (this.automargins) {
-        // Adaptive left margin logic
-        this._layout.margin.l = this.titlelength * this.coef + this.leftmargin;
-      }
+    if (subtitle != null) {
+      this._rawSubtitle = subtitle;
+      this.updateTitleText();
+      this.updatePlot();
     }
   }
 
-  /**
-   * Setter for the range of the indicator
-   */
   @Input()
   public set range(range: number[]) {
     this._data[0].gauge.axis.range = range;
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the background color of the chart
-   */
   @Input()
   public set backgroundcolor(backgroundcolor: string) {
-    if (backgroundcolor != null) {
-      this._data[0].gauge.bgcolor = backgroundcolor;
-    }
-    else this._data[0].gauge.bgcolor = this.bgcolor;
+    this._data[0].gauge.bgcolor = backgroundcolor != null ? backgroundcolor : this.bgcolor;
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the different steps of the indicator
-   * Configures each range's color, depending on the amount of ranges
-   * @param steps An array consisting of numbers, representing the beginnings of each step's range.
-   * E.g. input [0, 150, 210, 250, 300] would produce four steps: 0-150, 150-210, 210-250, 250-300.
-   * If the entire range of the chart is 0-300, the input can further be reduced to [150, 210, 250].
-   */
   @Input()
   public set steps(steps: number[]) {
-    var modifiedsteps = steps;
+    if (!steps || steps.length === 0) return;
+
+    this._data[0].gauge.steps = [];
+
+    let modifiedsteps = [...steps];
     if (steps[0] != this._data[0].gauge.axis.range[0]) {
-      modifiedsteps = [this._data[0].gauge.axis.range[0]];
-      for (let index = 0; index < steps.length; index++) {
-        modifiedsteps.push(steps[index]);
-      }
+      modifiedsteps.unshift(this._data[0].gauge.axis.range[0]);
     }
     if (modifiedsteps[modifiedsteps.length - 1] != this._data[0].gauge.axis.range[1]) {
       modifiedsteps.push(this._data[0].gauge.axis.range[1]);
     }
+
     for (let index = 0; index < modifiedsteps.length - 1; index++) {
-      this._data[0].gauge.steps.push({});
-      this._data[0].gauge.steps[index].range = [modifiedsteps[index], modifiedsteps[index + 1]];
-
+      this._data[0].gauge.steps.push({
+        range: [modifiedsteps[index], modifiedsteps[index + 1]]
+      });
     }
 
-    var count = modifiedsteps.length - 1;
-
-    /*
-    for (let index = 0; index < steps.length; index++) {
-      this._data[0].gauge.steps.push({});
-      this._data[0].gauge.steps[index].range = steps[index];
-    }
-    if (this._data[0].gauge.steps[steps.length - 1].range[1] != this._data[0].gauge.axis.range[1]) {
-      this._data[0].gauge.steps.push({});
-      this._data[0].gauge.steps[steps.length].range = [this._data[0].gauge.steps[steps.length - 1].range[1], this._data[0].gauge.axis.range[1]];
-      count++;
-    }
-    */
+    let count = modifiedsteps.length - 1;
 
     if (count == 1) {
       this._data[0].gauge.steps[0].color = this.bgcolor;
-    }
-    else if (count == 2) {
+    } else if (count == 2) {
       this._data[0].gauge.steps[0].color = "#e69679";
       this._data[0].gauge.steps[1].color = "#b8d698";
-    }
-    else if (count == 3) {
+    } else if (count == 3) {
       this._data[0].gauge.steps[0].color = "#e69679";
       this._data[0].gauge.steps[1].color = "#fdd48f";
       this._data[0].gauge.steps[2].color = "#b8d698";
-    }
-    else if (count >= 4) {
+    } else if (count >= 4) {
       this._data[0].gauge.steps[0].color = "#e69679";
       this._data[0].gauge.steps[1].color = "#fdd48f";
       this._data[0].gauge.steps[2].color = "#FFF59B";
       this._data[0].gauge.steps[3].color = "#b8d698";
     }
-    if (count >= 5) {
-      this._data[0].gauge.steps[4].color = "#8EBAE5";
-    }
-    if (count >= 6) {
-      this._data[0].gauge.steps[5].color = "#BCB5D7";
-    }
-    if (count >= 7) {
-      this._data[0].gauge.steps[6].color = "#A8859E";
-    }
+    if (count >= 5) this._data[0].gauge.steps[4].color = "#8EBAE5";
+    if (count >= 6) this._data[0].gauge.steps[5].color = "#BCB5D7";
+    if (count >= 7) this._data[0].gauge.steps[6].color = "#A8859E";
+
     if (count > 7) {
       for (let index = 7; index < count; index++) {
         this._data[0].gauge.steps[index].color = this.stepcolors[index % 10];
       }
     }
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the color of the indicator bar
-   */
   @Input()
   public set barcolor(barcolor: string) {
-    if (barcolor != null) {
-      this._data[0].gauge.bar.color = barcolor;
-    }
-    else this._data[0].gauge.bar.color = this.brcolor;
+    this._data[0].gauge.bar.color = barcolor != null ? barcolor : this.brcolor;
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the margins of the chart
-   * If no input is recieved, default margins are used, and the left margin is adapted to the length of the title in order to fit it
-   * @param margins is a number or an array containing of between one and four numbers (just like the CSS margin property):
-   * 10 or [10] would set each margin to 10;
-   * [10,20] would set the top and bottom margins to 10, but the left and right margins to 20;
-   * [10,20,30] would set the top margin to 10, the left and right margins to 20, and the bottom one to 30.
-   * [10,20,30,40] would set the top margin to 10, the right to 20, bottom to 30 and left to 40.
-   */
   @Input()
   public set margins(margins: number[] | number) {
     if (margins != null) {
       this.automargins = false;
       if (typeof margins == "number") {
-        this._layout.margin.t = margins;
-        this._layout.margin.b = margins;
-        this._layout.margin.l = margins;
-        this._layout.margin.r = margins;
-      }
-      else {
+        this._layout.margin = { t: margins, b: margins, l: margins, r: margins };
+      } else {
         if (margins.length == 1) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[0];
-          this._layout.margin.l = margins[0];
-          this._layout.margin.r = margins[0];
+          this._layout.margin = { t: margins[0], b: margins[0], l: margins[0], r: margins[0] };
+        } else if (margins.length == 2) {
+          this._layout.margin = { t: margins[0], b: margins[0], l: margins[1], r: margins[1] };
+        } else if (margins.length == 3) {
+          this._layout.margin = { t: margins[0], b: margins[2], l: margins[1], r: margins[1] };
+        } else if (margins.length >= 4) {
+          this._layout.margin = { t: margins[0], r: margins[1], b: margins[2], l: margins[3] };
         }
-        else if (margins.length == 2) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[0];
-          this._layout.margin.l = margins[1];
-          this._layout.margin.r = margins[1];
-        }
-        else if (margins.length == 3) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[2];
-          this._layout.margin.l = margins[1];
-          this._layout.margin.r = margins[1];
-        }
-        else if (margins.length == 4) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[2];
-          this._layout.margin.l = margins[3];
-          this._layout.margin.r = margins[1];
-        }
-        else console.warn("Wrong format of the margins data");
       }
-    }
-    else {
+    } else {
       this.automargins = true;
-      this._layout.margin.t = this.topmargin;
-      this._layout.margin.b = this.bottommargin;
-      this._layout.margin.l = this.leftmargin;
-      this._layout.margin.r = this.rightmargin;
-      // Adaptive left margin logic
-      this._layout.margin.l = this.titlelength * this.coef + this.leftmargin;
-      console.log(this._layout.margin);
+      this._layout.margin = { t: this.topmargin, b: this.bottommargin, l: this.leftmargin, r: this.rightmargin };
+      this._layout.margin.l = this.titlelength * this.fonstsize * 0.55 + this.leftmargin;
     }
+    this.updatePlot();
   }
-
-  public ngOnInit(): void { }
 }

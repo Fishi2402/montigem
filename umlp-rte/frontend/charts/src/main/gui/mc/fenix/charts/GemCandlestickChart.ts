@@ -1,64 +1,42 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { config, GemCandlestickChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemCandlestickChartComponent';
-import { PlotlyViaCDNModule } from 'angular-plotly.js';
 import moment from 'moment';
 import { GemChartOptions } from './GemChartOptions';
 
 @Component({
   standalone: true,
-  imports: [...config.imports, PlotlyViaCDNModule, GemChartOptions],
+  imports: [...config.imports, CommonModule, GemChartOptions],
   selector: config.selector,
   styleUrls: config.styleUrls,
   templateUrl: config.templateUrl,
 })
-export class GemCandlestickChart extends GemCandlestickChartComponent {
+export class GemCandlestickChart extends GemCandlestickChartComponent implements AfterViewInit {
+  @ViewChild('chartContainer') chartContainer!: ElementRef;
+
+  private Plotly: any;
+  private plotInitialized = false;
 
   constructor() {
     super();
   }
 
-  /**
-   * Connected with the *ngIf Directive to show/ hide the external HTML buttons for controlling the range of the chart
-   */
   period: boolean = false;
+  dateFormat: boolean = false;
+  chartType: boolean = false;
 
-  /**
-   * Connected with the *ngIf Directive to show/ hide the external HTML buttons for controlling the date formatting of the chart
-   */
-  dateformat: boolean = false;
+  rightMargin: number = 0;
+  topMargin: number = 20;
+  bottomMargin: number = 0;
+  leftMargin: number = 50;
+  fourClicked: boolean = false;
+  builtinButtons: boolean = false;
 
-  /**
-   * Connected with the *ngIf Directive to show/ hide the external HTML buttons for controlling the type of the chart
-   */
-  charttype: boolean = false;
+  private readonly COLOR_DECREASING = '#cc071e';
+  private readonly COLOR_INCREASING = '#11750e';
 
-  rightmargin: number = 0;
-  topmargin: number = 20;
-  bottommargin: number = 0;
-  leftmargin: number = 50;
-  fourclicked: boolean = false;
-
-  /**
-   * Set to true to show the built-in buttons of plotly.js, false to hide them.
-   */
-  builtinbuttons: boolean = false;
-
-  /**
-   * Default color for decreasing values
-   */
-  decreasing: string = '#cc071e';
-
-  /**
-   * Default color for increasing values
-   */
-  increasing: string = '#11750e';
-
-  /**
-   * Contains information about the chart, which is passed to plotly.js, such as:
-   * data, type of the chart, title, font sizes, colors etc.
-   */
   _data: any = [
     {
       type: "candlestick",
@@ -67,32 +45,27 @@ export class GemCandlestickChart extends GemCandlestickChartComponent {
       open: [],
       high: [],
       low: [],
-      decreasing: { line: { color: this.decreasing } },
-      increasing: { line: { color: this.increasing } },
+      decreasing: { line: { color: this.COLOR_DECREASING } },
+      increasing: { line: { color: this.COLOR_INCREASING } },
       xaxis: 'x',
       yaxis: 'y'
     }
   ];
 
-  /**
-   * Contains information about the chart, which is passed to plotly.js, such as:
-   * buttons of the chart, margins etc.
-   */
-  _layout = {
-    newlayout: null,
+  _layout: any = {
+    newLayout: null,
     dragmode: 'zoom',
     margin: {
-      r: this.rightmargin,
-      t: this.topmargin,
-      b: this.bottommargin,
-      l: this.leftmargin
+      r: this.rightMargin,
+      t: this.topMargin,
+      b: this.bottomMargin,
+      l: this.leftMargin
     },
     xaxis: {
       range: [],
       tickformat: null,
       rangeslider: { visible: true },
-      rangeselector: { buttons: this.showbuttons() },
-      //title: 'Date',
+      rangeselector: { buttons: this.showButtons() },
       type: 'date'
     },
     yaxis: {
@@ -101,336 +74,250 @@ export class GemCandlestickChart extends GemCandlestickChartComponent {
     }
   };
 
-  /**
-   * Checks if built-in buttons are on or off.
-   * @returns an array of pre-defined buttons if on, an empty array otherwise
-   */
-  public showbuttons(): any[] {
-    if (this.builtinbuttons) {
+
+  ngAfterViewInit(): void {
+    if (this.chartContainer) {
+      setTimeout(() => {
+        this.loadPlotlyAndCreatePlot();
+      }, 100);
+    }
+  }
+
+  // Lazy Load Plotly
+  private async loadPlotlyAndCreatePlot() {
+    try {
+      const plotlyModule = await import('plotly.js-dist-min');
+      this.Plotly = plotlyModule.default || plotlyModule;
+      this.createPlot();
+    } catch (error) {
+      console.error("Failed to load Plotly lazily:", error);
+    }
+  }
+
+  private createPlot(): void {
+    if (this.chartContainer && this._data && this._layout && this.Plotly) {
+      this.Plotly.newPlot(this.chartContainer.nativeElement, this._data, this._layout, { responsive: true });
+      this.plotInitialized = true;
+    }
+  }
+
+  private updatePlot(): void {
+    if (this.plotInitialized && this.chartContainer && this._data && this._layout && this.Plotly) {
+      this.Plotly.react(this.chartContainer.nativeElement, this._data, this._layout);
+    }
+  }
+
+  public showButtons(): any[] {
+    if (this.builtinButtons) {
       return [
-        {
-          step: 'day',
-          stepmode: 'backward',
-          count: 7,
-          label: '1 week'
-        },
-        {
-          step: 'day',
-          stepmode: 'backward',
-          count: 14,
-          label: '2 weeks'
-        },
-        {
-          step: 'month',
-          stepmode: 'backward',
-          count: 1,
-          label: '1 month'
-        },
-        {
-          step: 'month',
-          stepmode: 'backward',
-          count: 3,
-          label: '3 months'
-        },
-        {
-          step: 'month',
-          stepmode: 'backward',
-          count: 6,
-          label: '6 months'
-        },
-        {
-          step: 'year',
-          stepmode: 'backward',
-          count: 1,
-          label: '1 year'
-        },
-        {
-          step: 'all',
-          label: 'All dates'
-        }
-      ]
+        { step: 'day', stepmode: 'backward', count: 7, label: '1 week' },
+        { step: 'day', stepmode: 'backward', count: 14, label: '2 weeks' },
+        { step: 'month', stepmode: 'backward', count: 1, label: '1 month' },
+        { step: 'month', stepmode: 'backward', count: 3, label: '3 months' },
+        { step: 'month', stepmode: 'backward', count: 6, label: '6 months' },
+        { step: 'year', stepmode: 'backward', count: 1, label: '1 year' },
+        { step: 'all', label: 'All dates' }
+      ];
     } else {
       return [];
     }
   }
 
-  /**
-   * Updates the layout of the chart.
-   * @param range Zoom the chart in/out to focus on the passed {@link range}
-   * @param tick Set the format of the dates, shown on the x axis
-   */
-  public layout(range: string[], tick: string) {
+  public applyLayout(range: string[], tick: string | null) {
     this._layout = {
-      newlayout: null,
-      dragmode: 'zoom',
-      margin: {
-        r: this.rightmargin,
-        t: this.topmargin,
-        b: this.bottommargin,
-        l: this.leftmargin
-      },
+      ...this._layout,
       xaxis: {
+        ...this._layout.xaxis,
         range: range,
         tickformat: tick,
-        rangeslider: { visible: true },
         rangeselector: {
-          buttons: this.showbuttons()
-        },
-        //title: 'Date',
-        type: 'date'
-      },
-      yaxis: {
-        autorange: true,
-        type: 'linear'
+          buttons: this.showButtons()
+        }
       }
     };
+    this.updatePlot();
   }
 
-  /**
-   * Update the layout of the chart.
-   * Intended for html button inputs.
-   * @param update Default values: If the parameter update == 1, the chart zooms in/out to the last week of inputs.
-   * If update == 2 || 3, the format of the dates, presented on the x axis, changes.
-   * If update == 4 , the type of the chart changes (between ohlc and candlestick).
-   * Update == 5-10 adapts the range of the chart.
-   */
-  public updatelayout(update: number) {
-    if (update == 1) {
+  public updateLayout(update: number) {
+    if (!this._data[0].x || this._data[0].x.length === 0) return; // Guard clause if no data is present
+
+    if (update === 1) {
       let lastX = this._data[0].x[this._data[0].x.length - 1];
       let newFirstDate: moment.Moment = this.parse(lastX);
       let newLastDate: moment.Moment = this.parse(lastX);
-      /* To add new buttons for different zoom ranges (e.g. showing only the last 2 weeks), simply copy the code
-         inside this if statement and change the 7 at the end of the following line
-         (in the same example to 14) and make the buttons call this function with values 5, 6 etc.
-      */
+
       newFirstDate.date(newFirstDate.date() - 7);
       let firstDate = this.format(newFirstDate);
       let lastDate = this.format(newLastDate);
 
-      this.layout([firstDate, lastDate], this._layout.xaxis.tickformat);
+      this.applyLayout([firstDate, lastDate], this._layout.xaxis.tickformat);
     }
-    else if (update == 2) {
-      //this.layout(this._layout.xaxis.range, "%b %d, %Y");
+    else if (update === 2) {
       this._layout.xaxis.tickformat = "%b %d, %Y";
-      this._layout.newlayout = "%b %d, %Y";
+      this._layout.newLayout = "%b %d, %Y";
+      this.updatePlot();
     }
-    else if (update == 3) {
-      //this.layout(this._layout.xaxis.range, "%d/%m/%Y");
+    else if (update === 3) {
       this._layout.xaxis.tickformat = "%d/%m/%Y";
-      this._layout.newlayout = "%d/%m/%Y";
+      this._layout.newLayout = "%d/%m/%Y";
+      this.updatePlot();
     }
-    else if (update == 4) {
-      if (this.fourclicked) {
+    else if (update === 4) {
+      if (this.fourClicked) {
         this._data[0].type = "candlestick";
-        this.fourclicked = false;
+        this.fourClicked = false;
       }
       else {
         this._data[0].type = "ohlc";
-        this.fourclicked = true;
+        this.fourClicked = true;
       }
+      this.updatePlot();
     }
     else if (update >= 5 && update <= 10) {
-      let mapping = {
-        5: 14,
-        6: 31,
-        7: 91,
-        8: 183,
-        9: 365,
-        10: this._data[0].x.length
-      }
+      /** mapping is used in the frontend in updateLayout to determine how many days to go back based on the button clicked. The keys represent the button index and the values represent the number of days to go back from the last date in the data. */
+      let mapping: { [key: number]: number } = {
+        5: 14,      // 2 Weeks
+        6: 31,      // 1 Month
+        7: 91,      // 3 Months
+        8: 183,     // 6 Months
+        9: 365,     // 1 Year
+        10: this._data[0].x.length // All time
+      };
       let lastX = this._data[0].x[this._data[0].x.length - 1];
       let newDate: moment.Moment = this.parse(lastX);
-      let newlastDate: moment.Moment = this.parse(lastX);
+      let newLastDate: moment.Moment = this.parse(lastX);
       newDate.date(this.parse(lastX).date() - mapping[update]);
       let firstDate = this.format(newDate);
-      let lastDate = this.format(newlastDate);
+      let lastDate = this.format(newLastDate);
 
       if (this._layout.xaxis.range[0] != firstDate) {
-        this.layout([firstDate, lastDate], this._layout.xaxis.tickformat);
+        this.applyLayout([firstDate, lastDate], this._layout.xaxis.tickformat);
       }
     }
   }
 
   protected parse(date: string): moment.Moment {
-    return moment(date, "YY-MM-DD");
+    return moment(date, "YYYY-MM-DD");
   }
 
   protected format(date: moment.Moment): string {
-    return date.format("YY-MM-DD");
+    return date.format("YYYY-MM-DD");
   }
 
-  /**
-   * Setter for chart's type (ohlc or candlestick).
-   */
   @Input()
   public set type(type: string) {
-    if (type != null) {
-      if (type == "ohlc" || type == "candlestick") {
-        this._data[0].type = type;
-      }
-      else console.log("Only ohlc and candlestick are supported types");
-    }
-    else {
+    if (type != null && (type === "ohlc" || type === "candlestick")) {
+      this._data[0].type = type;
+    } else {
       this._data[0].type = 'candlestick';
     }
+    this.updatePlot();
   }
 
-  /**
-   * Used to configure which buttons are shown.
-   * @param buttons If false, no buttons are shown. If true, preconfigured built-in Plotly.js buttons for controlling the range are displayed.
-   * Pass 'period' to display only the external HTML buttons for adapting the time period,
-   * 'dateformat' for the buttons for adapting the date formatting and 'type' for the button, switching the type of the chart.
-   * To use any combination of them, pass a combined with +'s string, like e.g 'period+dateformat+type'.
-   */
   @Input()
   public set buttons(buttons: boolean | string) {
-    if (buttons == true) {
-      this.builtinbuttons = true;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.charttype = false;
-      this.period = false;
-      this.charttype = false;
+    if (buttons === true) {
+      this.builtinButtons = true; this.chartType = false; this.period = false;
+    } else if (buttons === false) {
+      this.builtinButtons = false; this.chartType = false; this.period = false;
+    } else if (buttons === 'period') {
+      this.builtinButtons = false; this.period = true; this.chartType = false; this.dateFormat = false;
+    } else if (buttons === 'dateformat') {
+      this.builtinButtons = false; this.dateFormat = true; this.chartType = false; this.period = false;
+    } else if (buttons === 'type') {
+      this.builtinButtons = false; this.chartType = true; this.period = false;
+    } else if (buttons === 'period+dateformat' || buttons === 'dateformat+period') {
+      this.builtinButtons = false; this.dateFormat = true; this.period = true; this.chartType = false;
+    } else if (buttons === 'period+type' || buttons === 'type+period') {
+      this.builtinButtons = false; this.dateFormat = false; this.period = true; this.chartType = true;
+    } else if (typeof buttons === 'string' && buttons.includes('period') && buttons.includes('type') && buttons.includes('dateformat')) {
+      this.builtinButtons = false; this.dateFormat = true; this.period = true; this.chartType = true;
     }
-    else if (buttons == false) {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.charttype = false;
-      this.period = false;
-      this.charttype = false;
-    }
-    else if (buttons == 'period') {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.period = true;
-      this.charttype = false;
-      this.dateformat = false;
-    }
-    else if (buttons == 'dateformat') {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.dateformat = true;
-      this.charttype = false;
-      this.period = false;
-    }
-    else if (buttons == 'type') {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.charttype = true;
-      this.period = false;
-      this.charttype = false;
-    }
-    else if (buttons == 'period+dateformat' || buttons == 'dateformat+period') {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.dateformat = true;
-      this.period = true;
-      this.charttype = false;
-    }
-    else if (buttons == 'period+type' || buttons == 'type+period') {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.dateformat = false;
-      this.period = true;
-      this.charttype = true;
-    }
-    else if (buttons == 'period+dateformat+type' || buttons == 'period+type+dateformat'
-      || buttons == 'type+dateformat+period' || buttons == 'type+period+dateformat'
-      || buttons == 'dateformat+period+type' || buttons == 'dateformat+type+period') {
-      this.builtinbuttons = false;
-      this.layout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
-      this.dateformat = true;
-      this.period = true;
-      this.charttype = true;
-    }
+
+    this.applyLayout(this._layout.xaxis.range, this._layout.xaxis.tickformat);
   }
 
-  /**
-   * Setter for the colors of the decreasing (colors[0]) and increasing (colors[1]) lines.
-   */
   @Input()
   public set colors(colors: string[]) {
-    if (colors != null && colors.length == 2) {
+    if (colors != null && colors.length === 2) {
       this._data[0].decreasing.line.color = colors[0];
       this._data[0].increasing.line.color = colors[1];
+    } else {
+      this._data[0].decreasing.line.color = this.COLOR_DECREASING;
+      this._data[0].increasing.line.color = this.COLOR_INCREASING;
     }
-    else {
-      this._data[0].decreasing.line.color = this.decreasing;
-      this._data[0].increasing.line.color = this.increasing;
-    }
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the data of the chart.
-   * The correct order for values in the value property of each object is:
-   * open, high, low, close
-   */
   @Input()
-  public set data(data: GemData2CandlestickChart[]) {
-    if (!data) {
+  public set data(data: any) {
+    if (!data) return;
+
+    // Duck typing: Check if it's a method (instantiated class) or a raw JSON array
+    let entries = typeof data.getEntriesList === 'function' ? data.getEntriesList() : data.entries;
+
+    // Fallback if "data" is already the array
+    if (Array.isArray(data)) entries = data;
+
+    if (!entries || !Array.isArray(entries) || entries.length === 0) {
+      console.warn("Candlestick Chart received empty or invalid data:", data);
       return;
     }
-    //this.layout(null, null);
-    for (let index = 0; index < data.length; index++) {
-      this._data[0].x.push(data[index].getLabel());
-      this._data[0].open.push(data[index].getValue(0));
-      this._data[0].high.push(data[index].getValue(1));
-      this._data[0].low.push(data[index].getValue(2));
-      this._data[0].close.push(data[index].getValue(3));
+
+    // Flush previous values
+    this._data[0].x = [];
+    this._data[0].open = [];
+    this._data[0].high = [];
+    this._data[0].low = [];
+    this._data[0].close = [];
+
+    for (let i = 0; i < entries.length; i++) {
+      let entry = entries[i];
+
+      let label = typeof entry.getLabel === 'function' ? entry.getLabel() : entry.label;
+      this._data[0].x.push(label);
+
+      let values = typeof entry.getValueList === 'function' ? entry.getValueList() : (entry.value || entry.values);
+
+      if (values && values.length >= 4) {
+        this._data[0].open.push(values[0]);
+        this._data[0].high.push(values[1]);
+        this._data[0].low.push(values[2]);
+        this._data[0].close.push(values[3]);
+      } else if (typeof entry.getValue === 'function') {
+        // Fallback for old MontiCore getters
+        this._data[0].open.push(entry.getValue(0));
+        this._data[0].high.push(entry.getValue(1));
+        this._data[0].low.push(entry.getValue(2));
+        this._data[0].close.push(entry.getValue(3));
+      }
     }
+
+    // Trigger Angular & Plotly Reactivity
+    this._data = [...this._data];
+    this.updatePlot();
   }
 
-  /**
-   * Setter for the margins of the chart
-   * If no input is recieved, the default margins are used.
-   * @param margins is a number or an array containing of between one and four numbers (just like the CSS margin property):
-   * 10 or [10] would set each margin to 10;
-   * [10,20] would set the top and bottom margins to 10, but the left and right margins to 20;
-   * [10,20,30] would set the top margin to 10, the left and right margins to 20, and the bottom one to 30.
-   * [10,20,30,40] would set the top margin to 10, the right to 20, bottom to 30 and left to 40.
-   */
   @Input()
   public set margins(margins: number[] | number) {
     if (margins != null) {
-      if (typeof margins == "number") {
-        this._layout.margin.t = margins;
-        this._layout.margin.b = margins;
-        this._layout.margin.l = margins;
-        this._layout.margin.r = margins;
+      if (typeof margins === "number") {
+        this._layout.margin = { t: margins, b: margins, l: margins, r: margins };
+      } else {
+        if (margins.length === 1) {
+          this._layout.margin = { t: margins[0], b: margins[0], l: margins[0], r: margins[0] };
+        } else if (margins.length === 2) {
+          this._layout.margin = { t: margins[0], b: margins[0], l: margins[1], r: margins[1] };
+        } else if (margins.length === 3) {
+          this._layout.margin = { t: margins[0], b: margins[2], l: margins[1], r: margins[1] };
+        } else if (margins.length >= 4) {
+          this._layout.margin = { t: margins[0], r: margins[1], b: margins[2], l: margins[3] };
+        }
       }
-      else {
-        if (margins.length == 1) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[0];
-          this._layout.margin.l = margins[0];
-          this._layout.margin.r = margins[0];
-        }
-        else if (margins.length == 2) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[0];
-          this._layout.margin.l = margins[1];
-          this._layout.margin.r = margins[1];
-        }
-        else if (margins.length == 3) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[2];
-          this._layout.margin.l = margins[1];
-          this._layout.margin.r = margins[1];
-        }
-        else if (margins.length == 4) {
-          this._layout.margin.t = margins[0];
-          this._layout.margin.b = margins[2];
-          this._layout.margin.l = margins[3];
-          this._layout.margin.r = margins[1];
-        }
-        else console.warn("Wrong format of the margins data");
-      }
+    } else {
+      this._layout.margin = { t: this.topMargin, b: this.bottomMargin, l: this.leftMargin, r: this.rightMargin };
     }
-    else {
-      this._layout.margin.t = this.topmargin;
-      this._layout.margin.b = this.bottommargin;
-      this._layout.margin.l = this.leftmargin;
-      this._layout.margin.r = this.rightmargin;
-    }
+    this.updatePlot();
   }
 
   public ngOnInit(): void { }

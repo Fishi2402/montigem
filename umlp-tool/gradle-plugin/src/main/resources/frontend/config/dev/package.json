@@ -32,6 +32,8 @@
     "moment": "2.29.4",
     "ng2-charts": "3.1.2",
     "apexcharts": "4.5.0",
+    "angular-plotly.js": "^5.2.2",
+    "plotly.js-dist-min": "2.18.1",
     "venn.js": "^0.2.20",
     "d3": "7.8.2",
     "ngx-monaco-editor-v2": "^17.0.1",

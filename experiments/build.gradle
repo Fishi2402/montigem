@@ -4,8 +4,12 @@ subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'java-library'
 
+  jacoco {
+    toolVersion = "0.8.12"
+  }
+
   ext.grammarDir = 'src/main/grammars'
-  ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
+  ext.outDir = "${layout.buildDirectory.get().asFile}/generated-sources/monticore/sourcecode"
 
   dependencies {
     implementation project(':umlp-rte')
