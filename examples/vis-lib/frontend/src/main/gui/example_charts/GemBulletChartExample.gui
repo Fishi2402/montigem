@@ -2,71 +2,73 @@
 package example_charts;
 
 import Domain.Person;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
 import mc.fenix.charts.GemBulletChart;
 
 page GemBulletChartExample(
-  List<Person> persons,
-  List<Integer> range,
-  List<Integer> steps) {
-
-  bulletchart@GemBulletChart(
-    value = null,
-    reference = 4000,
-    thresholdvalue = 4000,
-    title = "Profit of MontiCore Inc. from stocks",
-    subtitle = "in US $",
-    range = range,
-    steps = steps
-  );
-
-  bulletchart2@GemBulletChart(
-    value = 3500,
-    reference = 4000,
-    thresholdvalue = 4000,
-    title = "Profit of MontiCore Inc. from stocks",
-    subtitle = "in US $",
-    range = [0, 5000],
-    steps = [1500, 3000]
-  );
-
-
-  targetMetChart@GemBulletChart(
-    value = 4500,
-    reference = 4000,
-    thresholdvalue = 4200,
-    title = "Revenue",
-    subtitle = "in k$",
-    range = [0, 5000],
-    steps = [2000, 3500]
-  );
-
-  targetMissedChart@GemBulletChart(
-    value = 65,
-    reference = 80,
-    thresholdvalue = 90,
-    title = "Customer Satisfaction",
-    subtitle = "Score (0-100)",
-    range = [0, 100],
-    steps = [50, 75]
-  );
-
-  manyStepsChart@GemBulletChart(
-    value = 750,
-    reference = 700,
-    thresholdvalue = 800,
-    title = "Server Load",
-    subtitle = "Requests/sec",
-    range = [0, 1000],
-    steps = [200, 400, 600, 800]
-  );
-
-  minimalChart@GemBulletChart(
-    value = 12,
-    reference = 10,
-    thresholdvalue = 15,
-    title = "Defect Rate",
-    subtitle = "%",
-    range = [0, 20],
-    steps = []
+    List<Person> persons,
+    List<Integer> range,
+    List<Integer> steps
+) {
+  @ExamplePage(
+      component = @GemColumn(components = [
+        bulletchart@GemBulletChart(
+            value = null,
+            reference = 4000,
+            thresholdvalue = 4000,
+            title = "Profit of MontiCore Inc. from stocks",
+            subtitle = "in US $",
+            range = range,
+            steps = steps
+        ),
+        bulletchart2@GemBulletChart(
+            value = 3500,
+            reference = 4000,
+            thresholdvalue = 4000,
+            title = "Profit of MontiCore Inc. from stocks",
+            subtitle = "in US $",
+            range = [0, 5000],
+            steps = [1500, 3000]
+        ),
+        targetMetChart@GemBulletChart(
+            value = 4500,
+            reference = 4000,
+            thresholdvalue = 4200,
+            title = "Revenue",
+            subtitle = "in k$",
+            range = [0, 5000],
+            steps = [2000, 3500]
+        ),
+        targetMissedChart@GemBulletChart(
+            value = 65,
+            reference = 80,
+            thresholdvalue = 90,
+            title = "Customer Satisfaction",
+            subtitle = "Score (0-100)",
+            range = [0, 100],
+            steps = [50, 75]
+        ),
+        manyStepsChart@GemBulletChart(
+            value = 750,
+            reference = 700,
+            thresholdvalue = 800,
+            title = "Server Load",
+            subtitle = "Requests/sec",
+            range = [0, 1000],
+            steps = [200, 400, 600, 800]
+        ),
+        minimalChart@GemBulletChart(
+            value = 12,
+            reference = 10,
+            thresholdvalue = 15,
+            title = "Defect Rate",
+            subtitle = "%",
+            range = [0, 20],
+            steps = []
+        )
+      ]),
+      basePath = "example_charts",
+      componentName = "GemBulletChartExample"
   );
 }

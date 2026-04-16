@@ -20,20 +20,33 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
 
   constructor() { super(); }
 
-  topmargin: number = 20;
-  bottommargin: number = 25;
-  leftmargin: number = 40;
-  rightmargin: number = 0;
+  topMargin: number = 20;
+  bottomMargin: number = 25;
+  leftMargin: number = 40;
+  rightMargin: number = 0;
 
-  automargins: boolean = true;
-  stepcolors: string[] = ["#8EBAE5", "#fdd48f", "#b8d698", "#e69679", "#BCB5D7", "#FFF59B", "#7DA4A7", "#89CCCF", "#CD8B87", "#A8859E"];
+  autoMargins: boolean = true;
+  stepColors: string[] = ["#8EBAE5", "#fdd48f", "#b8d698", "#e69679", "#BCB5D7", "#FFF59B", "#7DA4A7", "#89CCCF", "#CD8B87", "#A8859E"];
+  private readonly COLOR_SUCCESS = "#11750e";
+  private readonly COLOR_DANGER = "#cc071e";
 
-  arrowposition: string = "top";
-  fonstsize: number = 15;
-  thresholdwidth: number = 3;
-  bgcolor: string = "white";
-  brcolor: string = "#00549F";
-  titlelength: number = 1;
+  // Pre-defined color palettes for different step counts
+  private readonly STEP_PALETTES: { [key: number]: string[] } = {
+    2: ["#e69679", "#b8d698"],
+    3: ["#e69679", "#fdd48f", "#b8d698"],
+    4: ["#e69679", "#fdd48f", "#FFF59B", "#b8d698"],
+    5: ["#e69679", "#fdd48f", "#FFF59B", "#b8d698", "#8EBAE5"],
+    6: ["#e69679", "#fdd48f", "#FFF59B", "#b8d698", "#8EBAE5", "#BCB5D7"],
+    7: ["#e69679", "#fdd48f", "#FFF59B", "#b8d698", "#8EBAE5", "#BCB5D7", "#A8859E"]
+  };
+
+  arrowPosition: string = "top";
+  fontSize: number = 15;
+  thresholdWidth: number = 3;
+  defaultBackgroundColor: string = "white";
+  defaultBarColor: string = "#00549F";
+  titleLength: number = 1;
+  dynamicMarginFactor: number = 0.55;
 
   private _rawTitle: string = "";
   private _rawSubtitle: string = "";
@@ -43,31 +56,31 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
       type: "indicator",
       mode: "number+gauge+delta",
       value: 0,
-      delta: { reference: 0, position: this.arrowposition, increasing: { color: "#11750e" }, decreasing: { color: "#cc071e" } },
+      delta: { reference: 0, position: this.arrowPosition, increasing: { color: this.COLOR_SUCCESS }, decreasing: { color: this.COLOR_DANGER } },
       title: {
         text: "",
-        font: { size: this.fonstsize }
+        font: { size: this.fontSize }
       },
       gauge: {
         shape: "bullet",
         axis: { range: [0, 0] },
         threshold: {
-          line: { color: "", width: this.thresholdwidth },
+          line: { color: "", width: this.thresholdWidth },
           value: 0
         },
-        bgcolor: this.bgcolor,
+        backgroundColor: this.defaultBackgroundColor,
         steps: [],
-        bar: { color: this.brcolor }
+        bar: { color: this.defaultBarColor }
       }
     }
   ];
 
   _layout = {
     margin: {
-      r: this.rightmargin,
-      t: this.topmargin,
-      b: this.bottommargin,
-      l: this.leftmargin
+      r: this.rightMargin,
+      t: this.topMargin,
+      b: this.bottomMargin,
+      l: this.leftMargin
     }
   };
 
@@ -82,7 +95,7 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
 
   private async loadPlotlyAndCreatePlot() {
     try {
-      const plotlyModule = await import('plotly.js-dist-min/plotly.min.js');
+      const plotlyModule = await import('plotly.js-dist-min');
       this.Plotly = plotlyModule.default || plotlyModule;
       this.createPlot();
     } catch (error) {
@@ -106,25 +119,24 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
   /** Helper method: Reconstructs the title string and calculates dynamic margin based on font size */
   private updateTitleText() {
     let combinedText = "";
-    this.titlelength = 0;
+    this.titleLength = 0;
 
     if (this._rawTitle) {
       combinedText = "<b>" + this._rawTitle + "</b>";
-      this.titlelength = this._rawTitle.length;
+      this.titleLength = this._rawTitle.length;
     }
     if (this._rawSubtitle && this._rawTitle) {
       combinedText += "<br><span style='color: gray; font-size:0.8em'>" + this._rawSubtitle + "</span>";
-      if (this._rawSubtitle.length > this.titlelength) {
-        this.titlelength = this._rawSubtitle.length;
+      if (this._rawSubtitle.length > this.titleLength) {
+        this.titleLength = this._rawSubtitle.length;
       }
     }
     this._data[0].title.text = combinedText;
 
-    if (this.automargins) {
-      const factor = 0.55;
-      const dynamicTextMargin = this.titlelength * this.fonstsize * factor;
+    if (this.autoMargins) {
+      const dynamicTextMargin = this.titleLength * this.fontSize * this.dynamicMarginFactor;
 
-      this._layout.margin.l = dynamicTextMargin + this.leftmargin;
+      this._layout.margin.l = dynamicTextMargin + this.leftMargin;
     }
   }
 
@@ -132,21 +144,21 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
   public set value(value: number) {
     if (value != null) {
       this._data[0].value = value;
-      this._data[0].gauge.threshold.line.color = (value >= this._data[0].gauge.threshold.value) ? "#11750e" : "#cc071e";
+      this._data[0].gauge.threshold.line.color = (value >= this._data[0].gauge.threshold.value) ? this.COLOR_SUCCESS : this.COLOR_DANGER;
       this.updatePlot();
     }
   }
 
   @Input()
-  public set reference(referencevalue: number) {
-    this._data[0].delta.reference = referencevalue;
+  public set reference(referenceValue: number) {
+    this._data[0].delta.reference = referenceValue;
     this.updatePlot();
   }
 
   @Input()
-  public set thresholdvalue(thresholdvalue: number) {
-    this._data[0].gauge.threshold.value = thresholdvalue;
-    this._data[0].gauge.threshold.line.color = (this._data[0].value >= thresholdvalue) ? "#11750e" : "#cc071e";
+  public set thresholdValue(thresholdValue: number) {
+    this._data[0].gauge.threshold.value = thresholdValue;
+    this._data[0].gauge.threshold.line.color = (this._data[0].value >= thresholdValue) ? this.COLOR_SUCCESS : this.COLOR_DANGER;
     this.updatePlot();
   }
 
@@ -175,8 +187,8 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
   }
 
   @Input()
-  public set backgroundcolor(backgroundcolor: string) {
-    this._data[0].gauge.bgcolor = backgroundcolor != null ? backgroundcolor : this.bgcolor;
+  public set backgroundColor(backgroundColor: string) {
+    this._data[0].gauge.backgroundColor = backgroundColor != null ? backgroundColor : this.defaultBackgroundColor;
     this.updatePlot();
   }
 
@@ -202,43 +214,33 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
 
     let count = modifiedsteps.length - 1;
 
-    if (count == 1) {
-      this._data[0].gauge.steps[0].color = this.bgcolor;
-    } else if (count == 2) {
-      this._data[0].gauge.steps[0].color = "#e69679";
-      this._data[0].gauge.steps[1].color = "#b8d698";
-    } else if (count == 3) {
-      this._data[0].gauge.steps[0].color = "#e69679";
-      this._data[0].gauge.steps[1].color = "#fdd48f";
-      this._data[0].gauge.steps[2].color = "#b8d698";
-    } else if (count >= 4) {
-      this._data[0].gauge.steps[0].color = "#e69679";
-      this._data[0].gauge.steps[1].color = "#fdd48f";
-      this._data[0].gauge.steps[2].color = "#FFF59B";
-      this._data[0].gauge.steps[3].color = "#b8d698";
-    }
-    if (count >= 5) this._data[0].gauge.steps[4].color = "#8EBAE5";
-    if (count >= 6) this._data[0].gauge.steps[5].color = "#BCB5D7";
-    if (count >= 7) this._data[0].gauge.steps[6].color = "#A8859E";
+    if (count === 1) {
+      this._data[0].gauge.steps[0].color = this.defaultBackgroundColor;
+    } else {
+      const baseColors = this.STEP_PALETTES[Math.min(count, 7)];
 
-    if (count > 7) {
-      for (let index = 7; index < count; index++) {
-        this._data[0].gauge.steps[index].color = this.stepcolors[index % 10];
+      for (let index = 0; index < count; index++) {
+        if (index < baseColors.length) {
+          this._data[0].gauge.steps[index].color = baseColors[index];
+        } else {
+          this._data[0].gauge.steps[index].color = this.stepColors[index % 10];
+        }
       }
     }
+
     this.updatePlot();
   }
 
   @Input()
-  public set barcolor(barcolor: string) {
-    this._data[0].gauge.bar.color = barcolor != null ? barcolor : this.brcolor;
+  public set barColor(barColor: string) {
+    this._data[0].gauge.bar.color = barColor != null ? barColor : this.defaultBarColor;
     this.updatePlot();
   }
 
   @Input()
   public set margins(margins: number[] | number) {
     if (margins != null) {
-      this.automargins = false;
+      this.autoMargins = false;
       if (typeof margins == "number") {
         this._layout.margin = { t: margins, b: margins, l: margins, r: margins };
       } else {
@@ -253,9 +255,9 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
         }
       }
     } else {
-      this.automargins = true;
-      this._layout.margin = { t: this.topmargin, b: this.bottommargin, l: this.leftmargin, r: this.rightmargin };
-      this._layout.margin.l = this.titlelength * this.fonstsize * 0.55 + this.leftmargin;
+      this.autoMargins = true;
+      this._layout.margin = { t: this.topMargin, b: this.bottomMargin, l: this.leftMargin, r: this.rightMargin };
+      this._layout.margin.l = this.titleLength * this.fontSize * this.dynamicMarginFactor + this.leftMargin;
     }
     this.updatePlot();
   }

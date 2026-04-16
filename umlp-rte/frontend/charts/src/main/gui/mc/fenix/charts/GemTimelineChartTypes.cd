@@ -7,22 +7,61 @@ import java.util.Optional;
 
 <<pojoCD>>
 public classdiagram GemTimelineChartTypes {
+  /**
+   * Represents the data for a timeline chart.
+   */
   public class TimelineData {
+    /**
+     * A list of timelines to be displayed.
+     */
     List<Timeline> timeLine;
   }
 
+  /**
+   * Represents a single timeline in the chart.
+   */
   public class Timeline {
+    /**
+     * A unique identifier for the timeline.
+     */
     Long identifier;
+    /**
+     * The name of the timeline.
+     */
     String name;
+    /**
+     * The color of the timeline.
+     */
     Optional<String> color;
+    /**
+     * Whether the timeline is hidden.
+     */
     boolean hidden;
+    /**
+     * Whether the timeline is deactivated.
+     */
     boolean deactivated;
+    /**
+     * A list of blocks within the timeline.
+     */
     List<TimelineBlock> block;
   }
 
+  /**
+   * Represents a block of time in a timeline.
+   */
   public class TimelineBlock {
+    /**
+     * The start time of the block.
+     */
     LocalDateTime start;
+    /**
+     * The end time of the block.
+     */
     LocalDateTime end;
+    /**
+     * The lane in which the block is displayed.
+     */
     String lane;
   }
 

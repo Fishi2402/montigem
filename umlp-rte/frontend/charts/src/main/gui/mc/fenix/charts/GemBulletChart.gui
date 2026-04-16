@@ -6,11 +6,31 @@ package mc.fenix.charts;
 //and displays it in the context of qualitative ranges of performance, such as poor, satisfactory, and good.
 
 component GemBulletChart(
+  /** * The primary measure or actual value to be displayed and evaluated.
+   */
   Integer value,
+
+  /** * The reference value or target measure to compare the primary value against.
+   */
   Integer reference,
+
+  /** * A specific threshold value indicating a critical limit or milestone.
+   */
   Integer thresholdvalue,
+
+  /** * The main title of the bullet chart.
+   */
   String title,
+
+  /** * The subtitle providing additional context, such as the unit of measurement.
+   */
   String subtitle,
+
+  /** * The qualitative ranges of performance (e.g., boundaries for poor, satisfactory, and good performance).
+   */
   List<Integer> range,
+
+  /** * The step values used for generating the axis scale or ticks.
+   */
   List<Integer> steps
 )
