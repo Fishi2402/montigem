@@ -19,7 +19,7 @@ public class JointConnectionEdit extends JointConnectionEditTOP  {
     return options;
   }
 
-  public Consumer<String> updatePosition() {
+/*  public Consumer<String> updatePosition() {
     return (String coords) -> {
       String[] parts = coords.split(",");
       if (parts.length == 3) {
@@ -27,6 +27,12 @@ public class JointConnectionEdit extends JointConnectionEditTOP  {
         this.getConnection().setYPos(Optional.of(Double.parseDouble(parts[1])));
         this.getConnection().setZPos(Optional.of(Double.parseDouble(parts[2])));
       }
+    };
+  }*/
+
+  public Consumer<String> selectImage() {
+    return (String url) -> {
+      this.setImageUrl(url);
     };
   }
 }

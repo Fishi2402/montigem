@@ -7,5 +7,5 @@ import mc.fenix.basic.GemText;
 page PositionPickerPage(String imageUrl, String currentPos) {
   @GemTextInput(entry=imageUrl);
   @GemText(value=currentPos);
-  @PositionPicker(imageUrl=imageUrl, positionSelected=changeCurrentPos());
+  @PositionPicker(imageUrl=imageUrl);
 }

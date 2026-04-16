@@ -21,3 +21,23 @@
   height: 100%;
   cursor: crosshair;
 }
+
+.pos-picker-error {
+  margin-top: 6px;
+  color: red;
+  font-size: 0.85rem;
+}
+
+.pos-picker-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  &.pos-picker-dot--located {
+    background-color: #a06060;
+  }
+}

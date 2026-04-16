@@ -10,4 +10,12 @@
     class="pos-picker-overlay"
     (click)="onImageClick($event, pickerImg)"
   ></div>
+  <div
+    *ngIf="dotX !== null && dotY !== null"
+    class="pos-picker-dot"
+    [class.pos-picker-dot--located]="dotLocated"
+    [style.left.px]="dotX"
+    [style.top.px]="dotY"
+  ></div>
+  <div *ngIf="locateError" class="pos-picker-error">{{ locateError }}</div>
 </div>

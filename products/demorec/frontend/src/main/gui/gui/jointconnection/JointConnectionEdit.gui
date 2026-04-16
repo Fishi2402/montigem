@@ -17,8 +17,9 @@ import gui.pack.ComponentsOfPack;
 import gui.staticcontainer.NavContainer;
 import gui.connectionkind.ChooseJointConnectionKind;
 import gui.pospicker.PositionPicker;
+import gui.imagescroller.ImageScroller;
 
-component JointConnectionEdit(JointConnection connection, String imageUrl) {
+component JointConnectionEdit(JointConnection connection, String imageUrl, String imagesApiUrl) {
 
   @GemRow(
     wrap="nowrap",
@@ -43,7 +44,8 @@ component JointConnectionEdit(JointConnection connection, String imageUrl) {
               ]
           ),
           @GemTextInput(labelText = "Image URL", inputType = "text", entry = imageUrl),
-          @PositionPicker(imageUrl=imageUrl, positionSelected=updatePosition())
+          @ImageScroller(imagesApiUrl="/scans", imageSelected=selectImage()),
+          @PositionPicker(imageUrl=imageUrl, x=connection.xPos, y=connection.yPos,z=connection.zPos)
         ]
       ),
       @GemTextInput(

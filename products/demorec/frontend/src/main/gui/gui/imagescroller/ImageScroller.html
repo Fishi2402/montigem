@@ -1,0 +1,47 @@
+<div class="image-scroller" *ngIf="imagesApiUrl">
+
+  <!-- Pagination header -->
+  <div class="scroller-header">
+    <button class="nav-btn" (click)="onPrevPage()" [disabled]="isFirstPage()">&#8592; Prev</button>
+    <span class="page-info">
+      Page {{ getDisplayPage() }} / {{ getTotalPages() }}
+      &nbsp;&mdash;&nbsp;
+      {{ this.allImages.length }} images total
+    </span>
+    <button class="nav-btn" (click)="onNextPage()" [disabled]="isLastPage()">Next &#8594;</button>
+  </div>
+
+  <!-- Image preview grid -->
+  <div class="image-grid">
+    <div
+      *ngFor="let name of getCurrentPageImages()"
+      class="image-item"
+      (click)="onSelectImage(getFullImageUrl(name))"
+      [title]="name"
+    >
+      <img
+        [src]="getFullImageUrl(name)"
+        [alt]="name"
+        class="image-thumb"
+        draggable="false"
+      />
+      <span class="image-label">{{ name }}</span>
+    </div>
+  </div>
+
+  <!-- Link list for current page -->
+<!--  <div class="image-links">
+    <h4 class="links-title">Images on this page</h4>
+    <ul class="links-list">
+      <li *ngFor="let name of getCurrentPageImages()" class="link-item">
+        <a [href]="getFullImageUrl(name)" target="_blank" class="image-link">{{ name }}</a>
+        <button class="select-btn" (click)="onSelectImage(getFullImageUrl(name))">Select</button>
+      </li>
+    </ul>
+  </div>-->
+
+</div>
+
+<div class="scroller-empty" *ngIf="!imagesApiUrl">
+  No images API URL configured.
+</div>
