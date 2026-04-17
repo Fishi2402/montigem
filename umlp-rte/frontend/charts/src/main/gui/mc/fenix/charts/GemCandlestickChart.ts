@@ -3,7 +3,6 @@
 import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { config, GemCandlestickChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemCandlestickChartComponent';
-import moment from 'moment';
 import { GemChartOptions } from './GemChartOptions';
 
 @Component({
@@ -143,12 +142,12 @@ export class GemCandlestickChart extends GemCandlestickChartComponent implements
 
     if (update === 1) {
       let lastX = this._data[0].x[this._data[0].x.length - 1];
-      let newFirstDate: moment.Moment = this.parse(lastX);
-      let newLastDate: moment.Moment = this.parse(lastX);
+      let newFirstDate: Date = this.stringToDate(lastX);
+      let newLastDate: Date = this.stringToDate(lastX);
 
-      newFirstDate.date(newFirstDate.date() - 7);
-      let firstDate = this.format(newFirstDate);
-      let lastDate = this.format(newLastDate);
+      newFirstDate.setDate(newFirstDate.getDate() - 7);
+      let firstDate = this.dateToString(newFirstDate);
+      let lastDate = this.dateToString(newLastDate);
 
       this.applyLayout([firstDate, lastDate], this._layout.xaxis.tickformat);
     }
@@ -184,11 +183,11 @@ export class GemCandlestickChart extends GemCandlestickChartComponent implements
         10: this._data[0].x.length // All time
       };
       let lastX = this._data[0].x[this._data[0].x.length - 1];
-      let newDate: moment.Moment = this.parse(lastX);
-      let newLastDate: moment.Moment = this.parse(lastX);
-      newDate.date(this.parse(lastX).date() - mapping[update]);
-      let firstDate = this.format(newDate);
-      let lastDate = this.format(newLastDate);
+      let newDate: Date = this.stringToDate(lastX);
+      let newLastDate: Date = this.stringToDate(lastX);
+      newDate.setDate(newDate.getDate() - mapping[update]);
+      let firstDate = this.dateToString(newDate);
+      let lastDate = this.dateToString(newLastDate);
 
       if (this._layout.xaxis.range[0] != firstDate) {
         this.applyLayout([firstDate, lastDate], this._layout.xaxis.tickformat);
@@ -196,12 +195,12 @@ export class GemCandlestickChart extends GemCandlestickChartComponent implements
     }
   }
 
-  protected parse(date: string): moment.Moment {
-    return moment(date, "YYYY-MM-DD");
+  protected stringToDate(date: string): Date {
+    return new Date(date);
   }
 
-  protected format(date: moment.Moment): string {
-    return date.format("YYYY-MM-DD");
+  protected dateToString(date: Date): string {
+    return date.toISOString().split('T')[0]; // returns 'YYYY-MM-DD'
   }
 
   @Input()
