@@ -50,6 +50,11 @@ public class ReadOnlyGemList<E extends GemIdentifiable> extends GemList<E> {
   }
 
   @Override
+  protected void _internal_setAndSync(int idx, long gemID) {
+    throw new UnsupportedOperationException("The global GemList is read only");
+  }
+
+  @Override
   public void _internal_set(int idx, long gemID) {
     throw new UnsupportedOperationException("The global GemList is read only");
   }
@@ -60,12 +65,22 @@ public class ReadOnlyGemList<E extends GemIdentifiable> extends GemList<E> {
   }
 
   @Override
+  protected void _internal_addAndSync(int idx, List<Long> gemIDs) {
+    throw new UnsupportedOperationException("The global GemList is read only");
+  }
+
+  @Override
   public void _internal_add(int idx, List<Long> gemIDs) {
     throw new UnsupportedOperationException("The global GemList is read only");
   }
 
   @Override
   public E remove(int idx) {
+    throw new UnsupportedOperationException("The global GemList is read only");
+  }
+
+  @Override
+  protected void _internal_removeAndSync(Set<Integer> idxs) {
     throw new UnsupportedOperationException("The global GemList is read only");
   }
 

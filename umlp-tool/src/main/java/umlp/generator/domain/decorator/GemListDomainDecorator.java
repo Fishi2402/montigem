@@ -65,6 +65,9 @@ public class GemListDomainDecorator extends AbstractDecorator {
     getCD4C().addMethod(ast, getLoadObjectsTemplate(), sourceName, getCorrectManager(domainClass));
     ASTCDMethodSignature m = getCD4C().addMethod(ast, getDeepEqualsTemplate(), sourceName);
     markDeepEqualsBackendOnly(ast, m);
+    getCD4C().addMethod(ast, getInternalAddTemplate());
+    getCD4C().addMethod(ast, getInternalSetTemplate());
+    getCD4C().addMethod(ast, getInternalRemoveTemplate());
 
     return ast;
   }
@@ -89,6 +92,18 @@ public class GemListDomainDecorator extends AbstractDecorator {
 
   protected String getDeepEqualsTemplate(){
     return "umlp.gemlist.DeepEquals";
+  }
+
+  protected String getInternalRemoveTemplate() {
+    return "umlp.gemlist.AllObjectGemListInternalRemove";
+  }
+
+  protected String getInternalSetTemplate() {
+    return "umlp.gemlist.AllObjectGemListInternalSet";
+  }
+
+  protected String getInternalAddTemplate() {
+    return "umlp.gemlist.AllObjectGemListInternalAdd";
   }
 
   protected void addImports(ASTCDCompilationUnit origCD, String domainName, ASTCDClass ast) {

@@ -104,9 +104,7 @@ public abstract class GemList<E extends GemIdentifiable>
   /**
    * to be overridden by a subclass to add synchronization
    */
-  protected void _internal_setAndSync(int idx, long gemID) {
-    _internal_set(idx, gemID);
-  }
+  protected abstract void _internal_setAndSync(int idx, long gemID);
 
   public void _internal_set(int idx, long gemID) {
     if (isNotIdxInInclusiveBounds(idx)) {
@@ -123,9 +121,7 @@ public abstract class GemList<E extends GemIdentifiable>
   /**
    * to be overridden by a subclass to add synchronization
    */
-  protected void _internal_addAndSync(int idx, List<Long> gemIDs) {
-    _internal_add(idx, gemIDs);
-  }
+  protected abstract void _internal_addAndSync(int idx, List<Long> gemIDs);
 
   public void _internal_add(int idx, List<Long> gemIDs) {
     if (isNotIdxInExclusiveBounds(idx)) {
@@ -145,9 +141,7 @@ public abstract class GemList<E extends GemIdentifiable>
   /**
    * to be overridden by a subclass to add synchronization
    */
-  protected void _internal_removeAndSync(Set<Integer> idxs) {
-    _internal_remove(idxs);
-  }
+  protected abstract void _internal_removeAndSync(Set<Integer> idxs);
 
   public void _internal_remove(Set<Integer> idxs) {
     List<Integer> toSort = new ArrayList<>();

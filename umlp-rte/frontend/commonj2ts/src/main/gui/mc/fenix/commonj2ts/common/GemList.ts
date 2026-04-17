@@ -186,9 +186,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @param {number} idx
    * @param {number} gemID
    */
-  async _internal_setAndSync(idx: number, gemID: number) {
-    await this._internal_set(idx, gemID);
-  }
+  abstract _internal_setAndSync(idx: number, gemID: number);
 
   public async _internal_set(idx: number, gemID: number) {
     if (this.isNotIdxInInclusiveBounds(idx)) {
@@ -228,9 +226,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @param {number} idx
    * @param {number[]} gemIDs
    */
-  async _internal_addAndSync(idx: number, gemIDs: IUMLPList<number>) {
-    await this._internal_add(idx, gemIDs);
-  }
+  abstract _internal_addAndSync(idx: number, gemIDs: IUMLPList<number>);
 
   // TODO: TSAddToListOfDomain.ftl with concrete object reference?
   // right now we have to load the object twice
@@ -299,9 +295,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * to be overridden by a subclass to add synchronization
    * @param {number[]} idxs
    */
-  async _internal_removeAndSync(idxs: IUMLPList<number> | Array<number>) {
-    await this._internal_remove(idxs);
-  }
+  abstract _internal_removeAndSync(idxs: IUMLPList<number> | Array<number>);
 
   public async _internal_remove(idxs: IUMLPList<number> | Array<number>) {
     const toSort: Array<number> = [];

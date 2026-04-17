@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gemlist_listinterface_sync;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+import LoadingTests.LeftSide;
+import LoadingTests.RightSide;
+
+page TestGemListListInterface(LeftSide l, RightSide r) {
+  @GemButton(label = "Test List Interface Add", leftClick = testAdd(l,r));
+  @GemButton(label = "Test List Interface Remove", leftClick = testRemove(l,r));
+  @GemButton(label = "Test List Interface Set", leftClick = testSet(l,r));
+}
