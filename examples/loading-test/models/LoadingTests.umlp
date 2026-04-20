@@ -7,6 +7,10 @@ classdiagram LoadingTests {
     int age;
   }
 
+  class Student extends Person {
+    int matNr;
+  }
+
   class Animal {
     String name;
     int legs;

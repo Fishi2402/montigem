@@ -198,10 +198,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String waitName = addWaitAttr(name);
     String externInitName = addExternInitAttr(name);
 
+    // TODO is this always necessary?
+    // observer notification (will be populated by JSweet)
+    String notifyObserversName = "notify" + StringTransformations.capitalize(node.getName()) + "Observers";
+    ASTCDMethodSignature notifyObservers = getCD4C().addMethod(clazz, getNotifyObserversTemplate(), notifyObserversName);
+
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
     getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
-        setExternName, waitName);
+        setExternName, notifyObserversName);
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
@@ -253,14 +258,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       ASTMCType simpleInnerType = getSimpleType(innerType);
       String manager = getAndImportManager(util.getDomainListInnerType(typeSTE).get().asObjectType());
 
-      // add remove
-      ASTCDMethodSignature remove = getCD4C().addMethod(
-          clazz, getRemoveDomainListTemplate(), node.getName(), getterName);
-
-      // add add
-      ASTCDMethodSignature add = getCD4C().addMethod(
-          clazz, getAddDomainListTemplate(), simpleInnerType, node.getName(), getterName);
-
       // add list item observer
       if (gui.getGUIComponentDeclaration().isPage()) {
         addDomainObserverMethods();
@@ -287,14 +284,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           notifyDeleted.put(simpleInnerType.printType(),
               new NotifyMethodTemplate(getNotifyDeletedTemplate(), simpleInnerType));
         }
-        notifyDeleted.get(simpleInnerType.printType()).addCalledMethod(remove.getName());
+        notifyDeleted.get(simpleInnerType.printType()).addCalledMethod(notifyObservers.getName());
 
         // add notifyAdded method
         if (!notifyAdded.containsKey(simpleInnerType.printType())) {
           notifyAdded.put(simpleInnerType.printType(),
               new NotifyMethodTemplate(getNotifyAddedTemplate(), simpleInnerType));
         }
-        notifyAdded.get(simpleInnerType.printType()).addCalledMethod(add.getName());
+        notifyAdded.get(simpleInnerType.printType()).addCalledMethod(notifyObservers.getName());
       }
 
       // add attr init
@@ -382,7 +379,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
       String nullCheck = nullCheckPrinter.prettyprint(arg.getExpression());
-      
+
       ASTExpression argExpr = arg.getExpression();
       if (GUIDSLMill.typeDispatcher().isCommonExpressionsASTCallExpression(argExpr)) {
         ASTCallExpression methodCall = GUIDSLMill.typeDispatcher().asCommonExpressionsASTCallExpression(argExpr);
@@ -920,7 +917,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                     node.get_SourcePositionEnd());
               }
               ASTExpression navArgExpr = node.getArguments().getExpression(0);
-              
+
               if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
                 addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
               }
@@ -930,7 +927,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
               if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
                 addImport(TypeScriptTypes.ROUTER.getJavaQName().get());
               }
-              
+
               if (util.isStringLiteral(navArgExpr)) {
                 ASTLiteralExpression routingUrlExpr = GUIDSLMill.typeDispatcher().asExpressionsBasisASTLiteralExpression(navArgExpr);
                 ASTStringLiteral routingUrl = GUIDSLMill.typeDispatcher().asMCCommonLiteralsASTStringLiteral(routingUrlExpr.getLiteral());
@@ -1277,7 +1274,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected String getConvertedValueAssignment(String type, String varName, String value) {
     return type + " " + varName + " = " + value;
   }
-  
+
   private void printNavigateMethod(Method method, ASTCallExpression node, ASTGUIComponent guiComponent) {
     String pageName = guiComponent.getName();
     String path = Names.getPathFromQualifiedName(guiComponent.getNameSymbol().getFullName());
@@ -1300,13 +1297,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       getCD4C().addMethod(clazz, getNavigateTemplate(), method.getAlias(), path, pageName);
     }
   }
-  
+
   private void prepareNavigateEventCaller(ASTCallExpression node, ASTGUIComponent guiComponent) {
     // remove GUIViewElement argument
     if (node.getArguments().sizeExpressions() == 1) {
       node.getArguments().removeExpression(0);
     }
-    
+
     if (guiComponent.getGUINamedArgs().sizeGUINamedArgs() > 0) {
       for (ASTGUINamedArg namedArg : guiComponent.getGUINamedArgs().getGUINamedArgList()) {
         SymTypeExpression typeSTE = guiComponent.getArgumentTypes().get(namedArg);
@@ -1460,12 +1457,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaInitDomainList";
   }
 
-  protected String getRemoveDomainListTemplate() {
-    return "umlp.gui2java.GUI2JavaRemoveDomainList";
-  }
-
-  protected String getAddDomainListTemplate() {
-    return "umlp.gui2java.GUI2JavaAddDomainList";
+  protected String getNotifyObserversTemplate() {
+    return "umlp.gui2java.GUI2JavaNotifyObservers";
   }
 
   protected String getNotifyDeletedTemplate() {
@@ -1643,15 +1636,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected String getCommandExecutionTemplate() {
     return "umlp.gui2java.GUI2JavaExecuteCommandMethod";
   }
-  
+
   protected String getNavigateTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaNavigate";
   }
-  
+
   protected String getNavigateStringTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaNavigateString";
   }
-  
+
   protected String getNavigateWithIdTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaNavigateWithId";
   }
