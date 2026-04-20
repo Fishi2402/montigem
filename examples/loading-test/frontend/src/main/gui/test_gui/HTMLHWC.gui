@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.arrange.GemColumn;
+import LoadingTests.LeftSide;
+import test_gui.Inner;
+import test_gui.InnerWithHWC;
+
+component HTMLHWC(String title) {
+  // The HTML accesses the title parameter
+  // MyTitle {{this.getTitle__synchronized()}}
+}
