@@ -27,11 +27,14 @@ public class MeasuringValueCreate extends MeasuringValueCreateTOP {
   @Override
   public void setDimEntry(String val) {
     super.setDimEntry(val);
-    if(val == null) {
+    if(val == null || val.isBlank()) {
       return;
     }
-    Dimension d = DemoRecManager.getDimensionSure(Long.valueOf(val));
-    this.getMeasuringValue().setDimension(d);
+    Long longValue = Long.valueOf(val);
+    if(longValue != null) {
+      Dimension d = DemoRecManager.getDimensionSure(Long.valueOf(val));
+      this.getMeasuringValue().setDimension(d);
+    }
   }
 
   @Override

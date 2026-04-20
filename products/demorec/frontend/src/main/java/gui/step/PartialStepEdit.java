@@ -24,7 +24,9 @@ public class PartialStepEdit extends PartialStepEditTOP {
   @Override
   public void init() {
     super.init();
-
+    if(this.getEndEffectors() == null) {
+      return;
+    }
     for (EndEffector endEffector : this.getEndEffectors()) {
       this.endEffectorOptions.add(new Option(String.valueOf(endEffector.getGemId()), endEffector.getName()));
       this.endEffectorOptions.sort((l,r) -> l.getDisplay().compareTo(r.getDisplay()));
@@ -85,7 +87,7 @@ public class PartialStepEdit extends PartialStepEditTOP {
 
   @Override
   public String getSelectEndeffectorEntry() {
-    if(this.getStep().getUses() != null) {
+    if(this.getStep() != null && this.getStep().getUsesGem().isPresent()) {
       return this.getStep().getUses().getName();
     }
     return this.endEffectorEntry;
@@ -93,6 +95,9 @@ public class PartialStepEdit extends PartialStepEditTOP {
 
   @Override
   public void setSelectEndeffectorEntry(String value) {
+    if(value == null || value.isBlank()) {
+      return;
+    }
     EndEffector endEffector = DemoRecManager.getEndEffectorSure(Long.valueOf(value));
     this.getStep().setUses(endEffector);
     this.endEffectorEntry = value;
@@ -101,7 +106,7 @@ public class PartialStepEdit extends PartialStepEditTOP {
   @Override
   public GemTextInputValidity checkEndEffectorSet ()  {
     if(this.getStep() != null) {
-      if(this.getSelectEndeffectorEntry().equals("")) {
+      if(this.getSelectEndeffectorEntry().isBlank()) {
         return new GemTextInputValidity("Error", "Please choose an appropriate End Effector");
       } else {
         return new GemTextInputValidity("Success", null);

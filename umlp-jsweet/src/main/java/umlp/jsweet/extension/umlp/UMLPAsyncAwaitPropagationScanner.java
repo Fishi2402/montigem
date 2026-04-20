@@ -209,6 +209,8 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
         break;
       case "umlp.backendrte.common.Gem":
         switch (methodSimpleName) {
+          case "loadIfRequired":
+          case "isPresent":
           case "get":
             return true;
         }

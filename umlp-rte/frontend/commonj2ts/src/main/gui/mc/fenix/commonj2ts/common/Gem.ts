@@ -34,6 +34,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     if (((typeof gemId === 'number') || gemId === null) && ((typeof supplier === 'function' && (<any>supplier).length === 0) || supplier === null)) {
       let __args = arguments;
       if (this.gemId === undefined) {
+        // TODO why do we need this line? I have not found no use in not setting the gemId directly so far; CBu
         this.gemId = 0;
       }
       if (this.loadingState === undefined) {
@@ -150,7 +151,8 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   public get(): Promise<E> {
     return this.loadIfRequired().then(_ => this.isPresent()).then((isPresent: boolean) => {
       if (!isPresent) {
-        Log.error("0xE2921 Object was not loaded: " + this.loadingState?.toString());
+        Log.error("0xE2921: Internal error. Object was not loaded in Gem with gemId "+this.gemId
+          +"; instead LoadingState was " + LoadingState[this.loadingState]?.toString());
       }
       return this.object;
     });

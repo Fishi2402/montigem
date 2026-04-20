@@ -47,8 +47,14 @@ public class MeasuringValueEdit extends MeasuringValueEditTOP {
   @Override
   public void setSelectDimUnitEntry(String val, MeasuringValue measuringValue) {
     this.dimensionEntries.put(measuringValue, val);
-    Dimension d = DemoRecManager.getDimensionSure(Long.valueOf(val));
-    measuringValue.setDimension(d);
+    if(val != null && val instanceof String && !val.isBlank()) {
+      Long longValue = Long.valueOf(val);
+      if(longValue != null) {
+        Dimension d = DemoRecManager.getDimensionSure(longValue);
+        measuringValue.setDimension(d);
+      }
+    }
+
   }
 
   @Override
