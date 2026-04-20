@@ -22,7 +22,7 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
 
   topMargin: number = 20;
   bottomMargin: number = 25;
-  leftMargin: number = 40;
+  leftMargin: number = 50; // Increased base margin slightly
   rightMargin: number = 0;
 
   autoMargins: boolean = true;
@@ -30,7 +30,6 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
   private readonly COLOR_SUCCESS = "#11750e";
   private readonly COLOR_DANGER = "#cc071e";
 
-  // Pre-defined color palettes for different step counts
   private readonly STEP_PALETTES: { [key: number]: string[] } = {
     2: ["#e69679", "#b8d698"],
     3: ["#e69679", "#fdd48f", "#b8d698"],
@@ -45,8 +44,6 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
   thresholdWidth: number = 3;
   defaultBackgroundColor: string = "white";
   defaultBarColor: string = "#00549F";
-  titleLength: number = 1;
-  dynamicMarginFactor: number = 0.55;
 
   private _rawTitle: string = "";
   private _rawSubtitle: string = "";
@@ -59,6 +56,7 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
       delta: { reference: 0, position: this.arrowPosition, increasing: { color: this.COLOR_SUCCESS }, decreasing: { color: this.COLOR_DANGER } },
       title: {
         text: "",
+        align: "right",
         font: { size: this.fontSize }
       },
       gauge: {
@@ -116,27 +114,43 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
     }
   }
 
-  /** Helper method: Reconstructs the title string and calculates dynamic margin based on font size */
+  private calculateExactTextWidth(htmlText: string): number {
+    if (!htmlText) return 0;
+
+    // Create a hidden span element to measure the actual rendered width
+    const dummyElement = document.createElement('span');
+    dummyElement.style.position = 'absolute';
+    dummyElement.style.visibility = 'hidden';
+    dummyElement.style.whiteSpace = 'nowrap';
+
+    dummyElement.style.fontSize = this.fontSize + 'px';
+    dummyElement.style.fontFamily = '"Open Sans", verdana, arial, sans-serif';
+
+    dummyElement.innerHTML = htmlText;
+
+    document.body.appendChild(dummyElement);
+    const width = dummyElement.offsetWidth;
+    document.body.removeChild(dummyElement);
+
+    return width;
+  }
+
   private updateTitleText() {
     let combinedText = "";
-    this.titleLength = 0;
 
     if (this._rawTitle) {
       combinedText = "<b>" + this._rawTitle + "</b>";
-      this.titleLength = this._rawTitle.length;
     }
     if (this._rawSubtitle && this._rawTitle) {
       combinedText += "<br><span style='color: gray; font-size:0.8em'>" + this._rawSubtitle + "</span>";
-      if (this._rawSubtitle.length > this.titleLength) {
-        this.titleLength = this._rawSubtitle.length;
-      }
     }
+
     this._data[0].title.text = combinedText;
 
     if (this.autoMargins) {
-      const dynamicTextMargin = this.titleLength * this.fontSize * this.dynamicMarginFactor;
+      const exactTextWidth = this.calculateExactTextWidth(combinedText);
 
-      this._layout.margin.l = dynamicTextMargin + this.leftMargin;
+      this._layout.margin.l = exactTextWidth + this.leftMargin;
     }
   }
 
@@ -257,7 +271,8 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
     } else {
       this.autoMargins = true;
       this._layout.margin = { t: this.topMargin, b: this.bottomMargin, l: this.leftMargin, r: this.rightMargin };
-      this._layout.margin.l = this.titleLength * this.fontSize * this.dynamicMarginFactor + this.leftMargin;
+      // Recalculate dynamic left margin based on the current title
+      this.updateTitleText();
     }
     this.updatePlot();
   }

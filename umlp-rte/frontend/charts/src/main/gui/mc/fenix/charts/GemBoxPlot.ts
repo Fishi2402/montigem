@@ -83,14 +83,16 @@ export class GemBoxPlot extends GemBoxPlotComponent {
 
   @Input()
   public set width(width: number) {
-    this._width = width
-    this.updateValues()
+    // Ensure width is a valid number, fallback to default 400
+    this._width = width != null ? width : 400;
+    this.updateValues();
   }
 
   @Input()
   public set height(height: number) {
-    this._height = height
-    this.updateValues()
+    // Ensure height is a valid number, fallback to default 200
+    this._height = height != null ? height : 200;
+    this.updateValues();
   }
 
   @Input()
@@ -192,8 +194,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .data(boxes)
       .enter()
       .append("line")
-      .attr("x1", (d) => { return (ordinalAxis(d.key)) })
-      .attr("x2", (d) => { return (ordinalAxis(d.key)) })
+      .attr("x1", (d) => { return (ordinalAxis(d.key) || 0) })
+      .attr("x2", (d) => { return (ordinalAxis(d.key) || 0) })
       .attr("y1", (d) => { return (scalarAxis(d.value.min)) })
       .attr("y2", (d) => { return (scalarAxis(d.value.max)) })
       .attr("stroke", "black")
@@ -204,7 +206,7 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .data(boxes)
       .enter()
       .append("rect")
-      .attr("x", (d) => { return (ordinalAxis(d.key) - boxWidth / 2) })
+      .attr("x", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 2) })
       .attr("y", (d) => { return (scalarAxis(d.value.upperQuantile)) })
       .attr("height", (d) => { return (scalarAxis(d.value.lowerQuantile) - scalarAxis(d.value.upperQuantile)) })
       .attr("width", boxWidth)
@@ -216,8 +218,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .data(boxes)
       .enter()
       .append("line")
-      .attr("x1", (d) => { return (ordinalAxis(d.key) - boxWidth / 2) })
-      .attr("x2", (d) => { return (ordinalAxis(d.key) + boxWidth / 2) })
+      .attr("x1", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 2) })
+      .attr("x2", (d) => { return ((ordinalAxis(d.key) || 0) + boxWidth / 2) })
       .attr("y1", (d) => { return (scalarAxis(d.value.median)) })
       .attr("y2", (d) => { return (scalarAxis(d.value.median)) })
       .attr("stroke", "black")
@@ -227,8 +229,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .data(boxes)
       .enter()
       .append("line")
-      .attr("x1", (d) => { return (ordinalAxis(d.key) - boxWidth / 4) })
-      .attr("x2", (d) => { return (ordinalAxis(d.key) + boxWidth / 4) })
+      .attr("x1", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 4) })
+      .attr("x2", (d) => { return ((ordinalAxis(d.key) || 0) + boxWidth / 4) })
       .attr("y1", (d) => { return (scalarAxis(d.value.min)) })
       .attr("y2", (d) => { return (scalarAxis(d.value.min)) })
       .attr("stroke", "black")
@@ -238,8 +240,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .data(boxes)
       .enter()
       .append("line")
-      .attr("x1", (d) => { return (ordinalAxis(d.key) - boxWidth / 4) })
-      .attr("x2", (d) => { return (ordinalAxis(d.key) + boxWidth / 4) })
+      .attr("x1", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 4) })
+      .attr("x2", (d) => { return ((ordinalAxis(d.key) || 0) + boxWidth / 4) })
       .attr("y1", (d) => { return (scalarAxis(d.value.max)) })
       .attr("y2", (d) => { return (scalarAxis(d.value.max)) })
       .attr("stroke", "black")
@@ -256,7 +258,7 @@ export class GemBoxPlot extends GemBoxPlotComponent {
         }, [] as [string, number][]))
         .enter()
         .append("circle")
-        .attr("cx", (d) => { return (ordinalAxis(d[0]) - jitterWidth / 2 + Math.random() * jitterWidth) })
+        .attr("cx", (d) => { return ((ordinalAxis(d[0]) || 0) - jitterWidth / 2 + Math.random() * jitterWidth) })
         .attr("cy", (d) => { return (scalarAxis(d[1])) })
         .attr("r", 4)
         .style("fill", "white")
@@ -299,8 +301,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .append("line")
       .attr("x1", (d) => { return (scalarAxis(d.value.min)) })
       .attr("x2", (d) => { return (scalarAxis(d.value.max)) })
-      .attr("y1", (d) => { return (ordinalAxis(d.key)) })
-      .attr("y2", (d) => { return (ordinalAxis(d.key)) })
+      .attr("y1", (d) => { return (ordinalAxis(d.key) || 0) })
+      .attr("y2", (d) => { return (ordinalAxis(d.key) || 0) })
       .attr("stroke", "black")
       .style("width", 40)
 
@@ -310,7 +312,7 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .enter()
       .append("rect")
       .attr("x", (d) => { return (scalarAxis(d.value.lowerQuantile)) })
-      .attr("y", (d) => { return (ordinalAxis(d.key) - boxWidth / 2) })
+      .attr("y", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 2) })
       .attr("width", (d) => { return (scalarAxis(d.value.upperQuantile) - scalarAxis(d.value.lowerQuantile)) })
       .attr("height", boxWidth)
       .attr("stroke", "black")
@@ -323,8 +325,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .append("line")
       .attr("x1", (d) => { return (scalarAxis(d.value.median)) })
       .attr("x2", (d) => { return (scalarAxis(d.value.median)) })
-      .attr("y1", (d) => { return (ordinalAxis(d.key) - boxWidth / 2) })
-      .attr("y2", (d) => { return (ordinalAxis(d.key) + boxWidth / 2) })
+      .attr("y1", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 2) })
+      .attr("y2", (d) => { return ((ordinalAxis(d.key) || 0) + boxWidth / 2) })
       .attr("stroke", "black")
       .style("width", 80)
 
@@ -334,8 +336,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .append("line")
       .attr("x1", (d) => { return (scalarAxis(d.value.min)) })
       .attr("x2", (d) => { return (scalarAxis(d.value.min)) })
-      .attr("y1", (d) => { return (ordinalAxis(d.key) - boxWidth / 4) })
-      .attr("y2", (d) => { return (ordinalAxis(d.key) + boxWidth / 4) })
+      .attr("y1", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 4) })
+      .attr("y2", (d) => { return ((ordinalAxis(d.key) || 0) + boxWidth / 4) })
       .attr("stroke", "black")
       .style("width", 80)
 
@@ -345,8 +347,8 @@ export class GemBoxPlot extends GemBoxPlotComponent {
       .append("line")
       .attr("x1", (d) => { return (scalarAxis(d.value.max)) })
       .attr("x2", (d) => { return (scalarAxis(d.value.max)) })
-      .attr("y1", (d) => { return (ordinalAxis(d.key) + boxWidth / 4) })
-      .attr("y2", (d) => { return (ordinalAxis(d.key) - boxWidth / 4) })
+      .attr("y1", (d) => { return ((ordinalAxis(d.key) || 0) + boxWidth / 4) })
+      .attr("y2", (d) => { return ((ordinalAxis(d.key) || 0) - boxWidth / 4) })
       .attr("stroke", "black")
       .style("width", 80)
 
@@ -362,7 +364,7 @@ export class GemBoxPlot extends GemBoxPlotComponent {
         .enter()
         .append("circle")
         .attr("cx", (d) => { return (scalarAxis(d[1])) })
-        .attr("cy", (d) => { return (ordinalAxis(d[0]) - jitterWidth / 2 + Math.random() * jitterWidth) })
+        .attr("cy", (d) => { return ((ordinalAxis(d[0]) || 0) - jitterWidth / 2 + Math.random() * jitterWidth) })
         .attr("r", 4)
         .style("fill", "white")
         .attr("stroke", "black")
