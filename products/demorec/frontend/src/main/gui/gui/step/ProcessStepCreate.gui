@@ -60,7 +60,7 @@ page ProcessStepCreate(ProcessStep step, Event<ProcessStep> create, boolean deco
                   entry=null,
                   width="var(--textWidth)"
               ),
-              buildStep@GemButton(label = "Save Steps", leftClick = createNewStep(), disabled=true, height = "var(--gemButtonHeightAdjustedToInput)")
+              buildStep@GemButton(label = "Save Steps", leftClick = createNewStep(), disabled=disableStepCreation(step, kindOfConnections), height = "var(--gemButtonHeightAdjustedToInput)")
             ]
           )
         ]

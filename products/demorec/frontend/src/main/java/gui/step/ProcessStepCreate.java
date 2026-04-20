@@ -71,10 +71,12 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
   }
 
   // Select Joint Connection
+  @Override
   public List<Option> getSelectJointConnectionKindOptions() {
     return this.jointConnectionKindOptions;
   }
 
+  @Override
   public String getSelectJointConnectionKindEntry() {
     if(this.getKindOfConnections() != null) {
       return String.valueOf(this.getKindOfConnections().getName());
@@ -82,6 +84,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     return this.jointConnectionKindEntry;
   }
 
+  @Override
   public void setSelectJointConnectionKindEntry(String value) {
     this.jointConnectionKindEntry = value;
     if(value == "NEW") {
@@ -95,10 +98,13 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
       Optional<JointConnectionKind> kind = DemoRecManager.jointConnectionKindOpt(Long.valueOf(value));
       if(kind.isPresent()) {
         this.setKindOfConnections(kind.get());
+      } else {
+        Log.error("0xDEE01: Internal error that should never occur. Please report to the DemoRec developers, when you see this message in the console.");
       }
     }
   }
 
+  @Override
   public Consumer<Void> createNewStep() {
     return $ -> {
       JointConnection jointConnection = null;
@@ -166,13 +172,27 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     }
   }
 
-  public Boolean getBuildStepDisabled() {
-    if (this.getStep() == null || this.building) {
+  @Override
+  public Boolean disableStepCreation(ProcessStep step, JointConnectionKind kind) {
+    if(step == null) {
+      return true;
+    }
+    if(!(step.getTimeConsumption() > 0)) {
+      return true;
+    }
+    if(step.getUsesGem() == null || !step.getUsesGem().isPresent()) {
+      return true;
+    }
+    if(step.getType() == null || (step.getType() == ProcessStepType.OTHER && step.getDescription().isEmpty())) {
+      return true;
+    }
+    if(step.getType() == ProcessStepType.DECONSTRUCTION && ((kind == null) || !kind.isBuildFinished())) {
       return true;
     }
     return false;
   }
 
+  @Override
   public Consumer<JointConnectionKind> addNewJointConnectionKind() {
     return (JointConnectionKind connectionKind) -> {
       Log.warn("Adding new JointConnectionKind");
@@ -196,10 +216,12 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     //return this.inputStep === 3;
   }
 
+  @Override
   public String getAmountOfConnsAndStepsEntry () {
     return this.amountOfSteps+"";
   }
 
+  @Override
   public void setAmountOfConnsAndStepsEntry (String amount) {
     this.amountOfSteps = Integer.valueOf(amount);
   }
@@ -217,6 +239,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     }
   }
 
+  @Override
   public GemTextInputValidity checkStepTypeSet()  {
     if(this.getStep().getType() != null) {
       return new GemTextInputValidity("Success", null);
@@ -225,6 +248,7 @@ public class ProcessStepCreate extends ProcessStepCreateTOP {
     }
   }
 
+  @Override
   public GemTextInputValidity checkJointConnectionKind() {
     if(this.jointConnectionKindEntry != null && this.getStep().getType() != null) {
       if(this.jointConnectionKindEntry.equals("NEW")) {
