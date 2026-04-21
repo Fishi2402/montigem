@@ -6,7 +6,6 @@ import loadingtests.LoadingTestsManager;
 import loadingtests.LoadingTestsQueryBuilderMap;
 import loadingtests.test_infrastructure.LoadingTestsSQLDBTestSetup;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import umlp.backendrte.command.Command;
 import umlp.backendrte.command.CommandManager;
@@ -36,7 +35,6 @@ public class FilteredCommandsTest extends LoadingTestsSQLDBTestSetup {
     LoadingTestsQueryBuilderMap.init();
   }
 
-  @Disabled("monticore#5002")
   @Test
   public void testFilteredCommand() {
     getBackend().activate();

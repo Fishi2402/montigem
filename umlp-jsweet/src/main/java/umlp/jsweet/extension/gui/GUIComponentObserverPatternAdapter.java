@@ -62,7 +62,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   public GUIComponentObserverPatternAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
     addAnnotationManager(getSynchronizedAnnotationManager());
-    addAnnotationManager(createNotifyObserversAnnotationManager());
+    addAnnotationManager(addComponentManagerListenerToSetAnnotationManager());
     this.adapterUtils = new GUIAdapterUtils(this, types(), context, util());
   }
 
@@ -644,7 +644,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     };
   }
 
-  private AnnotationManager createNotifyObserversAnnotationManager() {
+  private AnnotationManager addComponentManagerListenerToSetAnnotationManager() {
     return new AnnotationManager() {
       @Override
       public Action manageAnnotation(Element element, String annotationType) {
@@ -659,7 +659,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           String annotationType, String propertyName,
           Class<T> propertyClass, T defaultValue) {
         if (isStateVarSetMethod(element, annotationType)) {
-          String stateVarName = getPropertyWithoutNotifyObserver(element);
+          String stateVarName = getPropertyWithoutSetter(element);
           Symbol.TypeSymbol parentElement = getParentElement(Symbol.TypeSymbol.class);
           String fqn = parentElement.getQualifiedName().toString();
           if (fqn.endsWith("TOP")) {
@@ -667,7 +667,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
           }
           return propertyClass.cast(
               "{{body}}\n{{baseIndent}}ComponentObserverManager.callStateVariableObserver(\""
-                  + stateVarName + "\", \"" + fqn + "\" + this.uniqueIdentifier);");
+                  + stateVarName + "\", \"" + fqn + "\" + this.uniqueIdentifier);\n"
+                  + "{{baseIndent}}this." + computeIsGetterFromSetter(element) +
+                  GUIAdapterUtils.UPDATE_SUFFIX + "();");
         }
         else {
           return null;
@@ -684,32 +686,35 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         if (!JSweetConfig.ANNOTATION_REPLACE.equals(annotationType)) {
           return false;
         }
-        boolean res = isNotifyObserversMethod(element);
+        boolean res = isSetterMethod(element);
         return res && adapterUtils.isMethodOfDirective(element);
       }
 
-      private boolean isNotifyObserversMethod(Element element) {
-        String simpleName = element.getSimpleName().toString();
-        if (!simpleName.startsWith("notify") || !simpleName.endsWith("Observers")) {
+      private boolean isSetterMethod(Element element) {
+        if (!element.getSimpleName().toString().startsWith("set")) {
           return false;
         }
-        String propertyName = getPropertyWithoutNotifyObserver(element);
         Symbol.TypeSymbol parentElement = Util.getElement(getPrinter().getParent(ClassTree.class));
         return parentElement.getEnclosedElements().stream()
-            .anyMatch(m -> m.getSimpleName().toString().equals(propertyName) && (
+            .anyMatch(m -> m.getSimpleName().toString().equals(getPropertyWithoutSetter(element)) && (
                 !(types().asElement(m.type) instanceof TypeElement) ||
                     !adapterUtils.isSubTypeOf((TypeElement) types().asElement(m.type), "java.util.function.Consumer"))
             );
       }
 
-      private String getPropertyWithoutNotifyObserver(Element element) {
-        return GUIAdapterUtils.STATEVAR_PREFIX + StringUtils.uncapitalize(getVarNameFromNotifyObserver((element)));
+      private String getPropertyWithoutSetter(Element element) {
+        return GUIAdapterUtils.STATEVAR_PREFIX + StringUtils.uncapitalize(
+            element.getSimpleName().toString().substring(3));
       }
 
-      private static String getVarNameFromNotifyObserver(Element element) {
-        // notify...Observers
-        String simpleName = element.getSimpleName().toString();
-        return simpleName.substring(6, simpleName.length() - 9);
+      private String computeIsGetterFromSetter(Element element) {
+        ExecutableElement method = (ExecutableElement) element;
+        boolean isBooleanParameter =
+            types().erasure(method.getParameters().get(0).asType()).toString().equals("boolean") ||
+                types().erasure(method.getParameters().get(0).asType()).toString()
+                    .equals("java.lang.Boolean");
+        String substring = method.getSimpleName().toString().substring(3);
+        return isBooleanParameter ? "is" + substring : "get" + substring;
       }
     };
   }

@@ -78,14 +78,4 @@ public class E2EUtil {
   public static Food createFood(String name) {
     return LoadingTestsManager.foodBuilder().name(name).build().get();
   }
-
-  public static void assignPetsToPersons() {
-    var personsWithoutPets = LoadingTestsManager.getPersonList().stream().filter(p -> p.sizePets() == 0).toList();
-    var animals = LoadingTestsManager.getAnimalList();
-    for (int i = 0; i < animals.size(); i++) {
-      Animal animal = animals.get(i);
-      int personIndex = i % personsWithoutPets.size();
-      personsWithoutPets.get(personIndex).addPet(animal);
-    }
-  }
 }
