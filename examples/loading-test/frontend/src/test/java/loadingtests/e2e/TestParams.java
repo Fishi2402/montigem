@@ -22,7 +22,6 @@ public class TestParams extends AbstractLoadingTestsE2ETest {
 
 
   @Test
-  @Disabled // TODO: monticore/monticore#5018
   public void test(Page page) {
     // Assert that a GemText has the correct parameter
 //    assertThat(page.locator(GemText.selector())).hasAttribute("ng-reflect-value", "Text Title");
