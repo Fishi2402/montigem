@@ -6,4 +6,5 @@ import java.lang.annotation.Target;
 
 @Target(value = { ElementType.METHOD })
 public @interface Synchronized {
+  String key() default "";
 }

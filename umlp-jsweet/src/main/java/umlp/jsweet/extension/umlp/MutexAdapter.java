@@ -29,11 +29,36 @@ public class MutexAdapter extends PrinterAdapter {
 
   @Override
   public void beforeTypeBody(TypeElement type) {
-    if (type.getEnclosedElements().stream()
-        .anyMatch(m -> context.hasAnnotationType(m, MUTEX_ANNOTATION))) {
+    boolean hasMutex = false;
+    boolean hasKeyedMutex = false;
+
+    for (Element m : type.getEnclosedElements()) {
+      if (m.getKind().toString().equals("METHOD") && context.hasAnnotationType(m, MUTEX_ANNOTATION)) {
+        hasMutex = true;
+        if (getKeyFromAnnotation(m) != null) {
+          hasKeyedMutex = true;
+        }
+      }
+    }
+
+    if (hasMutex) {
       println().printIndent().print("mutex = new Mutex();").println().println();
+      if (hasKeyedMutex) {
+        println().printIndent().print("private keyedMutexes = new Map<any, Mutex>();").println();
+        println().printIndent().print("private getMutex(key: any): Mutex {").println();
+        println().printIndent().printIndent().print("if (!this.keyedMutexes.has(key)) {").println();
+        println().printIndent().printIndent().printIndent().print("this.keyedMutexes.set(key, new Mutex());").println();
+        println().printIndent().printIndent().print("}").println();
+        println().printIndent().printIndent().print("return this.keyedMutexes.get(key)!;").println();
+        println().printIndent().print("}").println().println();
+      }
       this.adapterUtils.importFromWithModule("Mutex", "async-mutex");
     }
+  }
+
+  private String getKeyFromAnnotation(Element element) {
+    String val = context.getAnnotationValue(element, MUTEX_ANNOTATION, "key", String.class, null);
+    return val != null && !val.isEmpty() ? val : null;
   }
 
   /**
@@ -49,9 +74,25 @@ public class MutexAdapter extends PrinterAdapter {
       public <T> T getAnnotationValue(Element element, String annotationType, String propertyName,
           Class<T> propertyClass, T defaultValue) {
         if (JSweetConfig.ANNOTATION_REPLACE.equals(annotationType) && isMutex(element)) {
-          return propertyClass.cast("return await this.mutex.runExclusive(async () => {\n"
-              + "{{body}}\n"
-              + "});");
+          String key = getKeyFromAnnotation(element);
+          if (key != null) {
+            return propertyClass.cast(
+                "const idMutex = this.getMutex(" + key + ");\n" +
+                "try {\n" +
+                "    return await idMutex.runExclusive(async () => {\n" +
+                "        {{body}}\n" +
+                "    });\n" +
+                "} finally {\n" +
+                "    if (!idMutex.isLocked()) {\n" +
+                "        this.keyedMutexes.delete(" + key + ");\n" +
+                "    }\n" +
+                "}"
+            );
+          } else {
+            return propertyClass.cast("return await this.mutex.runExclusive(async () => {\n"
+                + "{{body}}\n"
+                + "});");
+          }
         }
         else {
           return null;
