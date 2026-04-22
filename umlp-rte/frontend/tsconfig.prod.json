@@ -42,6 +42,9 @@
       ],
       "@umlp/editor": [
         "./build/dist/editor"
+      ],
+      "@umlp/advanced": [
+        "./build/dist/advanced"
       ]
     },
     "baseUrl": "./"

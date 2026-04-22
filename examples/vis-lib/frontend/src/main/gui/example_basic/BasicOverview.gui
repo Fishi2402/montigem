@@ -6,6 +6,15 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import common.ComponentCard;
 
+import example_basic.GemButtonExample;
+import example_basic.GemTextExample;
+import example_basic.GemIconExample;
+import example_basic.GemImageExample;
+import example_basic.GemLinkExample;
+import example_basic.GemLoadingSpinnerExample;
+import example_basic.GemAudioExample;
+import example_basic.GemVideoExample;
+
 page BasicOverview() {
   @GemColumn(
     hAlign = "center",
@@ -20,14 +29,14 @@ page BasicOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Button", icon = "smart_button", description = "Clickable button for actions.", click = goToButton()),
-            @ComponentCard(title = "Text", icon = "text_fields", description = "Display text content.", click = goToText()),
-            @ComponentCard(title = "Icon", icon = "star", description = "Material Design icons.", click = goToIcon()),
-            @ComponentCard(title = "Image", icon = "image", description = "Embed images.", click = goToImage()),
-            @ComponentCard(title = "Link", icon = "link", description = "Hyperlinks to other pages.", click = goToLink()),
-            @ComponentCard(title = "Loading Spinner", icon = "loop", description = "Indicate loading state.", click = goToLoadingSpinner()),
-            @ComponentCard(title = "Audio", icon = "audiotrack", description = "Play audio files.", click = goToAudio()),
-            @ComponentCard(title = "Video", icon = "videocam", description = "Play video files.", click = goToVideo())
+            @ComponentCard(title = "Button", icon = "smart_button", description = "Clickable button for actions.", click = navigate(@GemButtonExample())),
+            @ComponentCard(title = "Text", icon = "text_fields", description = "Display text content.", click = navigate(@GemTextExample())),
+            @ComponentCard(title = "Icon", icon = "star", description = "Material Design icons.", click = navigate(@GemIconExample())),
+            @ComponentCard(title = "Image", icon = "image", description = "Embed images.", click = navigate(@GemImageExample())),
+            @ComponentCard(title = "Link", icon = "link", description = "Hyperlinks to other pages.", click = navigate(@GemLinkExample())),
+            @ComponentCard(title = "Loading Spinner", icon = "loop", description = "Indicate loading state.", click = navigate(@GemLoadingSpinnerExample())),
+            @ComponentCard(title = "Audio", icon = "audiotrack", description = "Play audio files.", click = navigate(@GemAudioExample())),
+            @ComponentCard(title = "Video", icon = "videocam", description = "Play video files.", click = navigate(@GemVideoExample()))
         ]
       )
     ]

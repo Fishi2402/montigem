@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.advanced;
+
+/**
+  Displays formatted markdown text on a webpage.
+*/
+component GemMarkdown(
+  /** Markdown text content. */
+  String value,
+  /** Width of the component. */
+  String width = "100%",
+  /** Height of the component. */
+  String height = "100%"
+)

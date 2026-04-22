@@ -6,6 +6,22 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import common.ComponentCard;
 
+import example_charts.GemBarChartExample;
+import example_charts.GemPieChartExample;
+import example_charts.GemLineChartExample;
+import example_charts.GemGaugeChartExample;
+import example_charts.GemRadarChartExample;
+import example_charts.GemScatterPlotExample;
+import example_charts.GemVennDiagramExample;
+import example_charts.GemGraphChartExample;
+import example_charts.GemHeatmapChartExample;
+import example_charts.GemSunburstChartExample;
+import example_charts.GemTimelineChartExample;
+import example_charts.GemTimeSeriesChartExmaple;
+import example_charts.GemBoxPlotExample;
+import example_charts.GemBulletChartExample;
+import example_charts.GemCandlestickChartExample;
+
 page ChartsOverview() {
   @GemColumn(
     hAlign = "center",
@@ -20,21 +36,21 @@ page ChartsOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Bar Chart", icon = "bar_chart", description = "Compare categorical data.", click = goToBarChart()),
-            @ComponentCard(title = "Pie Chart", icon = "pie_chart", description = "Show proportions.", click = goToPieChart()),
-            @ComponentCard(title = "Line Chart", icon = "show_chart", description = "Visualize trends over time.", click = goToLineChart()),
-            @ComponentCard(title = "Gauge Chart", icon = "speed", description = "Display single value within range.", click = goToGaugeChart()),
-            @ComponentCard(title = "Radar Chart", icon = "radar", description = "Compare multivariate data.", click = goToRadarChart()),
-            @ComponentCard(title = "Scatter Plot", icon = "scatter_plot", description = "Show relationship between variables.", click = goToScatterPlot()),
-            @ComponentCard(title = "Venn Diagram", icon = "bubble_chart", description = "Visualize set relationships.", click = goToVennDiagram()),
-            wipNetwork@ComponentCard(title = "Network Graph (WIP)", icon = "hub", description = "Display nodes and edges.", click = goToNetworkGraph()),
-            @ComponentCard(title = "Heatmap", icon = "grid_on", description = "Visualize data density.", click = goToHeatmap()),
-            @ComponentCard(title = "Sunburst", icon = "donut_large", description = "Hierarchical data visualization.", click = goToSunburst()),
-            @ComponentCard(title = "Timeline", icon = "view_timeline", description = "Events over time.", click = goToTimeline()),
-            @ComponentCard(title = "Time Series", icon = "timeline", description = "Interactive time series data.", click = goToTimeSeries()),
-            @ComponentCard(title = "Box Plot", icon = "candlestick_chart", description = "Statistical distribution.", click = goToBoxPlot()),
-            @ComponentCard(title = "Bullet Chart", icon = "linear_scale", description = "Performance against target.", click = goToBulletChart()),
-            @ComponentCard(title = "Candlestick", icon = "waterfall_chart", description = "Financial data visualization.", click = goToCandlestick())
+            @ComponentCard(title = "Bar Chart", icon = "bar_chart", description = "Compare categorical data.", click = navigate(@GemBarChartExample())),
+            @ComponentCard(title = "Pie Chart", icon = "pie_chart", description = "Show proportions.", click = navigate(@GemPieChartExample())),
+            @ComponentCard(title = "Line Chart", icon = "show_chart", description = "Visualize trends over time.", click = navigate(@GemLineChartExample())),
+            @ComponentCard(title = "Gauge Chart", icon = "speed", description = "Display single value within range.", click = navigate(@GemGaugeChartExample())),
+            @ComponentCard(title = "Radar Chart", icon = "radar", description = "Compare multivariate data.", click = navigate(@GemRadarChartExample())),
+            @ComponentCard(title = "Scatter Plot", icon = "scatter_plot", description = "Show relationship between variables.", click = navigate(@GemScatterPlotExample())),
+            @ComponentCard(title = "Venn Diagram", icon = "bubble_chart", description = "Visualize set relationships.", click = navigate(@GemVennDiagramExample())),
+            wipNetwork@ComponentCard(title = "Network Graph (WIP)", icon = "hub", description = "Display nodes and edges.", click = navigate(@GemGraphChartExample())),
+            @ComponentCard(title = "Heatmap", icon = "grid_on", description = "Visualize data density.", click = navigate(@GemHeatmapChartExample())),
+            @ComponentCard(title = "Sunburst", icon = "donut_large", description = "Hierarchical data visualization.", click = navigate(@GemSunburstChartExample())),
+            @ComponentCard(title = "Timeline", icon = "view_timeline", description = "Events over time.", click = navigate(@GemTimelineChartExample())),
+            @ComponentCard(title = "Time Series", icon = "timeline", description = "Interactive time series data.", click = navigate(@GemTimeSeriesChartExmaple())),
+            @ComponentCard(title = "Box Plot", icon = "candlestick_chart", description = "Statistical distribution.", click = navigate(@GemBoxPlotExample())),
+            @ComponentCard(title = "Bullet Chart", icon = "linear_scale", description = "Performance against target.", click = navigate(@GemBulletChartExample())),
+            @ComponentCard(title = "Candlestick", icon = "waterfall_chart", description = "Financial data visualization.", click = navigate(@GemCandlestickChartExample()))
         ]
       )
     ]

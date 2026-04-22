@@ -41,6 +41,9 @@
       ],
       "@umlp/editor": [
         "./editor"
+      ],
+      "@umlp/advanced": [
+        "./advanced"
       ]
     },
     "baseUrl": "./",

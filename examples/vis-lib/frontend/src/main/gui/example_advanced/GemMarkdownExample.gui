@@ -1,0 +1,65 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_advanced;
+
+import mc.fenix.advanced.GemMarkdown;
+import mc.fenix.arrange.GemColumn;
+import common.ExamplePage;
+
+page GemMarkdownExample() {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @GemMarkdown(
+        value = "# GemMarkdown Markdown Demo\n\n" +
+        "This example shows how **Markdown** is converted into *formatted HTML*.\n" +
+        "It uses `GemMarkdown` with the provided styles.\n\n" +
+        "## 1) Headings\n" +
+        "### H3 Subtitle\n" +
+        "#### H4 Detail Title\n\n" +
+        "## 2) Lists\n" +
+        "- Unordered item\n" +
+        "- Another item\n" +
+        "  - Sub-item A\n" +
+        "  - Sub-item B\n\n" +
+        "1. First step\n" +
+        "2. Second step\n" +
+        "3. Third step\n\n" +
+        "## 3) Links, emphasis, and inline code\n" +
+        "A link to the [MontiCore GitHub page](https://github.com/MontiCore/monticore).\n" +
+        "Combined: **bold**, *italic*, ~~strikethrough~~, and `inline code`.\n\n" +
+        "## 4) Blockquote\n" +
+        "> Markdown can structure technical notes, remarks, or quotes very well.\n" +
+        "> Multi-line quotes are rendered cleanly too.\n\n" +
+        "## 5) Table\n" +
+        "| Feature | Markdown Syntax | Rendered Output |\n" +
+        "|---|---|---|\n| Bold | `**Text**` | **Text** |\n" +
+        "| Italic | `*Text*` | *Text* |\n| Code | `` `let x = 1` `` | `let x = 1` |\n" +
+        "| Link | `[Text](URL)` | [Example](https://example.com) |\n\n" +
+        "## 6) Code block\n" +
+        "```ts\n" +
+        "type Person = {\n" +
+        "  name: string;\n" +
+        "    role: 'admin' | 'user';\n" +
+        "};\n\n" +
+        "const greet = (p: Person): string => {\n" +
+        "  return `Hello ${p.name} (${p.role})`;\n" +
+        "};\n\n" +
+        "console.log(greet({ name: 'Mia', role: 'admin' }));\n" +
+        "```\n\n" +
+        "## 7) Horizontal rule\n" +
+        "---\n" +
+        "After the horizontal rule, a new section begins with regular paragraph text.\n\n" +
+        "## 8) Mixed content\n" +
+        "- **Important:** Tables, lists, and code can be combined\n" +
+        "- *Note:* The CSS file controls spacing, colors, and typography\n" +
+        "- `GemMarkdown` renders the Markdown content directly in the component\n",
+        width = "100%",
+        height = "100%"
+      ),
+      @GemMarkdown(
+        value = "This is just normal text"
+      )
+    ]),
+    basePath = "example_advanced",
+    componentName = "GemMarkdownExample"
+  );
+}

@@ -6,6 +6,14 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import common.ComponentCard;
 
+import example_arrange.GemGridExample;
+import example_arrange.GemRowExample;
+import example_arrange.GemColumnExample;
+import example_arrange.GemCardExample;
+import example_arrange.GemDialogExample;
+import example_arrange.GemTreeNodeExample;
+import example_table.GemTableExample;
+
 page ArrangeOverview() {
   @GemColumn(
     hAlign = "center",
@@ -20,13 +28,13 @@ page ArrangeOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Grid", icon = "grid_view", description = "2D grid layout.", click = goToGrid()),
-            @ComponentCard(title = "Row", icon = "view_column", description = "Horizontal layout.", click = goToRow()),
-            @ComponentCard(title = "Column", icon = "view_stream", description = "Vertical layout.", click = goToColumn()),
-            @ComponentCard(title = "Card", icon = "crop_portrait", description = "Container with header.", click = goToCard()),
-            @ComponentCard(title = "Dialog", icon = "open_in_new", description = "Modal dialog window.", click = goToDialog()),
-            @ComponentCard(title = "Tree Node", icon = "account_tree", description = "Hierarchical tree structure.", click = goToTreeNode()),
-            @ComponentCard(title = "Table", icon = "table_chart", description = "Data table.", click = goToTable())
+            @ComponentCard(title = "Grid", icon = "grid_view", description = "2D grid layout.", click = navigate(@GemGridExample())),
+            @ComponentCard(title = "Row", icon = "view_column", description = "Horizontal layout.", click = navigate(@GemRowExample())),
+            @ComponentCard(title = "Column", icon = "view_stream", description = "Vertical layout.", click = navigate(@GemColumnExample())),
+            @ComponentCard(title = "Card", icon = "crop_portrait", description = "Container with header.", click = navigate(@GemCardExample())),
+            @ComponentCard(title = "Dialog", icon = "open_in_new", description = "Modal dialog window.", click = navigate(@GemDialogExample())),
+            @ComponentCard(title = "Tree Node", icon = "account_tree", description = "Hierarchical tree structure.", click = navigate(@GemTreeNodeExample())),
+            @ComponentCard(title = "Table", icon = "table_chart", description = "Data table.", click = navigate(@GemTableExample()))
         ]
       )
     ]

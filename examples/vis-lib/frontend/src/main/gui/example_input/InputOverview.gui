@@ -6,6 +6,15 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import common.ComponentCard;
 
+import example_input.GemTextInputExample;
+import example_input.GemTextareaInputExample;
+import example_input.GemCheckBoxInputExample;
+import example_input.GemRadioInputExample;
+import example_input.GemDropdownInputExample;
+import example_input.GemAutocompleteInputExample;
+import example_input.GemRangeInputExample;
+import example_input.GemChatExample;
+
 page InputOverview() {
   @GemColumn(
     hAlign = "center",
@@ -20,14 +29,14 @@ page InputOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Text Input", icon = "input", description = "Single-line text field.", click = goToTextInput()),
-            @ComponentCard(title = "Text Area", icon = "notes", description = "Multi-line text field.", click = goToTextareaInput()),
-            @ComponentCard(title = "Checkbox", icon = "check_box", description = "Binary choice input.", click = goToCheckBoxInput()),
-            @ComponentCard(title = "Radio Button", icon = "radio_button_checked", description = "Select one from many.", click = goToRadioInput()),
-            @ComponentCard(title = "Dropdown", icon = "arrow_drop_down_circle", description = "Select from a list.", click = goToDropdownInput()),
-            @ComponentCard(title = "Autocomplete", icon = "search", description = "Input with suggestions.", click = goToAutocompleteInput()),
-            @ComponentCard(title = "Range Input", icon = "linear_scale", description = "Slider for numeric range.", click = goToRangeInput()),
-            @ComponentCard(title = "Chat", icon = "chat", description = "Chat interface component.", click = goToChat())
+            @ComponentCard(title = "Text Input", icon = "input", description = "Single-line text field.", click = navigate(@GemTextInputExample())),
+            @ComponentCard(title = "Text Area", icon = "notes", description = "Multi-line text field.", click = navigate(@GemTextareaInputExample())),
+            @ComponentCard(title = "Checkbox", icon = "check_box", description = "Binary choice input.", click = navigate(@GemCheckBoxInputExample())),
+            @ComponentCard(title = "Radio Button", icon = "radio_button_checked", description = "Select one from many.", click = navigate(@GemRadioInputExample())),
+            @ComponentCard(title = "Dropdown", icon = "arrow_drop_down_circle", description = "Select from a list.", click = navigate(@GemDropdownInputExample())),
+            @ComponentCard(title = "Autocomplete", icon = "search", description = "Input with suggestions.", click = navigate(@GemAutocompleteInputExample())),
+            @ComponentCard(title = "Range Input", icon = "linear_scale", description = "Slider for numeric range.", click = navigate(@GemRangeInputExample())),
+            @ComponentCard(title = "Chat", icon = "chat", description = "Chat interface component.", click = navigate(@GemChatExample()))
         ]
       )
     ]

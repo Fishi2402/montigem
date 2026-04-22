@@ -19,6 +19,7 @@ montigem {
     project(":umlp-rte:frontend:navigation"),
     project(":umlp-rte:frontend:networkgraph"),
     project(":umlp-rte:frontend:table"),
+    project(":umlp-rte:frontend:advanced"),
     project(":umlp-rte:frontend:theme")
   )
   libScope = "@umlp"
@@ -38,6 +39,7 @@ project(":umlp-rte:frontend").afterEvaluate {
   def navigation = project(":umlp-rte:frontend:navigation").tasks.named("buildLib")
   def networkgraph = project(":umlp-rte:frontend:networkgraph").tasks.named("buildLib")
   def table = project(":umlp-rte:frontend:table").tasks.named("buildLib")
+  def advanced = project(":umlp-rte:frontend:advanced").tasks.named("buildLib")
 
   def commonNPMRC4Publish = project(":umlp-rte:frontend:common").tasks.named("npmrc4publish")
   def commonj2tsNPMRC4Publish = project(":umlp-rte:frontend:commonj2ts").tasks.named("npmrc4publish")
@@ -62,6 +64,8 @@ project(":umlp-rte:frontend").afterEvaluate {
   aNeedsB(table, commonj2ts)
   aNeedsB(cad, common)
   aNeedsB(cad, commonj2ts)
+  aNeedsB(advanced, common)
+  aNeedsB(advanced, commonj2ts)
 
   def aAfterB = { TaskProvider a, TaskProvider b ->
     a.configure { t ->
@@ -83,6 +87,8 @@ project(":umlp-rte:frontend").afterEvaluate {
   aAfterB(table, commonj2tsNPMRC4Publish)
   aAfterB(cad, commonNPMRC4Publish)
   aAfterB(cad, commonj2tsNPMRC4Publish)
+  aAfterB(advanced, commonNPMRC4Publish)
+  aAfterB(advanced, commonj2tsNPMRC4Publish)
 
 }
 

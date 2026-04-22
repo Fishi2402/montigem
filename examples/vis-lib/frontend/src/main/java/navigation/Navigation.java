@@ -13,10 +13,6 @@ public class Navigation extends NavigationTOP {
     super.init();
   }
 
-  public Consumer<Void> goToLandingPage() {
-      return v -> Router.navigate("common", "LandingPage");
-  }
-
   public Consumer<Void> setCategoryBasic() {
     return v -> setActiveCategory("Basic");
   }

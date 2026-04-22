@@ -10,6 +10,12 @@ import mc.fenix.basic.GemIcon;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.editor.MonacoEditor;
 
+import example_basic.BasicOverview;
+import example_input.InputOverview;
+import example_arrange.ArrangeOverview;
+import example_charts.ChartsOverview;
+import common.OtherOverview;
+
 page LandingPage(
     ?String demoCode
 ) {
@@ -97,11 +103,11 @@ page LandingPage(
                 colGap = "30px",
                 width = "80%",
                 components = [
-                    @ComponentCard(title = "Basic Elements", icon = "check_box", description = "Buttons, Texts, Icons, Images, Links...", click = goToBasicFromFeatures()),
-                    @ComponentCard(title = "Input Forms", icon = "input", description = "TextInputs, Dropdowns, RadioButtons, Validations...", click = goToInput()),
-                    @ComponentCard(title = "Layout & Arrange", icon = "dashboard", description = "Grid, Row, Column, Cards, Dialogs...", click = goToArrange()),
-                    @ComponentCard(title = "Data Visualization", icon = "insert_chart", description = "Over 15 types of interactive charts.", click = goToChartsOverviewFromFeatures()),
-                    @ComponentCard(title = "Other Components", icon = "extension", description = "Monaco Editor, Fischertechnik, and more.", click = goToOther())
+                    @ComponentCard(title = "Basic Elements", icon = "check_box", description = "Buttons, Texts, Icons, Images, Links...", click = navigate(@BasicOverview())),
+                    @ComponentCard(title = "Input Forms", icon = "input", description = "TextInputs, Dropdowns, RadioButtons, Validations...", click = navigate(@InputOverview())),
+                    @ComponentCard(title = "Layout & Arrange", icon = "dashboard", description = "Grid, Row, Column, Cards, Dialogs...", click = navigate(@ArrangeOverview())),
+                    @ComponentCard(title = "Data Visualization", icon = "insert_chart", description = "Over 15 types of interactive charts.", click = navigate(@ChartsOverview())),
+                    @ComponentCard(title = "Other Components", icon = "extension", description = "Monaco Editor, Fischertechnik, and more.", click = navigate(@OtherOverview()))
                 ]
             )
         ]

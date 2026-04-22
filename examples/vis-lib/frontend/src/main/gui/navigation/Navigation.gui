@@ -6,12 +6,14 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemButton;
 
+import common.LandingPage;
+
 component Navigation(String activeCategory = "Basic") {
   @GemColumn(components = [
 
     // 1. Row: Categories
     @GemRow(wrap = "wrap", vAlign = "center", components = [
-      @GemButton(label = "Home", leftClick = goToLandingPage()),
+      @GemButton(label = "Home", leftClick = navigate(@LandingPage())),
       @GemButton(label = "Basic", leftClick = setCategoryBasic()),
       @GemButton(label = "Input", leftClick = setCategoryInput()),
       @GemButton(label = "Arrange", leftClick = setCategoryArrange()),
@@ -86,6 +88,7 @@ component Navigation(String activeCategory = "Basic") {
         @GemNavItem(title = "Fischertechnik", target = "/fischertechnik/FischertechnikExample");
         @GemNavItem(title = "CAD Viewer", target = "/example_cad/GemCADExample");
         @GemNavItem(title = "Function Display", target = "/example_functiondisplay/FunctionDisplayExample");
+        @GemNavItem(title = "Markdown", target = "/example_advanced/GemMarkdownExample");
       }
 
     ])

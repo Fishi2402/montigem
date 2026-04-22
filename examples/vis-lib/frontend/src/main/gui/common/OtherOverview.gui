@@ -6,6 +6,12 @@ import mc.fenix.arrange.GemRow;
 import mc.fenix.basic.GemText;
 import common.ComponentCard;
 
+import fischertechnik.FischertechnikExample;
+import example_cad.GemCADExample;
+import person.SimpleOverview;
+import example_functiondisplay.FunctionDisplayExample;
+import example_advanced.GemMarkdownExample;
+
 page OtherOverview() {
   @GemColumn(
     hAlign = "center",
@@ -20,11 +26,12 @@ page OtherOverview() {
         colGap = "20px",
         width = "100%",
         components = [
-            @ComponentCard(title = "Monaco Editor", icon = "code", description = "Powerful code editor.", click = goToMonaco()),
-            @ComponentCard(title = "Fischertechnik", icon = "precision_manufacturing", description = "Control Fischertechnik models.", click = goToFischertechnik()),
-            @ComponentCard(title = "CAD Viewer", icon = "3d_rotation", description = "View 3D CAD models.", click = goToCAD()),
-            @ComponentCard(title = "Person Overview", icon = "people", description = "Example domain overview.", click = goToPerson()),
-            @ComponentCard(title = "Function Display", icon = "account_tree", description = "Show component functions.", click = goToFunctionDisplay())
+            @ComponentCard(title = "Monaco Editor", icon = "code", description = "Powerful code editor.", click = navigate("example_monaco/ExampleFromLib/3")),
+            @ComponentCard(title = "Fischertechnik", icon = "precision_manufacturing", description = "Control Fischertechnik models.", click = navigate(@FischertechnikExample())),
+            @ComponentCard(title = "CAD Viewer", icon = "3d_rotation", description = "View 3D CAD models.", click = navigate(@GemCADExample())),
+            @ComponentCard(title = "Person Overview", icon = "people", description = "Example domain overview.", click = navigate(@SimpleOverview())),
+            @ComponentCard(title = "Function Display", icon = "account_tree", description = "Show component functions.", click = navigate(@FunctionDisplayExample())),
+            @ComponentCard(title = "Markdown", icon = "article", description = "Display formatted text with Markdown.", click = navigate(@GemMarkdownExample()))
         ]
       )
     ]

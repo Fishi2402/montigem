@@ -25,32 +25,4 @@ public class LandingPage extends LandingPageTOP {
              "  );\n" +
              "}";
   }
-
-  public Consumer<Void> goToBasicFromHero() { 
-      return v -> Router.navigate("example_basic", "BasicOverview"); 
-  }
-  
-  public Consumer<Void> goToChartsOverviewFromHero() { 
-      return v -> Router.navigate("example_charts", "ChartsOverview"); 
-  }
-  
-  public Consumer<Void> goToBasicFromFeatures() { 
-      return v -> Router.navigate("example_basic", "BasicOverview"); 
-  }
-  
-  public Consumer<Void> goToInput() { 
-      return v -> Router.navigate("example_input", "InputOverview"); 
-  }
-  
-  public Consumer<Void> goToArrange() { 
-      return v -> Router.navigate("example_arrange", "ArrangeOverview"); 
-  }
-  
-  public Consumer<Void> goToChartsOverviewFromFeatures() { 
-      return v -> Router.navigate("example_charts", "ChartsOverview");
-  }
-  
-  public Consumer<Void> goToOther() { 
-      return v -> Router.navigate("common", "OtherOverview");
-  }
 }
