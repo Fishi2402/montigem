@@ -159,6 +159,33 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
           .jointConnectionKind(kind)
           .build().get();
 
+      JointConnection connection2 = DemoRecManager.jointConnectionBuilder()
+          .condition(State.HEALTHY)
+          .conditionDescription(Optional.empty())
+          .xPos(Optional.empty())
+          .yPos(Optional.empty())
+          .zPos(Optional.empty())
+          .jointConnectionKind(kind)
+          .build().get();
+
+      JointConnection connection3 = DemoRecManager.jointConnectionBuilder()
+          .condition(State.HEALTHY)
+          .conditionDescription(Optional.empty())
+          .xPos(Optional.empty())
+          .yPos(Optional.empty())
+          .zPos(Optional.empty())
+          .jointConnectionKind(kind)
+          .build().get();
+
+      JointConnection connection4 = DemoRecManager.jointConnectionBuilder()
+          .condition(State.HEALTHY)
+          .conditionDescription(Optional.empty())
+          .xPos(Optional.empty())
+          .yPos(Optional.empty())
+          .zPos(Optional.empty())
+          .jointConnectionKind(kind)
+          .build().get();
+
       pack.addAllConnections(kind);
 
       EndEffector endEffector = DemoRecManager.endEffectorBuilder()

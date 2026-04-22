@@ -1,5 +1,8 @@
 package gui.jointconnection;
 
+import demorec.DemoRecManager;
+import demorec.ExternalPhoto;
+import demorec.Photo;
 import demorec.State;
 import gui.connectionkind.JointConnectionKindEditTOP;
 import mc.fenix.input.gemdropdowninputtypes.Option;
@@ -19,20 +22,23 @@ public class JointConnectionEdit extends JointConnectionEditTOP  {
     return options;
   }
 
-/*  public Consumer<String> updatePosition() {
-    return (String coords) -> {
-      String[] parts = coords.split(",");
-      if (parts.length == 3) {
-        this.getConnection().setXPos(Optional.of(Double.parseDouble(parts[0])));
-        this.getConnection().setYPos(Optional.of(Double.parseDouble(parts[1])));
-        this.getConnection().setZPos(Optional.of(Double.parseDouble(parts[2])));
-      }
+  public Consumer<String> addExternalPhoto() {
+    return (String imageUrl) -> {
+      ExternalPhoto externalPhoto = DemoRecManager
+          .externalPhotoBuilder()
+          .externalUrl(imageUrl)
+          .build().get();
+      this.getConnection().addPhoto(externalPhoto);
     };
-  }*/
+  }
 
-  public Consumer<String> selectImage() {
-    return (String url) -> {
-      this.setImageUrl(url);
+  @Override
+  public Consumer<Void> removePhotoFromConnection(Photo photo) {
+    return $ -> {
+      this.getConnection().removePhoto(photo);
+      if(photo instanceof ExternalPhoto) {
+        DemoRecManager.deleteExternalPhoto(photo.getGemId());
+      }
     };
   }
 }

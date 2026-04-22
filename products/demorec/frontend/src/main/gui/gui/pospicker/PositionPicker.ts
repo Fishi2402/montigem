@@ -31,13 +31,14 @@ export class PositionPicker extends PositionPickerComponent {
     super();
   }
 
-  @Output()
-  public positionSelected: EventEmitter<string> = new EventEmitter<string>();
+  /*@Output()
+  public positionSelected: EventEmitter<string> = new EventEmitter<string>();*/
 
   public dotX: number | null = null;
   public dotY: number | null = null;
   public dotLocated: boolean = false;
   public locateError: string | null = null;
+  public isPicking: boolean = false;
 
   public override setImageUrl(url: string) {
     super.setImageUrl(url);
@@ -78,6 +79,8 @@ export class PositionPicker extends PositionPickerComponent {
   }
 
   public onImageClick(event: MouseEvent, imgEl: HTMLImageElement): void {
+    if (this.isPicking) return;
+
     const rect = imgEl.getBoundingClientRect();
     const displayX = event.clientX - rect.left;
     const displayY = event.clientY - rect.top;
@@ -91,8 +94,10 @@ export class PositionPicker extends PositionPickerComponent {
       .replace('/scans/', '/pick/')
       .replace(/\.png$/, '');
 
+    this.isPicking = true;
     this.http.get<PickResponse>(`${pickUrl}?x=${pixelX}&y=${pixelY}`).subscribe({
       next: (coords) => {
+        this.isPicking = false;
         console.warn("Received a position")
         this.dotX = displayX;
         this.dotY = displayY;
@@ -101,8 +106,10 @@ export class PositionPicker extends PositionPickerComponent {
         this.xChange.emit(coords.x)
         this.yChange.emit(coords.y)
         this.zChange.emit(coords.z)
+        this.getPickedPosition()(imgUrl);
       },
       error: (err) => {
+        this.isPicking = false;
         console.error('PositionPicker: pick request failed', err);
       }
     });

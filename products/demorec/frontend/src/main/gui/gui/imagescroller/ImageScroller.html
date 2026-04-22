@@ -1,5 +1,19 @@
 <div class="image-scroller" *ngIf="imagesApiUrl">
 
+  <!-- Category jump-list -->
+  <div class="category-bar" *ngIf="getUniqueCategories().length > 0">
+    <span class="category-bar-label">Jump to:</span>
+    <div class="category-chips">
+      <button
+        *ngFor="let cat of getUniqueCategories()"
+        class="category-chip"
+        [class.active]="isCategoryOnCurrentPage(cat)"
+        (click)="jumpToCategory(cat)"
+        [title]="cat"
+      >{{ getCategoryLabel(cat) }}</button>
+    </div>
+  </div>
+
   <!-- Pagination header -->
   <div class="scroller-header">
     <button class="nav-btn" (click)="onPrevPage()" [disabled]="isFirstPage()">&#8592; Prev</button>
@@ -25,20 +39,9 @@
         class="image-thumb"
         draggable="false"
       />
-      <span class="image-label">{{ name }}</span>
+      <span class="image-label">{{ getCategoryLabel(getCategoryFromPath(name)) }}</span>
     </div>
   </div>
-
-  <!-- Link list for current page -->
-<!--  <div class="image-links">
-    <h4 class="links-title">Images on this page</h4>
-    <ul class="links-list">
-      <li *ngFor="let name of getCurrentPageImages()" class="link-item">
-        <a [href]="getFullImageUrl(name)" target="_blank" class="image-link">{{ name }}</a>
-        <button class="select-btn" (click)="onSelectImage(getFullImageUrl(name))">Select</button>
-      </li>
-    </ul>
-  </div>-->
 
 </div>
 

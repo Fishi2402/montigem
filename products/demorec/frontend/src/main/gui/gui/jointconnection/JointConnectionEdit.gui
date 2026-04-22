@@ -6,6 +6,7 @@ import DemoRec.DemoRecComponent;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemLink;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
@@ -19,40 +20,56 @@ import gui.connectionkind.ChooseJointConnectionKind;
 import gui.pospicker.PositionPicker;
 import gui.imagescroller.ImageScroller;
 
-component JointConnectionEdit(JointConnection connection, String imageUrl, String imagesApiUrl) {
+component JointConnectionEdit(JointConnection connection, String imageUrl, String imagesApiUrl,
+  boolean showCondition=true, boolean showPosition=true, boolean showPhotos=true) {
 
   @GemRow(
     wrap="nowrap",
     colGap="5px",
     components=[
-      condition@GemDropdownInput(
-        labelText = "Condition",
-        options = null,
-        entry = connection.condition,
-        width="var(--verySmallDropDownWidth)"),
-
       @GemColumn(
         rowGap="5px",
         components=[
-          @GemRow(
-            width="var(--coordinateWidth)",
-            colGap="1rem",
-            components=[
-                xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos, width="var(--smallNumberWidth)"),
-                yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos, width="var(--smallNumberWidth)"),
-                zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos, width="var(--smallNumberWidth)")
+          @guard(showCondition){
+            @GemRow(
+              colGap="1rem",
+              components=[
+                condition@GemDropdownInput(
+                  labelText = "Condition",
+                  options = null,
+                  entry = connection.condition,
+                  width="var(--verySmallDropDownWidth)"),
+                @GemTextInput(
+                  labelText = "Condition Description",
+                  inputType = "text",
+                  entry = connection.conditionDescription,
+                  width="var(--textWidth)"
+                )
               ]
-          ),
-          @GemTextInput(labelText = "Image URL", inputType = "text", entry = imageUrl),
-          @ImageScroller(imagesApiUrl="/scans", imageSelected=selectImage()),
-          @PositionPicker(imageUrl=imageUrl, x=connection.xPos, y=connection.yPos,z=connection.zPos)
+            );
+          },
+          @guard(showPosition){
+            @GemRow(
+              width="var(--coordinateWidth)",
+              colGap="1rem",
+              components=[
+                  xPos@GemTextInput(labelText = "X-Position", inputType = "number", entry = connection.xPos, width="var(--smallNumberWidth)"),
+                  yPos@GemTextInput(labelText = "Y-Position", inputType = "number", entry = connection.yPos, width="var(--smallNumberWidth)"),
+                  zPos@GemTextInput(labelText = "Z-Position", inputType = "number", entry = connection.zPos, width="var(--smallNumberWidth)")
+                ]
+            );
+          },
+          @guard(showPhotos){
+            @iterate(Photo photo : connection.photo){
+              @GemRow(
+                components=[
+                  @GemLink(url=photo.url),
+                  @GemButton(label="Remove",leftClick=removePhotoFromConnection(photo))
+                ]
+              );
+            }
+          }
         ]
-      ),
-      @GemTextInput(
-        labelText = "Condition Description",
-        inputType = "text",
-        entry = connection.conditionDescription,
-        width="var(--textWidth)"
       )
     ]
   );

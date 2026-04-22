@@ -22,6 +22,44 @@ export class ImageScroller extends ImageScrollerComponent implements OnDestroy {
   public currentPageIndex : number = 0;
   public PAGE_SIZE = 10;
 
+  /** Returns the category prefix (part before the first '/') of an image path. */
+  public getCategoryFromPath(imageName: string): string {
+    const slashIdx = imageName.indexOf('/');
+    return slashIdx >= 0 ? imageName.substring(0, slashIdx) : imageName;
+  }
+
+  /** Returns all unique category prefixes in order of first appearance. */
+  public getUniqueCategories(): string[] {
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const img of this.allImages) {
+      const cat = this.getCategoryFromPath(img);
+      if (!seen.has(cat)) {
+        seen.add(cat);
+        result.push(cat);
+      }
+    }
+    return result;
+  }
+
+  /** Jumps to the page that contains the first image belonging to the given category. */
+  public jumpToCategory(category: string): void {
+    const idx = this.allImages.findIndex(img => this.getCategoryFromPath(img) === category);
+    if (idx >= 0) {
+      this.currentPageIndex = Math.floor(idx / this.PAGE_SIZE);
+    }
+  }
+
+  /** Returns true if at least one image of the given category is on the current page. */
+  public isCategoryOnCurrentPage(category: string): boolean {
+    return this.getCurrentPageImages().some(img => this.getCategoryFromPath(img) === category);
+  }
+
+  /** Returns a display-friendly label for a category (strips leading "NN_" numbering). */
+  public getCategoryLabel(category: string): string {
+    return category.replace(/^\d+_/, '');
+  }
+
   public ngOnDestroy(): void {
     super.ngOnDestroy();
   }

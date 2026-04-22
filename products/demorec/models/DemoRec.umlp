@@ -137,6 +137,7 @@ classdiagram DemoRec {
   }
 
   association [*] DemoRecComponent -> Photo [*];
+  association [*] JointConnection -> Photo [*];
 
   abstract class Photo {
     /String url;
