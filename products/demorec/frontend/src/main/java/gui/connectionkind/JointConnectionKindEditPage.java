@@ -4,6 +4,7 @@ package gui.connectionkind;
 import demorec.DemoRecManager;
 import demorec.ExternalPhoto;
 import demorec.JointConnection;
+import demorec.JointConnectionKind;
 import demorec.State;
 import umlp.jsweet.extension.annotation.Component;
 
@@ -160,6 +161,11 @@ public class JointConnectionKindEditPage extends JointConnectionKindEditPageTOP 
     return $-> {
       this.setShowConnectionPhotos(!this.isShowConnectionPhotos());
     };
+  }
+
+  @Override
+  public String getConnectionsSize(JointConnectionKind connectionKind) {
+    return String.valueOf(connectionKind.sizeJointConnections()) + " Connections";
   }
 
   /** Label for the per-row select button — highlights the currently selected connection. */

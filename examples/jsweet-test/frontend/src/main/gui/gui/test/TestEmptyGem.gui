@@ -1,0 +1,15 @@
+package gui.test;
+
+import mc.fenix.basic.GemText;
+import Jsweettest.C2;
+
+page TestEmptyGem(C2 c2) {
+
+  @guard(checkGemForPresence(c2)){
+    @GemText(value="Fail");
+  }
+
+  @guard(checkGemForNonPresence(c2)){
+    @GemText(value="Check");
+  }
+}
