@@ -31,7 +31,8 @@ export class GemMarkdown extends GemMarkdownComponent implements OnChanges {
   private md = new MarkdownIt({
     html: false,
     linkify: true,
-    typographer: true
+    typographer: true,
+    breaks: true
   }).use(texmath,{
     engine: katex,
     delimiters: 'dollars', // supports $...$ and $$...$$
