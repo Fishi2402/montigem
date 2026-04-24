@@ -58,14 +58,9 @@ gendoc:
 pages:
   stage: build
   needs: ["gendoc"]
-  image: python:alpine
+  image: registry.git.rwth-aachen.de/monticore/container-registry/mkdocs-image
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
-  before_script:
-    - apk add gcc musl-dev python3-dev
-    - pip install cython
-    - pip install mkdocs
-    - pip install mkdocs-material
   script:
     - mkdocs build --verbose --clean
     - mv site public
