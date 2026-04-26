@@ -279,7 +279,7 @@ public class JavaTimeAdapter extends AbstractAdapter {
           this.print("         pad(d.getUTCMinutes()) + ':' + ").println();
           this.print("         pad(d.getUTCSeconds()); ").println();
           this.print("  if (d.getUTCMilliseconds() > 0) { ").println();
-          this.print("    s += '.' + ('00' + d.getUTCMilliseconds()).slice(-3); ").println();
+          this.print("    s += '.' + ('00' + d.getUTCMilliseconds()).slice(-3) + 'Z'; ").println();
           this.print("  } ").println();
         }
         this.print("  return s; ").println();

@@ -46,6 +46,7 @@ component Navigation(String activeCategory = "Basic") {
         @GemNavItem(title = "TextareaInput", target = "/example_input/GemTextareaInputExample");
         @GemNavItem(title = "CheckBoxInput", target = "/example_input/GemCheckBoxInputExample");
         @GemNavItem(title = "RadioInput", target = "/example_input/GemRadioInputExample");
+        @GemNavItem(title = "DateInput", target = "/example_input/GemDateInputExample");
       },
 
       @guard(activeCategory == "Arrange") {

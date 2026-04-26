@@ -14,6 +14,7 @@ import example_input.GemDropdownInputExample;
 import example_input.GemAutocompleteInputExample;
 import example_input.GemRangeInputExample;
 import example_input.GemChatExample;
+import example_input.GemDateInputExample;
 
 page InputOverview() {
   @GemColumn(
@@ -36,7 +37,8 @@ page InputOverview() {
             @ComponentCard(title = "Dropdown", icon = "arrow_drop_down_circle", description = "Select from a list.", click = navigate(@GemDropdownInputExample())),
             @ComponentCard(title = "Autocomplete", icon = "search", description = "Input with suggestions.", click = navigate(@GemAutocompleteInputExample())),
             @ComponentCard(title = "Range Input", icon = "linear_scale", description = "Slider for numeric range.", click = navigate(@GemRangeInputExample())),
-            @ComponentCard(title = "Chat", icon = "chat", description = "Chat interface component.", click = navigate(@GemChatExample()))
+            @ComponentCard(title = "Chat", icon = "chat", description = "Chat interface component.", click = navigate(@GemChatExample())),
+            @ComponentCard(title = "DateTime", icon = "calendar_month", description = "Date and time component.", click = navigate(@GemDateInputExample()))
         ]
       )
     ]

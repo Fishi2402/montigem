@@ -1,0 +1,70 @@
+@mixin date-input-theme() {
+  .input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -22px;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    &.gem-has-error::after {
+      background-image: url('./img/error.png');
+    }
+
+    &.gem-has-warning::after {
+      background-image: url('./img/warning.png');
+    }
+  }
+
+  .date-input {
+    font: inherit;
+    width: 100%;
+    height: 100%;
+    line-height: 1.2;
+
+    padding: 0.35rem 2rem 0.35rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+    background-color: #fff;
+    color: #222;
+
+    outline: none;
+    box-sizing: border-box;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .date-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+
+  .date-input:disabled {
+    background-color: #f5f5f5;
+    color: #888;
+    cursor: not-allowed;
+  }
+
+  .date-icon {
+    position: absolute;
+    right: 0.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+    pointer-events: none; /* click goes to input */
+  }
+
+}

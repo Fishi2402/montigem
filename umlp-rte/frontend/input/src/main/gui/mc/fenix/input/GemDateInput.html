@@ -1,0 +1,21 @@
+<label class="gem-label-text-input" [for]="id + 'Input'">{{ labelText }}</label>
+<div
+  class="input-wrapper"
+  [ngClass]="{
+      'gem-has-error': validity?.getStatus() === 'Error',
+      'gem-has-warning': validity?.getStatus() === 'Warning'
+    }"
+  [matTooltip]="
+    validity?.getStatus() === 'Error' || validity?.getStatus() === 'Warning'
+      ? validity.getMessage() : null
+  "
+  matTooltipPosition="after"
+>
+  <input
+    #dateInput
+    [id]="id + 'Input'"
+    class="date-input"
+    type="text"
+  />
+  <mat-icon class="date-icon" [fontIcon]="timeOnlyEnabled ? 'schedule' : 'calendar_month'"></mat-icon>
+</div>

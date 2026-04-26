@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.fenix.input;
+
+import java.time.LocalDateTime;
+import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
+
+/**
+  The component is an input field that shows with an date/time selection overlay that opens on click.
+  It is used whenever a user date/time input is required.
+*/
+component GemDateInput(
+  /** The component's id; used to configure the styles. */
+  String id,
+  /** Text describing the input field. */
+  String labelText = "",
+  /**
+    The input field's value. If it is linked to a variable, the value of the
+    variable will change when the user enters a new value.
+  */
+  ?LocalDateTime entry,
+  /** Whether both date and time selection is shown in one overlay.  */
+  boolean showDateTime = false,
+  /**
+    Whether only time selection overlay is shown
+    (no matter if `showDateTime` is enabled).
+  */
+  boolean showTimeOnly = false,
+  /** Whether the input field is disabled. */
+  boolean disabled = false,
+  /** Width of the input field. */
+  String width = "100%",
+  /** Height of the input field. */
+  String height = "100%",
+  /** An object representing the validation status of the field. */
+  GemTextInputValidity validity
+)

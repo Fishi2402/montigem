@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example_input;
+
+import Domain.Stock;
+
+import mc.fenix.input.GemDateInput;
+import common.ExamplePage;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemTextInputTypes.GemTextInputValidity;
+
+page GemDateInputExample(List<Stock> stocks) {
+  @ExamplePage(
+    component = @GemColumn(components = [
+      @iterate(Stock s : stocks) {
+        @GemDateInput(
+          labelText = "Date only:",
+          entry = s.date
+        );
+        @GemDateInput(
+          labelText = "Time only:",
+          showTimeOnly = true,
+          entry = s.date
+        );
+        @GemDateInput(
+          labelText = "Date and Time:",
+          showDateTime = true,
+          entry = s.date
+        );
+        @GemDateInput(
+          labelText = "Date (disabled)",
+          entry = s.date,
+          disabled = true
+        );
+      }
+    ]),
+    basePath = "example_input",
+    componentName = "GemDateInputExample"
+  );
+}
