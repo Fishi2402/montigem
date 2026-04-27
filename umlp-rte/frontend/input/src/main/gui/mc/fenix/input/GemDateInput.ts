@@ -13,7 +13,6 @@ import {
 import { config, GemDateInputComponent } from '../../../../../../build/gui2java2ts/mc/fenix/input/GemDateInputComponent';
 
 import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
 
@@ -113,13 +112,51 @@ export class GemDateInput extends GemDateInputComponent implements AfterViewInit
       time_24hr: true,
       allowInput: true,
       onChange: ([date]) => {
-        this.entryChange.emit(date ?? null);
+        this.onDateTimeChange(date);
       },
-      onClose: () => {
-        this.picker?.setDate(this.pickerElement.value, true);
+      onClose: ([date]) => {
+        this.onDateTimeChange(date);
       }
     });
     this.picker.setDate(this.pickerEntry);
+  }
+
+  private onDateTimeChange(date: Date) {
+    if (this.timeOnlyEnabled) {
+      this.onTimeChange(date);
+    }
+    else if (!this.timeOnlyEnabled && !this.dateTimeEnabled) {
+      this.onDateChange(date);
+    }
+    else {
+      this.entryChange.emit(date ?? null);
+    }
+  }
+
+  private onDateChange(date: Date) {
+    const current = this.pickerEntry;
+    const newDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        current.getHours(),
+        current.getMinutes(),
+        current.getSeconds()
+    );
+    this.entryChange.emit(newDate ?? null);
+  }
+
+  private onTimeChange(time: Date) {
+    const current = this.pickerEntry;
+    const newTime = new Date(
+        current.getFullYear(),
+        current.getMonth(),
+        current.getDate(),
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds()
+    );
+    this.entryChange.emit(newTime ?? null);
   }
 
   private getFormat(): string {
