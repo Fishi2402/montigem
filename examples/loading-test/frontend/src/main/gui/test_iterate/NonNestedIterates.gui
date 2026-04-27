@@ -1,0 +1,15 @@
+package test_iterate;
+
+import mc.fenix.basic.GemText;
+
+import LoadingTests.Person;
+
+page NonNestedIterates(List<Person> persons) {
+  iter1@iterate(Person p : persons){
+    @GemText(value=p.name);
+  }
+
+  iter2@iterate(Person p : persons){
+    @GemText(value=p.name);
+  }
+}

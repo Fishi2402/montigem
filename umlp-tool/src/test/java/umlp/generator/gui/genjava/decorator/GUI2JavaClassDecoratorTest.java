@@ -456,7 +456,8 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     InitDependency lBlock = lCall.getDependentList().get(0);
     InitDependency mCondition = lBlock.getDependentList().get(0);
     InitDependency mBlock = mCondition.getDependentList().get(0);
-    InitDependency o = mBlock.getDependentList().get(0);
+
+    InitDependency o = l.getDependentList().get(1);
 
     assertions.add(() -> assertTrue(l.getInitMethod().isPresent()));
     assertions.add(() -> assertTrue(o.getInitMethod().isPresent()));
@@ -480,7 +481,7 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
     InitDependency qList = qCall.getDependentList().get(0);
     assertions.add(() -> assertTrue(qList.getInitMethod().isPresent()));
 
-    InitDependency rList = qCall.getDependentList().get(0);
+    InitDependency rList = qList.getDependentList().get(0);
     assertions.add(() -> assertTrue(rList.getInitMethod().isPresent()));
 
     assertAll(assertions);

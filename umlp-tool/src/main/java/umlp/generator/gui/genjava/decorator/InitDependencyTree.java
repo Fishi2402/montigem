@@ -78,6 +78,19 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
   }
 
   @Override
+  public void endVisit(ASTGUIBlock node) {
+    InitDependency blockDep = nodeDepMap.get(node);
+    if (blockDep != null) {
+      while (!depStack.isEmpty() && !depStack.peek().equals(blockDep)) {
+        depStack.pop();
+      }
+      if (!depStack.isEmpty() && depStack.peek().equals(blockDep)) {
+        depStack.pop();
+      }
+    }
+  }
+
+  @Override
   public void visit(ASTGUIParam node) {
     rememberDepStackJump(node);
   }
@@ -99,6 +112,21 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
     putDependency(control);
     */
+  }
+
+  @Override
+  public void endVisit(ASTGUIIterate node) {
+    if (node.getIterateControl() instanceof ASTGUIShortIterateControl) {
+      InitDependency controlDep = nodeDepMap.get(node.getIterateControl());
+      if (controlDep != null) {
+        while (!depStack.isEmpty() && !depStack.peek().equals(controlDep)) {
+          depStack.pop();
+        }
+        if (!depStack.isEmpty() && depStack.peek().equals(controlDep)) {
+          depStack.pop();
+        }
+      }
+    }
   }
 
   @Override
