@@ -38,11 +38,22 @@ public class OCLWithErrorMessagesJavaGenVisitor implements OCLWithErrorMessagesH
     printMethodSignature(node, "boolean", "check");
     printer.println("{");
     printer.indent();
+
+    printer.println("try {");
+    printer.indent();
+    printer.println();
+
     printer.print("return ");
-
     node.getExpression().accept(getTraverser());
-
     printer.println(";");
+    printer.unindent();
+
+    printer.println("} catch(Exception __e) {");
+    printer.indent();
+    printer.println("return false;");
+    printer.unindent();
+    printer.println("}");
+
     printer.unindent();
     printer.println("}");
 

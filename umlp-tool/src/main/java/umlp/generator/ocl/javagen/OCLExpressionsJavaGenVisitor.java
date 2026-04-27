@@ -266,7 +266,7 @@ public class OCLExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
     for (int i = 0; i < openStreams; i++) {
       getPrinter().unindent();
       getPrinter().println();
-      getPrinter().print("/*openstreams*/)");
+      getPrinter().print(")");
     }
   }
 
@@ -316,7 +316,7 @@ public class OCLExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
     for (int i = 0; i < openStreams; i++) {
       getPrinter().unindent();
       getPrinter().println();
-      getPrinter().print("/*anymatch openstreams*/)");
+      getPrinter().print(")");
     }
   }
 
