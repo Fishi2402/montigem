@@ -102,7 +102,7 @@
 
 
   @include dropdown-input-theme($gray-dark, $rwth-black-3, $rwth-black-5, $rwth-black-4, $brand-danger, $brand-warning);
-  @include date-input-theme();
+  @include date-input-theme($btn-default-color, $rwth-black-3, $brand-danger, $brand-warning);
 
   @if $horizontal-layout {
     @include gem-main();
