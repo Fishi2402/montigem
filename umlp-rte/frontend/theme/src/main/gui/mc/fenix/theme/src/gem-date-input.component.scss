@@ -33,11 +33,11 @@
       background-image: url('./img/warning.png');
     }
 
-    &.gem-has-error {
+    &.gem-has-error > .date-input {
       border: 1px solid $colorDanger;
     }
 
-    &.gem-has-warning {
+    &.gem-has-warning > .date-input {
       border: 1px solid $colorWarning;
     }
   }

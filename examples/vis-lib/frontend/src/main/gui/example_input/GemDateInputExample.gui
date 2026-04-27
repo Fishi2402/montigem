@@ -31,6 +31,11 @@ page GemDateInputExample(List<Stock> stocks) {
           entry = s.date,
           disabled = true
         );
+        @GemDateInput(
+          labelText = "Date (Error)",
+          entry = s.date,
+          validity = GemTextInputValidity("Error", "Not Working")
+        );
       }
     ]),
     basePath = "example_input",
