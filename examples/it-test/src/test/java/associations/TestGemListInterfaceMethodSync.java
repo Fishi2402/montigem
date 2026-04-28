@@ -86,7 +86,6 @@ public class TestGemListInterfaceMethodSync extends AssociationsMockTestSetup {
     assertEquals(manyToManyRhs2.getGemId(), backend1ManyToManyLhs.getManyToManyRhs(0).getGemId());
   }
 
-  @Disabled("monticore#5011")
   @Test
   public void testListInterfaceAddWithBackendGoingFirst() {
     // Create disconnected Objects in Backend
