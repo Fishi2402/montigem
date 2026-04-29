@@ -10,6 +10,13 @@ if(known${subclass.name?cap_first}s.containsKey(gemId)){
 <#list concreteSubclassesInclSelf as subclass>
 {
   CommandResult<${subclass.name}> commandResult = CommandManager.executeCommand(new ${subclass.name}_get(gemId));
+
+  // avoid race condition
+  if(known${subclass.name}s.containsKey(gemId)){
+    return Optional.ofNullable(known${subclass.name?cap_first}s.get(gemId));
+  }
+
+  // fill cache
   if (commandResult.isSimpleResult()) {
     SimpleResult<${subclass.name}> res = commandResult.asSimpleResult();
     if (res.isSuccessful()) {
