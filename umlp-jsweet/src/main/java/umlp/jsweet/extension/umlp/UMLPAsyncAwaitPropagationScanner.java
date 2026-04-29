@@ -291,6 +291,15 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
           case "remove":
             return true;
         }
+        break;
+      case "java.util.concurrent.CompletableFuture":
+      case "java.util.concurrent.Future":
+      case "java.util.concurrent.CompletionStage":
+        switch (methodSimpleName) {
+          case "get":
+          case "join":
+            return true;
+        }
     }
     return false;
   }

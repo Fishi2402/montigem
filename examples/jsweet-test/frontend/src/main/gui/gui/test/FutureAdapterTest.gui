@@ -1,0 +1,36 @@
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+
+page FutureAdapterTest() {
+  inputField@GemTextInput(
+    id = "inputFieldId",
+    labelText = "Test Input Field"
+  );
+
+  testCompletedFuture@GemButton(label = "Test completedFuture()", leftClick = testCompletedFuture());
+  testSupplyAsync@GemButton(label = "Test supplyAsync()", leftClick = testSupplyAsync());
+  testRunAsync@GemButton(label = "Test runAsync()", leftClick = testRunAsync());
+  testFailedFuture@GemButton(label = "Test failedFuture()", leftClick = testFailedFuture());
+  testThenApply@GemButton(label = "Test thenApply()", leftClick = testThenApply());
+  testThenApplyAsync@GemButton(label = "Test thenApplyAsync()", leftClick = testThenApplyAsync());
+  testThenAccept@GemButton(label = "Test thenAccept()", leftClick = testThenAccept());
+  testThenAcceptAsync@GemButton(label = "Test thenAcceptAsync()", leftClick = testThenAcceptAsync());
+  testThenRun@GemButton(label = "Test thenRun()", leftClick = testThenRun());
+  testThenRunAsync@GemButton(label = "Test thenRunAsync()", leftClick = testThenRunAsync());
+  testThenCompose@GemButton(label = "Test thenCompose()", leftClick = testThenCompose());
+  testThenComposeAsync@GemButton(label = "Test thenComposeAsync()", leftClick = testThenComposeAsync());
+  testExceptionally@GemButton(label = "Test exceptionally()", leftClick = testExceptionally());
+  testWhenComplete@GemButton(label = "Test whenComplete()", leftClick = testWhenComplete());
+  testWhenCompleteAsync@GemButton(label = "Test whenCompleteAsync()", leftClick = testWhenCompleteAsync());
+  testHandle@GemButton(label = "Test handle()", leftClick = testHandle());
+  testHandleAsync@GemButton(label = "Test handleAsync()", leftClick = testHandleAsync());
+  testJoin@GemButton(label = "Test join()", leftClick = testJoin());
+  testGet@GemButton(label = "Test get()", leftClick = testGet());
+
+  resultField@GemTextInput(
+      id = "resultId",
+      labelText = "Test Result"
+    );
+}
