@@ -7,10 +7,10 @@ gespeichert werden sollen.
 Diese Anwendung wird als Teil des vom BMBF geförderten Batterie-Demontageprojekts entwickelt. 
 
 ## Starting
+See umlp/README.md for general installation instructions and prerequisites.
 Start the backend with `gradle :products:demorec:backend:run` and the frontend with `gradle :products:demorec:frontend:run`.
-Define the Environment Variable `FILE_LOCATION` to specify where images/3D-Scans location. You can visit the Start page on `localhost:4200/gui/Start`
+Optionally, you can define an environment variable `FILE_LOCATION` to specify images/3D-Scans location. You can visit the Start page on `localhost:4200/gui/Start`. To use the position picking service for JointConnetions see [image-processing-unit/pospicker](https://git.rwth-aachen.de/se/projects/d36.bmbf.batterie/image-processing-unit).
 
-If you get a node problem after adapting GUI models and restarting the FrontEnd, you have to kill the node process that block port 4200.  
 
 ## Design of Image and 3D-Scan storage
 Es gibt zwei spezielle Rest Endpoints im Backend, die sich um das speichern und laden der Bild/3D-Scan 
