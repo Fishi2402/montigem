@@ -28,6 +28,7 @@ page FutureAdapterTest() {
   testHandleAsync@GemButton(label = "Test handleAsync()", leftClick = testHandleAsync());
   testJoin@GemButton(label = "Test join()", leftClick = testJoin());
   testGet@GemButton(label = "Test get()", leftClick = testGet());
+  testFutureAttribute@GemButton(label = "Test Future Attribute", leftClick = testFutureAttribute());
 
   resultField@GemTextInput(
       id = "resultId",

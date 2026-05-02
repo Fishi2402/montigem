@@ -53,7 +53,10 @@ public class FutureAdapter extends AbstractAdapter {
 
   @Override
   public TypeMirror mapType(TypeMirror type) {
-    return null;
+    if (isFuture(type)) {
+      return type;
+    }
+    return super.mapType(type);
   }
 
   @Override

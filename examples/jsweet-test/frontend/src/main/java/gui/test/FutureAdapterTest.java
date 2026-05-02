@@ -11,6 +11,8 @@ import static def.dom.Globals.document;
 @Component
 public class FutureAdapterTest extends FutureAdapterTestTOP {
 
+  private CompletableFuture<String> futureAttribute;
+
   private void setResultFieldEntry(String value) {
     HTMLInputElement el = (HTMLInputElement) document.getElementById("resultIdInput");
     if (el != null) {
@@ -215,6 +217,15 @@ public class FutureAdapterTest extends FutureAdapterTestTOP {
       } catch (Exception e) {
         setResultFieldEntry("get: failed");
       }
+    };
+  }
+
+  @Override
+  public Consumer<Void> testFutureAttribute() {
+    return (Void) -> {
+      String input = getRawInput();
+      this.futureAttribute = CompletableFuture.completedFuture(input + "Attr");
+      this.futureAttribute.thenAccept(res -> setResultFieldEntry("futureAttribute: " + res));
     };
   }
 }

@@ -55,5 +55,6 @@ public class FutureAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     checkActionExact(page, "testHandleAsync", "handleAsync: helloHandledAsync");
     checkActionExact(page, "testJoin", "join: hello");
     checkActionExact(page, "testGet", "get: hello");
+    checkActionExact(page, "testFutureAttribute", "futureAttribute: helloAttr");
   }
 }
