@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import umlp.backendrte.common.DatabaseAccessManager;
 import umlp.backendrte.common.DatabaseAccessManager4Neo4j;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.sql.SQLException;
 import java.util.Set;
 

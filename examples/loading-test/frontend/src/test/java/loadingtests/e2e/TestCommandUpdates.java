@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static umlp.test_rte.playwright.ComponentKind.GemButton;

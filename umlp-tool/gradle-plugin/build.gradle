@@ -12,6 +12,7 @@ dependencies {
   implementation group: 'de.se_rwth.commons', name: 'se-commons-gradle', version: mc_version
 
   implementation('com.google.cloud.tools:jib-core:0.27.1')
+  implementation('javax.inject:javax.inject:1')
   implementation('org.jetbrains:annotations:26.0.1')
   implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version // for json
   implementation ('org.yaml:snakeyaml:2.2')

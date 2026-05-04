@@ -1,13 +1,14 @@
 ${tc.signature()}
-${cd4c.method("protected void configure(HttpSecurity http) throws Exception")}
+@Bean
+${cd4c.method("public SecurityFilterChain filterChain(HttpSecurity http) throws Exception")}
 
 // ToDo: insecure!!!!
-http.csrf().disable();
+http.csrf(csrf -> csrf.disable());
 
-http.authorizeRequests((requests) -> {
+http.authorizeHttpRequests((requests) -> {
       var cur = requests;
       for (Map.Entry<HttpMethod, String> noAuthRoute : getNoAuthRoutes()) {
-        cur = requests.antMatchers(noAuthRoute.getKey(), noAuthRoute.getValue()).permitAll();
+        cur = requests.requestMatchers(noAuthRoute.getKey(), noAuthRoute.getValue()).permitAll();
       }
       cur
           .anyRequest()
@@ -15,7 +16,7 @@ http.authorizeRequests((requests) -> {
     }
 );
 
-http.formLogin()
+http.formLogin(form -> form
     .failureHandler(new SimpleUrlAuthenticationFailureHandler() {
       // Note: The HTML error information will not be shown, as spring does not allow the re-use of its error page
       @Override
@@ -43,4 +44,5 @@ http.formLogin()
         sendJSONResponse(response, data);
       }
     })
-    ;
+    );
+return http.build();

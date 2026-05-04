@@ -6,7 +6,7 @@ import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;

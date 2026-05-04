@@ -46,7 +46,7 @@ public class ServerApplicationDecorator extends AbstractDecorator {
 
     ASTCDMethodSignature initMethod = isNeo4jGen? getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.initNeo4j", name)
         : getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.init", name);
-    glex.replaceTemplate("cd2java.Annotations", initMethod, new StringHookPoint("@javax.annotation.PostConstruct "));
+    glex.replaceTemplate("cd2java.Annotations", initMethod, new StringHookPoint("@jakarta.annotation.PostConstruct "));
 
     // services
     var sigNoAuth = getCD4C().addMethod(serverApplicationClass, "umlp.serverapplication.NoAuthWebsocketService");

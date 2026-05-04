@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
   implementation "de.monticore.lang:cd4analysis:$mc_version"
+  implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 }
 
 // TODO: Proper outputs: Turn this Java-Task into a proper task

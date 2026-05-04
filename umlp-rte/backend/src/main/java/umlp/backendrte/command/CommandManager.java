@@ -14,7 +14,7 @@ package umlp.backendrte.command;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.util.LogUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

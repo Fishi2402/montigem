@@ -12,7 +12,7 @@ public class DemoRecServerApplication extends DemoRecServerApplicationTOP {
 
   public static String blobStorageLocation = "";
 
-  @javax.annotation.PostConstruct
+  @jakarta.annotation.PostConstruct
   @Override
   public  void init () throws IOException
   {

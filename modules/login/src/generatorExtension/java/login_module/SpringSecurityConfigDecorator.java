@@ -34,8 +34,6 @@ public class SpringSecurityConfigDecorator extends AbstractDecorator {
     ASTCDClass ast = UMLPMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(name + SUFFIX)
-        .setCDExtendUsage(CDExtendUsageFacade.getInstance().createCDExtendUsage(
-            "WebSecurityConfigurerAdapter"))
         .build();
 
     glex.replaceTemplate("cd2java.Annotations", ast,
@@ -80,7 +78,7 @@ public class SpringSecurityConfigDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "org.springframework.http.HttpHeaders");
     getCD4C().addImport(ast, "org.springframework.security.config.annotation.web.builders.HttpSecurity");
     getCD4C().addImport(ast, "org.springframework.security.config.annotation.web.configuration.EnableWebSecurity");
-    getCD4C().addImport(ast, "org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter");
+    getCD4C().addImport(ast, "org.springframework.security.web.SecurityFilterChain");
     getCD4C().addImport(ast, "org.springframework.security.core.authority.SimpleGrantedAuthority");
     getCD4C().addImport(ast, "org.springframework.security.core.userdetails.UserDetailsService");
     getCD4C().addImport(ast, "org.springframework.security.core.Authentication");
@@ -91,9 +89,9 @@ public class SpringSecurityConfigDecorator extends AbstractDecorator {
     getCD4C().addImport(ast, "org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler");
 
 
-    getCD4C().addImport(ast, "javax.servlet.ServletException");
-    getCD4C().addImport(ast, "javax.servlet.http.HttpServletResponse");
-    getCD4C().addImport(ast, "javax.servlet.http.HttpServletRequest");
+    getCD4C().addImport(ast, "jakarta.servlet.ServletException");
+    getCD4C().addImport(ast, "jakarta.servlet.http.HttpServletResponse");
+    getCD4C().addImport(ast, "jakarta.servlet.http.HttpServletRequest");
     getCD4C().addImport(ast, "java.nio.charset.StandardCharsets");
 
     getCD4C().addImport(ast, "java.io.PrintWriter");

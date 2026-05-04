@@ -13,7 +13,7 @@ import umlp.backendrte.util.LogUtil;
 import umlp.jsweet.extension.annotation.BackendOnly;
 import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 // TODO: Module System: User_create and LoginModuleUser_create have no relation at all
 public class User_create extends User_createTOP {

@@ -7,7 +7,7 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.tagging.SimpleSymbolTagger;
 import de.monticore.tagging.tags._ast.ASTTag;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 

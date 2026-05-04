@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
   @Bean
   public CustomUserDetailsService customUserDetailsService() {
@@ -32,14 +32,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     // ToDo: insecure!!!!
-    http.csrf().disable();
+    http.csrf(csrf -> csrf.disable());
 
-    http.authorizeRequests((requests) -> requests.anyRequest().authenticated());
-    http.formLogin()
+    http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
+    http.formLogin(form -> form
         .failureHandler((request, response, exception) -> {
           Map<String, Object> data = new HashMap<>();
           data.put("success", false);
@@ -50,8 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           Map<String, Object> data = new HashMap<>();
           data.put("success", true);
           sendJSONResponse(response, data);
-        });
-    http.httpBasic();
+        }));
+    http.httpBasic(httpBasic -> {});
+    return http.build();
   }
 
   protected void sendJSONResponse(HttpServletResponse response, Map<String, Object> data) throws IOException {

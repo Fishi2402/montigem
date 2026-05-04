@@ -6,7 +6,7 @@ import de.monticore.tagging.SimpleSymbolTagger;
 import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.monticore.tagging.tags._ast.ASTTargetElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
