@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DAODecorator extends DAOInterfaceDecorator {
@@ -435,7 +436,7 @@ public class DAODecorator extends DAOInterfaceDecorator {
   }
 
   protected ASTCDAttribute createQueryAttr(String attrName) {
-    return getCDAttributeFacade().createAttribute(PRIVATE.build(),
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(),
         getMCTypeFacade().createQualifiedType("String"), attrName);
   }
 
