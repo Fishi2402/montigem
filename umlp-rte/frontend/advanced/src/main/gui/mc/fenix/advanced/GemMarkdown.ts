@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import {Component, HostBinding, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import { Component, HostBinding, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {
   config,
   GemMarkdownComponent,
@@ -20,11 +21,9 @@ import katex from 'katex';
 })
 export class GemMarkdown extends GemMarkdownComponent implements OnChanges {
 
-  // Bind the width to the host element
   @HostBinding('style.width')
   _width: string = '100%';
 
-  // Bind the height to the host element
   @HostBinding('style.height')
   _height: string = '100%';
 
@@ -35,21 +34,28 @@ export class GemMarkdown extends GemMarkdownComponent implements OnChanges {
     breaks: true
   }).use(texmath,{
     engine: katex,
-    delimiters: 'dollars', // supports $...$ and $$...$$
+    delimiters: 'dollars',
     texmath: {
       display: true
     },
     katexOptions: {
       throwOnError: false,
-      strict: false
+      strict: false,
+      fleqn: true
     }
   });
 
-  renderedHtml = '';
+  renderedHtml: SafeHtml = '';
+
+  constructor(private sanitizer: DomSanitizer) {
+    super();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
-      this.renderedHtml = this.md.render(this.value || '');
+      const rawHtml = this.md.render(this.value || '');
+
+      this.renderedHtml = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
     }
   }
 }
