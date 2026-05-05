@@ -12,13 +12,13 @@ import umlp.jsweet.extension.util.GUIAdapterUtils;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
   private static final String DOMAIN_LOCATION = "";
 
-  private Set<String> domainNames = new HashSet<>();
+  private Set<String> domainNames = new LinkedHashSet<>();
 
   public UMLPDomainImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);

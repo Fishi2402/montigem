@@ -52,7 +52,6 @@ import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
@@ -72,7 +71,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -613,10 +612,10 @@ public class GUIGeneratorUtil {
   public String printShortIteratorIterable(ASTGUIIterate iterate) {
     ASTExpression e = getShortIteratorIterable(iterate);
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterationItems = new HashSet<>(finder.getItems(iterate));
+    Collection<ASTExpression> iterationItems = new LinkedHashSet<>(finder.getItems(iterate));
 
     GUIViewElementsFinder gveFinder = new GUIViewElementsFinder();
-    Set<ASTExpression> ignore = new HashSet<>(iterationItems);
+    Set<ASTExpression> ignore = new LinkedHashSet<>(iterationItems);
     ignore.addAll(gveFinder.getGUIViewElements(iterate));
 
     Expression2NullCheckAccessorPrinter printer = new Expression2NullCheckAccessorPrinter(

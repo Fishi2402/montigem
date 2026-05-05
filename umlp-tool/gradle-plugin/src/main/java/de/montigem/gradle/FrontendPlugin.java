@@ -433,7 +433,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
     releaseRepo.mavenContent(filterContent);
 
     project.getDependencies().add("implementation", "org.jsweet:jsweet-core:6.3.0");
-    Dependency dep = project.getDependencies().create("de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.1-UMLP-SNAPSHOT", new Closure<Object>(this, this) {
+    Dependency dep = project.getDependencies().create("de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.2-UMLP-SNAPSHOT", new Closure<Object>(this, this) {
       @Override
       public Object call(Object arg) {
         var emd = (ExternalModuleDependency) arg;

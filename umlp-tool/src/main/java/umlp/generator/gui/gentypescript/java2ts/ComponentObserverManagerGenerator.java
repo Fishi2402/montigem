@@ -17,8 +17,7 @@ import umlp.generator.util.UMLPSymbolTables;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,13 +38,13 @@ public class ComponentObserverManagerGenerator {
     Reporting.off();
     String cdName = ast.getCDDefinition().getName();
     Path targetPath = Paths.get(cdName + "ComponentObserverManager.ts");
-    HashMap<String, String> domainClassNamesToPackageMap = new HashMap<String, String>();
+   LinkedHashMap<String, String> domainClassNamesToPackageMap = new LinkedHashMap<String, String>();
 
     getConcreteDomainClasses(ast.getCDDefinition()).forEach(domainClass ->
         domainClassNamesToPackageMap.put(domainClass.getName(), getCorrectPackage(domainClass)));
 
     var extensionDiamond = UMLPSymbolTables.getExtensionDiamond(ast.getCDDefinition().getSymbol());
-    HashSet<DiagramSymbol> allParentDiagrams = extensionDiamond.values().stream().reduce(new LinkedHashSet<>(),
+    LinkedHashSet<DiagramSymbol> allParentDiagrams = extensionDiamond.values().stream().reduce(new LinkedHashSet<>(),
         (acc, set) -> {
           acc.addAll(set); return acc;
     });
@@ -65,7 +64,7 @@ public class ComponentObserverManagerGenerator {
         }
     ));
 
-    List<String> names = new ArrayList<>(new HashSet<>(domainClassNamesToPackageMap.values()));
+    List<String> names = new ArrayList<>(new LinkedHashSet<>(domainClassNamesToPackageMap.values()));
 
     generatorEngine.generateNoA("umlp.gui2ts.TSComponentObserverManager", targetPath, ast,
         cdName, names, domainClassNamesToPackageMap);

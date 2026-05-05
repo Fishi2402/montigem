@@ -36,8 +36,8 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -272,15 +272,15 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
   }
 
-  private Map<String, Set<OverloadScanner.Overload>> overloads = new HashMap<>();
+  private Map<String, Set<OverloadScanner.Overload>> overloads = new LinkedHashMap<>();
 
   @Override
   public boolean substituteOverloadMethodBody(TypeElement parentTypeElement,
       OverloadScanner.Overload overload) {
     if (adapterUtils.isSynchronized(overload.getCoreMethodElement())) {
-      Set classOverloads = this.overloads.computeIfAbsent(
+      Set<OverloadScanner.Overload> classOverloads = this.overloads.computeIfAbsent(
           parentTypeElement.getQualifiedName().toString(),
-          a -> new HashSet<>());
+          a -> new LinkedHashSet<>());
       classOverloads.add(overload);
     }
     return super.substituteOverloadMethodBody(parentTypeElement, overload);

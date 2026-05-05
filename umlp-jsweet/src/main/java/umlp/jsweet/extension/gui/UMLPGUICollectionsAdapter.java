@@ -14,7 +14,7 @@ import umlp.jsweet.extension.util.RTEPathUtil;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -69,7 +69,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
     if (targetExpression != null && targetExpression.getTypeAsElement() != null) {
       targetClassName = targetExpression.getTypeAsElement().toString();
     }
-    TypeMirror jdkSuperclass = getContext().getJdkSuperclass(targetClassName, new HashSet<>());
+    TypeMirror jdkSuperclass = getContext().getJdkSuperclass(targetClassName, new LinkedHashSet<>());
     boolean delegate = jdkSuperclass != null;
     if (delegate) {
       targetClassName = jdkSuperclass.toString();

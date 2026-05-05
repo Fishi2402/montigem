@@ -10,7 +10,7 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 // TODO AGe: potential name conflicts
@@ -19,7 +19,7 @@ public class GUINodeIdTrafo implements GUIDSLVisitor2 {
   protected GUIDSLTraverser traverser;
   protected int counter = 0;
   protected boolean collectNamesMode = true;
-  protected Set<String> existingNames = new HashSet<>();
+  protected Set<String> existingNames = new LinkedHashSet<>();
 
   public GUINodeIdTrafo() {
     traverser = GUIDSLMill.traverser();

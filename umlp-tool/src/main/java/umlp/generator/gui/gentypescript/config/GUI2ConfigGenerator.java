@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -198,7 +198,7 @@ public class GUI2ConfigGenerator {
   }
 
   protected Map<String, PackageRoute> getAppPath2RouteMap(Collection<PackageRoute> routes) {
-    Map<String, PackageRoute> routeMap = new HashMap<>();
+    Map<String, PackageRoute> routeMap = new LinkedHashMap<>();
     for (PackageRoute route : routes) {
       String relativePath = "./" + route.getPathFromRoot();
       Path appRouteFolder = setup.getOutputDirectory().toPath();

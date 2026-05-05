@@ -58,7 +58,7 @@ dependencies {
   implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.1'
 
   implementation group: 'org.jsweet', name: 'jsweet-core', version: "6.3.0"
-  implementation(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: '3.2.1-UMLP-SNAPSHOT'){
+  implementation(group: 'de.rwth.se.umlp.jsweet', name: 'jsweet-transpiler', version: jsweet_transpiler_version){
     exclude(group: "com.kohlschutter.jdk", module: "standalone-home") // conflict with standalone-jdk21
     exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21
   }

@@ -6,14 +6,12 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import umlp.MillConf;
-import umlp.UMLPMill;
 import umlp.UMLPTool;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BEDecorator extends AbstractDecorator {
@@ -26,7 +24,7 @@ public class BEDecorator extends AbstractDecorator {
 
   protected MCPath hwPath;
 
-  protected Set<String> supportedDesers = new HashSet<>();
+  protected Set<String> supportedDesers = new LinkedHashSet<>();
 
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
     super(glex);
@@ -52,7 +50,7 @@ public class BEDecorator extends AbstractDecorator {
   }
 
   public static Set<String> getStandardSupportedDeSers() {
-    Set<String> standardSupportedDeSers = new HashSet<>();
+    Set<String> standardSupportedDeSers = new LinkedHashSet<>();
 
     standardSupportedDeSers.add("java.time.LocalDate");
     standardSupportedDeSers.add("java.time.LocalDateTime");

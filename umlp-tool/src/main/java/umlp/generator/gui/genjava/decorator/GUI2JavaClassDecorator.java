@@ -72,10 +72,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected List<Method> addedMethods = new ArrayList<>();
   protected boolean extendedDomainObserver = false;
   boolean getScopeAdded = false;
-  protected Set<String> implementedAssocObservers = new HashSet<>();
-  protected Set<String> subscribedManagerEvents = new HashSet<>();
-  protected Map<String, NotifyMethodTemplate> notifyDeleted = new HashMap<>();
-  protected Map<String, NotifyMethodTemplate> notifyAdded = new HashMap<>();
+  protected Set<String> implementedAssocObservers = new LinkedHashSet<>();
+  protected Set<String> subscribedManagerEvents = new LinkedHashSet<>();
+  protected Map<String, NotifyMethodTemplate> notifyDeleted = new LinkedHashMap<>();
+  protected Map<String, NotifyMethodTemplate> notifyAdded = new LinkedHashMap<>();
 
   public GUI2JavaClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -370,8 +370,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
       // add getter
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-      Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+      Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+      Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
           new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -382,7 +382,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       Expression2NullCheckPrinter nullCheckPrinter = new Expression2NullCheckPrinter(getterPrinter);
 
       String nullCheck = nullCheckPrinter.prettyprint(arg.getExpression());
-      
+
       ASTExpression argExpr = arg.getExpression();
       if (GUIDSLMill.typeDispatcher().isCommonExpressionsASTCallExpression(argExpr)) {
         ASTCallExpression methodCall = GUIDSLMill.typeDispatcher().asCommonExpressionsASTCallExpression(argExpr);
@@ -513,8 +513,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add getter
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+    Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
         new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -574,8 +574,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add getter
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+    Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
         new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -673,8 +673,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
         // add attr init
         IterationItemsFinder finder = new IterationItemsFinder();
-        Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-        Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+        Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+        Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
         Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
             new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -750,8 +750,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       String name = attr.getName();
 
       IterationItemsFinder finder = new IterationItemsFinder();
-      Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-      Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+      Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+      Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
       Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
           new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -920,7 +920,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                     node.get_SourcePositionEnd());
               }
               ASTExpression navArgExpr = node.getArguments().getExpression(0);
-              
+
               if (TypeScriptTypes.CONSUMER.getJavaQName().isPresent()) {
                 addImport(TypeScriptTypes.CONSUMER.getJavaQName().get());
               }
@@ -930,7 +930,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
               if (TypeScriptTypes.ROUTER.getJavaQName().isPresent()) {
                 addImport(TypeScriptTypes.ROUTER.getJavaQName().get());
               }
-              
+
               if (util.isStringLiteral(navArgExpr)) {
                 ASTLiteralExpression routingUrlExpr = GUIDSLMill.typeDispatcher().asExpressionsBasisASTLiteralExpression(navArgExpr);
                 ASTStringLiteral routingUrl = GUIDSLMill.typeDispatcher().asMCCommonLiteralsASTStringLiteral(routingUrlExpr.getLiteral());
@@ -1004,8 +1004,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         }
 
         IterationItemsFinder finder = new IterationItemsFinder();
-        Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-        Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+        Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+        Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
         Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
             new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -1035,8 +1035,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           ExpressionPrinterConfig.getInstance().customConversions.put(node,
               n -> ExpressionPrinterConfig.attr2Getter(node) + "Gem().load()");
         }
-        Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-        Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+        Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+        Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
         Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
             new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -1219,8 +1219,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         .getExpression(0)).getExpression();
 
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+    Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
         new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -1255,8 +1255,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         .getExpression(0)).getExpression();
 
     IterationItemsFinder finder = new IterationItemsFinder();
-    Collection<ASTExpression> iterateItems = new HashSet<>(finder.getItems(gui));
-    Collection<ASTExpression> nonClassMembers = new HashSet<>(iterateItems);
+    Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
 
     Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
         new IndentPrinter(), false, iterateItems, nonClassMembers
@@ -1277,7 +1277,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected String getConvertedValueAssignment(String type, String varName, String value) {
     return type + " " + varName + " = " + value;
   }
-  
+
   private void printNavigateMethod(Method method, ASTCallExpression node, ASTGUIComponent guiComponent) {
     String pageName = guiComponent.getName();
     String path = Names.getPathFromQualifiedName(guiComponent.getNameSymbol().getFullName());
@@ -1300,13 +1300,13 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       getCD4C().addMethod(clazz, getNavigateTemplate(), method.getAlias(), path, pageName);
     }
   }
-  
+
   private void prepareNavigateEventCaller(ASTCallExpression node, ASTGUIComponent guiComponent) {
     // remove GUIViewElement argument
     if (node.getArguments().sizeExpressions() == 1) {
       node.getArguments().removeExpression(0);
     }
-    
+
     if (guiComponent.getGUINamedArgs().sizeGUINamedArgs() > 0) {
       for (ASTGUINamedArg namedArg : guiComponent.getGUINamedArgs().getGUINamedArgList()) {
         SymTypeExpression typeSTE = guiComponent.getArgumentTypes().get(namedArg);
@@ -1643,15 +1643,15 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected String getCommandExecutionTemplate() {
     return "umlp.gui2java.GUI2JavaExecuteCommandMethod";
   }
-  
+
   protected String getNavigateTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaNavigate";
   }
-  
+
   protected String getNavigateStringTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaNavigateString";
   }
-  
+
   protected String getNavigateWithIdTemplate() {
     return "umlp.gui2java.predefined.GUI2JavaNavigateWithId";
   }

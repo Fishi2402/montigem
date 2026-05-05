@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,7 +29,7 @@ public enum TSImportMap {
   INSTANCE;
 
   // key: javaPackage, value: tsPackage
-  private final Map<String, String> importMap = new HashMap<>();
+  private final Map<String, String> importMap = new LinkedHashMap<>();
   public static final String JSWEET_RTE = "@umlp/commonj2ts";
   public static final String COMMON = "@umlp/common";
   public static final String BACKEND_RTE = "umlp.backendrte";

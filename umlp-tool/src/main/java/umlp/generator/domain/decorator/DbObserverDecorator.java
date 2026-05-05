@@ -21,7 +21,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,7 +82,6 @@ public class DbObserverDecorator extends AbstractDecorator {
           getCD4C().addImport(observerClass, getPackageName(typeCD, DEFAULT_PACKAGE) + "." + definingType.getName());
         });
 
-    Set<String> daoFactoryImports = new HashSet<>();
     for (Map.Entry<ASTCDAssocSide, ASTCDAssociation> e : UMLPSymbolTables.getOppositeSideToAssociationMap(domainClass).entrySet()) {
       if (!e.getValue().getModifier().isDerived()) {
         CDRoleSymbol cdRollSymbol = e.getKey().getSymbol();
@@ -136,7 +135,7 @@ public class DbObserverDecorator extends AbstractDecorator {
   protected void addImports(ASTCDClass domainClass, ASTCDType observerClass) {
     getCD4C().addImport(observerClass, PathUtil.getBackendRTECommonPath("DatabaseAccessManager"));
 
-    Set<String> daoFactoriesFromExtendedCDs = new HashSet<>();
+    Set<String> daoFactoriesFromExtendedCDs = new LinkedHashSet<>();
     List<ASTCDAssocSide> assocSides = CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(GenService::isVisible).collect(Collectors.toList());
     assocSides.stream()

@@ -10,7 +10,7 @@ import umlp.jsweet.extension.AbstractAdapter;
 import javax.lang.model.type.TypeMirror;
 import java.util.Collection;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +23,7 @@ public class JavaStreamAdapter extends AbstractAdapter {
     super(parentAdapter);
   }
 
-  protected static final Set<String> SUPPORTED_STREAM_METHODS = new HashSet<>(Arrays.asList(
+  protected static final Set<String> SUPPORTED_STREAM_METHODS = new LinkedHashSet<>(Arrays.asList(
       "filter", "map", "flatMap", "distinct", "sorted", "peek", "limit", "skip",
       "forEach", "forEachOrdered", "toArray", "reduce", "collect",
       "min", "max", "count", "anyMatch", "allMatch", "noneMatch",
@@ -31,7 +31,7 @@ public class JavaStreamAdapter extends AbstractAdapter {
       "toList"
   ));
 
-  protected static final Set<String> NUMERICAL_MAP_METHODS = new HashSet<>(Arrays.asList(
+  protected static final Set<String> NUMERICAL_MAP_METHODS = new LinkedHashSet<>(Arrays.asList(
       "mapToInt", "mapToLong", "mapToDouble",
       "flatMapToInt", "flatMapToLong", "flatMapToDouble"
   ));

@@ -19,7 +19,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,7 +123,7 @@ public class UMLPAdapterUtils {
   }
 
   public Set<TypeElement> listSuperTypes(TypeElement type) {
-    Set<TypeElement> result = new HashSet<>();
+    Set<TypeElement> result = new LinkedHashSet<>();
 
     if (type.getAnnotationsByType(Erased.class).length > 0) {
       // Do not inspect @Erased classes (because they might be async)
@@ -144,12 +144,12 @@ public class UMLPAdapterUtils {
   public Set<String> listSuperTypesNames(TypeElement type) {
     return listSuperTypes(type).stream()
         .map(t -> t.getQualifiedName().toString())
-        .collect(Collectors.toSet());
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   public Set<ExecutableElement> listMatchingSuperMethods(TypeElement typeElement,
       ExecutableElement methodElement) {
-    Set<ExecutableElement> result = new HashSet<>();
+    Set<ExecutableElement> result = new LinkedHashSet<>();
     for (TypeElement superType : listSuperTypes(typeElement)) {
       OverloadScanner.Overload overload = context.getOverload(superType, methodElement);
       if (overload != null) {

@@ -18,7 +18,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,7 +29,7 @@ public class CallTypeDeriver implements GUIDSLVisitor2 {
   protected final GUIGeneratorUtil util = GUIGeneratorUtil.getInstance();
   protected static CallTypeDeriver instance;
 
-  protected Map<ASTExpression, SymTypeExpression> exp2Type = new HashMap<>();
+  protected Map<ASTExpression, SymTypeExpression> exp2Type = new LinkedHashMap<>();
 
   public static CallTypeDeriver getInstance() {
     if (instance == null) {
@@ -57,7 +57,7 @@ public class CallTypeDeriver implements GUIDSLVisitor2 {
   }
 
   public void reset() {
-    exp2Type = new HashMap<>();
+    exp2Type = new LinkedHashMap<>();
   }
 
   public boolean hasReturnType(ASTCallExpression node) {

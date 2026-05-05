@@ -21,6 +21,7 @@ import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.function.Predicate;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -164,7 +165,7 @@ public class ManagerDecorator extends AbstractDecorator {
       }
 
       // Associations
-      Collection<String> types = Sets.newHashSet();
+      Collection<String> types = new LinkedHashSet<>();
       CDSymbolTables.getAssociations(domainClass).stream()
           .filter(a -> !types.contains(a.getName()))
           .filter(Predicate.not(GenService::isSymbolDerived))
@@ -209,7 +210,7 @@ public class ManagerDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
 
       // Associations
-      Collection<String> types = Sets.newHashSet();
+      Collection<String> types = new LinkedHashSet<>();
       CDSymbolTables.getAssociations(domainInterface).stream()
           .filter(GenService::isList)
           .filter(a -> !types.contains(a.getName()))

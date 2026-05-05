@@ -11,7 +11,7 @@ import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Combines common elements for all Adapters
@@ -22,7 +22,7 @@ public abstract class AbstractAdapter extends PrinterAdapter {
   private static final String UMLP_COMMONJ2TS_RTE_POINTER = "@umlp/commonj2ts";
   private static final String UMLP_COMMON_RTE_POINTER = "@umlp/common";
 
-  private HashMap<String, String> staticLibrary = new HashMap<>();
+  private LinkedHashMap<String, String> staticLibrary = new LinkedHashMap<>();
 
   protected boolean isAsyncList = true;
   protected RTE_OPTION rte = RTE_OPTION.COMMONJ2TS_RTE;
@@ -75,7 +75,7 @@ public abstract class AbstractAdapter extends PrinterAdapter {
     return this.staticLibrary.containsKey(type);
   }
 
-  protected HashMap<String, String> getStaticLibrary() {
+  protected LinkedHashMap<String, String> getStaticLibrary() {
     return this.staticLibrary;
   }
 

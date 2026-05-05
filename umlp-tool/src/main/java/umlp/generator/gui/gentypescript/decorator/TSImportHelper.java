@@ -16,14 +16,14 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 public class TSImportHelper {
 
-  protected Set<String> importSet = new HashSet<>();
+  protected Set<String> importSet = new LinkedHashSet<>();
   protected final GlobalExtensionManagement glex;
   protected final ASTCDType cdType;
   protected final MCPath hwPath;

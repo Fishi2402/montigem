@@ -17,7 +17,7 @@ import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
@@ -33,7 +33,7 @@ public class InitDependencyTree implements GUIDSLVisitor2, CommonExpressionsVisi
   protected static InitDependencyTree instance;
 
   protected Stack<InitDependency> depStack = new Stack<>();
-  protected Map<ASTNode, InitDependency> nodeDepMap = new HashMap<>();
+  protected Map<ASTNode, InitDependency> nodeDepMap = new LinkedHashMap<>();
   protected Optional<ASTNode> jump = Optional.empty();
 
   public static InitDependencyTree getInstance() {

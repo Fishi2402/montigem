@@ -14,9 +14,8 @@ import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -51,7 +50,7 @@ public class HTMLHelper implements GUIDSLVisitor2 {
   protected Optional<ASTExpression> currentComp = Optional.empty();
   protected Optional<ASTGUIGuard> currentGuard = Optional.empty();
   protected Optional<ASTGUIIterate> currentIterate = Optional.empty();
-  protected Set<ASTExpression> currentBlocks = new HashSet<>();
+  protected Set<ASTExpression> currentBlocks = new LinkedHashSet<>();
 
   public HTMLHelper(ASTGUICompilationUnit ast) {
     traverser = GUIDSLMill.traverser();

@@ -19,9 +19,7 @@ import umlp.generator.AbstractDecorator;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.UMLPSymbolTables;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static umlp.generator.domain.decorator.GenService.createType;

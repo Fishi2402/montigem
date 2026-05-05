@@ -15,12 +15,12 @@ import umlp.jsweet.extension.util.GUIAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class GUIUtilAdapter extends AbstractAdapter {
 
-  Map<String, String> utilClasses = new HashMap();
+  Map<String, String> utilClasses = new LinkedHashMap();
 
   public GUIUtilAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);

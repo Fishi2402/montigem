@@ -12,7 +12,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -68,9 +68,9 @@ public class IterationItemsFinder implements ExpressionsBasisVisitor2 {
    * accessors and mutators instead of direct attribute access.
    */
   public Collection<ASTNameExpression> getItems(ASTNode tree) {
-    items = new HashSet<>();
+    items = new LinkedHashSet<>();
     tree.accept(traverser);
-    return new HashSet<>(items);
+    return new LinkedHashSet<>(items);
   }
 
   @Override

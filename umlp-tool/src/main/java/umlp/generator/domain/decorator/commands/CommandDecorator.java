@@ -9,7 +9,7 @@ import umlp.generator.AbstractDecorator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public class CommandDecorator extends AbstractDecorator {
 
   public static final String DE_SER = "DeSer";
 
-  protected Set<String> supportedDeSers = new HashSet<>();
+  protected Set<String> supportedDeSers = new LinkedHashSet<>();
 
   public CommandDecorator(GlobalExtensionManagement glex) {
     super(glex);

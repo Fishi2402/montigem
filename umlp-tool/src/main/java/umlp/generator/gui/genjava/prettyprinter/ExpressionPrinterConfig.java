@@ -8,7 +8,7 @@ import de.se_rwth.commons.StringTransformations;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.gui.GUIGeneratorUtil;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -16,7 +16,7 @@ public class ExpressionPrinterConfig {
 
   protected static ExpressionPrinterConfig instance;
 
-  public Map<ASTExpression, Function<ASTExpression, String>> customConversions = new HashMap<>();
+  public Map<ASTExpression, Function<ASTExpression, String>> customConversions = new LinkedHashMap<>();
 
   public static ExpressionPrinterConfig getInstance() {
     if (instance == null) {

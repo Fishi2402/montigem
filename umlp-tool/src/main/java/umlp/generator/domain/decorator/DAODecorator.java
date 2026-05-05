@@ -357,8 +357,8 @@ public class DAODecorator extends DAOInterfaceDecorator {
   @Override
   protected void addImports(ASTCDType domainClass, ASTCDType clazz) {
     super.addImports(domainClass, clazz);
-    Set<String> managersFromExtendedCDs = new HashSet<>();
-    Set<String> daoFactoriesFromExtendedCDs = new HashSet<>();
+    Set<String> managersFromExtendedCDs = new LinkedHashSet<>();
+    Set<String> daoFactoriesFromExtendedCDs = new LinkedHashSet<>();
     UMLPSymbolTables.getOppositeSideToAssociationMap((ASTCDClass) domainClass).values().stream()
         .filter(association -> ! UMLPSymbolTables.getDiagramFor(association).getCDDefinition().getName().equals(
             UMLPSymbolTables.getDiagramFor(domainClass).getCDDefinition().getName()))

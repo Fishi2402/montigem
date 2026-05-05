@@ -49,8 +49,8 @@ import umlp.generator.gui.gentypescript.printer.TypeScriptTypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,10 +69,10 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
   protected String curComp = "";
   protected String curArg = "";
   protected Optional<ASTGUINamedArg> lastArg = Optional.empty();
-  protected Map<ASTSetEnumeration, SymTypeExpression> listTypes = new HashMap<>();
+  protected Map<ASTSetEnumeration, SymTypeExpression> listTypes = new LinkedHashMap<>();
 
-  protected Map<ASTNode, Attribute> node2Attr = new HashMap<>();
-  protected Map<ASTNode, Method> node2Method = new HashMap<>();
+  protected Map<ASTNode, Attribute> node2Attr = new LinkedHashMap<>();
+  protected Map<ASTNode, Method> node2Method = new LinkedHashMap<>();
 
   boolean insideIterateControl = false;
 
@@ -110,9 +110,9 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     curComp = "";
     curArg = "";
     lastArg = Optional.empty();
-    listTypes = new HashMap<>();
-    node2Attr = new HashMap<>();
-    node2Method = new HashMap<>();
+    listTypes = new LinkedHashMap<>();
+    node2Attr = new LinkedHashMap<>();
+    node2Method = new LinkedHashMap<>();
   }
 
   public Map<ASTNode, Attribute> getNode2Attr() {
@@ -335,7 +335,7 @@ public class StaticObjectsCollector implements GUIDSLVisitor2, CommonExpressions
     if (insideIterateControl) {
       scope = scope.getEnclosingScope();
     }
-    Set<String> importSet = new HashSet<>();
+    Set<String> importSet = new LinkedHashSet<>();
     List<ASTCDParameter> params = new ArrayList<>();
     for (VariableSymbol vs : util.findIterationItemSymbols(scope)) {
       ASTMCType paramType = createTypeAndAddImports(vs.getType(), importSet);

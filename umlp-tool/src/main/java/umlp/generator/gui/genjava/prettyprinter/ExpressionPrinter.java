@@ -3,11 +3,10 @@ package umlp.generator.gui.genjava.prettyprinter;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.guidsl._prettyprint.GUIDSLFullPrettyPrinter;
-import de.monticore.guidsl._prettyprint.GUIDSLPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public abstract class ExpressionPrinter extends GUIDSLFullPrettyPrinter {
 
@@ -17,7 +16,7 @@ public abstract class ExpressionPrinter extends GUIDSLFullPrettyPrinter {
   protected final boolean printComments;
 
   public ExpressionPrinter(IndentPrinter printer, boolean printComments) {
-    this(printer, printComments, new HashSet<>(), new HashSet<>());
+    this(printer, printComments, new LinkedHashSet<>(), new LinkedHashSet<>());
   }
 
   public ExpressionPrinter(

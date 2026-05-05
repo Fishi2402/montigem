@@ -12,14 +12,13 @@ import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.gentypescript.decorator.TSImportHelper;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,7 +37,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
   protected ASTGUICompilationUnit gui;
   protected TSImportHelper importHelper;
 
-  protected Set<String> imports = new HashSet<>();
+  protected Set<String> imports = new LinkedHashSet<>();
 
   public GUIComponentAnnotationDecoratorAndStandaloneConfig(
       final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
@@ -118,7 +117,7 @@ public class GUIComponentAnnotationDecoratorAndStandaloneConfig implements GUIDS
           }
         }
         String selector = GUIGeneratorUtil.getInstance().pascal2KebabCase(originalName);
-        imports = new HashSet<>();
+        imports = new LinkedHashSet<>();
         gui.accept(traverser);
         glex.replaceTemplate(
             GUI2ComponentTemplates.ANNOTATIONS,
