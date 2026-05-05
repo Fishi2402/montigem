@@ -51,12 +51,16 @@ page GemMarkdownExample() {
         "## 8) Mixed content\n" +
         "- **Important:** Tables, lists, and code can be combined\n" +
         "- *Note:* The CSS file controls spacing, colors, and typography\n" +
-        "- `GemMarkdown` renders the Markdown content directly in the component\n",
+        "- `GemMarkdown` renders the Markdown content directly in the component\n" +
+        "\n" +
+        "## 9) Formulas\n" +
+        "Inline formula: $c = \\sqrt{a^2 + b^2}$\n\n" +
+        "Block formula:\n" +
+        "$$\n" +
+        "\\sum_{i=1}^n i = \\frac{n(n+1)}{2}\n" +
+        "$$\n",
         width = "100%",
         height = "100%"
-      ),
-      @GemMarkdown(
-        value = "This is just normal text"
       )
     ]),
     basePath = "example_advanced",
