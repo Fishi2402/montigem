@@ -37,7 +37,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
         result.append("Map<");
         List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
         for (int i = 0; i < typeArgs.size(); i++) {
-          String qualifiedTypeName = getMappedType(typeArgs.get(i));
+          String qualifiedTypeName = getMappedTypeArgument(typeArgs.get(i));
           result.append(qualifiedTypeName);
           if (i < typeArgs.size() - 1) {
             result.append(", ");
@@ -48,6 +48,16 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
       }
       return null;
     };
+  }
+
+  private String getMappedTypeArgument(TypeMirror type) {
+    for (Function<TypeMirror, String> mapping : getTypeMirrorMappings()) {
+      String mapped = mapping.apply(type);
+      if (mapped != null) {
+        return mapped;
+      }
+    }
+    return getMappedType(type);
   }
 
   @Override
@@ -98,6 +108,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
         case "java.util.Map":
         case "java.util.AbstractMap":
         case "java.util.HashMap":
+        case "java.util.concurrent.ConcurrentHashMap":
         case "java.util.NavigableMap":
         case "java.util.TreeMap":
         case "java.util.Hashtable":
@@ -268,6 +279,7 @@ public class UMLPGUICollectionsAdapter extends PrinterAdapter {
       case "java.util.Map":
       case "java.util.AbstractMap":
       case "java.util.HashMap":
+      case "java.util.concurrent.ConcurrentHashMap":
       case "java.util.NavigableMap":
       case "java.util.TreeMap":
       case "java.util.Hashtable":

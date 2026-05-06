@@ -74,7 +74,7 @@ public class CollectionsAdapter extends AbstractAdapter {
         result.append("Map<");
         List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
         for (int i = 0; i < typeArgs.size(); i++) {
-          String qualifiedTypeName = getMappedType(typeArgs.get(i));
+          String qualifiedTypeName = getMappedTypeArgument(typeArgs.get(i));
           result.append(qualifiedTypeName);
           if (i < typeArgs.size() - 1) {
             result.append(", ");
@@ -85,6 +85,16 @@ public class CollectionsAdapter extends AbstractAdapter {
       }
       return null;
     };
+  }
+
+  private String getMappedTypeArgument(TypeMirror type) {
+    for (Function<TypeMirror, String> mapping : getTypeMirrorMappings()) {
+      String mapped = mapping.apply(type);
+      if (mapped != null) {
+        return mapped;
+      }
+    }
+    return getMappedType(type);
   }
 
   @Override
@@ -147,6 +157,7 @@ public class CollectionsAdapter extends AbstractAdapter {
         case "java.util.Map":
         case "java.util.AbstractMap":
         case "java.util.HashMap":
+        case "java.util.concurrent.ConcurrentHashMap":
         case "java.util.NavigableMap":
         case "java.util.TreeMap":
         case "java.util.Hashtable":
@@ -342,6 +353,7 @@ public class CollectionsAdapter extends AbstractAdapter {
       case "java.util.Map":
       case "java.util.AbstractMap":
       case "java.util.HashMap":
+      case "java.util.concurrent.ConcurrentHashMap":
       case "java.util.NavigableMap":
       case "java.util.TreeMap":
       case "java.util.Hashtable":

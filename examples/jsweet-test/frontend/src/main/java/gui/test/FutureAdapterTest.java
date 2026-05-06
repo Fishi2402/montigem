@@ -228,4 +228,23 @@ public class FutureAdapterTest extends FutureAdapterTestTOP {
       this.futureAttribute.thenAccept(res -> setResultFieldEntry("futureAttribute: " + res));
     };
   }
+
+  public Consumer<Void> testAllOf() {
+    return (Void) -> {
+      String input = getRawInput();
+      CompletableFuture<String> f1 = CompletableFuture.completedFuture(input + "1");
+      CompletableFuture<String> f2 = CompletableFuture.completedFuture(input + "2");
+      CompletableFuture.allOf(f1, f2)
+          .thenAccept(res -> setResultFieldEntry("allOf: done"));
+    };
+  }
+
+  public Consumer<Void> testAnyOf() {
+    return (Void) -> {
+      String input = getRawInput();
+      CompletableFuture<String> f1 = CompletableFuture.completedFuture(input + "Any");
+      CompletableFuture.anyOf(f1)
+          .thenAccept(res -> setResultFieldEntry("anyOf: " + res));
+    };
+  }
 }

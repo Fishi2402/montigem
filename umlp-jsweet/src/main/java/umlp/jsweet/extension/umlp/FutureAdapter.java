@@ -24,10 +24,13 @@ public class FutureAdapter extends AbstractAdapter {
 
   public Function<TypeMirror, String> computeJavaFutureTypeMapping() {
     return (TypeMirror type) -> {
-      TypeMirror mappedType = mapFutureType(type);
-      if (mappedType != null) {
-        String typeName = this.getMappedType(mappedType);
-        return "Promise<" + typeName + ">";
+      if (isFuture(type)) {
+        TypeMirror mappedType = mapFutureType(type);
+        if (mappedType != null) {
+          String typeName = this.getMappedType(mappedType);
+          return "Promise<" + typeName + ">";
+        }
+        return "Promise<any>";
       }
       return null;
     };
@@ -54,7 +57,7 @@ public class FutureAdapter extends AbstractAdapter {
   @Override
   public TypeMirror mapType(TypeMirror type) {
     if (isFuture(type)) {
-      return type;
+      return null;
     }
     return super.mapType(type);
   }
@@ -95,10 +98,12 @@ public class FutureAdapter extends AbstractAdapter {
         print("new Promise<void>((resolve) => { (").print(args.get(0)).print(")(); resolve(); })");
         return true;
       case "completedFuture":
+      case "completedStage":
         printMacroName(methodName);
         print("Promise.resolve(").printArgList(args).print(")");
         return true;
       case "failedFuture":
+      case "failedStage":
         printMacroName(methodName);
         print("Promise.reject(").printArgList(args).print(")");
         return true;
@@ -117,6 +122,8 @@ public class FutureAdapter extends AbstractAdapter {
         print("(").print(target).print(").then(() => (").print(args.get(0)).print(")())");
         return true;
       case "exceptionally":
+      case "exceptionallyCompose":
+      case "exceptionallyComposeAsync":
         printMacroName(methodName);
         print("(").print(target).print(").catch(").print(args.get(0)).print(")");
         return true;
@@ -134,6 +141,14 @@ public class FutureAdapter extends AbstractAdapter {
       case "join":
         printMacroName(methodName);
         print("(await (").print(target).print("))");
+        return true;
+      case "allOf":
+        printMacroName(methodName);
+        print("Promise.all([").printArgList(args).print("]).then(() => {})");
+        return true;
+      case "anyOf":
+        printMacroName(methodName);
+        print("Promise.race([").printArgList(args).print("])");
         return true;
     }
     return false;
