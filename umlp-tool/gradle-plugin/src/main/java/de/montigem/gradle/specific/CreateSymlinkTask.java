@@ -2,17 +2,13 @@ package de.montigem.gradle.specific;
 
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-
 
 public abstract class CreateSymlinkTask extends DefaultTask {
 
@@ -25,6 +21,10 @@ public abstract class CreateSymlinkTask extends DefaultTask {
   }
 
   protected static void createSymLink(File linkDir, File targetDir) {
+    createSymLink(linkDir, targetDir, true);
+  }
+
+  protected static void createSymLink(File linkDir, File targetDir, boolean retry) {
     try {
       String linkPath = linkDir.getCanonicalPath();
       String targetPath = targetDir.getCanonicalPath();
@@ -44,29 +44,37 @@ public abstract class CreateSymlinkTask extends DefaultTask {
         }
 
         if (isWindows()) {
-          // Use cmd to create a junction
-          String command = String.format("cmd /c mklink /J \"%s\" \"%s\"", linkPath, targetPath);
-          Process process = Runtime.getRuntime().exec(command);
-          int exitCode = process.waitFor();
-
-          if (exitCode == 0) {
-            System.out.println("✅ Junction created: " + linkPath + " → " + targetPath);
-          }
-          else {
-            Log.error("❌ Failed to create junction. Exit code: " + exitCode);
-          }
-        }
-        else {
-          // Unix/Linux: create symlink using Java API
-          java.nio.file.Files.createSymbolicLink(linkDir.toPath(), targetDir.toPath());
+          createJunction(linkPath, targetPath);
+        } else {
+          Files.createSymbolicLink(linkDir.toPath(), targetDir.toPath());
           Log.info("✅ Symlink created: " + linkPath + " → " + targetPath, CreateSymlinkTask.TASK_NAME);
         }
-      }
-      else {
+      } else {
         Log.info("ℹ️ Symlink already exists: " + linkPath, CreateSymlinkTask.TASK_NAME);
       }
     } catch (InterruptedException | IOException e) {
-      Log.error("❌ Failed to create symlink: " + e.getMessage());
+      if (retry) {
+        try {
+          Files.deleteIfExists(linkDir.toPath());
+          createSymLink(linkDir, targetDir, false);
+        } catch (IOException deleteException) {
+          Log.error("❌ Failed to delete old link before retrying: " + deleteException.getMessage());
+        }
+      } else {
+        Log.error("❌ Failed to create symlink: " + e.getMessage());
+      }
+    }
+  }
+
+  private static void createJunction(String linkPath, String targetPath) throws IOException, InterruptedException {
+    String command = String.format("cmd /c mklink /J \"%s\" \"%s\"", linkPath, targetPath);
+    Process process = Runtime.getRuntime().exec(command);
+    int exitCode = process.waitFor();
+
+    if (exitCode == 0) {
+      System.out.println("✅ Junction created: " + linkPath + " → " + targetPath);
+    } else {
+      throw new IOException("Failed to create junction. Exit code: " + exitCode);
     }
   }
 
