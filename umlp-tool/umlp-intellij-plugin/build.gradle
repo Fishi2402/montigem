@@ -111,6 +111,7 @@ if(shouldBuildIntelliJPlugin) {
 
   runIde {
     args += lspWorkdir
+    environment  "LSP_PORT", "3000"
   }
 
   jar.dependsOn parent.tasks.packUMLPWithGUILanguageServer
