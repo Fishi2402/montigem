@@ -9,6 +9,7 @@ plugins {
   id 'de.rwth.se.montigem' // See "umlp-tool/src/main/java/gradle"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
   id "com.github.node-gradle.node" version "5.0.0"
+  id "jacoco-report-aggregation"
 }
 
 ecj {
@@ -182,6 +183,65 @@ project(":umlp-rte:frontend").afterEvaluate { rte ->
       }
     }
   }
+}
+
+dependencies{
+  jacocoAggregation project(':umlp-jsweet')
+  jacocoAggregation "umlp:umlp-tool"
+}
+
+reporting{
+  reports{
+    testCodeCoverageReport(JacocoCoverageReport){
+      testType = TestSuiteType.UNIT_TEST
+    }
+  }
+}
+
+tasks.named("testCodeCoverageReport"){
+  reports{
+    xml.required = true
+    csv.required = true
+    html.required = true
+  }
+
+  def originalClassElements = classDirectories.from.toArray()
+  def originalSourceElements = sourceDirectories.from.toArray()
+
+  classDirectories.setFrom()
+
+  classDirectories.setFrom(project.provider {
+    def allSrcDirs = project.files(originalSourceElements).files
+
+    def handwrittenSrcDir = allSrcDirs.findAll{dir ->
+      dir.absolutePath.replace('\\', '/').endsWith("src/main/java")
+    }
+
+    def includesList = []
+    handwrittenSrcDir.each{srcDir ->
+      def javaSources = project.fileTree(dir: srcDir).matching{
+        include "**/*.java"
+      }
+
+      javaSources.files.each{file ->
+        def relPath = srcDir.toPath().relativize(file.toPath()).toString()
+        def name = relPath.replaceAll(/\.java$/, '').replace('\\', '/')
+
+        includesList.add("${name}.class")
+        includesList.add("${name}\$*.class")
+      }
+    }
+
+    return project.files(originalClassElements).files.collect { classesDir ->
+      project.fileTree(dir: classesDir).matching {
+        if (includesList.isEmpty()) {
+          exclude "**/*"
+        } else {
+          include includesList
+        }
+      }
+    }
+  })
 }
 
 repositories {

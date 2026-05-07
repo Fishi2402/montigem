@@ -5,12 +5,17 @@ import de.mclsg.task.AutoconfigureTask
 
 plugins {
   id 'java'
+  id 'jacoco'
   id 'maven-publish'
   id 'de.monticore.generator' version "$mc_version"
   id 'com.gradleup.shadow' version "$shadow_plugin_version"
 
   id 'de.monticore.language-server' version "$mclsg_version"
   id "io.github.themrmilchmann.ecj" version "0.2.0"
+}
+
+jacoco{
+  toolVersion = "0.8.12"
 }
 
 ecj {
@@ -105,6 +110,33 @@ repositories {
 test {
   systemProperty 'guidsl-default-types', configurations.guiDefaultTypes.asPath
   useJUnitPlatform()
+  finalizedBy jacocoTestReport
+}
+
+jacocoTestReport{
+  dependsOn test
+  reports{
+    xml.required = false
+    html.required = true
+    csv.required = true
+  }
+
+  def classesDirProvider =  layout.buildDirectory.dir("classes/java/main")
+  def srcDirProvider = layout.projectDirectory.dir("src/main/java")
+
+  classDirectories.setFrom(files(classesDirProvider).asFileTree.matching({
+    def javaSources = fileTree(srcDirProvider).matching{
+      include "**/*.java"
+    }
+    def includesList = javaSources.files.collect { file ->
+      def relPath = srcDirProvider.asFile.toPath().relativize(file.toPath()).toString()
+      return relPath.replaceAll(/\.java$/, '').replace('\\', '/')
+    }.collectMany {name -> ["${name}.class", "${name}\$*.class"] }
+
+    include includesList
+  }))
+
+  sourceDirectories.setFrom(srcDirProvider)
 }
 
 description = 'UML/P Language and Tool'

@@ -2,6 +2,11 @@
 plugins {
   id 'maven-publish'
   id 'java-library'
+  id 'jacoco'
+}
+
+jacoco{
+  toolVersion = "0.8.12"
 }
 
 group = "umlp"
@@ -85,6 +90,36 @@ sourceSets {
   test {
     resources.srcDir layout.buildDirectory.dir("generated/test-resources")
   }
+}
+
+test{
+  finalizedBy jacocoTestReport
+}
+
+jacocoTestReport{
+  dependsOn test
+  reports{
+    xml.required = false
+    html.required = true
+    csv.required = true
+  }
+
+  def classesDirProvider =  layout.buildDirectory.dir("classes/java/main")
+  def srcDirProvider = layout.projectDirectory.dir("src/main/java")
+
+  classDirectories.setFrom(files(classesDirProvider).asFileTree.matching({
+    def javaSources = fileTree(srcDirProvider).matching{
+      include "**/*.java"
+    }
+    def includesList = javaSources.files.collect { file ->
+      def relPath = srcDirProvider.asFile.toPath().relativize(file.toPath()).toString()
+      return relPath.replaceAll(/\.java$/, '').replace('\\', '/')
+    }.collectMany {name -> ["${name}.class", "${name}\$*.class"] }
+
+    include includesList
+  }))
+
+  sourceDirectories.setFrom(srcDirProvider)
 }
 
 /////////////////////////   Deployment  //////////////////////////////////
