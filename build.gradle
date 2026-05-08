@@ -1,6 +1,7 @@
 import com.github.gradle.node.npm.task.NpmInstallTask
 import de.montigem.gradle.specific.FrontendCIImageTask
 import de.montigem.gradle.specific.FrontendLocalImageTask
+import org.gradle.util.GradleVersion
 
 /* (c) https://github.com/MontiCore/monticore */
 
@@ -190,10 +191,14 @@ dependencies{
   jacocoAggregation "umlp:umlp-tool"
 }
 
-reporting{
-  reports{
-    testCodeCoverageReport(JacocoCoverageReport){
-      testSuiteName = "test"
+reporting {
+  reports {
+    testCodeCoverageReport(JacocoCoverageReport) {
+      if (GradleVersion.current() >= GradleVersion.version("8.13")) {
+        testSuiteName = "test"
+      } else {
+        testType = org.gradle.api.plugins.jvm.TestSuiteType.UNIT_TEST
+      }
     }
   }
 }

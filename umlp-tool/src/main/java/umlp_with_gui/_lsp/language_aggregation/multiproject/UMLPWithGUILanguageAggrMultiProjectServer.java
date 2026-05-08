@@ -37,7 +37,7 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
 
               @Override
               protected CompletableFuture<MultiProjectLayout> loadModelPaths() {
-                gradleVersion = "8.5";
+                gradleVersion = "8.14.4";
                 gradleTaskName = "aggregateAndProcessInfo";
                 return super.loadModelPaths();
               }
