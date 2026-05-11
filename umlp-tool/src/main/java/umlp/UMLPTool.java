@@ -265,6 +265,8 @@ public class UMLPTool extends UMLPToolTOP {
     TagLookUp.cleanUp();
     CD4C.reset();
 
+    oclCompilationUnits.clear();
+
     MillConf.switchTo();
 
     // The SummaryReporter -> ReportingRepository#table is rooted in the Log instance

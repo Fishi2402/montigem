@@ -1,5 +1,4 @@
 import de.montigem.gradle.specific.ocl.OCL2JavaTask
-import de.montigem.gradle.specific.UMLP2JavaTask
 
 plugins {
   id 'de.rwth.se.montigem-backend'
@@ -52,6 +51,13 @@ dependencies {
 
 umlp2java {
   genNeo4j.set(true)
+  ocl.from(fileTree("../models/ocl").matching {
+    // Excluded for typecheck
+    exclude "**/ContextStudent_makesElseIrrelevant.ocl"
+    exclude "**/ElvisOptionalExpressionPrefix_NullValues.ocl"
+    exclude("**/bitexpressions/**")
+    exclude("**/EmptyCollectionInBracketIntersection.ocl")
+  })
 }
 
 tasks.named("ocl2java", OCL2JavaTask) {

@@ -151,7 +151,7 @@ public class OCL2JavaGeneratorTool {
   }
 
   @SuppressWarnings("removal")
-  protected void createSymtab(ASTOCLCompilationUnit ocl) {
+  public static void createSymtab(ASTOCLCompilationUnit ocl) {
     OCLWithErrorMessagesScopesGenitorDelegator genitor = OCLWithErrorMessagesMill.scopesGenitorDelegator();
     SymbolTableUtil.addDefaultImports(genitor.createFromAST(ocl));
 
@@ -179,7 +179,7 @@ public class OCL2JavaGeneratorTool {
     ocl.accept(t);
   }
 
-  public void initSymtab(List<Path> symbolPaths, List<String> preloadDiagrams, List<String> domainModels) {
+  public static void initSymtab(List<Path> symbolPaths, List<String> preloadDiagrams, List<String> domainModels) {
     OCLWithErrorMessagesMill.reset();
     OCLWithErrorMessagesMill.init();
     OCLWithErrorMessagesMill.globalScope().clear();

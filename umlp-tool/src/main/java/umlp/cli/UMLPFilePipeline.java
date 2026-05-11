@@ -5,15 +5,17 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdmerge.CDMerge;
 import de.monticore.cdmerge.config.MergeParameter;
+import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
-import de.monticore.ocl.ocl._parser.OCLParser;
 import de.monticore.ocl.util.SymbolTableUtil;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import oclwitherrormessages.OCLWithErrorMessagesMill;
 import umlp.MCPathUtil;
 import umlp.MillConf;
 import umlp.TagRelated;
@@ -30,6 +32,7 @@ import umlp.generator.gui.gentypescript.config.ImportMapGenerator;
 import umlp.generator.gui.gentypescript.java2ts.ComponentObserverManagerGenerator;
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.UMLPSymbolTables;
+import umlp.generator.ocl.OCL2JavaGeneratorTool;
 import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
 import java.io.File;
@@ -47,6 +50,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static umlp.UMLPToolOptions.DOMAIN;
 import static umlp.UMLPToolOptions.FOR_CLIENT;
 import static umlp.UMLPToolOptions.GEN_SYMBOLS_ONLY;
 import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
@@ -184,41 +188,46 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
     });
 
     astPipe.register("loadOCL", loadOCL = data -> {
-      if (SYMTAB.isSelected(data.data.cmd) && SYMTAB.getValue(data.data.cmd) != null) {
-        if (OCL.isSelected(data.data.cmd)) {
-          MCPath oclModelPath = new MCPath();
-          for (String v : data.data.cmd.getOptionValues(OCL.getCMD())) {
-            oclModelPath.addEntry(Paths.get(v));
-          }
-          List<URL> oclFiles = MCPathUtil.getAllModels(oclModelPath, ".*[.]ocl");
-          if (!oclFiles.isEmpty()) {
-            for (URL modelUrl : oclFiles) {
+      if (OCL.isSelected(data.data.cmd)) {
+        MCPath oclModelPath = new MCPath();
+        for (String v : data.data.cmd.getOptionValues(OCL.getCMD())) {
+          oclModelPath.addEntry(Paths.get(v));
+        }
+        List<URL> oclFiles = MCPathUtil.getAllModels(oclModelPath, ".*[.]ocl");
+        if (!oclFiles.isEmpty()) {
+          List<Path> symbolPaths = new ArrayList<>(data.data.importedSymbolPath.getEntries());
+          List<String> domainModels = DOMAIN.isSelected(data.data.cmd) ? List.of(data.data.cmd.getOptionValues(DOMAIN.getCMD())) : List.of();
+
+          for (URL modelUrl : oclFiles) {
+            try {
+              File oclFile = new File(modelUrl.toURI());
+              // Use OCLWithErrorMessagesMill to parse so we don't lose error messages
+
+              OCL2JavaGeneratorTool.initSymtab(symbolPaths, domainModels, domainModels);
+
+              Optional<ASTOCLCompilationUnit> oclCompilationUnit;
               try {
-                File oclFile = new File(modelUrl.toURI());
-                OCLParser oclParser = new OCLParser();
-                Optional<ASTOCLCompilationUnit> oclCompilationUnit;
-                try {
-                  oclCompilationUnit = oclParser.parse(oclFile.getAbsolutePath());
-                } catch (IOException e) {
-                  throw new RuntimeException(e);
-                }
-                if (oclCompilationUnit.isEmpty()) {
-                  Log.error("0xE0001 Could not parse OCL file");
-                  return false;
-                }
-                ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
-                UMLPTool.getOclCompilationUnits().add(OCLASTPreProcessor.preProcessInvariants(oCLAst));
-                SymbolTableUtil.prepareMill();
-                UMLPSymbolTables.addCd4cSymbols();
-                SymbolTableUtil.loadSymbolFile(data.symbolPath.toString());
-                SymbolTableUtil.runSymTabGenitor(oCLAst);
-                SymbolTableUtil.runSymTabCompleter(oCLAst);
-              } catch (URISyntaxException e) {
+                oclCompilationUnit = OCLWithErrorMessagesMill.parser().parse(oclFile.getAbsolutePath());
+              } catch (IOException e) {
                 throw new RuntimeException(e);
               }
+              if (oclCompilationUnit.isEmpty()) {
+                Log.error("0xE0001 Could not parse OCL file");
+                return false;
+              }
+              ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
+              // UMLPTool.getOclCompilationUnits().add(OCLASTPreProcessor.preProcessInvariants(oCLAst));
+              UMLPTool.getOclCompilationUnits().add(oCLAst);
+
+              if (data.symbolPath != null && data.symbolPath.toFile().exists()) {
+                SymbolTableUtil.loadSymbolFile(data.symbolPath.toString());
+              }
+              OCL2JavaGeneratorTool.createSymtab(oCLAst);
+            } catch (URISyntaxException e) {
+              throw new RuntimeException(e);
             }
-            AbstractDecorator.hasOCL = true;
           }
+          AbstractDecorator.hasOCL = true;
         }
       }
       return true;
