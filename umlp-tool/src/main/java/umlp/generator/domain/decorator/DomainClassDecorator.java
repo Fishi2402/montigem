@@ -544,7 +544,7 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
         .filter(a -> !a.getModifier().isDerived())
         .map(ASTCDAttribute::getName)
         .collect(Collectors.toSet());
-    
+
     // Also include associations as they might be validated or used in GUI
     CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
         .filter(a -> !GenService.isSymbolDerived(a))
@@ -581,7 +581,6 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
       return "getError" + invName;
     }
 
-    // For backward compatibility with FTL if I named them differently there
     public String getMethodName() {
       return getCheckMethodName();
     }

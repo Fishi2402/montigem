@@ -34,14 +34,14 @@ public class OCLAttributeExtractor implements CommonExpressionsVisitor2, Express
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
-    // If we have p.age, thenfa.getName() is "age" and fa.getExpression() is NameExpression "p"
+    // If we have p.age, node.getName() is "age" and node.getExpression() is NameExpression "p"
     // If we have p.address.city, we have a chain.
     // Inner: fa.getName()="address", fa.getExpression()=NameExpression "p"
     // Outer: fa.getName()="city", fa.getExpression()=FieldAccessExpression "p.address"
-    
+
     // We only care about the attribute directly on the context object (e.g. "age" or "address")
     // because that's what we generate get...ValidationError methods for.
-    
+
     if (node.getExpression() instanceof ASTNameExpression) {
       ASTNameExpression nameExpr = (ASTNameExpression) node.getExpression();
       if (nameExpr.getName().equals(contextParamName) || nameExpr.getName().equals("this")) {

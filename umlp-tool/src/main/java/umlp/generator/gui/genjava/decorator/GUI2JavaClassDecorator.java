@@ -451,7 +451,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                 .apply(getterValue)
         );
 
-        // AUTOMATIC VALIDITY LINKAGE
         boolean automaticValidityGenerated = false;
         if (arg.getName().equals("validity")) {
           Optional<ASTGUINamedArg> entryArgOpt = node.getGUINamedArgs().getGUINamedArgList().stream()
@@ -466,7 +465,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
               getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomain",
                   name, domainObjGetter, attrName, params);
 
-              // Add imports
               addImport("mc.fenix.input.geminputbasetypes.ValidationError");
               addImport("mc.fenix.input.gemtextinputtypes.GemTextInputValidity");
               addImport("java.util.Optional");
@@ -476,7 +474,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         }
 
         if (!automaticValidityGenerated) {
-          // add getter
           getCD4C().addMethod(
               clazz, getArgGetterWithConversionTemplate(),
               type, name, nullCheck, returnValue, conv, params

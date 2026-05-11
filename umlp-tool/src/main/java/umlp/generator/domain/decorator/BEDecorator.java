@@ -229,21 +229,6 @@ public class BEDecorator extends AbstractDecorator {
       Log.debug("After decorator: ShellApplicationDecorator", BEDecorator.class.getName());
     }
 
-    if(AbstractDecorator.hasOCL) {
-      /*ValidatorDecorator validatorDecorator = new ValidatorDecorator(glex);
-      validatorDecorator.setOclCompilationUnits(UMLPTool.getOclCompilationUnits());
-      validatorDecorator.transform(cdAST, decoratedAST);
-      Log.debug("After decorator: ValidatorDecorator", BEDecorator.class.getName());
-      ValidationResultDecorator validationResultDecorator = new ValidationResultDecorator(glex);
-      validationResultDecorator.transform(cdAST, decoratedAST);
-      Log.debug("After decorator: ValidationResultDecorator", BEDecorator.class.getName());
-      ValidationResultDeSerDecorator validationResultDeSerDecorator = new ValidationResultDeSerDecorator(glex);
-      validationResultDeSerDecorator.transform(cdAST, decoratedAST);
-      Log.debug("After decorator: ValidationResultDeSerDecorator", BEDecorator.class.getName());*/
-      // OCLMill was used in the decorators. To assure UMLP functionality initialize the UMLP-Mill
-      // MillConf.switchTo(MillConf.UMLP);
-    }
-
     glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
 

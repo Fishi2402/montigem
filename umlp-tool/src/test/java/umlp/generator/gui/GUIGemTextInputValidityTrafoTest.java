@@ -21,7 +21,7 @@ public class GUIGemTextInputValidityTrafoTest extends AbstractGUITest {
     List<ASTGUIComponent> components = stat.getComponents(ast.getGUIComponentDeclaration());
 
     assertEquals(2, components.size());
-    
+
     ASTGUIComponent noValidity = components.get(0);
     ASTGUIComponent withValidity = components.get(1);
 
@@ -45,8 +45,8 @@ public class GUIGemTextInputValidityTrafoTest extends AbstractGUITest {
     ASTGUINamedArg validityArg = noValidity.getGUINamedArgs().getGUINamedArgList().stream()
         .filter(arg -> "validity".equals(arg.getName()))
         .findFirst().get();
-    
-    // We can't easily check for LiteralExpression null here without more effort, 
+
+    // We can't easily check for LiteralExpression null here without more effort,
     // but the presence of the argument with the correct name is already good.
     assertEquals("validity", validityArg.getName());
   }
