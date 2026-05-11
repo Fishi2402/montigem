@@ -6,6 +6,18 @@ plugins {
   id "de.rwth.se.montigem-frontend"
 }
 
+dependencies {
+  testImplementation project(':umlp-test-rte')
+
+  // to compile the (playwright=true) AbstractMydomainE2ETest
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+    exclude module: 'log4j-to-slf4j'
+  }
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+}
+
 configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
@@ -14,4 +26,9 @@ umlpJava2ts {
   excludeSource.addAll([
       "glob:**/ocl2cypher/**"
   ])
+}
+
+test {
+  dependsOn tasks.named("npmInstall"), tasks.named("buildApp")
+  useJUnitPlatform()
 }

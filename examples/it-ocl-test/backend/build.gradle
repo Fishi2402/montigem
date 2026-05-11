@@ -1,3 +1,4 @@
+import de.montigem.gradle.specific.UMLP2TestInfrastructureTask
 import de.montigem.gradle.specific.ocl.OCL2JavaTask
 
 plugins {
@@ -74,6 +75,10 @@ tasks.named("ocl2java", OCL2JavaTask) {
 
 tasks.named("compileJava") {
   dependsOn(tasks.named("ocl2java"))
+}
+
+tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
+  usePlaywright.set(true)
 }
 
 test {
