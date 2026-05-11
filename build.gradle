@@ -197,7 +197,8 @@ reporting {
       if (GradleVersion.current() >= GradleVersion.version("8.13")) {
         testSuiteName = "test"
       } else {
-        testType = org.gradle.api.plugins.jvm.TestSuiteType.UNIT_TEST
+        def TestSuiteType = Class.forName("org.gradle.api.plugins.jvm.TestSuiteType")
+        testType = TestSuiteType.UNIT_TEST
       }
     }
   }
