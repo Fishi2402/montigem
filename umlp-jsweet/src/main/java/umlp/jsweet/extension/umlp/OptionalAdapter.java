@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.umlp;
 
-import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.ExtendedElementFactory;
@@ -191,8 +190,7 @@ public class OptionalAdapter extends AbstractAdapter {
         return true;
       case "stream":
         printMacroName(methodName);
-        print("new Stream(").print(target).print(" != null ? [").print(target).print("] : [])");
-        getPrinter().useModule(new ModuleImportDescriptor("Stream", getLibraryLocation()));
+        print("(").print(target).print(" != null ? [").print(target).print("] : [])");
         return true;
     }
     return false;

@@ -139,6 +139,13 @@ public class CollectionsAdapter extends AbstractAdapter {
             return true;
           }
           break;
+        case "java.util.Set":
+        case "java.util.HashSet":
+        case "java.util.LinkedHashSet":
+          if (substituteCommonArrayBackedCollectionInvocations(invocation, targetMethodName)) {
+            return true;
+          }
+          break;
         case "java.util.Collections":
           if (substituteJavaCollectionsInvocations(invocation, targetMethodName))
             return true;
@@ -282,6 +289,13 @@ public class CollectionsAdapter extends AbstractAdapter {
     }
 
     switch (targetMethodName) {
+      case "contains":
+        if (isStreamResultTarget(invocation)) {
+          substituteArrayContains(invocation);
+          return true;
+        }
+        getPrinter().printDefaultMethodInvocation(ExtendedElementFactory.toTree(invocation));
+        return true;
       case "remove":
         substituteRemoveMethod(invocation);
         return true;
@@ -291,6 +305,26 @@ public class CollectionsAdapter extends AbstractAdapter {
         getPrinter().printDefaultMethodInvocation(ExtendedElementFactory.toTree(invocation));
         return true;
     }
+  }
+
+  private boolean substituteCommonArrayBackedCollectionInvocations(MethodInvocationElement invocation, String targetMethodName) {
+    switch (targetMethodName) {
+      case "contains":
+        substituteArrayContains(invocation);
+        return true;
+    }
+    return false;
+  }
+
+  private void substituteArrayContains(MethodInvocationElement invocation) {
+    printMacroName("contains");
+    print("(").print(invocation.getTargetExpression()).print(").indexOf(<any>(")
+        .print(invocation.getArgument(0)).print(")) >= 0");
+  }
+
+  private boolean isStreamResultTarget(MethodInvocationElement invocation) {
+    ExtendedElement targetExpression = invocation.getTargetExpression();
+    return targetExpression != null && targetExpression.toString().contains(".stream()");
   }
 
   private void substituteRemoveMethod(MethodInvocationElement invocation) {
@@ -324,20 +358,40 @@ public class CollectionsAdapter extends AbstractAdapter {
       case "java.util.concurrent.CopyOnWriteArrayList":
       case "java.util.Stack":
       case "java.util.Vector":
+      case "java.util.Set":
+      case "java.util.HashSet":
+      case "java.util.LinkedHashSet":
         if (newClass.getArgumentCount() == 0) {
-          print("new " + CustomUMLPListImplementationName + "()");
+          if (isSetType(newClass)) {
+            print("[]");
+          }
+          else {
+            print("new " + CustomUMLPListImplementationName + "()");
+            getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+          }
         }
         else {
           if (util().isNumber(newClass.getArgument(0).getType())
               || (newClass.getArgument(0) instanceof LiteralElement)) {
-            print("new " + CustomUMLPListImplementationName + "()");
+            if (isSetType(newClass)) {
+              print("[]");
+            }
+            else {
+              print("new " + CustomUMLPListImplementationName + "()");
+              getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+            }
           }
           else {
-            print("new " + CustomUMLPListImplementationName + "(")
-                .print(newClass.getArgument(0)).print(")");
+            if (isSetType(newClass)) {
+              print("Array.from(").print(newClass.getArgument(0)).print(")");
+            }
+            else {
+              print("new " + CustomUMLPListImplementationName + "(")
+                  .print(newClass.getArgument(0)).print(")");
+              getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
+            }
           }
         }
-        getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
         return true;
       case "umlp.guiutil.UMLPGuiArray":
         if (newClass.getArgumentCount() == 0) {
@@ -364,6 +418,13 @@ public class CollectionsAdapter extends AbstractAdapter {
     }
 
     return super.substituteNewClass(newClass);
+  }
+
+  private boolean isSetType(NewClassElement newClass) {
+    String type = newClass.getTypeAsElement().toString();
+    return "java.util.Set".equals(type)
+        || "java.util.HashSet".equals(type)
+        || "java.util.LinkedHashSet".equals(type);
   }
 
   @Override

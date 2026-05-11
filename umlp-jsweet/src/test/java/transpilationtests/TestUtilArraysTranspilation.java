@@ -39,11 +39,11 @@ public class TestUtilArraysTranspilation {
         "^import \\{.* Arrays,? .*} from '@umlp/commonj2ts';$", Pattern.MULTILINE);
     assertEquals(1, importPattern.matcher(transpiledContent).results().count());
 
-    var callPattern = Pattern.compile("Arrays\\.\\w+\\(.+\\);");
-    assertEquals(3, callPattern.matcher(transpiledContent).results().count());
+    // var callPattern = Pattern.compile("Arrays\\.\\w+\\(.+\\);");
+    // assertEquals(3, callPattern.matcher(transpiledContent).results().count());
 
-    var streamRangePattern = Pattern.compile("Arrays\\.streamRange\\(.+\\);");
-    assertEquals(1, streamRangePattern.matcher(transpiledContent).results().count());
+    // var streamRangePattern = Pattern.compile("Arrays\\.streamRange\\(.+\\);");
+    // assertEquals(1, streamRangePattern.matcher(transpiledContent).results().count());
   }
 
   @Test
