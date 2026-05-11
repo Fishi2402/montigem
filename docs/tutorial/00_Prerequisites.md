@@ -19,9 +19,9 @@ and commands defined for a standard app setup.
 - Add environment variable `JAVA_HOME` with its value set to the `jdk-21` directory, e.g. `C:\Program Files\Java\jdk-21`.
 - Add `%JAVA_HOME%\bin` entry to the `Path` environment variable. Open a command line and run `java -version` command to check if Java is working properly.
 
-### Setup Gradle 8.14.3
+### Setup Gradle 8.14.4
 
-Download [Gradle 8.14.3](https://gradle.org/next-steps/?version=8.14.3&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
+Download [Gradle 8.14.4](https://gradle.org/next-steps/?version=8.14.4&format=bin) and do an installation according to ["Installing manually" section](https://gradle.org/install/).
 
 !!! note
     You may try later versions or other version with the major version number 8,
