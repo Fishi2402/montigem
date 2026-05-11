@@ -18,25 +18,11 @@ if(${sourceName}Loaded){
   <#else>
     p._internal_set${ctargetName}(${targetName}GemId, NotificationScope.LOCAL);
   </#if>
-  <#if hasOCL>
-  ${sourceType}Validator pValidator = new ${sourceType}Validator();
-  ${sourceType}ValidationResult pValidationResult = pValidator.validate(p);
-  if (pValidationResult.hasErrors()) {
-    return new ValidationResult(getId(), pValidationResult, "sehub.${sourceType}ValidationResult");
-  }
-  </#if>
 } else if(old${ctargetName}Loaded){
   ${targetType} old${ctargetName} = ${managerName}.get${targetType}Sure(old${ctargetName}GemId);
   // Does not change other side
 <#if isSourceList>
   old${ctargetName}.remove${csourceName}(${targetName}Index, NotificationScope.MINIMAL);
-  <#if hasOCL>
-  ${targetType}Validator old${ctargetName}Validator = new ${targetType}Validator();
-  ${targetType}ValidationResult old${ctargetName}ValidationResult = old${ctargetName}Validator.validate(old${ctargetName});
-  if (old${ctargetName}ValidationResult.hasErrors()) {
-   return new ValidationResult(getId(), old${ctargetName}ValidationResult, "sehub.${targetType}ValidationResult");
-  }
-  </#if>
 <#else>
   // Do nothing?
 </#if>
@@ -49,13 +35,6 @@ if(${sourceName}Loaded){
 <#else>
   newLoaded._internal_set${csourceName}(${sourceName}GemId, NotificationScope.LOCAL);
 </#if>
-  <#if hasOCL>
-  ${targetType}Validator newLoadedValidator = new ${targetType}Validator();
-  ${targetType}ValidationResult newLoadedValidationResult = newLoadedValidator.validate(newLoaded);
-  if (newLoadedValidationResult.hasErrors()) {
-    return new ValidationResult(getId(), newLoadedValidationResult, "sehub.${targetType}ValidationResult");
-  }
-  </#if>
 }
 else {
 return StatusResult.error(getId());

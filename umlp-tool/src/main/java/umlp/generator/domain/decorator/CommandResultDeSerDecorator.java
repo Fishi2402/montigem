@@ -62,9 +62,6 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     for (ASTCDClass c :  origCD.getCDDefinition().getCDClassesList()) {
       if (canSerialize(c)) {
         classNames.add(Joiners.DOT.join(packageName, c.getName()));
-        if(hasOCL) {
-          classNames.add(Joiners.DOT.join(packageName, c.getName() + "ValidationResult"));
-        }
       }
     }
 

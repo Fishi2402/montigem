@@ -8,7 +8,7 @@ export abstract class DomainValidationResult {
     return this;
   }
 
-  public abstract hasErrors(): boolean;
+  public abstract hasErrors(): Promise<boolean>;
 
   public abstract getDomainType(): string;
 

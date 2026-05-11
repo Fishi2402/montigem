@@ -67,12 +67,8 @@ public class CreateDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname);
 
-    if(hasOCL) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "Validator");
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + classname + "ValidationResult");
-    }
-
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ getCorrectManager(domainClass));
+
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ classname + "AccessPolicy");
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommonPath("NotificationScope"));

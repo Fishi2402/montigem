@@ -189,11 +189,6 @@ public class SetDecorator extends AbstractDeSerDecorator {
 
   protected void addImports(ASTCDClass ast, ASTCDCompilationUnit origCD, ASTCDType domainType,
       SymTypeExpression type, boolean isGem, ASTCDAttribute attr) {
-    if (hasOCL) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainType.getName() + "Validator");
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + domainType.getName() + "ValidationResult");
-    }
-
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ValidationResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("StatusResult"));
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("Command"));

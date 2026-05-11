@@ -1,14 +1,14 @@
 package umlp.backendrte.common;
 
+import jsweet.lang.Async;
+
 public abstract class DomainValidationResult {
   Long gemId;
   public DomainValidationResult() {
 
   }
-  public DomainValidationResult(long gemId) {
-    this.gemId = gemId;
-  }
 
+  @Async
   public abstract boolean hasErrors();
   public abstract String getDomainType();
   public long getGemId() {

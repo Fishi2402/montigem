@@ -291,12 +291,6 @@ public class AssocCommandDecorator extends AbstractDeSerDecorator {
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ sourceType + "AccessPolicy");
     getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE)+"."+ targetType + "AccessPolicy");
 
-    if(hasOCL) {
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + sourceType + "Validator");
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + sourceType + "ValidationResult");
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + targetType + "Validator");
-      getCD4C().addImport(ast, getPackageName(origCD, DEFAULT_PACKAGE) + "." + targetType + "ValidationResult");
-    }
     getCD4C().addImport(ast, PathUtil.getBackendRTECommandPath("ValidationResult"));
   }
 }
