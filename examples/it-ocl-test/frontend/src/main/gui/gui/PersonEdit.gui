@@ -6,6 +6,6 @@ import mc.fenix.input.GemCheckBoxInput;
 
 component PersonEdit(Person p) {
   @GemTextInput(labelText="name", entry=p.name);
-  @GemTextInput(labelText="age", inputType = "number", entry=p.age, validity=null /*hwc*/);
+  @GemTextInput(labelText="age", inputType = "number", entry=p.age);
   @GemCheckBoxInput(labelText="adult", checked=p.adult);
 }

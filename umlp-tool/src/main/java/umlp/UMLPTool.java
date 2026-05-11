@@ -60,6 +60,7 @@ import umlp.generator.domain.UMLImportTrafo;
 import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.UMLSetDefaultsTrafo;
 import umlp.generator.gui.GUINodeIdTrafo;
+import umlp.generator.gui.GUIGemTextInputValidityTrafo;
 import umlp.generator.gui.coco.GUIDSLCoCosForUMLP;
 import umlp.generator.gui.coco.SymbolBoundNameExpressionsFinder;
 import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
@@ -408,14 +409,19 @@ public class UMLPTool extends UMLPToolTOP {
   public Map.Entry<ASTGUICompilationUnit, IGUIDSLArtifactScope> createAstWithSymtab(Path modelFilePath) {
     Optional<IGUIDSLArtifactScope> asOpt = findGUIArtifactScope(modelFilePath);
     if (asOpt.isPresent() && asOpt.get().isPresentAstNode()) {
+      ASTGUICompilationUnit ast = (ASTGUICompilationUnit) asOpt.get().getAstNode();
+      GUIGemTextInputValidityTrafo validityTrafo = new GUIGemTextInputValidityTrafo();
+      validityTrafo.transform(ast);
       return Map.entry(
-          (ASTGUICompilationUnit) asOpt.get().getAstNode(),
+          ast,
           asOpt.get()
       );
     } else {
       ASTGUICompilationUnit ast = parseGUI(modelFilePath.toString());
       GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
       nodeIdTrafo.transform(ast);
+      GUIGemTextInputValidityTrafo validityTrafo = new GUIGemTextInputValidityTrafo();
+      validityTrafo.transform(ast);
 
       guidslTool.defaultImportTrafo(ast);
       guidslTool.registerLoadedFile(modelFilePath.toString());
@@ -471,6 +477,8 @@ public class UMLPTool extends UMLPToolTOP {
     gs.addAfterParseAction(ast -> {
       GUINodeIdTrafo nodeIdTrafo = new GUINodeIdTrafo();
       nodeIdTrafo.transform(ast);
+      GUIGemTextInputValidityTrafo validityTrafo = new GUIGemTextInputValidityTrafo();
+      validityTrafo.transform(ast);
       new GUIDSLTool().defaultImportTrafo(ast);
     });
   }

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package gui;
+
+import mc.fenix.input.GemTextInput;
+
+component GemTextInputTest() {
+  @GemTextInput(labelText="noValidity");
+  @GemTextInput(labelText="withValidity", validity=null);
+}
