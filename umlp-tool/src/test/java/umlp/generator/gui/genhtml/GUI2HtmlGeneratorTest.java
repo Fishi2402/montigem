@@ -11,6 +11,10 @@ import umlp.generator.gui.DomainGUITest;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GUI2HtmlGeneratorTest extends DomainGUITest {
 
@@ -31,6 +35,7 @@ public class GUI2HtmlGeneratorTest extends DomainGUITest {
         .setUseSpring(false)
         .setUseShell(false);
     genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", conf);
+    genSetup.getGlex().setGlobalValue("htmlHelper", new HTMLHelper(ast));
 
     GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
     String htmlConfigTemplate = UMLPTool.DEFAULT_CONFIGTEMPLATE_GUI2HTML;
@@ -38,6 +43,34 @@ public class GUI2HtmlGeneratorTest extends DomainGUITest {
     htmlGenerator.generate(ast, htmlConfigTemplate);
 
     assertNoErrors();
+  }
+
+  @Test
+  public void testAutomaticGemTextInputValidityBinding() throws Exception {
+    ASTGUICompilationUnit ast = processGUIModel(
+        "gui/genjava/decorator/GemTextInputAutoValidity.gui",
+        "src/test/resources/gui",
+        "packaged/Domain.umlp"
+    );
+
+    GeneratorSetup genSetup = new GeneratorSetup();
+    File outDir = new File(BUILD_FOLDER + "/generated-test-sources");
+    genSetup.setOutputDirectory(outDir);
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    genSetup.setGlex(glex);
+    genSetup.getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
+    UMLPGeneratorConfig conf = UMLPGeneratorConfig.getInstance()
+        .setUseSpring(false)
+        .setUseShell(false);
+    genSetup.getGlex().setGlobalValue("UMLPGeneratorConfig", conf);
+
+    GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
+    htmlGenerator.generate(ast);
+
+    Path html = outDir.toPath().resolve("genjava/decorator/GemTextInputAutoValidity.html");
+    String content = Files.readString(html);
+
+    assertTrue(content.contains("[validity] = 'getAutoValidity__synchronized("));
   }
 
 }

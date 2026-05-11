@@ -24,5 +24,9 @@
         <#list extraArgs as arg>${arg.getName()}<#if !arg?is_last>,</#if></#list>)'
     </#if>
   </#list>
+  <#if genHelper.shouldGenerateAutomaticDomainValidity(ast)>
+    [${genHelper.getAutomaticDomainValidityTargetArgName(ast)}] = '${genHelper.getAutomaticDomainValidityGetterNameTS(ast)}(
+      <#list extraArgs as arg>${arg.getName()}<#if !arg?is_last>,</#if></#list>)'
+  </#if>
 >
 </${tag}>

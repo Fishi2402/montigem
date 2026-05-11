@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unused")
@@ -120,6 +121,59 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
         () -> assertEquals("void", init.getMCReturnType().printType()),
         () -> assertEquals(0, init.getCDParameterList().size()),
         () -> assertNotNull(directiveImport)
+    );
+  }
+
+  @Test
+  public void testAutomaticGemTextInputValidityGetter() {
+    ASTGUICompilationUnit gui = processGUIModel(
+        "gui/genjava/decorator/GemTextInputAutoValidity.gui",
+        "src/test/resources/gui",
+        "packaged/Domain.umlp"
+    );
+    ASTCDCompilationUnit cd = GUI2CDTrafo.createCDCompilationUnit(gui);
+
+    GUIGeneratorUtil.getInstance().init(
+        List.of("packaged.Domain"), List.of("genjava.decorator.GemTextInputAutoValidity"));
+    ASTGUIComponent auto = GUIComponentStat.getInstance()
+        .getCompById(GUIComponentStat.getInstance().getComponents(gui.getGUIComponentDeclaration()), "auto");
+    assertTrue(GUIGeneratorUtil.getInstance().shouldGenerateAutomaticDomainValidity(auto));
+
+    GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
+    decorator.transform(gui, cd);
+
+    ASTCDClass clazz = cd.getCDDefinition().getCDClassesList().get(0);
+    Collection<ASTMCImportStatement> imports = CD4C.getInstance().getImportList(clazz);
+
+    assertAll(
+        () -> assertNotNull(getMethod(clazz.getCDMethodList(), "getAutoValidity")),
+        () -> assertNotNull(getImport(imports, "mc.fenix.input.geminputbasetypes.ValidationError")),
+        () -> assertNotNull(getImport(imports, "java.util.Optional"))
+    );
+  }
+
+  @Test
+  public void testExplicitGemTextInputValidityOverridesAutomaticGetter() {
+    ASTGUICompilationUnit gui = processGUIModel(
+        "gui/genjava/decorator/GemTextInputExplicitValidity.gui",
+        "src/test/resources/gui",
+        "packaged/Domain.umlp"
+    );
+    ASTCDCompilationUnit cd = GUI2CDTrafo.createCDCompilationUnit(gui);
+
+    GUIGeneratorUtil.getInstance().init(
+        List.of("packaged.Domain"), List.of("genjava.decorator.GemTextInputExplicitValidity"));
+
+    GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
+    decorator.transform(gui, cd);
+
+    ASTCDClass clazz = cd.getCDDefinition().getCDClassesList().get(0);
+    Collection<ASTMCImportStatement> imports = CD4C.getInstance().getImportList(clazz);
+
+    assertAll(
+        () -> assertNotNull(getMethod(clazz.getCDMethodList(), "getExplicitValidity")),
+        () -> assertNull(getImport(imports, "mc.fenix.input.geminputbasetypes.ValidationError")),
+        () -> assertNull(getImport(imports, "java.util.Optional"))
     );
   }
 

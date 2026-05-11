@@ -37,6 +37,7 @@ public class GUI2HtmlGenerator {
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
     this.setup.setTracing(false);
+    setup.getGlex().setGlobalValue("htmlHelper",  new HTMLHelper(decoratedAst));
 
     String componentName = decoratedAst.getComponentName();
     String pathName = util.getGenFileFolder(decoratedAst.getMCPackageDeclaration());

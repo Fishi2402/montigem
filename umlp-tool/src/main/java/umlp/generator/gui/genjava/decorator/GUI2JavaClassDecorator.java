@@ -44,6 +44,7 @@ import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
 import umlp.generator.gui.GUI2ClassDecorator;
+import umlp.generator.gui.GUIGeneratorUtil;
 import umlp.generator.gui.genjava.prettyprinter.Expression2AccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2MutatorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckPrinter;
@@ -451,34 +452,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                 .apply(getterValue)
         );
 
-        boolean automaticValidityGenerated = false;
-        if (arg.getName().equals("validity")) {
-          Optional<ASTGUINamedArg> entryArgOpt = node.getGUINamedArgs().getGUINamedArgList().stream()
-              .filter(a -> a.getName().equals("entry")).findFirst();
-          if (entryArgOpt.isPresent()) {
-            ASTExpression entryExpr = entryArgOpt.get().getExpression();
-            if (entryExpr instanceof ASTFieldAccessExpression) {
-              ASTFieldAccessExpression fa = (ASTFieldAccessExpression) entryExpr;
-              String attrName = fa.getName();
-              String domainObjGetter = getterPrinter.prettyprint(fa.getExpression());
-
-              getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomain",
-                  name, domainObjGetter, attrName, params);
-
-              addImport("mc.fenix.input.geminputbasetypes.ValidationError");
-              addImport("mc.fenix.input.gemtextinputtypes.GemTextInputValidity");
-              addImport("java.util.Optional");
-              automaticValidityGenerated = true;
-            }
-          }
-        }
-
-        if (!automaticValidityGenerated) {
-          getCD4C().addMethod(
-              clazz, getArgGetterWithConversionTemplate(),
-              type, name, nullCheck, returnValue, conv, params
-          );
-        }
+        getCD4C().addMethod(
+            clazz, getArgGetterWithConversionTemplate(),
+            type, name, nullCheck, returnValue, conv, params
+        );
       }
 
       if (arg.getNameSymbol().isIsReference()) {
@@ -510,6 +487,36 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         );
       }
     }
+
+    addAutomaticDomainValidityGetter(node);
+  }
+
+  protected void addAutomaticDomainValidityGetter(ASTGUIComponent node) {
+    Optional<GUIGeneratorUtil.AutomaticDomainValidityBinding> bindingOpt = util.getAutomaticDomainValidityBinding(node);
+    if (bindingOpt.isEmpty()) {
+      return;
+    }
+
+    IterationItemsFinder finder = new IterationItemsFinder();
+    Collection<ASTExpression> iterateItems = new LinkedHashSet<>(finder.getItems(gui));
+    Collection<ASTExpression> nonClassMembers = new LinkedHashSet<>(iterateItems);
+    Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
+        new IndentPrinter(), false, iterateItems, nonClassMembers
+    );
+
+    GUIGeneratorUtil.AutomaticDomainValidityBinding binding = bindingOpt.get();
+    ASTFieldAccessExpression fieldAccess = binding.getEntryExpression();
+    String name = node.getId().getName() + StringTransformations.capitalize(binding.getTargetArgName());
+    String attrName = fieldAccess.getName();
+    String domainObjGetter = getterPrinter.prettyprint(fieldAccess.getExpression());
+    String targetType = printType(getSimpleType(createTypeAndAddImports(binding.getTargetType())));
+    List<ASTCDParameter> params = getIterationItemParameters(node);
+
+    getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomain",
+        name, domainObjGetter, attrName, targetType, params);
+
+    addImport("mc.fenix.input.geminputbasetypes.ValidationError");
+    addImport("java.util.Optional");
   }
 
   /**

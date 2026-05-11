@@ -63,6 +63,7 @@ public abstract class DomainGUITest extends AbstractGUITest {
     } catch (ParseException e) {
       fail();
     }
+    TagRelated.initLookup(importedSymbolPath);
 
     MillConf.switchTo(MillConf.UMLP, MillConf.GUIDSL);
     UMLPTool.initGUIGlobalScope(importedSymbolPath);

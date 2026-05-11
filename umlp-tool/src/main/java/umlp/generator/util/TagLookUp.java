@@ -6,6 +6,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol;
 import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.tagging.SimpleSymbolTagger;
@@ -23,6 +24,8 @@ public class TagLookUp {
   private final static String COMMAND = "command";
   private final static String DERIVED = "derived";
   private final static String POJO = "pojo";
+  private final static String DOMAIN_VALIDATION_ENTRY = "domainValidationEntry";
+  private final static String DOMAIN_VALIDATION_TARGET = "domainValidationTarget";
 
   protected static SimpleSymbolTagger _simpleSymbolTagger;
 
@@ -105,6 +108,14 @@ public class TagLookUp {
     return isPojoCacheSymbol.getUnchecked(typeSymbol);
   }
 
+  public static boolean isDomainValidationEntry(ISymbol symbol) {
+    return hasSimpleTag(symbol, DOMAIN_VALIDATION_ENTRY);
+  }
+
+  public static boolean isDomainValidationTarget(ISymbol symbol) {
+    return hasSimpleTag(symbol, DOMAIN_VALIDATION_TARGET);
+  }
+
   protected static Boolean _isSingleton(TypeSymbol typeSymbol) {
     return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isSingleton);
   }
@@ -123,6 +134,11 @@ public class TagLookUp {
 
   public static boolean _isPojo(TypeSymbol typeSymbol) {
     return getSimpleSymbolTagger().getTags(typeSymbol).stream().anyMatch(TagLookUp::isPojo);
+  }
+
+  protected static boolean hasSimpleTag(ISymbol symbol, String name) {
+    return getSimpleSymbolTagger().getTags(symbol).stream()
+        .anyMatch(tag -> isSimpleTag(tag, name));
   }
 
   // This would be nice to have generated from a TagSchema
@@ -145,8 +161,12 @@ public class TagLookUp {
   }
 
   protected static boolean isPojo(ASTTag tag){
+    return isSimpleTag(tag, POJO);
+  }
+
+  protected static boolean isSimpleTag(ASTTag tag, String name){
     if (tag instanceof ASTSimpleTag)
-      return ((ASTSimpleTag) tag).getName().equals(POJO);
+      return ((ASTSimpleTag) tag).getName().equals(name);
     return false;
   }
 

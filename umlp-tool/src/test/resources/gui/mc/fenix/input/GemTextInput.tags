@@ -1,0 +1,6 @@
+/* Test tag metadata for GemTextInput */
+tags GemTextInput {
+  tag mc.fenix.input.GemTextInput.entry with domainValidationEntry;
+  tag mc.fenix.input.GemTextInput.validity with domainValidationTarget;
+
+}

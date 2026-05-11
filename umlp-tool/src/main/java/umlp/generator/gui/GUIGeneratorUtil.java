@@ -53,6 +53,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
+import umlp.generator.util.TagLookUp;
 import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
@@ -748,6 +749,75 @@ public class GUIGeneratorUtil {
     Optional<GUIParamSymbol> paramSym = resolveGUIParamSym(
         arg.getEnclosingScope(), comp.getNameSymbol().getFullName(), arg.getName());
     return paramSym.isPresent() && hasGetter(paramSym.get().getType());
+  }
+
+  public Optional<AutomaticDomainValidityBinding> getAutomaticDomainValidityBinding(ASTGUIComponent comp) {
+    Optional<GUIParamSymbol> targetParam = getDomainValidationTargetParam(comp);
+    if (targetParam.isEmpty() || hasNamedArg(comp, targetParam.get().getName())) {
+      return Optional.empty();
+    }
+
+    return comp.getGUINamedArgs().getGUINamedArgList().stream()
+        .filter(arg -> arg.isPresentNameSymbol() && TagLookUp.isDomainValidationEntry(arg.getNameSymbol()))
+        .map(ASTGUINamedArg::getExpression)
+        .filter(ASTFieldAccessExpression.class::isInstance)
+        .map(ASTFieldAccessExpression.class::cast)
+        .findFirst()
+        .map(entry -> new AutomaticDomainValidityBinding(targetParam.get(), entry));
+  }
+
+  public boolean shouldGenerateAutomaticDomainValidity(ASTGUIComponent comp) {
+    return getAutomaticDomainValidityBinding(comp).isPresent();
+  }
+
+  public String getAutomaticDomainValidityGetterNameTS(ASTGUIComponent comp) {
+    return getAutomaticDomainValidityBinding(comp)
+        .map(binding -> gui2cdAttrGetterName(comp.getId().getName(), binding.getTargetArgName()) + SYNCHRONIZED_SUFFIX)
+        .orElse("");
+  }
+
+  public String getAutomaticDomainValidityTargetArgName(ASTGUIComponent comp) {
+    return getAutomaticDomainValidityBinding(comp)
+        .map(AutomaticDomainValidityBinding::getTargetArgName)
+        .orElse("");
+  }
+
+  protected boolean hasNamedArg(ASTGUIComponent comp, String name) {
+    return comp.getGUINamedArgs().getGUINamedArgList().stream()
+        .anyMatch(arg -> name.equals(arg.getName()));
+  }
+
+  protected Optional<GUIParamSymbol> getDomainValidationTargetParam(ASTGUIComponent comp) {
+    if (!comp.isPresentNameSymbol()) {
+      return Optional.empty();
+    }
+    return comp.getNameSymbol().getGUIParamList().stream()
+        .filter(TagLookUp::isDomainValidationTarget)
+        .findFirst();
+  }
+
+  public static class AutomaticDomainValidityBinding {
+    protected String targetArgName;
+    protected SymTypeExpression targetType;
+    protected ASTFieldAccessExpression entryExpression;
+
+    public AutomaticDomainValidityBinding(GUIParamSymbol targetParam, ASTFieldAccessExpression entryExpression) {
+      this.targetArgName = targetParam.getName();
+      this.targetType = targetParam.getType();
+      this.entryExpression = entryExpression;
+    }
+
+    public String getTargetArgName() {
+      return targetArgName;
+    }
+
+    public ASTFieldAccessExpression getEntryExpression() {
+      return entryExpression;
+    }
+
+    public SymTypeExpression getTargetType() {
+      return targetType;
+    }
   }
 
   public boolean hasGetter(SymTypeExpression ste) {

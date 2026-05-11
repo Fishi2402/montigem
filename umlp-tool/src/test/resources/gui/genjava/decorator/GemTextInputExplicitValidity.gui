@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava.decorator;
+
+import mc.fenix.input.GemTextInput;
+import packaged.Domain.Person;
+
+page GemTextInputExplicitValidity(Person person) {
+  explicit@GemTextInput(entry = person.name, validity = null);
+}
