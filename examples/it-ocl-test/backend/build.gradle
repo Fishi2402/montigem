@@ -52,24 +52,11 @@ dependencies {
 
 umlp2java {
   genNeo4j.set(true)
-  ocl.from(fileTree("../models/ocl").matching {
-    // Excluded for typecheck
-    exclude "**/ContextStudent_makesElseIrrelevant.ocl"
-    exclude "**/ElvisOptionalExpressionPrefix_NullValues.ocl"
-    exclude("**/bitexpressions/**")
-    exclude("**/EmptyCollectionInBracketIntersection.ocl")
-  })
+  ocl.from(fileTree("../models/ocl").matching{ include "**/*.ocl" })
 }
 
 tasks.named("ocl2java", OCL2JavaTask) {
-  input.setFrom(fileTree("../models/ocl").matching {
-    // Excluded for typecheck
-    exclude "**/ContextStudent_makesElseIrrelevant.ocl"
-    exclude "**/ElvisOptionalExpressionPrefix_NullValues.ocl"
-    exclude("**/bitexpressions/**")
-    exclude("**/EmptyCollectionInBracketIntersection.ocl")
-  })
-
+  input.setFrom(fileTree("../models/ocl").matching{ include "**/*.ocl" })
   preloadDiagrams.add("Mydomain")
 }
 
@@ -79,12 +66,4 @@ tasks.named("compileJava") {
 
 tasks.named("generateTestInfrastructure", UMLP2TestInfrastructureTask) {
   usePlaywright.set(true)
-}
-
-test {
-  useJUnitPlatform {
-    if (project.hasProperty("tags")) {
-      includeTags project.property("tags").toString().split(',')
-    }
-  }
 }

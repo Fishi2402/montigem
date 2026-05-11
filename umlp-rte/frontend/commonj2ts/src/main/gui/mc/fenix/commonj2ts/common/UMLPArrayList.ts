@@ -42,9 +42,19 @@ export class UMLPArrayList<E> implements IUMLPList<E> {
 
   async addAll(idxOrElems: number | IUMLPList<E> | Array<E>, elems?: IUMLPList<E>): Promise<boolean> {
     if (elems === undefined || elems === null) {
-      this.array.push(<E>idxOrElems);
+      const valuesOrElement = await <any>idxOrElems;
+      if (valuesOrElement instanceof Array) {
+        this.array.push(...valuesOrElement);
+      } else if (valuesOrElement && typeof (<IUMLPList<E>>valuesOrElement).toArraySync === "function") {
+        this.array.push(...(await (<IUMLPList<E>>valuesOrElement).toArraySync()));
+      } else if (valuesOrElement && typeof (<IUMLPList<E>>valuesOrElement).toArray === "function") {
+        this.array.push(...(await <Array<E>>(<IUMLPList<E>>valuesOrElement).toArray()));
+      } else {
+        this.array.push(<E>valuesOrElement);
+      }
     } else {
-      this.array.splice(<number>idxOrElems, 0, ...(await <Array<E>>elems.toArray()));
+      const values = await <any>elems;
+      this.array.splice(<number>idxOrElems, 0, ...(await <Array<E>>values.toArray()));
     }
     return Promise.resolve(true);
   }

@@ -165,6 +165,7 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
             "removeIndex",
             "removeAll",
             "set",
+            "stream",
             "toArray")) {
           return true;
         }

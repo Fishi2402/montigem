@@ -1,0 +1,12 @@
+package commonexpressions;
+
+import Mydomain.*;
+
+
+ocl TextExpressions {
+  context Text t inv:
+    t.value == "String";
+
+  context Text t inv:
+    t.value != "Faulty String";
+}

@@ -1,13 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.umlp;
 
+import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetProblem;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
+import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.transpiler.util.Util;
+import standalone.com.sun.source.tree.ExpressionTree;
+import standalone.com.sun.source.tree.LambdaExpressionTree;
+import standalone.com.sun.source.tree.MemberSelectTree;
+import standalone.com.sun.source.tree.MethodInvocationTree;
+import standalone.com.sun.source.tree.MethodTree;
+import standalone.com.sun.source.tree.ParenthesizedTree;
+import standalone.com.sun.source.tree.Tree;
+import standalone.com.sun.source.tree.TypeCastTree;
 import umlp.jsweet.extension.AbstractAdapter;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -51,6 +63,12 @@ public class JavaBasicsAdapter extends AbstractAdapter {
           return true;
         }
         break;
+      default:
+        if (isJavaUtilFunctionSupplier(invocation, targetType)
+            && substituteMethodInvocation_JavaUtilFunctionSupplier(invocation)) {
+          return true;
+        }
+        break;
     }
 
     String targetClassName = invocation.getMethod().getEnclosingElement().toString();
@@ -64,6 +82,69 @@ public class JavaBasicsAdapter extends AbstractAdapter {
     }
 
     return super.substituteMethodInvocation(invocation);
+  }
+
+  private boolean isJavaUtilFunctionSupplier(MethodInvocationElement invocation, String targetType) {
+    return targetType.startsWith("java.util.function.Supplier")
+        || invocation.getMethod().getEnclosingElement().toString()
+        .startsWith("java.util.function.Supplier");
+  }
+
+  public boolean substituteMethodInvocation_JavaUtilFunctionSupplier(MethodInvocationElement invocation) {
+    switch (invocation.getMethodName()) {
+      case "get":
+        if (canUseAwaitInCurrentExpression()) {
+          MethodInvocationTree methodInvocationTree = ExtendedElementFactory.toTree(invocation);
+          LambdaExpressionTree supplierLambda = getSupplierLambda(methodInvocationTree);
+          if (supplierLambda != null) {
+            this.print("(await (");
+            if (!context.isAsyncLambda(supplierLambda)) {
+              this.print("async ");
+            }
+            this.print(supplierLambda);
+            this.print(")())");
+          }
+          else {
+            this.print("(await ");
+            getPrinter().printDefaultMethodInvocation(methodInvocationTree);
+            this.print(")");
+          }
+          return true;
+        }
+        break;
+    }
+    return false;
+  }
+
+  private boolean canUseAwaitInCurrentExpression() {
+    LambdaExpressionTree lambda = getPrinter().getParent(LambdaExpressionTree.class);
+    return isInAsyncMethod() && (lambda == null || context.isAsyncLambda(lambda) || isSupplierLambda(lambda));
+  }
+
+  private LambdaExpressionTree getSupplierLambda(MethodInvocationTree invocation) {
+    if (!(invocation.getMethodSelect() instanceof MemberSelectTree)) {
+      return null;
+    }
+    ExpressionTree target = ((MemberSelectTree) invocation.getMethodSelect()).getExpression();
+    Tree unwrapped = unwrapSupplierTarget(target);
+    return unwrapped instanceof LambdaExpressionTree ? (LambdaExpressionTree) unwrapped : null;
+  }
+
+  private Tree unwrapSupplierTarget(Tree tree) {
+    while (tree instanceof ParenthesizedTree || tree instanceof TypeCastTree) {
+      if (tree instanceof ParenthesizedTree) {
+        tree = ((ParenthesizedTree) tree).getExpression();
+      }
+      else {
+        tree = ((TypeCastTree) tree).getExpression();
+      }
+    }
+    return tree;
+  }
+
+  private boolean isSupplierLambda(LambdaExpressionTree lambda) {
+    TypeMirror type = Util.getType(lambda);
+    return type != null && type.toString().startsWith("java.util.function.Supplier");
   }
 
   public boolean substituteMethodInvocation_JavaUtilObjects(MethodInvocationElement invocation) {
@@ -94,14 +175,28 @@ public class JavaBasicsAdapter extends AbstractAdapter {
               .print(")");
         }
         else {
-          this.print("/* equals */")
-              .print("((a, b) => { return a === b; }) (")
+          getPrinter().useModule(new ModuleImportDescriptor("JavaUtilUtils", getLibraryLocation()));
+          boolean inAsyncMethod = isInAsyncMethod();
+          this.print("/* equals */");
+          if (inAsyncMethod) {
+            this.print("await ");
+          }
+          this.print(inAsyncMethod ? "JavaUtilUtils.equals(" : "JavaUtilUtils.equalsSync(")
               .printArgList(invocation.getArguments())
               .print(")");
         }
         return true;
     }
     return false;
+  }
+
+  protected boolean isInAsyncMethod() {
+    MethodTree methodTree = getPrinter().getParent(MethodTree.class);
+    if (methodTree == null) {
+      return false;
+    }
+    Element methodElement = Util.getElement(methodTree);
+    return methodElement != null && context.hasAnnotationType(methodElement, JSweetConfig.ANNOTATION_ASYNC);
   }
 
   public boolean substituteMethodInvocation_JavaUtilArrays(MethodInvocationElement invocation) {

@@ -13,14 +13,14 @@ import mc.fenix.input.GemRadioInput;
 import mc.fenix.basic.GemImage;
 import gui.navigation.NavContainer;
 
-import Mydomain.Person;
-import gui.PersonEdit;
+import Mydomain.ErrorMessageSubject;
+import gui.OclE2EEditComp;
 
-page Start(List<Person> persons) {
-  @GemButton(label="Add Person", leftClick=createPerson());
-  @iterate(Person p : persons){
+page Start(List<ErrorMessageSubject> errorMessageSubjects) {
+  @GemButton(label="Add Error Message Subject", leftClick=createErrorMessageSubject());
+  @iterate(ErrorMessageSubject subject : errorMessageSubjects){
     @GemCard(
-      component=@PersonEdit(p=p)
+      component=@OclE2EEditComp(subject=subject)
     );
   }
 }

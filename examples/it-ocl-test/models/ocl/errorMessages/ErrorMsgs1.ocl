@@ -4,8 +4,8 @@ import Mydomain.*;
 
 
 ocl ErrorMsgs1 {
-  context Person p inv:
-    p.age >= 0;
-    shortError: "Age not correct: " + p.age;
-    error: "The age must be positive but is " + p.age;
+  context ErrorMessageSubject subject inv:
+    subject.age >= 0;
+    shortError: "Age not correct: " + subject.age;
+    error: "The age must be positive but is " + subject.age;
 }

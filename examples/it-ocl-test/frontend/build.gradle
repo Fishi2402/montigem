@@ -8,6 +8,8 @@ plugins {
 
 dependencies {
   testImplementation project(':umlp-test-rte')
+  testImplementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
+  testImplementation "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
 
   // to compile the (playwright=true) AbstractMydomainE2ETest
   def withoutSpringLogging = {
@@ -18,17 +20,58 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
 }
 
+def oclTestPageGenerator = project(":examples:it-ocl-test:test-page-generator")
+def generatedOclTestPagesDir = layout.buildDirectory.dir("generated/ocl-test-pages/gui")
+def generatedOclTestPagesJavaDir = layout.buildDirectory.dir("generated/ocl-test-pages/java")
+
+sourceSets {
+  main {
+    java.srcDir(generatedOclTestPagesJavaDir)
+  }
+}
+
+tasks.register("generateOclTestPages", JavaExec) {
+  group = "umlp"
+  description = "Generates lightweight GUI test pages and button implementations from OCL invariants."
+
+  dependsOn(oclTestPageGenerator.tasks.named("classes"))
+
+  classpath = oclTestPageGenerator.sourceSets.main.runtimeClasspath
+  mainClass = "ocl2java.testpagegenerator.OCLTestPageGenerator"
+
+  inputs.files(fileTree("../models/ocl"))
+  outputs.dir(generatedOclTestPagesDir)
+  outputs.dir(generatedOclTestPagesJavaDir)
+
+  doFirst {
+    args = [
+        file("../models/ocl").absolutePath,
+        generatedOclTestPagesDir.get().asFile.absolutePath,
+        generatedOclTestPagesJavaDir.get().asFile.absolutePath
+    ]
+  }
+}
+
 configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
-umlpJava2ts {
-  excludeSource.addAll([
-      "glob:**/ocl2cypher/**"
-  ])
+tasks.named("gui2java2ts", GUI2Java2TSTask) {
+  dependsOn(tasks.named("generateOclTestPages"))
+  input.from(generatedOclTestPagesDir)
+  modelDir.from(generatedOclTestPagesDir)
+  handWrittenCodeDir.from(generatedOclTestPagesJavaDir)
+}
+
+tasks.named("compileJava") {
+  dependsOn(tasks.named("generateOclTestPages"))
 }
 
 test {
   dependsOn tasks.named("npmInstall"), tasks.named("buildApp")
-  useJUnitPlatform()
+  useJUnitPlatform {
+    if (project.hasProperty("tags")) {
+      includeTags project.property("tags").toString().split(',')
+    }
+  }
 }

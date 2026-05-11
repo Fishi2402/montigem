@@ -1,0 +1,11 @@
+plugins {
+  id 'application'
+}
+
+dependencies {
+  implementation "umlp:umlp-tool:$version"
+}
+
+application {
+  mainClass = 'ocl2java.testpagegenerator.OCLTestPageGenerator'
+}

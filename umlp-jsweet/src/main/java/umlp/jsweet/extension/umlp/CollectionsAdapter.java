@@ -440,17 +440,9 @@ public class CollectionsAdapter extends AbstractAdapter {
 
   protected void printAwaitForEachLoop(EnhancedForLoopTree loop, String indexVarName) {
     print("for await(" + Java2TypeScriptTranslator.VAR_DECL_KEYWORD + " ")
-        .print(loop.getVariable().getName().toString() + " of ");
-    boolean parentheses = loop.getExpression() instanceof TypeCastTree
-        || loop.getExpression() instanceof MethodInvocationTree;
-    if (parentheses) {
-      print("(");
-    }
+        .print(loop.getVariable().getName().toString() + " of (await ");
     print(loop.getExpression());
-    if (parentheses) {
-      print(")");
-    }
-    getPrinter().print(") {").println().startIndent().printIndent()
+    getPrinter().print(")) {").println().startIndent().printIndent()
         .printIndent().print(loop.getStatement())
         .endIndent().println().printIndent().print("}");
   }

@@ -1,0 +1,24 @@
+package commonexpressions;
+
+import Mydomain.*;
+
+
+ocl IntNumberExpressions {
+  context IntNumber i inv:
+    i.value <= -1;
+
+  context IntNumber i inv:
+    i.value >= 1;
+
+  context IntNumber i inv:
+    i.value < 1;
+
+  context IntNumber i inv:
+    i.value > -1;
+
+  context IntNumber i inv:
+    i.value == 1;
+
+  context IntNumber i inv:
+    i.value != -1;
+}

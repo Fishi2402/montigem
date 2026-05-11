@@ -6,10 +6,14 @@ import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.ExtendedElement;
 import org.jsweet.transpiler.model.ExtendedElementFactory;
 import org.jsweet.transpiler.model.MethodInvocationElement;
+import org.jsweet.JSweetConfig;
+import org.jsweet.transpiler.util.Util;
 import standalone.com.sun.source.tree.LambdaExpressionTree;
+import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
 import umlp.jsweet.extension.AbstractAdapter;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import java.util.Arrays;
@@ -97,9 +101,14 @@ public class JavaStreamAdapter extends AbstractAdapter {
     // 1. collection.stream() -> array conversion without the Stream runtime.
     if (methodName.equals("stream") && isCollection(invocation.getTargetType())) {
       if (requiresArrayConversionViaRuntime(invocation)) {
-        print("GemListUtil.toArray(");
+        if (isInAsyncMethod()) {
+          print("(await GemListUtil.toArraySync(");
+        }
+        else {
+          print("GemListUtil.toArray(");
+        }
         printTargetOrThis(invocation);
-        print(")");
+        print(isInAsyncMethod() ? "))" : ")");
         getPrinter().useModule(new ModuleImportDescriptor("GemListUtil", getLibraryLocation()));
       } else {
         print("Array.from(");
@@ -452,6 +461,15 @@ public class JavaStreamAdapter extends AbstractAdapter {
 
   private boolean isAsyncLikeArg(ExtendedElement arg) {
     return isAsyncArg(arg);
+  }
+
+  protected boolean isInAsyncMethod() {
+    MethodTree methodTree = getPrinter().getParent(MethodTree.class);
+    if (methodTree == null) {
+      return false;
+    }
+    Element methodElement = Util.getElement(methodTree);
+    return methodElement != null && context.hasAnnotationType(methodElement, JSweetConfig.ANNOTATION_ASYNC);
   }
 
   private JavaStreamAdapter printAsyncArg(ExtendedElement arg) {

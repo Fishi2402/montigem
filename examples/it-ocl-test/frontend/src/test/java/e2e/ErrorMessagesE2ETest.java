@@ -21,11 +21,11 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
   }
 
   @Test
-  void validatesAgeGemTextInputFromOclConstraint(Page page) {
-    page.getByText("Add Person").click();
+  void validatesAgeGemTextInputFromErrorMessageSubjectOclConstraint(Page page) {
+    page.getByText("Add Error Message Subject").click();
     waitForBackend();
 
-    Locator ageInput = locator(page, ".gemTextInput1", ComponentKind.GemTextInput);
+    Locator ageInput = locator(page, ".gemTextInput0", ComponentKind.GemTextInput);
     assertThat(ageInput).hasValue("20");
 
     ageInput.fill("-1");

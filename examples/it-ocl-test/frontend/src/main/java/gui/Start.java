@@ -7,9 +7,9 @@ import java.util.function.Consumer;
 
 @Component
 public class Start extends StartTOP {
-  public Consumer<Void> createPerson () {
+  public Consumer<Void> createErrorMessageSubject () {
     return $ -> {
-      MydomainManager.personBuilder().age(20).adult(true).name("John Doe").build();
+      MydomainManager.errorMessageSubjectBuilder().age(20).build();
     };
   }
 }

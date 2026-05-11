@@ -11,6 +11,10 @@ umlp Mydomain {
     Optional<int> birthHour;
   }
 
+  class ErrorMessageSubject {
+    int age;
+  }
+
 	class Student extends Person {
 		int matrNr;
 
