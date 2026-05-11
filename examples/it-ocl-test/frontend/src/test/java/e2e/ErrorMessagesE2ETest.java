@@ -10,6 +10,7 @@ import umlp.test_rte.playwright.ComponentKind;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
 
@@ -33,6 +34,6 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
     assertThat(ageInput).hasClass(Pattern.compile(".*\\bgem-input-error\\b.*"));
 
     ageInput.hover();
-    assertThat(page.getByText("The age must be positive but is -1")).isVisible();
+    assertTrue(page.getByText("Age not correct: -1").all().stream().anyMatch(Locator::isVisible));
   }
 }

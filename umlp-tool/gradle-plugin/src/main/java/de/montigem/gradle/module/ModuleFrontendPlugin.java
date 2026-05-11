@@ -276,6 +276,11 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.onlyIf(t -> !umlp.isEmpty());
         });
 
+        gui2symJar.configure(task -> task.from(
+            srcGUI,
+            spec -> spec.include("**/*.tags")
+        ));
+
         TaskProvider<CD2SymTask> cd2sym = subproject.getTasks().register(CD2SYM_TASK, CD2SymTask.class, task -> {
           task.setGroup(UMLP_GROUP_NAME);
           task.getInput().set(srcGUI);
