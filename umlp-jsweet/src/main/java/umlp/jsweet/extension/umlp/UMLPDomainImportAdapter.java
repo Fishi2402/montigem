@@ -34,14 +34,6 @@ public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
     return super.needsImport(importElement, qualifiedName);
   }
 
-  private java.util.Set<String> processedImports = new java.util.HashSet<>();
-
-  @Override
-  public void beforeCompilationUnit() {
-    processedImports.clear();
-    super.beforeCompilationUnit();
-  }
-
   // Retrieves the module import descriptor. It provides information about modules that need to be imported for domain names.
   @Override
   public ModuleImportDescriptor getModuleImportDescriptor(
@@ -49,56 +41,19 @@ public abstract class UMLPDomainImportAdapter extends PrinterAdapter {
       TypeElement importedClass) {
     String fqn = importedClass.getQualifiedName().toString();
     if (fqn != null && startsWithDomainName(fqn)) {
-      org.jsweet.transpiler.Java2TypeScriptTranslator printer = (org.jsweet.transpiler.Java2TypeScriptTranslator) getPrinter();
-
-      // If it's an erased class, we don't handle it here to avoid unnecessary imports
-      if (printer.getContext().hasAnnotationType(importedClass, "jsweet.lang.Erased")) {
-        return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
-      }
-
-      String path = getDomainLocation(importedClass);
-
-      // Check for self-import
-      String currentSourceFilePath = currentCompilationUnit.getSourceFilePath();
-      if (currentSourceFilePath != null) {
-        String fileName = new java.io.File(currentSourceFilePath).getName();
-        if (fileName.equals(importedName + ".java")) {
-          return null;
-        }
-      }
-
-
-      // Fix for duplicate imports and circular dependencies
-      String key = importedName + "@" + path;
-      if (processedImports.contains(key)) {
+      if (super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass) == null) {
         return null;
       }
-      processedImports.add(key);
-
-      // If it's a strong dependency (inheritance or static initializer), it must be at the top.
-      // Otherwise, we move it to the footer to avoid circular dependencies.
-      if (printer.getContext().referenceAnalyzer != null
-          && printer.getContext().referenceAnalyzer.isDependent(printer.getCompilationUnit(), importedClass)) {
-        return new ModuleImportDescriptor(false,
-            (PackageElement) importedClass.getEnclosingElement(), importedName,
-            path, importedClass);
-      } else {
-        printer.getContext().addTopFooterStatement("import." + importedName,
-            "import { " + importedName + " } from '" + path + "';\n");
-        printer.getContext().registerImportedName(printer.getCompilationUnit().getSourceFile().getName(), importedClass, importedName);
-        return null;
-      }
+      return new ModuleImportDescriptor(false,
+          (PackageElement) importedClass.getEnclosingElement(), importedName,
+          getDomainLocation(importedClass), importedClass);
     }
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
+
   // Checks if the fully qualified name (fqn) starts with one of the domain names.
   private boolean startsWithDomainName(String fqn) {
-    for (String domainName : domainNames) {
-      if (fqn.equals(domainName) || fqn.startsWith(domainName + ".")) {
-        return true;
-      }
-    }
-    return false;
+    return domainNames.contains(FluentIterable.from(Splitters.DOT.split(fqn)).first().get());
   }
 
   private String getDomainLocation(TypeElement importedClass) {

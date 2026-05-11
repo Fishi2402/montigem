@@ -9,11 +9,11 @@ import umlp.jsweet.extension.common.UMLPEnumAdapter;
 import umlp.jsweet.extension.gui.GUITypesImportAdapter;
 import umlp.jsweet.extension.umlp.BackendOnlyAdapter;
 import umlp.jsweet.extension.umlp.CollectionsAdapter;
-import umlp.jsweet.extension.umlp.JavaStreamAdapter;
+import umlp.jsweet.extension.umlp.FutureAdapter;
 import umlp.jsweet.extension.umlp.JavaBasicsAdapter;
+import umlp.jsweet.extension.umlp.JavaStreamAdapter;
 import umlp.jsweet.extension.umlp.JavaTimeAdapter;
 import umlp.jsweet.extension.umlp.MutexAdapter;
-import umlp.jsweet.extension.umlp.FutureAdapter;
 import umlp.jsweet.extension.umlp.OptionalAdapter;
 import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 
@@ -23,20 +23,22 @@ import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 public class UMLPAdapter extends PrinterAdapter {
   public UMLPAdapter(PrinterAdapter parentAdapter) {
     super(
-        new JavaStreamAdapter(
-            new GUITypesImportAdapter(
-                new CollectionsAdapter(
-                    new OptionalAdapter(
-                        new FutureAdapter(
-                            new JavaBasicsAdapter(
-                                new UMLPRTEImportAdapter(
-                                    // new RelativeImportAdapter(
-                                    new JavaTimeAdapter(
-                                        new BasicsAdapter(
-                                            new BackendOnlyAdapter(
-                                                new MutexAdapter(
-                                                    new UMLPEnumAdapter(
-                                                        parentAdapter
+        new PrintImportsAtBottomAdapter(
+            new JavaStreamAdapter(
+                new GUITypesImportAdapter(
+                    new CollectionsAdapter(
+                        new OptionalAdapter(
+                            new FutureAdapter(
+                                new JavaBasicsAdapter(
+                                    new UMLPRTEImportAdapter(
+                                        // new RelativeImportAdapter(
+                                        new JavaTimeAdapter(
+                                            new BasicsAdapter(
+                                                new BackendOnlyAdapter(
+                                                    new MutexAdapter(
+                                                        new UMLPEnumAdapter(
+                                                            parentAdapter
+                                                        )
                                                     )
                                                 )
                                             )
