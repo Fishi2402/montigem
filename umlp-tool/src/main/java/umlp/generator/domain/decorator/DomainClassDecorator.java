@@ -37,14 +37,24 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
+import umlp.UMLPTool;
 import umlp.generator.domain.decorator.commands.OwnCommands;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.util.UMLPSymbolTables;
+import umlp.generator.ocl.OCLAttributeExtractor;
+import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
+import de.monticore.ocl.ocl._ast.ASTOCLConstraint;
+import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
+import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -147,6 +157,8 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
             && attr.getModifier().getStereotype().streamValues().anyMatch(v -> v.getName().equals("Optional")))
             .collect(Collectors.toList())
     );
+
+    createOCLValidationMethods(domainClass, clazz);
 
     // Derived but implemented(stereotype GenService.DERIVED_IMPL_TEMPLATE) attributes and assocs
     List<ASTCDAttribute> derivedImplementedAttributes = getDerivedImplementedAttributes(attributes.attrFields);
@@ -437,6 +449,142 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
       adjustedParam.setMCType(MCTypeFacade.getInstance().createListTypeOf("Long"));
     }
     return adjustedParam;
+  }
+
+  protected void createOCLValidationMethods(ASTCDClass domainClass, ASTCDClass clazz) {
+    List<ASTOCLCompilationUnit> ocls = UMLPTool.getOclCompilationUnits();
+    String typeName = domainClass.getName();
+    List<InvariantInfo> typeInvariants = new ArrayList<>();
+    Map<String, List<InvariantInfo>> attrInvariants = new HashMap<>();
+
+    if (!ocls.isEmpty()) {
+      String domainPackage = domainClass.getSymbol().getPackageName().toLowerCase();
+
+      for (ASTOCLCompilationUnit ocl : ocls) {
+        String oclClassName = ocl.getOCLArtifact().getName();
+        String oclPackage = ocl.isPresentPackage() ? ocl.getPackage() : "";
+
+        if (!oclPackage.isEmpty()) {
+          if (!domainPackage.isEmpty() && !oclPackage.startsWith(domainPackage)) {
+            oclClassName = domainPackage + "." + oclPackage + "." + oclClassName;
+          } else {
+            oclClassName = oclPackage + "." + oclClassName;
+          }
+        } else if (!domainPackage.isEmpty()) {
+          oclClassName = domainPackage + "." + oclClassName;
+        }
+
+
+        int invCounter = 0;
+        for (ASTOCLConstraint constraint : ocl.getOCLArtifact().getOCLConstraintList()) {
+          if (constraint instanceof ASTOCLInvariant) {
+            ASTOCLInvariant invariant = (ASTOCLInvariant) constraint;
+
+            // Skip invariants with more than one parameter as our checkInv/getErrorInv calls currently only support 'this'
+            if (invariant.getOCLContextDefinitionList().size() != 1) {
+              continue;
+            }
+
+            Optional<String> contextParam = Optional.empty();
+
+            for (ASTOCLContextDefinition ctx : invariant.getOCLContextDefinitionList()) {
+              String ctxType = "";
+              if (ctx.isPresentMCType()) {
+                ctxType = ctx.getMCType().printType();
+              } else if (ctx.isPresentOCLParamDeclaration()) {
+                ctxType = ctx.getOCLParamDeclaration().getMCType().printType();
+              }
+
+              if (ctxType.equals(typeName) || ctxType.endsWith("." + typeName)) {
+                if (ctx.isPresentMCType()) {
+                  contextParam = Optional.of("this");
+                } else {
+                  contextParam = Optional.of(ctx.getOCLParamDeclaration().getName());
+                }
+                break;
+              }
+            }
+
+            if (contextParam.isPresent()) {
+              String invName = invariant.isPresentName() ? invariant.getName() : "Inv" + (invCounter++);
+
+              String simpleOCLClassName = oclClassName;
+              if (simpleOCLClassName.contains(".")) {
+                simpleOCLClassName = simpleOCLClassName.substring(simpleOCLClassName.lastIndexOf(".") + 1);
+              }
+
+              InvariantInfo info = new InvariantInfo(simpleOCLClassName, invName);
+              typeInvariants.add(info);
+
+              // Add import for the OCL class
+              getCD4C().addImport(clazz, oclClassName);
+
+              OCLAttributeExtractor.Result extractionResult = OCLAttributeExtractor.extract(invariant, contextParam.get());
+
+              if (extractionResult.hasErrorMessages) {
+                for (String attr : extractionResult.usedAttributes) {
+                  attrInvariants.computeIfAbsent(attr, k -> new ArrayList<>()).add(info);
+                }
+              }
+            } else {
+              // Even if not context, it might be anonymous but we don't have the context param name here
+              // Increment counter to keep numbering consistent with OCLWithErrorMessagesJavaGenVisitor
+              if (!invariant.isPresentName()) {
+                invCounter++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    getCD4C().addMethod(clazz, "umlp.domain.CheckOCLConstraints", typeInvariants, clazz.getName());
+
+    Set<String> allAttributes = CDSymbolTables.getAttributesInHierarchy(domainClass).stream()
+        .filter(a -> !a.getModifier().isDerived())
+        .map(ASTCDAttribute::getName)
+        .collect(Collectors.toSet());
+    
+    // Also include associations as they might be validated or used in GUI
+    CDSymbolTables.getAssociationsInHierarchy(domainClass).stream()
+        .filter(a -> !GenService.isSymbolDerived(a))
+        .map(ASTCDAssocSide::getName)
+        .forEach(allAttributes::add);
+
+    for (String attr : allAttributes) {
+      List<InvariantInfo> invs = attrInvariants.getOrDefault(attr, new ArrayList<>());
+      getCD4C().addMethod(clazz, "umlp.domain.GetValidationError", attr, invs, clazz.getName());
+    }
+
+    // Add imports
+    getCD4C().addImport(clazz, "mc.fenix.input.geminputbasetypes.ValidationError");
+  }
+
+  public static class InvariantInfo {
+    protected String className;
+    protected String invName;
+
+    public InvariantInfo(String className, String invName) {
+      this.className = className;
+      this.invName = invName;
+    }
+
+    public String getClassName() {
+      return className;
+    }
+
+    public String getCheckMethodName() {
+      return "check" + invName;
+    }
+
+    public String getErrorMethodName() {
+      return "getError" + invName;
+    }
+
+    // For backward compatibility with FTL if I named them differently there
+    public String getMethodName() {
+      return getCheckMethodName();
+    }
   }
 
   protected List<ASTCDAttribute> getDerivedImplementedAttributes(List<ASTCDAttribute> attributes) {
