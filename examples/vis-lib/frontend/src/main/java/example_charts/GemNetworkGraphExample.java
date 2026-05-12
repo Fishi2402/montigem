@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class GemGraphChartExample extends GemGraphChartExampleTOP {
+public class GemNetworkGraphExample extends GemNetworkGraphExampleTOP {
 
   @Override
   public GemNetworkData getNetworkgraphData() {

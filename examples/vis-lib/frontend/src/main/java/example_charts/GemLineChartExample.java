@@ -66,7 +66,7 @@ public class GemLineChartExample extends GemLineChartExampleTOP {
       double[] stocks = {0, 0, 0, 0, 0};
       for (Person person : entry.getValue()) {
         for (Stock stock : person.getStocksList()) {
-          switch (stock.getDate().getDayOfMonth()) { // TODO GV
+          switch (stock.getDate().getDayOfMonth()) {
             case 1: {
               stocks[0] += stock.getPrice();
               break;

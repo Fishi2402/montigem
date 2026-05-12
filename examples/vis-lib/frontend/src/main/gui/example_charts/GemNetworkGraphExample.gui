@@ -5,13 +5,13 @@ import Domain.Person;
 import mc.fenix.charts.GemNetworkGraph;
 import common.ExamplePage;
 
-page GemGraphChartExample(List<Person> persons) {
+page GemNetworkGraphExample(List<Person> persons) {
   @ExamplePage(
     component = networkgraph@GemNetworkGraph(
       data = null
     ),
     basePath = "example_charts",
-    componentName = "GemGraphChartExample",
+    componentName = "GemNetworkGraphExample",
     simple = true
   );
 }

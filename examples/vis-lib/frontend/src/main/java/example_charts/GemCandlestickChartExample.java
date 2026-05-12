@@ -16,6 +16,7 @@ public class GemCandlestickChartExample extends GemCandlestickChartExampleTOP {
    * Provides sample data for the candlestick chart.
    * This method is called by the GUI file via "data = getData()".
    */
+  @Override
   public GemCandlestickChartData getData() {
 
     // The expected order of values is: open, high, low, close

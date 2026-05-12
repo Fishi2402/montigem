@@ -272,7 +272,7 @@ slowtest:
       - build.log
     reports:
       # Lets gitlab render infos about failed tests
-      junit: "**/slowtest/**/TEST-*.xml"
+      junit: "**/build/test-results/slowtest/TEST-*.xml"
     expire_in: 1 week
 
 #trigger-doppelkopf:
