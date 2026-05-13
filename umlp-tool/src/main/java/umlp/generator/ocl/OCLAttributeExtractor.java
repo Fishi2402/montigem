@@ -8,8 +8,10 @@ import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import oclwitherrormessages.OCLWithErrorMessagesMill;
 import oclwitherrormessages._visitor.OCLWithErrorMessagesTraverser;
 import oclwitherrormessages._visitor.OCLWithErrorMessagesVisitor2;
@@ -95,7 +97,7 @@ public class OCLAttributeExtractor implements CommonExpressionsVisitor2, Express
     if (!(symbol instanceof VariableSymbol) || contextType == null) {
       return false;
     }
-    return contextType.getFieldList(name, false).stream()
+    return OOWithinTypeBasicSymbolsResolver.resolveVariable(contextType, name, AccessModifier.ALL_INCLUSION, variableSymbol -> true).stream()
         .anyMatch(field -> field.equals(symbol));
   }
 
