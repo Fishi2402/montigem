@@ -4,26 +4,37 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
+import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
 import de.monticore.ocl.ocl._ast.ASTOCLInvariant;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.TypeCheck3;
 import oclwitherrormessages.OCLWithErrorMessagesMill;
 import oclwitherrormessages._visitor.OCLWithErrorMessagesTraverser;
 import oclwitherrormessages._visitor.OCLWithErrorMessagesVisitor2;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class OCLAttributeExtractor implements CommonExpressionsVisitor2, ExpressionsBasisVisitor2, OCLWithErrorMessagesVisitor2 {
 
   protected Set<String> usedAttributes = new HashSet<>();
   protected String contextParamName;
+  protected SymTypeExpression contextType;
   protected boolean hasErrorMessages = false;
 
-  public OCLAttributeExtractor(String contextParamName) {
+  public OCLAttributeExtractor(String contextParamName, SymTypeExpression contextType) {
     this.contextParamName = contextParamName;
+    this.contextType = contextType;
   }
 
   public static Result extract(ASTOCLInvariant invariant, String contextParamName) {
-    OCLAttributeExtractor extractor = new OCLAttributeExtractor(contextParamName);
+    OCLAttributeExtractor extractor = new OCLAttributeExtractor(
+        contextParamName,
+        resolveContextType(invariant, contextParamName)
+    );
     OCLWithErrorMessagesTraverser traverser = OCLWithErrorMessagesMill.traverser();
     traverser.add4CommonExpressions(extractor);
     traverser.add4ExpressionsBasis(extractor);
@@ -34,26 +45,17 @@ public class OCLAttributeExtractor implements CommonExpressionsVisitor2, Express
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
-    // If we have p.age, node.getName() is "age" and node.getExpression() is NameExpression "p"
-    // If we have p.address.city, we have a chain.
-    // Inner: fa.getName()="address", fa.getExpression()=NameExpression "p"
-    // Outer: fa.getName()="city", fa.getExpression()=FieldAccessExpression "p.address"
-
-    // We only care about the attribute directly on the context object (e.g. "age" or "address")
-    // because that's what we generate get...ValidationError methods for.
-
-    if (node.getExpression() instanceof ASTNameExpression) {
-      ASTNameExpression nameExpr = (ASTNameExpression) node.getExpression();
-      if (nameExpr.getName().equals(contextParamName) || nameExpr.getName().equals("this")) {
-        usedAttributes.add(node.getName());
-      }
+    SymTypeExpression ownerType = TypeCheck3.typeOf(node.getExpression());
+    if (isContextType(ownerType)) {
+      usedAttributes.add(node.getName());
     }
   }
 
   @Override
   public void visit(ASTNameExpression node) {
-    if (!node.getName().equals(contextParamName) && !node.getName().equals("this")) {
-      // It might be an implicit attribute access
+    Optional<ISymbol> definingSymbol = node.getDefiningSymbol();
+    if (definingSymbol.isPresent()
+        && isContextField(node.getName(), definingSymbol.get())) {
       usedAttributes.add(node.getName());
     }
   }
@@ -63,6 +65,38 @@ public class OCLAttributeExtractor implements CommonExpressionsVisitor2, Express
     if (node.isPresentInvErrorMessages()) {
       hasErrorMessages = true;
     }
+  }
+
+  protected static SymTypeExpression resolveContextType(ASTOCLInvariant invariant, String contextParamName) {
+    for (ASTOCLContextDefinition context : invariant.getOCLContextDefinitionList()) {
+      if (context.isPresentMCType() && "this".equals(contextParamName)) {
+        return TypeCheck3.symTypeFromAST(context.getMCType());
+      }
+      if (context.isPresentOCLParamDeclaration()
+          && contextParamName.equals(context.getOCLParamDeclaration().getName())) {
+        return TypeCheck3.symTypeFromAST(context.getOCLParamDeclaration().getMCType());
+      }
+    }
+    return null;
+  }
+
+  protected boolean isContextType(SymTypeExpression type) {
+    if (contextType == null || type == null) {
+      return false;
+    }
+    if (type.deepEquals(contextType)) {
+      return true;
+    }
+    return type.isIntersectionType()
+        && type.asIntersectionType().getIntersectedTypeSet().stream().anyMatch(this::isContextType);
+  }
+
+  protected boolean isContextField(String name, ISymbol symbol) {
+    if (!(symbol instanceof VariableSymbol) || contextType == null) {
+      return false;
+    }
+    return contextType.getFieldList(name, false).stream()
+        .anyMatch(field -> field.equals(symbol));
   }
 
   public static class Result {
