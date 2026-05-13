@@ -5,4 +5,5 @@ Log.enableFailQuick(false);
 Log.warn("I AM ALIVE!");
 
 DatabaseAccessManager4Neo4j.init();
+afterDbConnectionTasks.forEach(Runnable::run);
 ${cdName}ManagerImpl.initNeo4J();
