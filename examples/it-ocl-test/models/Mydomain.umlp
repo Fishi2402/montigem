@@ -15,6 +15,15 @@ umlp Mydomain {
     int age;
   }
 
+  class LinkedAccessRoot {
+    String name;
+  }
+
+  class LinkedAccessTarget {
+    int checkedValue;
+  }
+  association [0..1] LinkedAccessRoot -> (target) LinkedAccessTarget [*];
+
 	class Student extends Person {
 		int matrNr;
 

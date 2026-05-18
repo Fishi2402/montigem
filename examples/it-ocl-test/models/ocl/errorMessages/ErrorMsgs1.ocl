@@ -8,4 +8,14 @@ ocl ErrorMsgs1 {
     subject.age >= 0;
     shortError: "Age not correct: " + subject.age;
     error: "The age must be positive but is " + subject.age;
+
+  context LinkedAccessTarget target inv:
+    target.checkedValue >= 0;
+    shortError: "Linked checked value not correct: " + target.checkedValue;
+    error: "The linked checked value must be positive but is " + target.checkedValue;
+
+  context LinkedAccessRoot root inv:
+    forall i in root.target: i.checkedValue > 100;
+    shortError: "Linked target association invalid: " + root.name;
+    error: "The linked target association must point to a target with a checked value greater than 100.";
 }

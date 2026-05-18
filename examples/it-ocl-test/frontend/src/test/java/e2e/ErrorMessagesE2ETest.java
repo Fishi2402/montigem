@@ -25,7 +25,7 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
     page.getByText("Add Error Message Subject").click();
     waitForBackend();
 
-    Locator ageInput = locator(page, ".gemTextInput0", ComponentKind.GemTextInput);
+    Locator ageInput = locator(page, ".ageInput", ComponentKind.GemTextInput);
     assertThat(ageInput).hasValue("20");
 
     ageInput.fill("-1");
@@ -35,5 +35,28 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
 
     ageInput.hover();
     assertTrue(page.getByText("Age not correct: -1").all().stream().anyMatch(Locator::isVisible));
+  }
+
+  @Test
+  void validatesNestedGemTextInputWithLinkedObjectErrors(Page page) {
+    page.getByText("Add Linked Access Root").click();
+    waitForBackend();
+
+    Locator checkedValueInput =
+        locator(page, ".linkEditComp .checkedValueInput", ComponentKind.GemTextInput);
+    assertThat(checkedValueInput).hasValue("101");
+
+    checkedValueInput.fill("-1");
+    waitForBackend();
+
+    assertThat(checkedValueInput).hasClass(Pattern.compile(".*\\bgem-input-error\\b.*"));
+
+    checkedValueInput.hover();
+    assertVisibleText(page, "Linked checked value not correct: -1");
+    assertVisibleText(page, "Linked target association invalid: linked access root");
+  }
+
+  private void assertVisibleText(Page page, String text) {
+    assertTrue(page.getByText(text).all().stream().anyMatch(Locator::isVisible));
   }
 }

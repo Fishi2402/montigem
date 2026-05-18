@@ -1,0 +1,11 @@
+package gui;
+
+import Mydomain.LinkedAccessRoot;
+import Mydomain.LinkedAccessTarget;
+import mc.fenix.input.GemTextInput;
+
+component OclE2ELinkedAccessEditComp(LinkedAccessRoot linkedAccessRoot) {
+  targetIterate@iterate(LinkedAccessTarget i : linkedAccessRoot.target){
+    checkedValueInput@GemTextInput(labelText="checked value", inputType = "number", entry=i.checkedValue);
+  }
+}

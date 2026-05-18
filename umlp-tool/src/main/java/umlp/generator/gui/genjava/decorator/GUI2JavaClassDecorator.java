@@ -15,6 +15,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -511,12 +512,69 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     String domainObjGetter = getterPrinter.prettyprint(fieldAccess.getExpression());
     String targetType = printType(getSimpleType(createTypeAndAddImports(binding.getTargetType())));
     List<ASTCDParameter> params = getIterationItemParameters(node);
+    List<AdditionalValidationSource> additionalValidationSources =
+        getAdditionalValidationSources(node, fieldAccess, getterPrinter);
 
     getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomain",
-        name, domainObjGetter, attrName, targetType, params);
+        name, domainObjGetter, attrName, targetType, params, additionalValidationSources);
 
     addImport("mc.fenix.input.geminputbasetypes.ValidationError");
     addImport("java.util.Optional");
+  }
+
+  // TODO: use type check instead
+  protected List<AdditionalValidationSource> getAdditionalValidationSources(
+      ASTGUIComponent node,
+      ASTFieldAccessExpression fieldAccess,
+      Expression2AccessorPrinter getterPrinter
+  ) {
+    if (!(fieldAccess.getExpression() instanceof ASTNameExpression)) {
+      return Collections.emptyList();
+    }
+
+    ASTNameExpression item = (ASTNameExpression) fieldAccess.getExpression();
+    Optional<VariableSymbol> itemSymbol =
+        util.findIterationItemSymbols(item.getName(), node.getEnclosingScope());
+    if (itemSymbol.isEmpty()
+        || !(itemSymbol.get().getEnclosingScope().getAstNode() instanceof ASTGUIIterate)) {
+      return Collections.emptyList();
+    }
+
+    ASTGUIIterate iterate =
+        (ASTGUIIterate) itemSymbol.get().getEnclosingScope().getAstNode();
+    if (!(iterate.getIterateControl() instanceof ASTGUIShortIterateControl)) {
+      return Collections.emptyList();
+    }
+
+    ASTExpression iterable =
+        ((ASTGUIShortIterateControl) iterate.getIterateControl()).getIterable();
+    if (!(iterable instanceof ASTFieldAccessExpression)) {
+      return Collections.emptyList();
+    }
+
+    ASTFieldAccessExpression associationAccess = (ASTFieldAccessExpression) iterable;
+    return List.of(new AdditionalValidationSource(
+        getterPrinter.prettyprint(associationAccess.getExpression()),
+        associationAccess.getName()
+    ));
+  }
+
+  public static class AdditionalValidationSource {
+    protected final String domainObjGetter;
+    protected final String attrName;
+
+    public AdditionalValidationSource(String domainObjGetter, String attrName) {
+      this.domainObjGetter = domainObjGetter;
+      this.attrName = attrName;
+    }
+
+    public String getDomainObjGetter() {
+      return domainObjGetter;
+    }
+
+    public String getAttrName() {
+      return attrName;
+    }
   }
 
   /**

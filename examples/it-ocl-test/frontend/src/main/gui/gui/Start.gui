@@ -14,13 +14,21 @@ import mc.fenix.basic.GemImage;
 import gui.navigation.NavContainer;
 
 import Mydomain.ErrorMessageSubject;
+import Mydomain.LinkedAccessRoot;
 import gui.OclE2EEditComp;
+import gui.OclE2ELinkedAccessEditComp;
 
-page Start(List<ErrorMessageSubject> errorMessageSubjects) {
+page Start(List<ErrorMessageSubject> errorMessageSubjects, List<LinkedAccessRoot> linkedAccessRoots) {
   @GemButton(label="Add Error Message Subject", leftClick=createErrorMessageSubject());
   @iterate(ErrorMessageSubject subject : errorMessageSubjects){
     @GemCard(
       component=@OclE2EEditComp(subject=subject)
+    );
+  }
+  @GemButton(label="Add Linked Access Root", leftClick=createLinkedAccessRoot());
+  @iterate(LinkedAccessRoot linkedAccessRoot : linkedAccessRoots){
+    @GemCard(
+      component=linkEditComp@OclE2ELinkedAccessEditComp(linkedAccessRoot=linkedAccessRoot)
     );
   }
 }

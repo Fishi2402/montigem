@@ -4,5 +4,5 @@ import Mydomain.ErrorMessageSubject;
 import mc.fenix.input.GemTextInput;
 
 component OclE2EEditComp(ErrorMessageSubject subject) {
-  @GemTextInput(labelText="age", inputType = "number", entry=subject.age);
+  ageInput@GemTextInput(labelText="age", inputType = "number", entry=subject.age);
 }
