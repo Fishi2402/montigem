@@ -110,6 +110,7 @@ build_no_containers:
       - examples/sehub/frontend/build/app/node_modules
       - examples/dtcockpit/frontend/build/app/node_modules
       - products/demorec/frontend/build/app/node_modules
+      - examples/kitchencompanion/frontend/build/app/node_modules
   artifacts:
     when: always
     paths:
@@ -189,6 +190,7 @@ build_with_deploy:
       :products:demorec:backend:jib \
       :examples:vis-lib:backend:jib \
       :experiments:server-performance:backend:jib \
+      :examples:kitchencompanion:backend:jib \
       -P mavenPassword=$pass -P mavenUser=$user $ARGS3 \
       -Djib.from.auth.username=$CI_REGISTRY_USER  \
       -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
@@ -203,6 +205,7 @@ build_with_deploy:
       :examples:sehub:frontend:deployImageCI \
       :products:demorec:frontend:deployImageCI \
       :examples:vis-lib:frontend:deployImageCI \
+      :examples:kitchencompanion:frontend:deployImageCI \
       -P mavenPassword=$pass \
       -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     - echo "Frontend containers finished"
@@ -223,6 +226,7 @@ build_with_deploy:
       - examples/sehub/frontend/build/app/node_modules
       - examples/dtcockpit/frontend/build/app/node_modules
       - products/demorec/frontend/build/app/node_modules
+      - examples/kitchencompanion/frontend/build/app/node_modules
     - key: vis-lib-cache-$CI_COMMIT_REF_NAME
       policy: push
       paths:
