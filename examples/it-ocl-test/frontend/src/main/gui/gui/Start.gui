@@ -26,6 +26,7 @@ page Start(List<ErrorMessageSubject> errorMessageSubjects, List<LinkedAccessRoot
     );
   }
   @GemButton(label="Add Linked Access Root", leftClick=createLinkedAccessRoot());
+  @GemButton(label="Add Linked Access Root With Too Many Targets", leftClick=createLinkedAccessRootWithTooManyTargets());
   @iterate(LinkedAccessRoot linkedAccessRoot : linkedAccessRoots){
     @GemCard(
       component=linkEditComp@OclE2ELinkedAccessEditComp(linkedAccessRoot=linkedAccessRoot)

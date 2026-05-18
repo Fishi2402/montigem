@@ -2,6 +2,7 @@ package e2e;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 import mydomain.test_infrastructure.AbstractMydomainE2ETest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,9 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
 
   @Test
   void validatesNestedGemTextInputWithLinkedObjectErrors(Page page) {
-    page.getByText("Add Linked Access Root").click();
+    page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions()
+        .setName("Add Linked Access Root")
+        .setExact(true)).click();
     waitForBackend();
 
     Locator checkedValueInput =
@@ -54,6 +57,23 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
     checkedValueInput.hover();
     assertVisibleText(page, "Linked checked value not correct: -1");
     assertVisibleText(page, "Linked target association invalid: linked access root");
+  }
+
+  @Test
+  void validatesTargetSizeErrorOnLinkedAccessRoot(Page page) {
+    page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions()
+        .setName("Add Linked Access Root With Too Many Targets")
+        .setExact(true)).click();
+    waitForBackend();
+    waitForAngular(page);
+
+    navAndWait(page, "/ocl2java/errormessages/ErrorMsgs1Page");
+    waitForAngular(page);
+
+    locator(page, ".errorMsgs1Inv3", ComponentKind.GemButton).click();
+    waitForAngular(page);
+
+    assertThat(page.locator(".resultGemText")).hasText("0");
   }
 
   private void assertVisibleText(Page page, String text) {

@@ -18,4 +18,9 @@ ocl ErrorMsgs1 {
     forall i in root.target: i.checkedValue > 100;
     shortError: "Linked target association invalid: " + root.name;
     error: "The linked target association must point to a target with a checked value greater than 100.";
+
+  context LinkedAccessRoot root inv:
+    root.target.size() <= 2;
+    shortError: "Must have at most 2 targets";
+    error: "Must have at most 2 targets";
 }

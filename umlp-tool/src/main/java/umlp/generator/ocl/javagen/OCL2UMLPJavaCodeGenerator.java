@@ -7,6 +7,7 @@ import de.monticore.expressions.bitexpressions.codegen.javagen.BitExpressionsJav
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressionsJavaGenVisitor;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
 import de.monticore.literals.mccommonliterals.codegen.javagen.MCCommonLiteralsJavaGenVisitor;
@@ -22,6 +23,7 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -90,12 +92,32 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
         }
 
         if (!handled) {
-          super.handle(node);
+          startParentheses();
+          node.getExpression().accept(getTraverser());
+          startParentheses();
+          boolean first = true;
+          for (ASTExpression arg : node.getArguments().getExpressionList()) {
+            if(!first){
+              getPrinter().print(", ");
+            }
+            arg.accept(getTraverser());
+            first = false;
+          }
+          endParentheses();
+          endParentheses();
         }
       }
 
       @Override
       public void handle(ASTFieldAccessExpression node) {
+        // functions should not be replaced by getter name conversion
+        if(TypeCheck3.typeOf(node).isFunctionType()){
+          node.getExpression().accept(getTraverser());
+          printer.print(".");
+          printer.print(node.getName());
+          return;
+        }
+
         // UMLP specific field access
         node.getExpression().accept(getTraverser());
 

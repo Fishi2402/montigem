@@ -22,4 +22,15 @@ public class Start extends StartTOP {
           .build();
     };
   }
+
+  public Consumer<Void> createLinkedAccessRootWithTooManyTargets () {
+    return $ -> {
+      MydomainManager.linkedAccessRootBuilder()
+          .name("linked access root with too many targets")
+          .targetAdd(MydomainManager.linkedAccessTargetBuilder().checkedValue(101))
+          .targetAdd(MydomainManager.linkedAccessTargetBuilder().checkedValue(102))
+          .targetAdd(MydomainManager.linkedAccessTargetBuilder().checkedValue(103))
+          .build();
+    };
+  }
 }
