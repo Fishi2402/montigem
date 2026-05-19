@@ -5,6 +5,7 @@ Log.enableFailQuick(false);
 Log.warn("I AM ALIVE!");
 
 DatabaseAccessManager4SQL.init();
+afterDbConnectionTasks.forEach(Runnable::run);
 ${cdName}ManagerImpl.init();
 OCL2SQL.init();
 ${cdName}QueryBuilderMap.init();

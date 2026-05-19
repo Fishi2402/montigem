@@ -42,15 +42,21 @@ public class E2ETestDecorator extends AbstractDecorator {
 
     String e2eTestClassName = "Abstract" + cdName + "E2ETest";
     String portConfigClassName = cdName + "E2ETestPortConfig";
+    String testConfigClassName = cdName + "E2ETestConfig";
 
     testInfrastructurePackage.addCDElement(withOrigin(createAbstractE2ETest(origCD,
                                                                             e2eTestClassName,
-                                                                            portConfigClassName)));
+                                                                            portConfigClassName,
+                                                                            testConfigClassName)));
     testInfrastructurePackage.addCDElement(withOrigin(createPortConfig(e2eTestClassName,
                                                                        portConfigClassName)));
+    testInfrastructurePackage.addCDElement(withOrigin(createTestConfig(origCD, testConfigClassName)));
   }
 
-  private ASTCDElement createAbstractE2ETest(ASTCDCompilationUnit origCD, String className, String portConfigClassName) {
+  private ASTCDElement createAbstractE2ETest(ASTCDCompilationUnit origCD,
+                                             String className,
+                                             String portConfigClassName,
+                                             String testConfigClassName) {
 
     String cdName = origCD.getCDDefinition().getName();
     String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
@@ -110,7 +116,8 @@ public class E2ETestDecorator extends AbstractDecorator {
     setAnnotations(res,
                    new TemplateHookPoint("umlp.test_infrastructure.e2e.Annotations",
                                          cdName,
-                                         portConfigClassName));
+                                         portConfigClassName,
+                                         testConfigClassName));
 
     var waitForBackendMethod = cd4C.addMethod(res, "umlp.test_infrastructure.e2e.WaitForBackend", cdName);
     glex.replaceTemplate(JAVADOC, waitForBackendMethod, new StringHookPoint(
@@ -120,6 +127,31 @@ public class E2ETestDecorator extends AbstractDecorator {
         " */"
         //@formatter:on
     ));
+
+    return res;
+  }
+
+  private ASTCDElement createTestConfig(ASTCDCompilationUnit origCD, String className) {
+    String cdName = origCD.getCDDefinition().getName();
+    String packageName = getPackageName(origCD, DEFAULT_PACKAGE);
+
+    ASTCDClass res = UMLPMill.cDClassBuilder()
+        .setModifier(PUBLIC.build())
+        .setName(className)
+        .build();
+
+    CD4C cd4C = getCD4C();
+    cd4C.addImport(res, Joiners.DOT.join(packageName, cdName + "ServerApplication"));
+    cd4C.addImport(res, "org.springframework.beans.factory.config.BeanPostProcessor");
+    cd4C.addImport(res, "org.springframework.boot.test.context.TestConfiguration");
+    cd4C.addImport(res, "org.springframework.context.annotation.Bean");
+    cd4C.addImport(res, "umlp.backendrte.common.DatabaseAccessManager");
+
+    glex.replaceTemplate("cd2java.Annotations", res, new StringHookPoint("@TestConfiguration"));
+
+    ASTCDMethodSignature addAfterDbConnectionTask =
+        cd4C.addMethod(res, "umlp.test_infrastructure.e2e.AddAfterDbConnectionTask", cdName);
+    glex.replaceTemplate("cd2java.Annotations", addAfterDbConnectionTask, new StringHookPoint("@Bean"));
 
     return res;
   }

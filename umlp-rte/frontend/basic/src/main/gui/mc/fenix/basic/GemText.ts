@@ -32,4 +32,7 @@ export class GemText extends GemTextComponent {
 
   @HostBinding("style.color")
   _color: string;
+
+  @HostBinding("style.white-space")
+  _whiteSpace: string = 'pre-line';
 }
