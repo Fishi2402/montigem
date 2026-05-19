@@ -379,7 +379,7 @@ deploy-python-package:
     HATCH_INDEX_AUTH: $CI_JOB_TOKEN
     HATCH_INDEX_USER: gitlab-ci-token
   rules:
-    - if: $CI_COMMIT_BRANCH == "dev" # only publish on dev
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "dev"' # only publish on pushes/merged to dev (not on upstream triggers)
       changes:
         - experiments/python-client/runtime-package/**/* # and on changes to the runtime package dir
 
