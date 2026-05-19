@@ -78,7 +78,7 @@ component Navigation(String activeCategory = "Basic") {
         @GemNavItem(title = "SunburstChart", target = "/example_charts/GemSunburstChartExample");
         @GemNavItem(title = "VennDiagram", target = "/example_charts/GemVennDiagramExample");
         @GemNavItem(title = "NetworkGraph", target = "/example_charts/GemNetworkGraphExample");
-        wipNetwork@GemNavItem(title = "NewNetworkChart (WIP)", target = "/example_network/NetworkChartExample");
+        @GemNavItem(title = "NewNetworkChart", target = "/example_network/NetworkChartExample");
         @GemNavItem(title = "GemScatterPlot", target = "/example_charts/GemScatterPlotExample");
       },
 
