@@ -166,7 +166,6 @@ build_with_deploy:
     - |
       gradle \
         \
-        # backend
         :examples:weather:backend:jib \
         :examples:sehub:backend:jib \
         :examples:stat:jib \
@@ -175,17 +174,14 @@ build_with_deploy:
         :experiments:server-performance:backend:jib \
         :examples:kitchencompanion:backend:jib \
         \
-        # frontend
         :examples:weather:frontend:deployImageCI \
         :examples:sehub:frontend:deployImageCI \
         :products:demorec:frontend:deployImageCI \
         :examples:vis-lib:frontend:deployImageCI \
         :examples:kitchencompanion:frontend:deployImageCI \
         \
-        # GenDoc image
         :examples:vis-lib:frontend:screenshot \
         \
-        # Options
         -PmavenPassword="$pass" \
         -PmavenUser="$user" \
         $GRADLE_OPTS $ARGS1 $ARGS3 \
