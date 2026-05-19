@@ -163,31 +163,39 @@ build_with_deploy:
     - echo "packageUMLPWithGUIVscodePlugin finished"
     - "cd .."
     # Deploy: Containers, screenshot of vis-lib
-    - "gradle \
-      # backend
-      :examples:weather:backend:jib \
-      :examples:sehub:backend:jib \
-      :examples:stat:jib \
-      :products:demorec:backend:jib \
-      :examples:vis-lib:backend:jib \
-      :experiments:server-performance:backend:jib \
-      :examples:kitchencompanion:backend:jib \
-      # frontend
-      :examples:weather:frontend:deployImageCI \
-      :examples:sehub:frontend:deployImageCI \
-      :products:demorec:frontend:deployImageCI \
-      :examples:vis-lib:frontend:deployImageCI \
-      :examples:kitchencompanion:frontend:deployImageCI \
-      # GenDoc image
-      :examples:vis-lib:frontend:screenshot \
-      -P mavenPassword=$pass \
-      -P mavenUser=$user \
-      $GRADLE_OPTS $ARGS1 $ARGS3 \
-      -Djib.from.auth.username=$CI_REGISTRY_USER  \
-      -Djib.from.auth.password=$CI_REGISTRY_PASSWORD \
-      -Djib.console=plain \
-      -Djib.to.auth.username=$CI_REGISTRY_USER  \
-      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - |
+      gradle \
+        \
+        # backend
+        :examples:weather:backend:jib \
+        :examples:sehub:backend:jib \
+        :examples:stat:jib \
+        :products:demorec:backend:jib \
+        :examples:vis-lib:backend:jib \
+        :experiments:server-performance:backend:jib \
+        :examples:kitchencompanion:backend:jib \
+        \
+        # frontend
+        :examples:weather:frontend:deployImageCI \
+        :examples:sehub:frontend:deployImageCI \
+        :products:demorec:frontend:deployImageCI \
+        :examples:vis-lib:frontend:deployImageCI \
+        :examples:kitchencompanion:frontend:deployImageCI \
+        \
+        # GenDoc image
+        :examples:vis-lib:frontend:screenshot \
+        \
+        # Options
+        -PmavenPassword="$pass" \
+        -PmavenUser="$user" \
+        $GRADLE_OPTS $ARGS1 $ARGS3 \
+        -Djib.from.auth.username="$CI_REGISTRY_USER" \
+        -Djib.from.auth.password="$CI_REGISTRY_PASSWORD" \
+        -Djib.console=plain \
+        -Djib.to.auth.username="$CI_REGISTRY_USER" \
+        -Djib.to.auth.password="$CI_REGISTRY_PASSWORD" \
+        >> "$CI_PROJECT_DIR/build.log" \
+        2> >(tee -a "$CI_PROJECT_DIR/build.log" >&2)
     - echo "Containers and GenDoc Image finished"
     # >(tee -a ...) starts tee background process, wait to ensure everything is written to
     - wait
