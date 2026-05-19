@@ -4,6 +4,9 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle8.14.4-chr
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   FF_TIMESTAMPS: true
+  PUPPETEER_SKIP_DOWNLOAD: "true"
+  CHROME_BIN: "/usr/bin/google-chrome-stable"
+  PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
 
 cache:
   paths:
@@ -15,9 +18,7 @@ before_script:
 
 stages:
   - build
-  #  - it_tests
   - check
-  - deploy
   - testDeployed
 
 gendoc:
@@ -52,20 +53,10 @@ pages:
 
 build_no_containers:
   stage: build
-  variables:
-    PUPPETEER_SKIP_DOWNLOAD: "true"
-    CHROME_BIN: "/usr/bin/google-chrome-stable"
-    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
     - export CHROME_BIN=/usr/bin/google-chrome-stable
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
-    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "Build finished"
-    # Generate JaCoCo report
-    - "gradle testCodeCoverageReport -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "Coverage report finished"
-    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "vis-lib frontend build"
+    - "gradle build testCodeCoverageReport --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
@@ -138,23 +129,11 @@ build_intellij_plugin:
 
 build_with_deploy:
   stage: build
-  variables:
-    PUPPETEER_SKIP_DOWNLOAD: "true"
-    CHROME_BIN: "/usr/bin/google-chrome-stable"
-    PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
   script:
-    # Build project + examples
+    # Build project + examples + publish RTE, publish generator
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
-    - "gradle build --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "Build finished"
-    # Generate JaCoCo reports
-    - "gradle testCodeCoverageReport -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "Coverage report finished"
-    - "gradle :examples:vis-lib:frontend:build -Dj2ts_vislib=true >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "vis-lib frontend build"
-    # Deploy RTEs
-    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish :umlp-rte:publish :umlp-rte:backend:publish :umlp-rte:frontend:publish :umlp-test-rte:publish :umlp-jsweet:publish :modules:publishModules :experiments:python-client:backend:publish -P mavenPassword=$pass -P mavenUser=$user >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - echo "Deploy RTEs finished"
+    - "gradle build ciDeployRTE ciDeployImages :examples:vis-lib:frontend:screenshot testCodeCoverageReport --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 $ARGS3 -Djib.from.auth.username=$CI_REGISTRY_USER -Djib.from.auth.password=$CI_REGISTRY_PASSWORD -Djib.console=plain -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish -P mavenPassword=$pass -P mavenUser=$user >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     # Build editor plugin
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
@@ -162,37 +141,6 @@ build_with_deploy:
     - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     - echo "packageUMLPWithGUIVscodePlugin finished"
     - "cd .."
-    # Deploy: Containers, screenshot of vis-lib
-    - |
-      gradle \
-        \
-        :examples:weather:backend:jib \
-        :examples:sehub:backend:jib \
-        :examples:stat:jib \
-        :products:demorec:backend:jib \
-        :examples:vis-lib:backend:jib \
-        :experiments:server-performance:backend:jib \
-        :examples:kitchencompanion:backend:jib \
-        \
-        :examples:weather:frontend:deployImageCI \
-        :examples:sehub:frontend:deployImageCI \
-        :products:demorec:frontend:deployImageCI \
-        :examples:vis-lib:frontend:deployImageCI \
-        :examples:kitchencompanion:frontend:deployImageCI \
-        \
-        :examples:vis-lib:frontend:screenshot \
-        \
-        -PmavenPassword="$pass" \
-        -PmavenUser="$user" \
-        $GRADLE_OPTS $ARGS1 $ARGS3 \
-        -Djib.from.auth.username="$CI_REGISTRY_USER" \
-        -Djib.from.auth.password="$CI_REGISTRY_PASSWORD" \
-        -Djib.console=plain \
-        -Djib.to.auth.username="$CI_REGISTRY_USER" \
-        -Djib.to.auth.password="$CI_REGISTRY_PASSWORD" \
-        >> "$CI_PROJECT_DIR/build.log" \
-        2> >(tee -a "$CI_PROJECT_DIR/build.log" >&2)
-    - echo "Containers and GenDoc Image finished"
     # >(tee -a ...) starts tee background process, wait to ensure everything is written to
     - wait
     # Parse CSV for coverage info

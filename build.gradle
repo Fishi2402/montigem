@@ -314,3 +314,45 @@ subprojects {
     }
   }
 }
+
+// CI specific tasks
+tasks.register("ciBuildAll"){
+  dependsOn allprojects.collect { it.tasks.build }
+}
+
+tasks.register("ciDeployImages"){
+  // run only after normal build is finished
+  dependsOn tasks.ciBuildAll
+
+  dependsOn project(":examples:weather:backend").tasks.jib
+  dependsOn project(":examples:weather:frontend").tasks.deployImageCI
+
+  dependsOn project(":examples:sehub:backend").tasks.jib
+  dependsOn project(":examples:sehub:frontend").tasks.deployImageCI
+
+  dependsOn project(":products:demorec:backend").tasks.jib
+  dependsOn project(":products:demorec:frontend").tasks.deployImageCI
+
+  dependsOn project(":examples:vis-lib:backend").tasks.jib
+  dependsOn project(":examples:vis-lib:frontend").tasks.deployImageCI
+
+  dependsOn project(":examples:kitchencompanion:backend").tasks.jib
+  dependsOn project(":examples:kitchencompanion:frontend").tasks.deployImageCI
+
+  // no frontend
+  dependsOn project(":experiments:server-performance:backend").tasks.jib
+  dependsOn project(":examples:stat").tasks.jib
+}
+
+tasks.register("ciDeployRTE"){
+  // run only after normal build is finished
+  dependsOn tasks.ciBuildAll
+
+  dependsOn project(":umlp-rte").tasks.publish
+  dependsOn project(":umlp-rte:backend").tasks.publish
+  dependsOn project(":umlp-rte:frontend").tasks.publish
+  dependsOn project(":umlp-test-rte").tasks.publish
+  dependsOn project(":umlp-jsweet").tasks.publish
+  dependsOn project(":modules").tasks.publishModules
+  dependsOn project(":experiments:python-client:backend").tasks.publish
+}
