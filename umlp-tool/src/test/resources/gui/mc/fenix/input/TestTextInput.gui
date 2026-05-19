@@ -2,4 +2,4 @@
 
 package mc.fenix.input;
 
-component GemTextInput(?String entry, String validity)
+component TestTextInput(?String entry, String validity)

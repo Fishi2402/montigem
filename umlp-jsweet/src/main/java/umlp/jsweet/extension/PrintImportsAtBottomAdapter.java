@@ -11,6 +11,10 @@ import javax.lang.model.element.TypeElement;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * An adapter to prevent Typescript import errors at runtime.
+ * It uses the referenceAnalyzer to decide if an import can be printed at the bottom of the ts file.
+ */
 public class PrintImportsAtBottomAdapter extends PrinterAdapter {
   public PrintImportsAtBottomAdapter(PrinterAdapter printerAdapter) {
     super(printerAdapter);

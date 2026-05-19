@@ -23,7 +23,7 @@ import umlp.jsweet.extension.umlp.UMLPRTEImportAdapter;
 public class UMLPAdapter extends PrinterAdapter {
   public UMLPAdapter(PrinterAdapter parentAdapter) {
     super(
-        new PrintImportsAtBottomAdapter(
+        new PrintImportsAtBottomAdapter( // must be outermost adapter to do its job
             new JavaStreamAdapter(
                 new GUITypesImportAdapter(
                     new CollectionsAdapter(

@@ -149,17 +149,7 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
 
           // - variable with simple type
           if (!isCollectionType && !isDomainType) {
-            printer.print(".stream().map(it -> it.");
-            printer.print(isBoolean ? "is" : "get");
-            printer.print(StringTransformations.capitalize(node.getName()));
-            printer.print("()).to");
-            if (OCLCollectionSymTypeRelations.isList(lhsType)) {
-              printer.print("List()");
-            } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
-              printer.print("Set()");
-            } else {
-              printer.print("Collection()");
-            }
+            printFlatteningMap(node.getName(), isBoolean ? "is" : "get", lhsType);
           }
 
           // - variable with collection simple type
@@ -171,17 +161,7 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
           // - association with opt or one cardinality
           if (!isCollectionType && isDomainType) {
             // TODO: opt needs extra check
-            printer.print(".stream().map(it -> it.");
-            printer.print("get");
-            printer.print(StringTransformations.capitalize(node.getName()));
-            printer.print("()).to");
-            if (OCLCollectionSymTypeRelations.isList(lhsType)) {
-              printer.print("List()");
-            } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
-              printer.print("Set()");
-            } else {
-              printer.print("Collection()");
-            }
+            printFlatteningMap(node.getName(), "get", lhsType);
           }
 
           // - association with opt mult cardinality
@@ -190,17 +170,29 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
             printer.print("get");
             printer.print(StringTransformations.capitalize(node.getName()));
             printer.print("List().stream()).to");
-            if (OCLCollectionSymTypeRelations.isList(lhsType)) {
-              printer.print("List()");
-            } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
-              printer.print("Set()");
-            } else {
-              printer.print("Collection()");
-            }
+            printCollectorFor(lhsType);
           }
         } else {
           // normal access
           printFieldAccess(info, node.getName());
+        }
+      }
+
+      private void printFlatteningMap(String fieldName, String accessorPrefix, SymTypeExpression lhsType) {
+        printer.print(".stream().map(it -> it.");
+        printer.print(accessorPrefix);
+        printer.print(StringTransformations.capitalize(fieldName));
+        printer.print("()).to");
+        printCollectorFor(lhsType);
+      }
+
+      private void printCollectorFor(SymTypeExpression lhsType) {
+        if (OCLCollectionSymTypeRelations.isList(lhsType)) {
+          printer.print("List()");
+        } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
+          printer.print("Set()");
+        } else {
+          printer.print("Collection()");
         }
       }
 

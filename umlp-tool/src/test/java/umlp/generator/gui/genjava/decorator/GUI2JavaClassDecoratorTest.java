@@ -125,16 +125,16 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
   }
 
   @Test
-  public void testAutomaticGemTextInputValidityGetter() {
+  public void testAutomaticTestTextInputValidityGetter() {
     ASTGUICompilationUnit gui = processGUIModel(
-        "gui/genjava/decorator/GemTextInputAutoValidity.gui",
+        "gui/genjava/decorator/TestTextInputAutoValidity.gui",
         "src/test/resources/gui",
         "packaged/Domain.umlp"
     );
     ASTCDCompilationUnit cd = GUI2CDTrafo.createCDCompilationUnit(gui);
 
     GUIGeneratorUtil.getInstance().init(
-        List.of("packaged.Domain"), List.of("genjava.decorator.GemTextInputAutoValidity"));
+        List.of("packaged.Domain"), List.of("genjava.decorator.TestTextInputAutoValidity"));
     ASTGUIComponent auto = GUIComponentStat.getInstance()
         .getCompById(GUIComponentStat.getInstance().getComponents(gui.getGUIComponentDeclaration()), "auto");
     assertTrue(GUIGeneratorUtil.getInstance().shouldGenerateAutomaticDomainValidity(auto));
@@ -153,16 +153,16 @@ public class GUI2JavaClassDecoratorTest extends DomainGUITest {
   }
 
   @Test
-  public void testExplicitGemTextInputValidityOverridesAutomaticGetter() {
+  public void testExplicitTestTextInputValidityOverridesAutomaticGetter() {
     ASTGUICompilationUnit gui = processGUIModel(
-        "gui/genjava/decorator/GemTextInputExplicitValidity.gui",
+        "gui/genjava/decorator/TestTextInputExplicitValidity.gui",
         "src/test/resources/gui",
         "packaged/Domain.umlp"
     );
     ASTCDCompilationUnit cd = GUI2CDTrafo.createCDCompilationUnit(gui);
 
     GUIGeneratorUtil.getInstance().init(
-        List.of("packaged.Domain"), List.of("genjava.decorator.GemTextInputExplicitValidity"));
+        List.of("packaged.Domain"), List.of("genjava.decorator.TestTextInputExplicitValidity"));
 
     GUI2JavaClassDecorator decorator = new GUI2JavaClassDecorator(glex);
     decorator.transform(gui, cd);

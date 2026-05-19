@@ -46,9 +46,9 @@ public class GUI2HtmlGeneratorTest extends DomainGUITest {
   }
 
   @Test
-  public void testAutomaticGemTextInputValidityBinding() throws Exception {
+  public void testAutomaticTestTextInputValidityBinding() throws Exception {
     ASTGUICompilationUnit ast = processGUIModel(
-        "gui/genjava/decorator/GemTextInputAutoValidity.gui",
+        "gui/genjava/decorator/TestTextInputAutoValidity.gui",
         "src/test/resources/gui",
         "packaged/Domain.umlp"
     );
@@ -67,7 +67,7 @@ public class GUI2HtmlGeneratorTest extends DomainGUITest {
     GUI2HtmlGenerator htmlGenerator = new GUI2HtmlGenerator(genSetup);
     htmlGenerator.generate(ast);
 
-    Path html = outDir.toPath().resolve("genjava/decorator/GemTextInputAutoValidity.html");
+    Path html = outDir.toPath().resolve("genjava/decorator/TestTextInputAutoValidity.html");
     String content = Files.readString(html);
 
     assertTrue(content.contains("[validity] = 'getAutoValidity__synchronized("));

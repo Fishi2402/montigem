@@ -51,7 +51,6 @@ public class ValidationResultDecorator extends AbstractDecorator {
             .build();
 
     getCD4C().addConstructor(validationResultClass, getConstructorTemplate(), className);
-    // getCD4C().addConstructor(validationResultClass, getIdConstructorTemplate(), className);
 
     List<ASTCDAttribute> attributes = origCD.getCDDefinition().getCDClassesList().stream()
             .filter(c -> c.getName().equals(className))

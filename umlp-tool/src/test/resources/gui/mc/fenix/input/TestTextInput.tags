@@ -1,0 +1,6 @@
+/* Test tag metadata for TestTextInput */
+tags TestTextInput {
+  tag mc.fenix.input.TestTextInput.entry with domainValidationEntry;
+  tag mc.fenix.input.TestTextInput.validity with domainValidationTarget;
+
+}

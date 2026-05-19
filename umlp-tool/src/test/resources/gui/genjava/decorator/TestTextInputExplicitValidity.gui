@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package genjava.decorator;
+
+import mc.fenix.input.TestTextInput;
+import packaged.Domain.Person;
+
+page TestTextInputExplicitValidity(Person person) {
+  explicit@TestTextInput(entry = person.name, validity = null);
+}
