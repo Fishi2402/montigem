@@ -318,8 +318,8 @@ public class CollectionsAdapter extends AbstractAdapter {
 
   private void substituteArrayContains(MethodInvocationElement invocation) {
     printMacroName("contains");
-    print("(").print(invocation.getTargetExpression()).print(").indexOf(<any>(")
-        .print(invocation.getArgument(0)).print(")) >= 0");
+    print("((").print(invocation.getTargetExpression()).print(").indexOf(<any>(")
+        .print(invocation.getArgument(0)).print(")) >= 0)");
   }
 
   private boolean isStreamResultTarget(MethodInvocationElement invocation) {
@@ -462,6 +462,7 @@ public class CollectionsAdapter extends AbstractAdapter {
   public boolean substituteInstanceof(String exprStr, ExtendedElement expr, TypeMirror type) {
     String typeString = types().erasure(type).toString();
     if (containedInStaticLibrary(typeString)) {
+      print("(");
       print(exprStr, expr);
       print(" != null && ");
       print("(");
@@ -471,6 +472,7 @@ public class CollectionsAdapter extends AbstractAdapter {
       print(" instanceof GemList || ");
       print(exprStr, expr);
       print(" instanceof Array)");
+      print(")");
 
       getPrinter().useModule(new ModuleImportDescriptor("GemList", getLibraryLocation()));
       getPrinter().useModule(new ModuleImportDescriptor("UMLPArrayList", getLibraryLocation()));
