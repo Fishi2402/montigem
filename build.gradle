@@ -316,50 +316,35 @@ subprojects {
 }
 
 // CI specific tasks and configuration
-tasks.register("ciBuildAll"){
-  dependsOn allprojects.collect { it.tasks.build }
-}
-
-def configureOrder(Task lifeCycleTask, Task t){
-  lifeCycleTask.dependsOn(t)
-  t.mustRunAfter(tasks.ciBuildAll)
-}
-
 tasks.register("ciDeployImages"){
-  // run only after normal build is finished
-  dependsOn tasks.ciBuildAll
+  dependsOn project(":examples:weather:backend").tasks.jib
+  dependsOn project(":examples:weather:frontend").tasks.deployImageCI
 
-  configureOrder(it, project(":examples:weather:backend").tasks.jib)
-  configureOrder(it, project(":examples:weather:frontend").tasks.deployImageCI)
+  dependsOn project(":examples:sehub:backend").tasks.jib
+  dependsOn project(":examples:sehub:frontend").tasks.deployImageCI
 
-  configureOrder(it, project(":examples:sehub:backend").tasks.jib)
-  configureOrder(it, project(":examples:sehub:frontend").tasks.deployImageCI)
+  dependsOn project(":products:demorec:backend").tasks.jib
+  dependsOn project(":products:demorec:frontend").tasks.deployImageCI
 
-  configureOrder(it, project(":products:demorec:backend").tasks.jib)
-  configureOrder(it, project(":products:demorec:frontend").tasks.deployImageCI)
+  dependsOn project(":examples:vis-lib:backend").tasks.jib
+  dependsOn project(":examples:vis-lib:frontend").tasks.deployImageCI
 
-  configureOrder(it, project(":examples:vis-lib:backend").tasks.jib)
-  configureOrder(it, project(":examples:vis-lib:frontend").tasks.deployImageCI)
-
-  configureOrder(it, project(":examples:kitchencompanion:backend").tasks.jib)
-  configureOrder(it, project(":examples:kitchencompanion:frontend").tasks.deployImageCI)
+  dependsOn project(":examples:kitchencompanion:backend").tasks.jib
+  dependsOn project(":examples:kitchencompanion:frontend").tasks.deployImageCI
 
   // no frontend
-  configureOrder(it, project(":experiments:server-performance:backend").tasks.jib)
-  configureOrder(it, project(":examples:stat").tasks.jib)
+  dependsOn project(":experiments:server-performance:backend").tasks.jib
+  dependsOn project(":examples:stat").tasks.jib
 }
 
 tasks.register("ciDeployRTE"){
-  // run only after normal build is finished
-  dependsOn tasks.ciBuildAll
-
-  configureOrder(it, project(":umlp-rte").tasks.publish)
-  configureOrder(it, project(":umlp-rte:backend").tasks.publish)
-  configureOrder(it, project(":umlp-rte:frontend").tasks.publish)
-  configureOrder(it, project(":umlp-test-rte").tasks.publish)
-  configureOrder(it, project(":umlp-jsweet").tasks.publish)
-  configureOrder(it, project(":modules").tasks.publishModules)
-  configureOrder(it, project(":experiments:python-client:backend").tasks.publish)
+  dependsOn project(":umlp-rte").tasks.publish
+  dependsOn project(":umlp-rte:backend").tasks.publish
+  dependsOn project(":umlp-rte:frontend").tasks.publish
+  dependsOn project(":umlp-test-rte").tasks.publish
+  dependsOn project(":umlp-jsweet").tasks.publish
+  dependsOn project(":modules").tasks.publishModules
+  dependsOn project(":experiments:python-client:backend").tasks.publish
 }
 
 allprojects {
