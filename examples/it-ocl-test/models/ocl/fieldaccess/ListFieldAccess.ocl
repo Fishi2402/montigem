@@ -5,5 +5,11 @@ import Mydomain.*;
 
 ocl ListFieldAccess {
   context FieldAccess fA inv:
-      fA.intList == [1,2,3];
+      fA.intList == [1,2,3]
+      && [1,2,3].asSet() == {1,2,3}
+      && [1,2,3].first() == 1
+      && [1,2,3].last() == 3
+      && [1,2,3].rest() == [2,3]
+      && [1,2,3].count(2) == 1
+      && [1,2,3].removeAtIndex(1) == [1,3];
 }

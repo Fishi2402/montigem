@@ -104,6 +104,10 @@ public interface IOCL2XTest<T extends GemIdentifiable> {
     return Map.of();
   }
 
+  default boolean isCypher(){
+    return false;
+  }
+
   List<Long> _translateAndExecQuery(ASTOCLCompilationUnit ocl);
 
   String getResourceFolder();

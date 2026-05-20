@@ -25,6 +25,11 @@ public abstract class AbstractOCL2CypherTest<T extends GemIdentifiable> extends 
     super(0);
   }
 
+  @Override
+  public boolean isCypher(){
+    return true;
+  }
+
   @BeforeAll
   public static void startSharedDB() throws Exception {
     SharedNeo4jDatabase.start();
