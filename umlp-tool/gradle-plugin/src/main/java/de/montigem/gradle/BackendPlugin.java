@@ -113,10 +113,12 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
     Directory srcJava = project.getLayout().getProjectDirectory().dir("src/main/java");
     Directory srcTpl = project.getLayout().getProjectDirectory().dir("src/generatorExtension/resources");
+    var oclFiles = models.dir("ocl").getAsFileTree().matching(pf -> pf.include("**/*.ocl"));
     TaskProvider<UMLP2JavaTask> umlp2java = project.getTasks().register(UMLP2JAVA_TASK, UMLP2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
 
       task.getInput().from(umlpFile);
+      task.getOcl().from(oclFiles);
       if (srcJava.getAsFile().exists()) {
         task.getHandWrittenCodeDir().from(srcJava);
       }
@@ -130,7 +132,7 @@ public abstract class BackendPlugin implements Plugin<Project> {
 
     TaskProvider<OCL2JavaTask> ocl2java = project.getTasks().register(OCL2JAVA_TASK, OCL2JavaTask.class, task -> {
       task.setGroup(UMLP_GROUP_NAME);
-      task.getInput().from(getModels(project).dir("ocl"));
+      task.getInput().from(oclFiles);
       task.getSymbolPath().from(umlp2java.flatMap(UMLP2JavaTask::getSymbolOutDir));
       task.getSymbolPath().from(project.getConfigurations().named(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG));
       task.getOutputDir().set(project.getLayout().getBuildDirectory().dir("ocl2java"));

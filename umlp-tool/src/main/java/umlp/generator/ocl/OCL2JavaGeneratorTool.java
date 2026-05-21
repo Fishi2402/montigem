@@ -55,13 +55,6 @@ public class OCL2JavaGeneratorTool {
         .desc("Comma-separated list of symbol paths")
         .build();
 
-    Option preloadDiamgrasOption = Option.builder("preload")
-        .required(true)
-        .hasArgs()
-        .valueSeparator(',')
-        .desc("Comma-separated list of diagrams to preload")
-        .build();
-
     Option outputOption = Option.builder("out")
         .required(true)
         .hasArg()
@@ -84,7 +77,6 @@ public class OCL2JavaGeneratorTool {
     options.addOption(oclOption);
     options.addOption(symbolsOption);
     options.addOption(outputOption);
-    options.addOption(preloadDiamgrasOption);
     options.addOption(domainOption);
     options.addOption(prefixPackageOption);
 
@@ -110,10 +102,6 @@ public class OCL2JavaGeneratorTool {
 
     Path outputDir = Paths.get(cmd.getOptionValue("out"));
 
-    List<String> preloadDiagrams = cmd.hasOption("preload")
-        ? List.of(cmd.getOptionValues("preload"))
-        : List.of();
-
     List<String> domainModels = cmd.hasOption("domain")
         ? List.of(cmd.getOptionValues("domain"))
         : List.of();
@@ -121,11 +109,11 @@ public class OCL2JavaGeneratorTool {
     String prefixPackage = cmd.getOptionValue("prefixPackage");
 
     OCL2JavaGeneratorTool tool = new OCL2JavaGeneratorTool();
-    tool.generate(oclFiles, symbolPaths, outputDir, preloadDiagrams, domainModels, prefixPackage);
+    tool.generate(oclFiles, symbolPaths, outputDir, domainModels, prefixPackage);
   }
 
-  public void generate(List<Path> oclFiles, List<Path> symbolPaths, Path outputDir, List<String> preloadDiagrams, List<String> domainModels, String prefixPackage) {
-    initSymtab(symbolPaths, preloadDiagrams, domainModels);
+  public void generate(List<Path> oclFiles, List<Path> symbolPaths, Path outputDir, List<String> domainModels, String prefixPackage) {
+    initSymtab(symbolPaths, domainModels);
     for (Path oclFile : oclFiles) {
       Log.info("Processing " + oclFile, "ocl2java");
       try {
@@ -179,7 +167,7 @@ public class OCL2JavaGeneratorTool {
     ocl.accept(t);
   }
 
-  public static void initSymtab(List<Path> symbolPaths, List<String> preloadDiagrams, List<String> domainModels) {
+  public static void initSymtab(List<Path> symbolPaths, List<String> domainModels) {
     OCLWithErrorMessagesMill.reset();
     OCLWithErrorMessagesMill.init();
     OCLWithErrorMessagesMill.globalScope().clear();
@@ -210,8 +198,5 @@ public class OCL2JavaGeneratorTool {
     });
 
     gs.setSymbolPath(new MCPath(symbolPaths));
-    for (String diagram : preloadDiagrams) {
-      gs.loadDiagram(diagram);
-    }
   }
 }

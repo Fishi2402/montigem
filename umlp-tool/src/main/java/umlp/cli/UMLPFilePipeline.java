@@ -203,7 +203,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
               File oclFile = new File(modelUrl.toURI());
               // Use OCLWithErrorMessagesMill to parse so we don't lose error messages
 
-              OCL2JavaGeneratorTool.initSymtab(symbolPaths, domainModels, domainModels);
+              OCL2JavaGeneratorTool.initSymtab(symbolPaths, domainModels);
 
               Optional<ASTOCLCompilationUnit> oclCompilationUnit;
               try {

@@ -77,6 +77,7 @@ nav:
     - Charts Frontend: 'tutorial/09_GUIAdvanced4.md'
     - Charts Backend: 'tutorial/10_GUIAdvanced5.md'
     - E2E Testing (simulated GUI): 'tutorial/11_E2ETestingWithSimulatedGUI.md'
+    - OCL GUI Validity Checking: 'tutorial/12_OCLGUIValidityChecking.md'
   - GUI Component Library: 'gendoc_components/Frontend-RTE.md'
   - Changelog: 'Changelog.md'
   - More Documentation: 'HelpfulLinks.md'

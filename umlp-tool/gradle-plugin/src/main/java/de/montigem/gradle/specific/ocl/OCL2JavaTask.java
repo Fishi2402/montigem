@@ -23,14 +23,10 @@ public abstract class OCL2JavaTask extends MGAllFilesTask {
   public abstract Property<String> getPrefixPackage();
 
   @Input
-  public abstract ListProperty<String> getPreloadDiagrams();
-
-  @Input
   public abstract ListProperty<String> getDomainModels();
 
   public OCL2JavaTask() {
     super("OCL2Java");
-    getPreloadDiagrams().convention(List.of());
   }
 
   @Override
@@ -52,11 +48,6 @@ public abstract class OCL2JavaTask extends MGAllFilesTask {
 
     args.add("-out");
     args.add(getOutputDir().get().getAsFile().getAbsolutePath());
-
-    if(getPreloadDiagrams().isPresent() && !getPreloadDiagrams().get().isEmpty()){
-      args.add("-preload");
-      args.addAll(getPreloadDiagrams().get());
-    }
 
     if(getDomainModels().isPresent() && !getDomainModels().get().isEmpty()){
       args.add("-domain");
