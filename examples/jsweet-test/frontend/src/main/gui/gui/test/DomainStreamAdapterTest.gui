@@ -1,0 +1,41 @@
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+
+page DomainStreamAdapterTest() {
+  inputTestFiel@GemTextInput(
+    id = "domainInputTestFieldId",
+    labelText = "Test Input Field"
+  );
+  map@GemButton(label = "Test stream().map()", leftClick = testMap());
+  filter@GemButton(label = "Test stream().filter()", leftClick = testFilter());
+  mapPlusFilter@GemButton(label = "Test filter()+map()", leftClick = testMapAndFilter());
+
+  flatMap@GemButton(label = "Test flatMap()", leftClick = testFlatMap());
+  distinct@GemButton(label = "Test distinct()", leftClick = testDistinct());
+  limit@GemButton(label = "Test limit()", leftClick = testLimit());
+  skip@GemButton(label = "Test skip()", leftClick = testSkip());
+  sorted@GemButton(label = "Test sorted()", leftClick = testSorted());
+  peek@GemButton(label = "Test peek()", leftClick = testPeek());
+
+  count@GemButton(label = "Test count()", leftClick = testCount());
+  reduce@GemButton(label = "Test reduce()", leftClick = testReduce());
+  match@GemButton(label = "Test matches()", leftClick = testMatches());
+  min@GemButton(label = "Test min()", leftClick = testMin());
+  max@GemButton(label = "Test max()", leftClick = testMax());
+  btnToArray@GemButton(label = "Test toArray()", leftClick = testToArray());
+  btnFindAny@GemButton(label = "Test findAny()", leftClick = testFindAny());
+  forEach@GemButton(label = "Test forEach()", leftClick = testForEach());
+  findFirst@GemButton(label = "Test findFirst()", leftClick = testFindFirst());
+  noneMatch@GemButton(label = "Test noneMatch()", leftClick = testNoneMatch());
+  collectJoining@GemButton(label = "Test collect(joining)", leftClick = testCollectJoining());
+  collectToSet@GemButton(label = "Test collect(toSet)", leftClick = testCollectToSet());
+  collectCounting@GemButton(label = "Test collect(counting)", leftClick = testCollectCounting());
+  btnClear@GemButton(label = "Clear Fields", leftClick = testClear());
+
+  resultField@GemTextInput(
+    id = "domainResultId",
+    labelText = "Test Result"
+  );
+}
