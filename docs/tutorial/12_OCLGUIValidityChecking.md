@@ -1,7 +1,7 @@
 # OCL Constraints for GUI Validity Checking
 
 MontiGem can use OCL invariants to validate values that application users enter
-in generated GUI components. This is useful for domain rules that should be kept
+in GUI components. This is useful for domain rules that should be kept
 close to the data model, but should still be visible directly in a form.
 
 In this chapter we add a validation rule for customer registration:
@@ -35,8 +35,6 @@ ocl CustomerValidity {
 
 The file has the usual structure:
 
-- `package validity` keeps the generated OCL code in its own package.
-- `import Carrental.*` makes the classes from the class diagram available.
 - `context Customer customer inv:` declares that the following expression
   validates a `Customer`.
 - `customer.age >= 0` is the actual rule.
@@ -82,4 +80,8 @@ field. The input should be marked as invalid and on hover show:
 Age must not be negative: -1
 ```
 
+![customer age validity error](./OCLGUIValidityChecking_invalid.png)
+
 Change the value back to `0` or a positive number. The validity error should disappear.
+
+![customer age valid input](./OCLGUIValidityChecking_valid.png)
