@@ -127,6 +127,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
 
     workQueue2.submit(GUI2JSweetAdapterAction.class, params -> {
       params.getDomain().set(getDomain());
+      params.getUseModuleGUIAdapter().set(!getDomain().isPresent() ||getDomain().get().isEmpty());
       params.getJSweetAdapterDir().set(getJSweetAdapterDir());
       params.getHandWrittenJSweetDir().set(getHandWrittenJSweetDir());
       params.getSrcDirs().from(filteredSrcDirs);

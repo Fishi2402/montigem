@@ -22,26 +22,6 @@ public class DelegateGemListToArrayAdapter extends PrinterAdapter {
   }
 
   @Override
-  public TypeMirror mapType(TypeMirror type) {
-    if(types().erasure(type).toString().equals(RTEPathUtil.getBackendRTECommonPath("GemList"))) {
-      return this.util().getType(java.util.List.class);
-    }
-    return super.mapType(type);
-  }
-
-  @Override
-  public void beforeTypeBody(TypeElement type) {
-    if (adapterUtils.hasDirectiveAnnotation(type)) {
-      printIndent().print("protected toArray<T>(arr: IUMLPList<T> | Array<T>): Array<T> {")
-          .println().startIndent().printIndent()
-          .print("return GemListUtil.toArray(arr);")
-          .println().endIndent().printIndent().print("}").println().println();
-      adapterUtils.importFromWithModule("IUMLPList", GUIAdapterUtils.UMLP_COMMON_POINTER);
-    }
-    super.beforeTypeBody(type);
-  }
-
-  @Override
   public boolean substituteMethodInvocation(MethodInvocationElement invocation) {
     boolean shouldPrintToArray = false;
 

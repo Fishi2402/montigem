@@ -3,6 +3,7 @@ package de.montigem.gradle.specific;
 
 import de.monticore.io.FileReaderWriter;
 import de.montigem.gradle.common.MGAllFilesTask;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
@@ -76,6 +77,10 @@ public abstract class GUI2JavaTask extends MGAllFilesTask {
   }
 
   protected List<String> createArgList(Function<Path, String> handlePath) {
+    if((!getDomain().isPresent() || getDomain().get().isEmpty()) && !getTSlib().isPresent()) {
+      Log.error("You either have to set the domain or TSLib.");
+    }
+
     List<String> result = super.createArgList(handlePath);
 
     for (var dir : this.getModelDir()) {

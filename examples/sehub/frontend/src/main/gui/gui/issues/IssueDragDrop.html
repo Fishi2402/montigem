@@ -7,7 +7,7 @@
   [cdkDropListConnectedTo]="canDropTo"
   class="drag-drop-list"
   (cdkDropListDropped)="onDrop($event)">
-  <ng-container *ngFor="let issue of getIssues__synchronized()">
+  <ng-container *ngFor="let issue of getIssuesForAngular__ChangeDetection()">
     <issue-entry cdkDrag [issue]="issue"></issue-entry>
   </ng-container>
 </div>

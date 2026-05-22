@@ -2,8 +2,8 @@
 package umlp.jsweet.extension.gui;
 
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.lang3.StringUtils;
 import org.jsweet.JSweetConfig;
+import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.Java2TypeScriptTranslator;
 import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.AnnotationManager;
@@ -24,7 +24,6 @@ import standalone.com.sun.source.tree.Tree;
 import standalone.com.sun.source.tree.TypeCastTree;
 import standalone.com.sun.source.tree.VariableTree;
 import standalone.com.sun.tools.javac.code.Symbol;
-import standalone.com.sun.tools.javac.code.Type;
 import standalone.com.sun.tools.javac.tree.JCTree;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.RTEPathUtil;
@@ -68,7 +67,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
   @Override
   public void onTranspilationStarted() {
-    new GUISynchronizedPropagationScanner(context)
+    new GUIObserverRegistrationParamsPropagationScanner(context)
         .process(getContext().compilationUnits, getContext().trees);
     super.onTranspilationStarted();
   }
@@ -210,10 +209,10 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   @Override
   public boolean substituteExecutable(ExecutableElement executable) {
     TypeElement classElement = getParentElement(TypeElement.class);
-    if (adapterUtils.isSynchronizedMethod(executable, this) &&
+    if (adapterUtils.isAngularTrackedUpdatesMethod(executable, this) &&
         !context.hasAnnotationType(executable, Override.class.getName()))
       printSynchronizerMethods(executable, false);
-    if (adapterUtils.isSynchronizedMethod(executable, this)) {
+    if (adapterUtils.isObserverRegistrationParamsMethod(executable, this)) {
       addObserversToParameters(executable, classElement);
     }
     if (adapterUtils.isInitMethod(executable, classElement)) {
@@ -272,12 +271,17 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
   }
 
+  private void addTriggerObserverLogicToMethodBody(ExecutableElement executable, TypeElement classElement) {
+    MethodTree tree = trees().getTree(executable);
+
+  }
+
   private Map<String, Set<OverloadScanner.Overload>> overloads = new LinkedHashMap<>();
 
   @Override
   public boolean substituteOverloadMethodBody(TypeElement parentTypeElement,
       OverloadScanner.Overload overload) {
-    if (adapterUtils.isSynchronized(overload.getCoreMethodElement())) {
+    if (adapterUtils.isObserverRegistrationParamsAnnotated(overload.getCoreMethodElement())) {
       Set<OverloadScanner.Overload> classOverloads = this.overloads.computeIfAbsent(
           parentTypeElement.getQualifiedName().toString(),
           a -> new LinkedHashSet<>());
@@ -347,7 +351,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     printArguments(executable);
     print("))").println().endIndent().printIndent();
 
-    print(")).then(__v => this." + methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
+    print(")).then(__v => this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     String arg = "__v === undefined ? null : __v";
     printResultCacheSetter(executable, arg);
     print(");").println().endIndent().printIndent().print("}").println().println().printIndent();
@@ -362,16 +366,16 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .print(" {").println().startIndent().printIndent()
         .print("if (!this.allVarsInited) {").println().startIndent().printIndent()
         .print("return undefined;").println().endIndent().printIndent().print("}").println().printIndent()
-        .print("if (this." + methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
+        .print("if (this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     printResultCacheAccessor(executable);
     print(" === undefined) {").println().startIndent().printIndent()
-        .print("this." + methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
+        .print("this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     printResultCacheSetter(executable, "null");
     print(";").println().printIndent()
         .print("this." + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
     printArguments(executable);
     print(");").println().endIndent().printIndent().print("}").println().printIndent()
-        .print("return this." + methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX);
+        .print("return this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     printResultCacheAccessor(executable);
     print(";").println().endIndent().printIndent().print("}").println().println().printIndent();
   }
@@ -431,7 +435,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       Tree returnType) {
     // Print result cache
     print("private ");
-    print(methodName + adapterUtils.SYNCHRONIZED_RESULT_SUFFIX + ": ");
+    print(methodName + adapterUtils.RESULT_CACHE_SUFFIX + ": ");
     if (executable.getParameters().isEmpty()) {
       printType(returnType, overloadMethod)
           .print(" = undefined;");
@@ -448,7 +452,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
   @Override
   public boolean substituteMethodBody(TypeElement parentTypeElement, ExecutableElement method) {
-    if (adapterUtils.isSynchronized(method)) {
+    if (adapterUtils.isObserverRegistrationParamsAnnotated(method)) {
       for (VariableElement parameter : method.getParameters()) {
         if (adapterUtils.isSubTypeOf(Util.getElement(parameter.asType()),
             RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
@@ -470,12 +474,13 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     boolean shouldPrintStatevarObs = false;
     boolean shouldAddObservers = false;
     ExecutableElement surroundingMethod = Util.getElement(getPrinter().getParent(MethodTree.class));
-    boolean isSynchronizedMethod = surroundingMethod != null && adapterUtils.isSynchronized(surroundingMethod);
+    boolean outerMethodHasObsRegistrationParams = surroundingMethod != null
+        && adapterUtils.isObserverRegistrationParamsAnnotated(surroundingMethod);
     boolean isExcludedByManualObservations = isIsExcludedByManualObservations(surroundingMethod);
 
     Element invocatedType = types().asElement(invocation.getType());
 
-    if (isSynchronizedMethod) {
+    if (outerMethodHasObsRegistrationParams) {
       // targets invocated Element p.getBestFriend()...
       if (invocatedType != null && invocatedType instanceof TypeElement &&
           adapterUtils.isSubTypeOf((TypeElement) invocatedType,
@@ -488,7 +493,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
 
     Element returnType = types().asElement(invocation.getMethod().getReturnType());
-    if (isSynchronizedMethod && adapterUtils.isSynchronized(invocation.getMethod()) &&
+    if (outerMethodHasObsRegistrationParams && adapterUtils.isObserverRegistrationParamsAnnotated(invocation.getMethod()) &&
         // This is necessary because the generated angular component (ts only) does not know about obsevers. Only for Callbacks
         (!(returnType instanceof TypeElement) ||
             !adapterUtils.isSubTypeOf((TypeElement) returnType, "java.util.function.Consumer"))) {
@@ -497,7 +502,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
     ClassTree parent = getPrinter().getParent(ClassTree.class);
     Element parentElement = Util.getElement(parent);
-    if (isSynchronizedMethod && adapterUtils.isStateVarGetter(invocation, parentElement, this)
+    if (outerMethodHasObsRegistrationParams && adapterUtils.isStateVarGetter(invocation, parentElement, this)
         && !isExcludedByManualObservations) {
       shouldPrintStatevarObs = true;
     }
@@ -615,41 +620,42 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     }
   }
 
+  /**
+   * This AnnotationManager adds the @GUIAdapterUtils.NEEDS_OBSERVER_REGISTRATION_PARAMS_ANNOTATION
+   * to methods. It is called e.g. in {@link JSweetContext#hasAnnotationType}
+   * @return
+   */
   private AnnotationManager getSynchronizedAnnotationManager() {
     return new AnnotationManager() {
       @Override
       public Action manageAnnotation(Element element, String annotationType) {
-        return GUIAdapterUtils.SYNCRHONIZED_ANNOTATION.equals(annotationType) &&
+        return GUIAdapterUtils.NEEDS_OBSERVER_REGISTRATION_PARAMS_ANNOTATION.equals(annotationType) &&
             element.getKind().toString().equals("METHOD") &&
-            (isComponentGetter(element) || isHWCMethod(element)) ?
+            isHWCMethod(element) ?
             Action.ADD :
             Action.VOID;
       }
 
+      // Each HWC Method needs to have observer registration parameters so they register the parameters
+      // When called for Angular Change Detection
       private boolean isHWCMethod(Element element) {
         return !((Symbol.MethodSymbol) element).getReturnType().getKind().equals(TypeKind.VOID) &&
             adapterUtils.isMethodOfHWCComponent(element);
       }
-
-      private boolean isComponentGetter(Element element) {
-        Type returnType = ((Symbol.MethodSymbol) element).getReturnType();
-        if (types().asElement(returnType) == null) {
-          return false;
-        }
-        return (element.getSimpleName().toString().startsWith("get") || element.getSimpleName()
-            .toString().startsWith("is")) &&
-            !returnType.getKind().equals(TypeKind.VOID) &&
-            adapterUtils.isMethodOfDirective(element);
-      }
     };
   }
 
+  /**
+   * This Annotation manager adds a @Replace annotation to each method that is annotated with
+   * {@link GUIAdapterUtils#NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION}
+   * @return
+   */
   private AnnotationManager addComponentManagerListenerToSetAnnotationManager() {
     return new AnnotationManager() {
       @Override
       public Action manageAnnotation(Element element, String annotationType) {
-        // add the @Name annotation to non-public elements
-        return isStateVarSetMethod(element, annotationType) ?
+        return JSweetConfig.ANNOTATION_REPLACE.equals(annotationType)
+        && hasTriggerUpdateMethodAnnotation(element) ?
             Action.ADD :
             Action.VOID;
       }
@@ -658,63 +664,51 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       public <T> T getAnnotationValue(Element element,
           String annotationType, String propertyName,
           Class<T> propertyClass, T defaultValue) {
-        if (isStateVarSetMethod(element, annotationType)) {
-          String stateVarName = getPropertyWithoutSetter(element);
-          Symbol.TypeSymbol parentElement = getParentElement(Symbol.TypeSymbol.class);
-          String fqn = parentElement.getQualifiedName().toString();
-          if (fqn.endsWith("TOP")) {
-            fqn = fqn.substring(0, fqn.length() - 3);
+        if (JSweetConfig.ANNOTATION_REPLACE.equals(annotationType)
+            && hasTriggerUpdateMethodAnnotation(element)) {
+          String fullyQualifiedNameOfClass =
+              getCurrentClassNameWithoutTOP(getParentElement(Symbol.TypeSymbol.class));
+
+          String valueOfReplaceAnnotation = "{{body}}\n{{baseIndent}}ComponentObserverManager.callStateVariableObserver(\""
+              + getObservedField(element) + "\", \"" + fullyQualifiedNameOfClass + "\" + this.uniqueIdentifier);\n";
+
+          String methodToUpdate = getMethodRequiringUpdate(element);
+          if(!methodToUpdate.isBlank()) {
+            valueOfReplaceAnnotation+= "{{baseIndent}}this." + methodToUpdate + GUIAdapterUtils.UPDATE_SUFFIX + "();";
           }
-          return propertyClass.cast(
-              "{{body}}\n{{baseIndent}}ComponentObserverManager.callStateVariableObserver(\""
-                  + stateVarName + "\", \"" + fqn + "\" + this.uniqueIdentifier);\n"
-                  + "{{baseIndent}}this." + computeIsGetterFromSetter(element) +
-                  GUIAdapterUtils.UPDATE_SUFFIX + "();");
+          return propertyClass.cast(valueOfReplaceAnnotation);
         }
         else {
           return null;
         }
       }
 
-      private boolean isStateVarSetMethod(Element element, String annotationType) {
+      private String getCurrentClassNameWithoutTOP(Symbol.TypeSymbol clazz) {
+        String fqn = clazz.getQualifiedName().toString();
+        if (fqn.endsWith("TOP")) {
+          fqn = fqn.substring(0, fqn.length() - 3);
+        }
+        return fqn;
+      }
+
+      private boolean hasTriggerUpdateMethodAnnotation(Element element) {
         if (getPrinter() == null) {
           return false;
         }
-        if (!(element.getKind().toString().equals("METHOD"))) {
-          return false;
-        }
-        if (!JSweetConfig.ANNOTATION_REPLACE.equals(annotationType)) {
-          return false;
-        }
-        boolean res = isSetterMethod(element);
-        return res && adapterUtils.isMethodOfDirective(element);
+        return getContext().elementHasAnnotationType(element,
+            GUIAdapterUtils.NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION);
       }
 
-      private boolean isSetterMethod(Element element) {
-        if (!element.getSimpleName().toString().startsWith("set")) {
-          return false;
-        }
-        Symbol.TypeSymbol parentElement = Util.getElement(getPrinter().getParent(ClassTree.class));
-        return parentElement.getEnclosedElements().stream()
-            .anyMatch(m -> m.getSimpleName().toString().equals(getPropertyWithoutSetter(element)) && (
-                !(types().asElement(m.type) instanceof TypeElement) ||
-                    !adapterUtils.isSubTypeOf((TypeElement) types().asElement(m.type), "java.util.function.Consumer"))
-            );
+      private String getObservedField(Element element) {
+        return getContext().getAnnotationValue(element,
+            GUIAdapterUtils.NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION,
+            GUIAdapterUtils.NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION_OBSERVED_FIELD, String.class, "");
       }
 
-      private String getPropertyWithoutSetter(Element element) {
-        return GUIAdapterUtils.STATEVAR_PREFIX + StringUtils.uncapitalize(
-            element.getSimpleName().toString().substring(3));
-      }
-
-      private String computeIsGetterFromSetter(Element element) {
-        ExecutableElement method = (ExecutableElement) element;
-        boolean isBooleanParameter =
-            types().erasure(method.getParameters().get(0).asType()).toString().equals("boolean") ||
-                types().erasure(method.getParameters().get(0).asType()).toString()
-                    .equals("java.lang.Boolean");
-        String substring = method.getSimpleName().toString().substring(3);
-        return isBooleanParameter ? "is" + substring : "get" + substring;
+      private String getMethodRequiringUpdate(Element element) {
+        return getContext().getAnnotationValue(element,
+            GUIAdapterUtils.NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION,
+            GUIAdapterUtils.NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION_METHOD, String.class, "");
       }
     };
   }

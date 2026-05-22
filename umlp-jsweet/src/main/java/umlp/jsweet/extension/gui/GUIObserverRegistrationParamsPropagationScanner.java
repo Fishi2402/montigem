@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.gui;
 
-import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import org.jsweet.transpiler.util.Util;
-import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.util.Trees;
@@ -18,13 +16,17 @@ import javax.lang.model.type.ExecutableType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GUISynchronizedPropagationScanner extends AbstractTreeScanner {
+/** Dieser PropagationScanner scheint genau das Verhalten zu haben was bereits in
+{@link umlp.jsweet.extension.util.GUIAdapterUtils#elementOrRelatedHasAnnotation}
+ codiert ist? TODO @MH
+* */
+public class GUIObserverRegistrationParamsPropagationScanner extends AbstractTreeScanner {
 
   private final GUIAdapterUtils adapterUtils;
 
   private boolean stillWorking = false;
 
-  protected GUISynchronizedPropagationScanner(JSweetContext context) {
+  protected GUIObserverRegistrationParamsPropagationScanner(JSweetContext context) {
     super(null, context, null);
     this.adapterUtils = new GUIAdapterUtils(types(), context, util());
   }
@@ -50,14 +52,14 @@ public class GUISynchronizedPropagationScanner extends AbstractTreeScanner {
         return null;
       }
 
-      if (adapterUtils.isSynchronized(method)) {
+      if (adapterUtils.isObserverRegistrationParamsAnnotated(method)) {
         List<ExecutableElement> candidates = new ArrayList<>();
         util().collectMatchingMethodDeclarationsInType(
             (TypeElement) method.getEnclosingElement(), node.getName().toString(),
             (ExecutableType) method.asType(), true, candidates);
         for (ExecutableElement candidate : candidates) {
-          if (!adapterUtils.isSynchronized(candidate)) {
-            context.addExtraAnnotationType(candidate, GUIAdapterUtils.SYNCRHONIZED_ANNOTATION);
+          if (!adapterUtils.isObserverRegistrationParamsAnnotated(method)) {
+            context.addExtraAnnotationType(candidate, GUIAdapterUtils.NEEDS_OBSERVER_REGISTRATION_PARAMS_ANNOTATION);
             stillWorking = true;
           }
         }

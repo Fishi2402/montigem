@@ -84,7 +84,7 @@ import java.util.stream.Collectors;
 
 public class GUIGeneratorUtil {
 
-  public static final String SYNCHRONIZED_SUFFIX = "__synchronized";
+  public static final String SYNCHRONIZED_SUFFIX_FOR_HTML_TEMPL = "ForAngular__ChangeDetection";
   public static final String NG_TEMPLATE_SUFFIX = "Tpl";
   public static final String NG_TEMPLATE_ELSE_BLOCK_SUFFIX = "Else";
   public static final String HTML_ITERATE_INDEX_PREFIX = "c";
@@ -208,7 +208,7 @@ public class GUIGeneratorUtil {
     printer.setPrintComments(false);
     String res = printer.prettyprint(node);
     if (syncedOpt) {
-      res += SYNCHRONIZED_SUFFIX;
+      res += SYNCHRONIZED_SUFFIX_FOR_HTML_TEMPL;
     }
     return res;
   }
@@ -561,7 +561,7 @@ public class GUIGeneratorUtil {
     return "get"
         + StringTransformations.capitalize(componentId)
         + StringTransformations.capitalize(namedArg.getName())
-        + SYNCHRONIZED_SUFFIX;
+        + SYNCHRONIZED_SUFFIX_FOR_HTML_TEMPL;
   }
 
   public boolean isList(ASTGUINamedArg namedArg) {
@@ -579,7 +579,7 @@ public class GUIGeneratorUtil {
   @SuppressWarnings("unused") // Component.ftl
   @Deprecated(forRemoval = true)
   public String getIsSynchronizedSuffix() {
-    return SYNCHRONIZED_SUFFIX;
+    return SYNCHRONIZED_SUFFIX_FOR_HTML_TEMPL;
     /*
     if (true) return ""; // no longer required due to | async
     return UMLPGeneratorConfig.getInstance().isGenerateTypescript() ? SYNCHRONIZED_SUFFIX : "";
@@ -643,7 +643,7 @@ public class GUIGeneratorUtil {
         .map(v -> v.getName()).collect(
             Collectors.joining(", "));
     String getter = "get" + StringTransformations.capitalize(name);
-    getter = "toArray(" + getter + SYNCHRONIZED_SUFFIX + "(" + args + "))";
+    getter = getter + SYNCHRONIZED_SUFFIX_FOR_HTML_TEMPL + "(" + args + ")";
     return getter;
   }
 
@@ -772,7 +772,7 @@ public class GUIGeneratorUtil {
 
   public String getAutomaticDomainValidityGetterNameTS(ASTGUIComponent comp) {
     return getAutomaticDomainValidityBinding(comp)
-        .map(binding -> gui2cdAttrGetterName(comp.getId().getName(), binding.getTargetArgName()) + SYNCHRONIZED_SUFFIX)
+        .map(binding -> gui2cdAttrGetterName(comp.getId().getName(), binding.getTargetArgName()) + SYNCHRONIZED_SUFFIX_FOR_HTML_TEMPL)
         .orElse("");
   }
 

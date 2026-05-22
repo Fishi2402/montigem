@@ -27,7 +27,20 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
 
   public static final String OUTPUT_ANNOTATION = "umlp.jsweet.extension.annotation.Output";
 
-  public static final String SYNCRHONIZED_ANNOTATION = "umlp.jsweet.extension.annotation.UMLPSynchronized";
+  /* This annotation marks methods whose result will be tracked by the Angular Change Detection
+  *  i.e. they are used in the HTML template*/
+  public static final String ANGULAR_TRACKED_FOR_CHANGE_ANNOTATION = "umlp.jsweet.extension.annotation.AngularTrackedUpdates";
+
+  /* This annotation marks methods whose parameters contain observer registration function to
+  * trigger updates of the Angular stored variables in the FrontEnd */
+  public static final String NEEDS_OBSERVER_REGISTRATION_PARAMS_ANNOTATION = "umlp.jsweet.extension.annotation.ObserverRegistrationParams";
+
+  /* This annotation marks methods that trigger update for the angular change tracking, i.e. setters
+  * for GUI Params */
+  public static final String NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION = "umlp.jsweet.extension.annotation.NotifyAboutFieldUpdate";
+
+  public static final String NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION_OBSERVED_FIELD = "observedField";
+  public static final String NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION_METHOD = "methodRequiringUpdate";
 
   public static final String ERASED_ANNOTATION = "jsweet.lang.Replace";
 
@@ -37,16 +50,16 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
 
   public static final String CD2JAVA_ANNOTATION = "umlp.jsweet.extension.annotation.CD2Java";
 
-  public static final String SYNCHRONIZED_SUFFIX = "__synchronized";
+  public static final String SYNCHRONIZED_SUFFIX = "__ChangeDetection";
 
-  public static final String SYNCHRONIZED_RESULT_SUFFIX = "__SynchronizedResult";
+  public static final String RESULT_CACHE_SUFFIX = "__CachedResult";
 
   public static final String UPDATE_SUFFIX = "__update";
 
   public static final String UMLP_COMMON_POINTER = "@umlp/commonj2ts";
 
   public static final String STATEVAR_PREFIX = "_";
-  
+
   public GUIAdapterUtils(PrinterAdapter adapter, Types types, JSweetContext context, Util util) {
     super(adapter, types, context, util);
   }
@@ -102,14 +115,8 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         isHWCComponent((TypeElement) element.getEnclosingElement());
   }
 
-  public boolean isMethodOfDirective(Element element) {
-    return element.getEnclosingElement() instanceof TypeElement &&
-        (hasDirectiveAnnotation((TypeElement) element.getEnclosingElement()) &&
-            !isHWCofDirective((TypeElement) element.getEnclosingElement()));
-  }
-
-  public boolean isSynchronized(ExecutableElement executable) {
-    if (context.hasAnnotationType(executable, SYNCRHONIZED_ANNOTATION)) {
+  public boolean elementOrRelatedHasAnnotation(ExecutableElement executable, String annotation) {
+    if (context.hasAnnotationType(executable, annotation)) {
       return true;
     }
     if (context.hasAnnotationType(executable, ERASED_ANNOTATION)) {
@@ -122,7 +129,7 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
     }
 
     for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
-      if (context.hasAnnotationType(overloadEntry.methodElement, SYNCRHONIZED_ANNOTATION)) {
+      if (context.hasAnnotationType(overloadEntry.methodElement, annotation)) {
         return true;
       }
     }
@@ -132,12 +139,20 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         (TypeElement) executable.getEnclosingElement(), executable.getSimpleName().toString(),
         (ExecutableType) executable.asType(), true, candidates);
     for (ExecutableElement candidate : candidates) {
-      if (context.hasAnnotationType(candidate, SYNCRHONIZED_ANNOTATION)) {
+      if (context.hasAnnotationType(candidate, annotation)) {
         return true;
       }
     }
 
     return false;
+  }
+
+  public boolean isAngularTrackedUpdatesAnnotated(ExecutableElement executable) {
+    return elementOrRelatedHasAnnotation(executable, ANGULAR_TRACKED_FOR_CHANGE_ANNOTATION);
+  }
+
+  public boolean isObserverRegistrationParamsAnnotated(ExecutableElement executable) {
+    return elementOrRelatedHasAnnotation(executable, NEEDS_OBSERVER_REGISTRATION_PARAMS_ANNOTATION);
   }
 
   boolean isDirectiveMethod(ExecutableElement executable, TypeElement classElement) {
@@ -149,9 +164,18 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
         !executable.getModifiers().contains(Modifier.DEFAULT);
   }
 
-  public boolean isSynchronizedMethod(ExecutableElement executable,
-      GUIComponentObserverPatternAdapter guiComponentAdapter) {
-    return isSynchronized(executable) &&
+  public boolean isAngularTrackedUpdatesMethod(ExecutableElement executable,
+                                               GUIComponentObserverPatternAdapter guiComponentAdapter) {
+    return isAngularTrackedUpdatesAnnotated(executable) &&
+        !guiComponentAdapter.util().isInterface(guiComponentAdapter.getParentElement(TypeElement.class)) &&
+        !executable.getModifiers().contains(Modifier.ABSTRACT) &&
+        !executable.getModifiers().contains(Modifier.STATIC) &&
+        !executable.getModifiers().contains(Modifier.DEFAULT);
+  }
+
+  public boolean isObserverRegistrationParamsMethod(ExecutableElement executable,
+                                               GUIComponentObserverPatternAdapter guiComponentAdapter) {
+    return isObserverRegistrationParamsAnnotated(executable) &&
         !guiComponentAdapter.util().isInterface(guiComponentAdapter.getParentElement(TypeElement.class)) &&
         !executable.getModifiers().contains(Modifier.ABSTRACT) &&
         !executable.getModifiers().contains(Modifier.STATIC) &&
