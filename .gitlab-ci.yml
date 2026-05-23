@@ -3,6 +3,9 @@ image: registry.git.rwth-aachen.de/monticore/container-registry/gradle8.14.4-chr
 
 variables:
   GRADLE_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  GRADLE_COMMON_ARGS: "-P mavenPassword=$pass -P mavenUser=$user"
+  NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
   FF_TIMESTAMPS: true
   PUPPETEER_SKIP_DOWNLOAD: "true"
   CHROME_BIN: "/usr/bin/google-chrome-stable"
@@ -10,11 +13,10 @@ variables:
 
 cache:
   paths:
-    - .gradle/wrapper
+    - .gradle/caches/build-cache-*
+    - umlp-tool/.gradle/caches/build-cache-*
+    - .npm/_cacache
   key: ${CI_COMMIT_REF_SLUG}
-
-before_script:
-  - export GRADLE_USER_HOME=`pwd`/.gradle
 
 stages:
   - build
@@ -27,7 +29,7 @@ gendoc:
     - job: build_with_deploy
       artifacts: true
   script:
-    - gradle comment2doc:md --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user
+    - gradle comment2doc:md --refresh-dependencies $GRADLE_COMMON_ARGS
   artifacts:
     paths:
       - docs/gendoc_components
@@ -56,11 +58,11 @@ build_no_containers:
   script:
     - export CHROME_BIN=/usr/bin/google-chrome-stable
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
-    - "gradle build testCodeCoverageReport --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "gradle build testCodeCoverageReport --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log) >&2"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log) >&2"
     - echo "packageUMLPWithGUIVscodePlugin finished"
     - "cd .."
     # >(tee -a ...) starts tee background process, wait to ensure everything is written to
@@ -74,15 +76,7 @@ build_no_containers:
     - echo "Full log -> $CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/build.log"
   coverage: '/\d+.\d+ \% covered/'
   after_script:
-    - "cp -r /root/.npm/_logs/ ."
-  cache:
-    paths:
-      - .gradle/nodejs
-      - examples/weather/frontend/build/app/node_modules
-      - examples/sehub/frontend/build/app/node_modules
-      - examples/dtcockpit/frontend/build/app/node_modules
-      - products/demorec/frontend/build/app/node_modules
-      - examples/kitchencompanion/frontend/build/app/node_modules
+    - "cp -r .npm/_logs/ ."
   artifacts:
     when: always
     paths:
@@ -115,7 +109,7 @@ build_intellij_plugin:
     # Make lsp logs accessible for artifacts
     - mkdir "${CI_PROJECT_DIR}/tmpdir"
     - "export _JAVA_OPTIONS=-Djava.io.tmpdir=${CI_PROJECT_DIR}/tmpdir"
-    - "gradle :umlp-intellij-plugin:build -P buildIntelliJPlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle :umlp-intellij-plugin:build -P buildIntelliJPlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
     when: always
     paths:
@@ -132,14 +126,14 @@ build_with_deploy:
   script:
     # Build project + examples + publish RTE, publish generator
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
-    - "gradle build testCodeCoverageReport --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 $ARGS3 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - "gradle ciDeployRTE ciDeployImages :examples:vis-lib:frontend:screenshot --refresh-dependencies --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 $ARGS3 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
-    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish -P mavenPassword=$pass -P mavenUser=$user >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "gradle build testCodeCoverageReport --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 $ARGS3 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "gradle ciDeployRTE ciDeployImages :examples:vis-lib:frontend:screenshot --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 $ARGS3 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "gradle :umlp-tool:publish :umlp-tool:gradle-plugin:publish $GRADLE_COMMON_ARGS >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     # Build editor plugin
     # add one of the downloaded nodejs distributions to PATH, so we can build the vscode plugin
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
-    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
     - echo "packageUMLPWithGUIVscodePlugin finished"
     - "cd .."
     # >(tee -a ...) starts tee background process, wait to ensure everything is written to
@@ -152,22 +146,6 @@ build_with_deploy:
     # Print URI to log file for easier access!
     - echo "Full log -> $CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/build.log"
   coverage: '/\d+.\d+ \% covered/'
-  cache:
-    - paths:
-      - .gradle/nodejs
-      - examples/weather/frontend/build/app/node_modules
-      - examples/sehub/frontend/build/app/node_modules
-      - examples/dtcockpit/frontend/build/app/node_modules
-      - products/demorec/frontend/build/app/node_modules
-      - examples/kitchencompanion/frontend/build/app/node_modules
-    - key: vis-lib-cache-$CI_COMMIT_REF_NAME
-      policy: push
-      paths:
-        - examples/vis-lib/frontend/build
-        - examples/vis-lib/backend/build
-        - umlp-tool/build
-        - umlp-rte/frontend/node_modules
-        - .gradle
   artifacts:
     when: always
     paths:
@@ -203,7 +181,7 @@ slowtest:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
-    - "gradle slowtest --stacktrace -P mavenPassword=$pass -P mavenUser=$user $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "gradle slowtest --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 2>&1 | tee -a $CI_PROJECT_DIR/build.log"
   artifacts:
     when: always
     paths:
@@ -331,4 +309,3 @@ deploy-python-package:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "dev"' # only publish on pushes/merged to dev (not on upstream triggers)
       changes:
         - experiments/python-client/runtime-package/**/* # and on changes to the runtime package dir
-
