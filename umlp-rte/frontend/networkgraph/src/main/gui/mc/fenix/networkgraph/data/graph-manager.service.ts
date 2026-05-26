@@ -16,7 +16,7 @@ import { Sigma } from "sigma"
 import { SigmaEdgeEventPayload, SigmaNodeEventPayload } from "sigma/types";
 import Graph from "graphology";
 import { CameraState, Coordinates, MouseCoords, NodeDisplayData } from "sigma/types";
-import { ComplexGraphLayoutConfiguration, InitialGraphLayoutConfiguration } from "../types/graph-layout.types";
+import { ComplexGraphLayoutConfiguration, InitialGraphLayoutConfiguration, InitialGraphLayouts } from "../types/graph-layout.types";
 import { GraphSettings, prettyNodeHoverConfiguration } from "../types/graph-settings.types";
 import { GraphProcessorService } from "../graph-processing/graph-processor.service";
 import { GraphLayoutService } from "../services/graph-layout.service";
@@ -514,8 +514,66 @@ export class GraphManagerService<
   public applyGraphLayout(): void {
     if (!this.graph) return;
     this.ngZone.runOutsideAngular(() => {
-      this.layoutService.applyInitialLayout(this.graphData.initialLayoutConfiguration);
+      // Override the layout algorithm based on the hierarchicalLayoutMode setting when the
+      // configured mode is one of the two hierarchical variants.
+      const configured = this.graphData.initialLayoutConfiguration;
+      const hierarchicalModes = [InitialGraphLayouts.HIERARCHICAL, InitialGraphLayouts.CHANNEL_HIERARCHICAL] as string[];
+      const modeOverridden: InitialGraphLayoutConfiguration | null =
+        configured && hierarchicalModes.includes(configured.mode)
+          ? { ...configured, mode: this.graphSettings.getSetting("hierarchicalLayoutMode") as InitialGraphLayouts }
+          : configured;
+
+      // Inject useDummyNodes into the layout-specific parameters so both layout algorithms receive it.
+      const useDummyNodes = this.graphSettings.getSetting("useDummyNodes");
+      const initialLayout: InitialGraphLayoutConfiguration | null = modeOverridden
+        ? { ...modeOverridden, parameters: { ...(modeOverridden.parameters as object ?? {}), useDummyNodes } as any }
+        : null;
+      if (initialLayout && this.graphSettings.getSetting("reverseEdgeDirection")) {
+        // Build a copy of the graph with edges swapped back to their original direction so the
+        // layout algorithm sees the original topology. Positions are then copied to the real graph.
+        const layoutCopy = this.graph!.copy();
+        layoutCopy.edges().forEach(key => {
+          const src = layoutCopy.source(key);
+          const tgt = layoutCopy.target(key);
+          const attrs = { ...layoutCopy.getEdgeAttributes(key) };
+          const undirected = layoutCopy.isUndirected(key);
+          layoutCopy.dropEdge(key);
+          undirected
+            ? layoutCopy.addUndirectedEdgeWithKey(key, tgt, src, attrs)
+            : layoutCopy.addDirectedEdgeWithKey(key, tgt, src, attrs);
+        });
+        this.layoutService.applyInitialLayout(initialLayout, layoutCopy);
+      } else {
+        this.layoutService.applyInitialLayout(initialLayout);
+      }
+      if (this.graphSettings.getSetting("hierarchicalDirection") === "horizontal") {
+        this.rotateLayout90();
+      }
       this.layoutService.startLayouting(this.graphData.complexLayoutConfiguration);
+    });
+  }
+
+  /**
+   * Rotates all node positions and edge waypoints by 90° counter-clockwise (swaps x/y so a
+   * top-to-bottom vertical layout becomes a left-to-right horizontal layout).
+   */
+  private rotateLayout90(): void {
+    if (!this.graph) return;
+    this.graph.forEachNode((key, attrs) => {
+      const x: number = attrs["x"] ?? 0;
+      const y: number = attrs["y"] ?? 0;
+      this.graph!.setNodeAttribute(key, "x", -y);
+      this.graph!.setNodeAttribute(key, "y", x);
+    });
+    this.graph.forEachEdge((key, attrs) => {
+      const waypoints: { x: number; y: number }[] | undefined = attrs["waypoints"];
+      if (waypoints) {
+        this.graph!.setEdgeAttribute(
+          key,
+          "waypoints",
+          waypoints.map(wp => ({ x: -wp.y, y: wp.x })) as E["waypoints"]
+        );
+      }
     });
   }
 

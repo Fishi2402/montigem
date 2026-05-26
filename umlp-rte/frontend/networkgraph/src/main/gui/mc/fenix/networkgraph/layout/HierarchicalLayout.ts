@@ -4,6 +4,7 @@ export type HierarchicalLayoutOptionsInterface = {
   edgeLabels : string[],
   edgeGroups : string[]
   direction?: "vertical" | "horizontal"
+  useDummyNodes?: boolean
 }
 
 type ReversedEdgeInfo = { originalKey: string, reversedKey: string };
@@ -636,9 +637,12 @@ export class HierarchicalLayout  {
       levelNodes[index].push(nodeKey);
     })
 
-    // Step 3: Crossing minimization with dummy nodes
-    const originalEdges = hierarchicalLayout.insertDummyNodes(g, levelNodes, rankMinimum);
-    hierarchicalLayout.initializeDummyOrder(levelNodes, originalEdges, g, rankMinimum);
+    // Step 3: Crossing minimization, dummy nodes are optional
+    let originalEdges: StoredEdgeInfo[] = [];
+    if (options?.useDummyNodes !== false) {
+      originalEdges = hierarchicalLayout.insertDummyNodes(g, levelNodes, rankMinimum);
+      hierarchicalLayout.initializeDummyOrder(levelNodes, originalEdges, g, rankMinimum);
+    }
     hierarchicalLayout.minimizeCrossings(levelNodes, g);
 
     // Restore original edge directions and self-loops
@@ -662,7 +666,9 @@ export class HierarchicalLayout  {
     levelNodes.forEach((layer, li) => hierarchicalLayout.alignOrthogonalAxis(g, layer, li, fixedAxis));
 
     // Step 5: Remove dummy nodes now that their coordinates are assigned
-    hierarchicalLayout.removeDummyNodes(g, originalEdges, levelNodes);
+    if (options?.useDummyNodes !== false) {
+      hierarchicalLayout.removeDummyNodes(g, originalEdges, levelNodes);
+    }
   }
 
   private static readonly DEFAULT_NODE_SIZE = 20;
