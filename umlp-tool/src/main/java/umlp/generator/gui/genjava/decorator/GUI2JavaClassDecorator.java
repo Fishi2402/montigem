@@ -1136,7 +1136,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             ));
           }
 
-          getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, params);
+          ASTCDMethodSignature methodAST = getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, params);
+          addImport("umlp.jsweet.extension.annotation.ObserverRegistrationParams");
+          glex.replaceTemplate("cd2java.Annotations", methodAST, new StringHookPoint("@ObserverRegistrationParams"));
         }
       }
     }
