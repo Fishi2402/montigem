@@ -1,0 +1,8 @@
+package coverage;
+
+import mc.fenix.basic.GemText;
+
+page Dashboard() {
+
+  @GemText(value="Please start here.");
+}
