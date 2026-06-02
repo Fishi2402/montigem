@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { SigmaGraphService } from "../data/sigma-graph.service";
 import { EdgeAttributes, NodeAttributes } from "../types/graph.types";
 import { Attributes } from "graphology-types";
+import Graph from "graphology";
 
 /**
  * GraphLayoutService handles the layouting process of graphs. It allows for initial layouts as well as complex layouts
@@ -73,9 +74,28 @@ export class GraphLayoutService<N extends NodeAttributes, E extends EdgeAttribut
    *
    * @param {InitialGraphLayoutConfiguration | null} initialLayout - The initial layout settings.
    */
-  public applyInitialLayout(initialLayout: InitialGraphLayoutConfiguration | null): void {
+  public applyInitialLayout(initialLayout: InitialGraphLayoutConfiguration | null, layoutGraph?: Graph): void {
     if (initialLayout && this.graph.graph) {
-      INITIAL_LAYOUT_MAPPING[initialLayout.mode](this.graph.graph, initialLayout.parameters ?? {});
+      if (layoutGraph) {
+        // Run layout on the provided graph, then copy computed positions and edge routing back to the real graph.
+        INITIAL_LAYOUT_MAPPING[initialLayout.mode](layoutGraph, initialLayout.parameters ?? {});
+        layoutGraph.forEachNode((key, attrs) => {
+          this.graph.graph!.setNodeAttribute(key, "x", attrs["x"]);
+          this.graph.graph!.setNodeAttribute(key, "y", attrs["y"]);
+        });
+        layoutGraph.forEachEdge((key, attrs) => {
+          if (!this.graph.graph!.hasEdge(key)) return;
+          if (attrs["waypoints"]) {
+            // Waypoints are sorted by ascending rank (top → bottom for the original edge direction).
+            // The real graph has reversed edges (bottom → top), so reverse the array so the
+            // polyline flows in the correct direction from the new source to the new target.
+            this.graph.graph!.setEdgeAttribute(key, "waypoints", [...attrs["waypoints"]].reverse() as E["waypoints"]);
+          }
+          if (attrs["type"]) this.graph.graph!.setEdgeAttribute(key, "type", attrs["type"]);
+        });
+      } else {
+        INITIAL_LAYOUT_MAPPING[initialLayout.mode](this.graph.graph, initialLayout.parameters ?? {});
+      }
     }
   }
 

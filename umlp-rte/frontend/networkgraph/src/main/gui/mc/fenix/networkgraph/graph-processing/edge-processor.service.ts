@@ -121,6 +121,13 @@ export class EdgeProcessorService<
    */
   private createEdge(key: string, edge: Internal_GraphEdge): SerializedEdge<E> {
     const isUndirected: boolean = this.isEdgeUndirected(edge);
+    const shouldReverse: boolean = this.graphSettings.getSetting("reverseEdgeDirection");
+    const source = shouldReverse
+      ? EdgeProcessorService.getTargetId(edge)
+      : EdgeProcessorService.getSourceId(edge);
+    const target = shouldReverse
+      ? EdgeProcessorService.getSourceId(edge)
+      : EdgeProcessorService.getTargetId(edge);
     const group: string | undefined = this.groupMapping.getEdgeGroup(edge);
     let color: Color = edge.color? edge.color : ColorUtil.lightenColor(
       this.groupMapping.getColorForGroup(group, this.graphSettings.getSetting("defaultEdgeColor")),
@@ -130,8 +137,8 @@ export class EdgeProcessorService<
 
     return {
       key,
-      source: EdgeProcessorService.getSourceId(edge),
-      target: EdgeProcessorService.getTargetId(edge),
+      source,
+      target,
       undirected: isUndirected,
       attributes: {
         ...this.getCommonProperties(edge, key),

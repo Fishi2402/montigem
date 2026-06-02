@@ -70,7 +70,7 @@ public class GUI2HtmlGeneratorTest extends DomainGUITest {
     Path html = outDir.toPath().resolve("genjava/decorator/TestTextInputAutoValidity.html");
     String content = Files.readString(html);
 
-    assertTrue(content.contains("[validity] = 'getAutoValidity__synchronized("));
+    assertTrue(content.contains("[validity] = 'getAutoValidityForAngular__ChangeDetection("));
   }
 
 }

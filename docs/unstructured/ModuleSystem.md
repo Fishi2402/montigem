@@ -1,6 +1,9 @@
 
 # MontiGem Module System
 
+> ! This file describes an older version.
+> Not all aspects of this file work anymore!
+
 Modules provide re-usable $things that can be used in MontiGem applications.
 They are able to accomplish this via the following four pillars:
 

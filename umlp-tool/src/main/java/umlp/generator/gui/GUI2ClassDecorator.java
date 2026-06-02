@@ -210,6 +210,33 @@ public abstract class GUI2ClassDecorator extends AbstractDecorator {
     return MCTypeFacade.getInstance().createQualifiedType(ste.printFullName());
   }
 
+  /**
+   * Transform a GUI type into a Java type for Angular Transpilation For example,
+   * `java.util.List<Person>` is transformed into `def.js.Array<Person>`
+   *
+   * @param ste GUI type to be processed
+   * @return Java type that corresponds to the input GUI type
+   */
+  protected ASTMCType createAngularType(SymTypeExpression ste) {
+    if (ste.isGenericType() && ste.asGenericType().getTypeInfo().getFullName().equals("java.util.List")) {
+
+      SymTypeOfGenerics stog = ste.asGenericType();
+      String qType = "def.js.Array";
+
+      ASTMCBasicGenericTypeBuilder genTypeBuilder = MCFullGenericTypesMill.mCBasicGenericTypeBuilder()
+          .setNamesList(new ArrayList<>(Arrays.asList(qType)))
+          .setMCTypeArgumentsList(new ArrayList<>());
+      for (SymTypeExpression steArg : stog.getArgumentList()) {
+        genTypeBuilder.addMCTypeArgument(
+            MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+                .setMCType(createTypeAndAddImports(steArg))
+                .build());
+      }
+      return genTypeBuilder.build();
+    }
+    return createTypeAndAddImports(ste);
+  }
+
   protected void importCommand(ASTMCType domainClass) {
     String typeName = "";
     String packageName = "";

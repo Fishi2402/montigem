@@ -283,12 +283,12 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> import_map_pipe_generate =
       data -> {
         Optional<String> tslib = UMLPGeneratorConfig.getInstance().getTSLib();
-        if (tslib.isPresent()) {
+        if (tslib.isPresent() && UMLPGeneratorConfig.getInstance().isGenerateImportMap()) {
           ImportMapGenerator importMapGenerator = new ImportMapGenerator(data.getGenSetup());
           importMapGenerator.generate(tslib.get(), data.getASTs());
         }
       };
-  
+
   public final IOperation.ISimpleOperation<DataWithGenSetupAndRouting> model_pipe_router_generator =
       data -> {
         AppRouterGenerator routerGenerator = new AppRouterGenerator(data.getGenSetup());

@@ -5,11 +5,11 @@ import org.apache.commons.cli.CommandLine;
 
 import java.util.Optional;
 
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.GEN_IMPORT_MAP;
 import static umlp.UMLPToolOptions.GEN_MONITOR;
 import static umlp.UMLPToolOptions.GEN_NEO4J;
 import static umlp.UMLPToolOptions.GUI_GEN_FOR_TS_LIB;
-import static umlp.UMLPToolOptions.GUI_GEN_JSWEET;
-import static umlp.UMLPToolOptions.GUI_GEN_TS_FUNC;
 import static umlp.UMLPToolOptions.USE_NEO4J;
 import static umlp.UMLPToolOptions.USE_PLAYWRIGHT;
 import static umlp.UMLPToolOptions.USE_SHELL;
@@ -23,8 +23,10 @@ public class UMLPGeneratorConfig {
   private boolean genNeo4j;
   private boolean useNeo4j;
   private boolean generateMonitor;
+  private boolean generateImportMap;
 
   private String tslib;
+  private String domain;
 
   private UMLPGeneratorConfig() {
   }
@@ -99,6 +101,28 @@ public class UMLPGeneratorConfig {
     return this;
   }
 
+  public boolean is4Domain() {
+    return Optional.ofNullable(domain).isPresent();
+  }
+
+  public Optional<String> getDomain() {
+    return Optional.ofNullable(domain);
+  }
+
+  public UMLPGeneratorConfig setDomain(String domain) {
+    this.domain = domain;
+    return this;
+  }
+
+  public boolean isGenerateImportMap() {
+    return this.generateImportMap;
+  }
+
+  public UMLPGeneratorConfig setGenerateImportMap(boolean genenerateImportMap) {
+    this.generateImportMap = genenerateImportMap;
+    return this;
+  }
+
   public boolean isGenerateMonitor() {
     return generateMonitor;
   }
@@ -112,11 +136,15 @@ public class UMLPGeneratorConfig {
     if (GUI_GEN_FOR_TS_LIB.isSelected(cmd)) {
       this.setTSLib(GUI_GEN_FOR_TS_LIB.getValue(cmd));
     }
+    if(DOMAIN.isSelected(cmd)) {
+      this.setDomain(DOMAIN.getValue(cmd));
+    }
     return this.setUseSpring(USE_SPRING.isSelected(cmd))
         .setUseShell(USE_SHELL.isSelected(cmd))
         .setUsePlaywright(USE_PLAYWRIGHT.isSelected(cmd))
         .setGenNeo4j(GEN_NEO4J.isSelected(cmd))
         .setUseNeo4j(USE_NEO4J.isSelected(cmd))
-        .setGenerateMonitor(GEN_MONITOR.isSelected(cmd));
+        .setGenerateMonitor(GEN_MONITOR.isSelected(cmd))
+        .setGenerateImportMap(GEN_IMPORT_MAP.isSelected(cmd));
   }
 }

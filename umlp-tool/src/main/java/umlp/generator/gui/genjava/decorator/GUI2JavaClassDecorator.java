@@ -25,7 +25,6 @@ import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.guidsl._visitor.GUIDSLTraverser;
 import de.monticore.guidsl._visitor.GUIDSLVisitor2;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
@@ -41,6 +40,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.domain.decorator.BuilderDecorator;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.domain.decorator.ObserverDecorator;
@@ -74,6 +74,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected List<Method> addedMethods = new ArrayList<>();
   protected boolean extendedDomainObserver = false;
   boolean getScopeAdded = false;
+  boolean isRTELibrary = false;
   protected Set<String> implementedAssocObservers = new LinkedHashSet<>();
   protected Set<String> subscribedManagerEvents = new LinkedHashSet<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new LinkedHashMap<>();
@@ -85,6 +86,11 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     traverser.add4GUIDSL(this);
     traverser.add4CommonExpressions(this);
     traverser.add4SetExpressions(this);
+
+    if(glex.hasGlobalVar("UMLPGeneratorConfig")){
+      isRTELibrary = UMLPGeneratorConfig.getInstance().is4TSLib() &&
+          !UMLPGeneratorConfig.getInstance().is4Domain();
+    }
   }
 
   protected void resetHooks() {
@@ -124,6 +130,12 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     addDestroy();
 
     addImport("java.util.ArrayList");
+    if(!isRTELibrary) {
+      addImport("umlp.guiutil.GemListUtil");
+      addImport("umlp.jsweet.extension.annotation.AngularTrackedUpdates");
+      addImport("umlp.jsweet.extension.annotation.ObserverRegistrationParams");
+      addImport("umlp.jsweet.extension.annotation.NotifyAboutFieldUpdate");
+    }
 
     // remove
     for (NotifyMethodTemplate notifyDeleted : this.notifyDeleted.values()) {
@@ -151,6 +163,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
    * Each input parameter (with one exception) is transformed into
    * - attribute
    * - getter
+   * - another getter for Usage in Angular Templates
    * - setter
    * - init function
    * The init function does not require an input parameter and sets a default value of a parameter.
@@ -190,7 +203,18 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     if (SymTypeRelations.isBoolean(typeSTE)) {
       getterName = "is" + StringTransformations.capitalize(node.getName());
     }
-    getCD4C().addMethod(clazz, getParamGetterTemplate(), type, name, getterName);
+    ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getParamGetterTemplate(), type, name, getterName);
+
+    // add Angular getter
+    Optional<ASTCDMethodSignature> angularGetter = Optional.empty();
+    if(!isRTELibrary) {
+      glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+      ASTMCType typeToPrint = getSimpleType(createAngularType(typeSTE));
+      ASTCDMethodSignature method = getCD4C().addMethod(clazz, getParamAngularGetterTemplate(),typeToPrint, name, getterName, typeToPrint.printType().startsWith("def.js.Array"));
+      glex.replaceTemplate("cd2java.Annotations",method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+      angularGetter = Optional.of(method);
+    }
 
     // add set externally check attr
     String setExternName = name + "SetExternally";
@@ -202,8 +226,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
-    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
+    ASTCDMethodSignature setter = getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
         setExternName, waitName);
+    if(!isRTELibrary) {
+      glex.replaceTemplate("cd2java.Annotations",setter, new StringHookPoint(
+          "@NotifyAboutFieldUpdate(observedField= \""
+          +attr.getName()+"\", methodRequiringUpdate=\""
+          +angularGetter.get().getName()+"\")"));
+    }
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
@@ -453,10 +483,21 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
                 .apply(getterValue)
         );
 
-        getCD4C().addMethod(
+        ASTCDMethodSignature getter = getCD4C().addMethod(
             clazz, getArgGetterWithConversionTemplate(),
             type, name, nullCheck, returnValue, conv, params
         );
+
+        if(!isRTELibrary) {
+          glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+          ASTMCType typeToPrint = getSimpleType(createAngularType(typeSTE));
+          ASTCDMethodSignature method = getCD4C().addMethod(
+              clazz, getArgGetterWithConversionAngularTemplate(),
+              typeToPrint, name, nullCheck, returnValue, conv, params, typeToPrint.printType().startsWith("def.js.Array")
+          );
+          glex.replaceTemplate("cd2java.Annotations",method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+        }
       }
 
       if (arg.getNameSymbol().isIsReference()) {
@@ -515,8 +556,17 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     List<AdditionalValidationSource> additionalValidationSources =
         getAdditionalValidationSources(node, fieldAccess, getterPrinter);
 
-    getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomain",
+    ASTCDMethodSignature getter = getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomain",
         name, domainObjGetter, attrName, targetType, params, additionalValidationSources);
+
+    if(!isRTELibrary) {
+      glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+      ASTCDMethodSignature method = getCD4C().addMethod(clazz, "umlp.gui2java.GetValidityFromDomainForAngular",
+          name, domainObjGetter, attrName, targetType, params, additionalValidationSources);
+
+      glex.replaceTemplate("cd2java.Annotations",method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+    }
 
     addImport("mc.fenix.input.geminputbasetypes.ValidationError");
     addImport("java.util.Optional");
@@ -615,10 +665,21 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     List<ASTCDParameter> params = getIterationItemParameters(node);
 
     // add getter
-    getCD4C().addMethod(
+    ASTCDMethodSignature getter = getCD4C().addMethod(
         clazz, getArgGetterTemplate(),
         type, name, nullCheck, getterValue, params
     );
+
+    if(!isRTELibrary) {
+      glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+      // add Angular getter
+      ASTCDMethodSignature method = getCD4C().addMethod(
+          clazz, getArgAngularGetterTemplate(),
+          type, name, nullCheck, getterValue, params, false // Assume always boolean
+      );
+      glex.replaceTemplate("cd2java.Annotations",method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+    }
   }
 
   /**
@@ -637,6 +698,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     ASTGUIShortIterateControl control = (ASTGUIShortIterateControl) node.getIterateControl();
     // calc type
     ASTMCType type;
+    SymTypeExpression typeSTE;
     // if the iterable is a custom method
     if (StaticObjectsCollector.getInstance().getNode2Method().containsKey(control.getIterable())) {
       Method m = StaticObjectsCollector.getInstance().getNode2Method().get(control.getIterable());
@@ -645,10 +707,11 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         Log.warn("Detected method " + m.getName() + " returning GUIViewElement object(s)."
             + " Such methods are uncommon to define, consider adjusting the model.");
       }
-      type = getSimpleType(createTypeAndAddImports(m.getReturnType()));
+      typeSTE = m.getReturnType();
+      type = getSimpleType(createTypeAndAddImports(typeSTE));
     }
     else {
-      SymTypeExpression typeSTE = util.getType(control.getIterable());
+      typeSTE = util.getType(control.getIterable());
       // exclude GUIViewElement
       if (util.isViewElement(typeSTE)
           || util.isViewElementsCollection(typeSTE)) {
@@ -675,10 +738,21 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     List<ASTCDParameter> params = getIterationItemParameters(node);
 
-    getCD4C().addMethod(
+    ASTCDMethodSignature getter = getCD4C().addMethod(
         clazz, getArgGetterTemplate(),
         type, name, nullCheck, getterValue, params
     );
+
+    if(!isRTELibrary) {
+      glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+      ASTMCType typeToPrint = getSimpleType(createAngularType(typeSTE));
+      ASTCDMethodSignature method = getCD4C().addMethod(
+          clazz, getArgAngularGetterTemplate(),
+          typeToPrint, name, nullCheck, getterValue, params, typeToPrint.printType().startsWith("def.js.Array")
+      );
+      glex.replaceTemplate("cd2java.Annotations",method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+    }
 
     // add init
     if (!control.getItem().isPresentSymbol()) {
@@ -732,6 +806,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (params.isEmpty()) {
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
+
+        if(!isRTELibrary) {
+          glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+          ASTMCType typeToPrint = getSimpleType(createAngularType(attrWrapper.getSourceType()));
+          ASTCDMethodSignature method = getCD4C().addMethod(clazz, getAngularGetterTemplate(), typeToPrint, name, typeToPrint.printType().startsWith("def.js.Array"));
+          glex.replaceTemplate("cd2java.Annotations", method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+        }
 
         // add attr init
         Expression2AccessorPrinter getterPrinter = new Expression2AccessorPrinter(
@@ -852,6 +934,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (params.isEmpty()) {
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getGetterTemplate(), type, name);
+
+        if(!isRTELibrary) {
+          glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+
+          ASTMCType typeToPrint = getSimpleType(createAngularType(ste));
+          ASTCDMethodSignature method = getCD4C().addMethod(clazz, getAngularGetterTemplate(), typeToPrint, name, typeToPrint.printType().startsWith("def.js.Array"));
+          glex.replaceTemplate("cd2java.Annotations",method, new StringHookPoint("@AngularTrackedUpdates @ObserverRegistrationParams"));
+        }
 
         // add builder init
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
@@ -1046,7 +1136,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
             ));
           }
 
-          getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, params);
+          ASTCDMethodSignature methodAST = getCD4C().addMethod(clazz, getEmptyMethodTemplate(), type, name, params);
+          addImport("umlp.jsweet.extension.annotation.ObserverRegistrationParams");
+          glex.replaceTemplate("cd2java.Annotations", methodAST, new StringHookPoint("@ObserverRegistrationParams"));
         }
       }
     }
@@ -1616,6 +1708,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaParamGetter";
   }
 
+  protected String getParamAngularGetterTemplate() {
+    return "umlp.gui2java.GUI2JavaParamAngularGetter";
+  }
+
   protected String getParamSetterTemplate() {
     return "umlp.gui2java.GUI2JavaParamSetter";
   }
@@ -1624,12 +1720,20 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaArgGetter";
   }
 
+  protected String getArgAngularGetterTemplate() {
+    return "umlp.gui2java.GUI2JavaArgAngularGetter";
+  }
+
   protected String getArgSetterTemplate() {
     return "umlp.gui2java.GUI2JavaArgSetter";
   }
 
   protected String getArgGetterWithConversionTemplate() {
     return "umlp.gui2java.GUI2JavaArgGetterWithConversion";
+  }
+
+  protected String getArgGetterWithConversionAngularTemplate() {
+    return "umlp.gui2java.GUI2JavaArgAngularGetterWithConversion";
   }
 
   protected String getArgSetterWithConversionTemplate() {
@@ -1650,6 +1754,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getGetterTemplate() {
     return "umlp.gui2java.GUI2JavaGetter";
+  }
+
+  protected String getAngularGetterTemplate() {
+    return "umlp.gui2java.GUI2JavaAngularGetter";
   }
 
   protected String getStaticObjectGetterTemplate() {

@@ -59,30 +59,36 @@ public abstract class MGBasePlugin implements Plugin<Project> {
 
     // Module system
     var montigemModuleC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_CONFIG);
+    montigemModuleC.setDescription("Meta config for describing MontiGem module usages");
     montigemModuleC.setCanBeResolved(false);
     montigemModuleC.setCanBeConsumed(true);
 
     var montigemModuleGeneratorExtensionC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GENERATOR_EXTENSION_CONFIG);
+    montigemModuleC.setDescription("Contains the classpath + configtemplates of modules for the tool - configure using montigemModule");
     montigemModuleGeneratorExtensionC.setCanBeResolved(true);
     montigemModuleGeneratorExtensionC.setCanBeConsumed(false);
     ModulePlugin.addGeneratorExtensionJarAttributes(montigemModuleGeneratorExtensionC, project);
 
     var montigemModuleUMLPModelsC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_MODELS_CONFIG);
+    montigemModuleC.setDescription("Contains the module models themselves - configure using montigemModule");
     montigemModuleUMLPModelsC.setCanBeResolved(true);
     montigemModuleUMLPModelsC.setCanBeConsumed(false);
     ModulePlugin.addUMLPModelsJarAttributes(montigemModuleUMLPModelsC, project);
 
     var montigemModuleUSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_UMLP_SYMBOLS_CONFIG);
+    montigemModuleC.setDescription("Contains the domain symbols of a module - configure using montigemModule");
     montigemModuleUSC.setCanBeResolved(true);
     montigemModuleUSC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addUMLPSymbolsJarAttributes(montigemModuleUSC, project);
 
     var montigemModuleIMC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_IMPORT_MAP_CONFIG);
+    montigemModuleC.setDescription("Contains the import maps of a module - configure using montigemModule");
     montigemModuleIMC.setCanBeResolved(true);
     montigemModuleIMC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addImportMapJarAttributes(montigemModuleIMC, project);
 
     var montigemModuleGSC = project.getConfigurations().maybeCreate(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG);
+    montigemModuleC.setDescription("Contains the gui symbols of a module - configure using montigemModule");
     montigemModuleGSC.setCanBeResolved(true);
     montigemModuleGSC.setCanBeConsumed(false);
     ModuleFrontendPlugin.addGuiSymbolsJarAttributes(montigemModuleGSC, project);

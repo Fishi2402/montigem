@@ -2,6 +2,7 @@ import { Settings } from "sigma/settings";
 import { Color } from "../shared/utils/color.util";
 import { ArrayColorMap, EdgePrograms, GroupColorMap, NodePrograms } from "./graph.types";
 import { Attributes, GraphType } from "graphology-types";
+import { GraphLayoutOptions } from "./graph-layout.types";
 
 /**
  * Extends the sigma.js Settings interface to include custom settings for graph rendering.
@@ -10,7 +11,8 @@ import { Attributes, GraphType } from "graphology-types";
  *   - We omit the color settings from sigma.js because we want to use our own color type.
  */
 export interface GraphSettings
-  extends Omit<Settings, "defaultNodeColor" | "defaultEdgeColor" | "labelColor" | "edgeLabelColor"> {
+  extends Omit<Settings, "defaultNodeColor" | "defaultEdgeColor" | "labelColor" | "edgeLabelColor">,
+    GraphLayoutOptions {
   /** Flag to toggle whether node labels should be forced to be visible. */
   forceNodeLabels: boolean;
 

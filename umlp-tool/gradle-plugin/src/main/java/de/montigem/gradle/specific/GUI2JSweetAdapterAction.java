@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
@@ -24,7 +25,12 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
         .stream()
         .map(File::getAbsolutePath)
         .collect(Collectors.toList());
-    if (getParameters().getDomain().isPresent() && !getParameters().getDomain().get().isEmpty()) {
+    if(getParameters().getUseModuleGUIAdapter().get()) {
+      generator.generate(
+          getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
+          srcDirs
+      );
+    } else if (getParameters().getDomain().isPresent() && !getParameters().getDomain().get().isEmpty()) {
       generator.generate(
           getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
           getParameters().getDomain().get().get(0), false,
@@ -32,10 +38,8 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
       );
     }
     else {
-      generator.generate(
-          getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
-          srcDirs
-      );
+      Log.error("Could not derive which GUI2JSweetAdapter to use from the given Gradle configuration." +
+          " You can either specify a Domain model or set useModuleGUIAdapter to true.");
     }
   }
 
@@ -43,5 +47,8 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
     @Input
     @Optional
     ListProperty<String> getDomain();
+
+    @Input
+    Property<Boolean> getUseModuleGUIAdapter();
   }
 }

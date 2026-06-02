@@ -72,7 +72,8 @@ public enum UMLPToolOptions {
   USE_PLAYWRIGHT(Option.builder("use_playwright").desc("If spring classes are generated, generate additional playwright e2e infrastructure").build()),
   GEN_NEO4J(Option.builder("gen_neo4j").desc("Generate database access infrastructure for a Neo4j / Cypher databases.").build()),
   USE_NEO4J(Option.builder("use_neo4j").desc("Make Neo4j the default database access for the MontiGem app.").build()),
-  GEN_MONITOR(Option.builder("gen_monitor").desc("Generate Monitor subclasses for all domain classes").build());
+  GEN_MONITOR(Option.builder("gen_monitor").desc("Generate Monitor subclasses for all domain classes").build()),
+  GEN_IMPORT_MAP(Option.builder("gen_import_map").desc("Generate Import Map for GUI files.").build());
 
   UMLPToolOptions(Option option) {
     this.option = option;

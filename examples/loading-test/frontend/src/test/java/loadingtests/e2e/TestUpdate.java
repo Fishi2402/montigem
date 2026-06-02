@@ -57,6 +57,23 @@ public class TestUpdate extends AbstractLoadingTestsE2ETest {
     testUpdateFunctionality(page);
   }
 
+  @Test
+  void testHwcUpdateBug(Page page) {
+    navAndWait(page, "/test_update_withhwc/HwcUpdate");
+    waitForAngular(page);
+
+    // Initial value
+    assertThat(page.locator(GemText.selector())).hasText("Counter is: 0");
+
+    // Click increment
+    page.locator(GemButton.selector()).click();
+    waitForAngular(page);
+
+    // The text should update to "Counter is: 1". 
+    // Currently, it is expected to FAIL (stay at "Counter is: 0").
+    assertThat(page.locator(GemText.selector())).hasText("Counter is: 1");
+  }
+
   protected void testUpdateFunctionality(Page page) {
     // We need this to ensure that all Client Request were answered from the Backend
     page.waitForLoadState(LoadState.NETWORKIDLE);

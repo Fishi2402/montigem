@@ -37,7 +37,7 @@ public abstract class GUI2SymTask extends MGAllFilesTask {
 
   @Input
   @org.gradle.api.tasks.Optional
-  public abstract Property<String> getTslib();
+  public abstract Property<String> getTSlib();
 
   @Override
   protected List<String> createArgList(Function<Path, String> handlePath) {
@@ -62,10 +62,12 @@ public abstract class GUI2SymTask extends MGAllFilesTask {
       }
     }
 
-    if (this.getTslib().isPresent()) {
+    if (this.getTSlib().isPresent()) {
       result.add("-" + UMLPToolOptions.GUI_GEN_FOR_TS_LIB.getCMD());
-      result.add(getTslib().get());
+      result.add(getTSlib().get());
     }
+
+    result.add("-" +UMLPToolOptions.GEN_IMPORT_MAP.getCMD());
 
     return result;
   }

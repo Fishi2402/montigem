@@ -6,6 +6,7 @@ import { CircularLayoutOptions } from "graphology-layout/circular";
 import { RandomLayoutOptions } from "graphology-layout/random";
 import Graph from "graphology";
 import { Layout } from "../consts/graph.const";
+import { ChannelLayoutOptionsInterface } from "../layout/ChannelLayout";
 
 /**
  * Enumeration for initial layout modes. These modes provide a basic layout for the nodes in the graph.
@@ -39,7 +40,23 @@ export enum InitialGraphLayouts {
    * - Smaller circles are enclosed within larger circles, filling the canvas area.
    */
   CIRCLE_PACK = "CIRCLE_PACK",
-  HIERARCHICAL = "HIERARCHICAL"
+
+  /**
+   * Sugiyama-style layered hierarchical layout.
+   *
+   * - Assigns nodes to horizontal rank layers and orders them within each layer to minimize edge crossings.
+   * - Long-span edges can optionally be routed through dummy nodes/waypoints between layers.
+   */
+  HIERARCHICAL = "HIERARCHICAL",
+
+  /**
+   * Channel-decomposition hierarchical layout (Ortali &amp; Tollis, 2019).
+   *
+   * - No dummy nodes — edges render directly from source to target without polyline routing.
+   * - Vertices are partitioned into vertical channels (greedy path cover); channels are ordered
+   *   by a barycenter heuristic to reduce crossings.
+   */
+  CHANNEL_HIERARCHICAL = "CHANNEL_HIERARCHICAL"
 }
 
 /**
@@ -77,6 +94,21 @@ export enum ComplexGraphLayouts {
   NO_OVERLAP = "NO_OVERLAP",
 }
 
+/** Options controlling the graph layout behaviour. */
+export interface GraphLayoutOptions {
+  /** If true, swap source and target when rendering edges, reversing the visual arrow direction. */
+  reverseEdgeDirection: boolean;
+
+  /** Direction of the hierarchical layout: "vertical" = top-to-bottom, "horizontal" = left-to-right. */
+  hierarchicalDirection: "horizontal" | "vertical";
+
+  /** Layout algorithm to use when the initial layout mode is hierarchical. */
+  hierarchicalLayoutMode: "HIERARCHICAL" | "CHANNEL_HIERARCHICAL";
+
+  /** If true, long-span edges bend through intermediate rank layers via dummy nodes/waypoints. */
+  useDummyNodes: boolean;
+}
+
 /** Settings for layout iterations. */
 export interface LayoutIterationSettings {
   /** Maximum number of iterations. */
@@ -108,7 +140,11 @@ export type InitialLayoutSettingsMap = {
   /** Settings for the layout type ´Random */
   [InitialGraphLayouts.RANDOM]: RandomLayoutOptions;
 
+  /** Settings for the layout type `Hierarchical` */
   [InitialGraphLayouts.HIERARCHICAL]: any;
+
+  /** Settings for the layout type `Channel Hierarchical` */
+  [InitialGraphLayouts.CHANNEL_HIERARCHICAL]: ChannelLayoutOptionsInterface;
 };
 
 /**

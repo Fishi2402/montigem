@@ -1,0 +1,9 @@
+package test_update_withhwc;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+page HwcUpdate(int counter = 0) {
+  @GemText(value = myHWCMethod());
+  @GemButton(label = "Increment", leftClick = incrementCounter());
+}

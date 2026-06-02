@@ -1,4 +1,5 @@
 import {DEFAULT_EDGE_PROGRAM_CLASSES, DEFAULT_NODE_PROGRAM_CLASSES, DEFAULT_SETTINGS, Settings} from "sigma/settings";
+import { DEFAULT_LAYOUT_OPTIONS } from "./graph-layout.const";
 import { GraphSettings } from "../types/graph-settings.types";
 import { NodeCircleProgram } from "sigma/rendering"; // getNodeImageProgram from "sigma/rendering/webgl/programs/node.image";
 import { createNodeImageProgram } from "@sigma/node-image";
@@ -31,6 +32,7 @@ export function getDefaultGraphSettings(): GraphSettings {
     labelRenderedSizeThreshold: 6,
     renderEdgeLabels: true,
     ignoreDuplicatedEdges: true,
+    ...DEFAULT_LAYOUT_OPTIONS,
     areaDependentScaling: true,
     zoomAnimationDuration: 500,
     zoomFactor: 1.5,

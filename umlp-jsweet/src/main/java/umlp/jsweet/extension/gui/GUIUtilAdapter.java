@@ -65,7 +65,10 @@ public class GUIUtilAdapter extends AbstractAdapter {
                 ((ExtendedElementSupport<?>) argument).getTree() instanceof JCTree.JCLambda &&
                 ((JCTree.JCLambda) ((ExtendedElementSupport<?>) argument).getTree()).getBody() instanceof JCTree.JCMethodInvocation) {
               JCTree.JCMethodInvocation body = (JCTree.JCMethodInvocation) ((JCTree.JCLambda) ((ExtendedElementSupport<?>) argument).getTree()).getBody();
-              getPrinter().print(body.getMethodSelect()).print(GUIAdapterUtils.UPDATE_SUFFIX + "(").printArgList(body).print(")");
+
+              // This method is used for manually triggering an update of a method that depends only on Java local class fields
+              getPrinter().print("/*You must only use methods for which a 'ForAngular' pendent exists in the generated TOP Class*/");
+              getPrinter().print(body.getMethodSelect()).print("ForAngular"+GUIAdapterUtils.UPDATE_SUFFIX + "(").printArgList(body).print(")");
             }
             return true;
           case "registerObserverToDomainObject":

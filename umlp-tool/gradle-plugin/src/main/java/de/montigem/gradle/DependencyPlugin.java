@@ -34,6 +34,7 @@ public abstract class DependencyPlugin implements Plugin<Project> {
     // add a new configuration in which the umlp-tool (.jar) is loaded
     //  (this avoids loading the tool+all its dependencies into the shared plugin-classpath)
     var toolConfig = project.getConfigurations().maybeCreate(UMLP_CONFIG_TOOL);
+    toolConfig.setDescription("Classpath of the executed montigem/umlp-tool (jar)");
     // Load the buildInfo.properties file (containing the current version)
     Properties buildInfo = new Properties();
     try (InputStream is = DependencyPlugin.class.getResourceAsStream("/buildInfo.properties")) {

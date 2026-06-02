@@ -178,6 +178,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       }
     }
 
+    addJSweetDependencies(project);
+
     project.afterEvaluate(p -> {
       for (Project subproject : extension.getLibs()) {
         subproject.getPluginManager().apply(NodePlugin.class);
@@ -318,6 +320,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           }
           task.getOutputDir().set(subproject.getLayout().getBuildDirectory().dir("gui2sym"));
 
+          task.getTSlib().set(libQName);
           task.dependsOn(cd2sym);
           task.onlyIf(t -> guiPresent);
         });
