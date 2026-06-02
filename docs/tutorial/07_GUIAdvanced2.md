@@ -53,13 +53,13 @@ unlike normal `String` indicates extended functionality:
 We have a page, but we need to navigate to it somehow.
 To do so we need to:
 
-1. know the URL of the page
-2. choose a page to navigate from
-3. implement the navigation to the URL
+1. Choose a page to navigate from
+2. Import the page to navigate to
+3. Use the predefined `navigate` function
 
 The page always shows a *specific* car, so the generator creates a URL that
 is specific to a car: `gui/CarUpdate/:carRoutingId`, where `carRoutingId` is
-a unique identifier for the car. It has to be specified when navigating to the
+a unique identifier for the car. The car object has to be specified when navigating to the
 page.
 
 !!! note 
@@ -73,34 +73,19 @@ navigation button for every car:
 package gui;
 
 import mc.fenix.basic.GemButton;
+import gui.CarUpdate;
 /* imports */
 page CarOverview(List<Car> cars) {
   /*...*/
   @iterate(Car c : cars) {
     /*...*/
-    @GemButton(leftClick = updateCar(c));
+    @GemButton(leftClick = navigate(@CarUpdate(car = c)));
   }
 }
 ```
 
-The `updateCar` implementation:
-```java
-import umlp.guiutil.Router;
-/*imports*/
-public Consumer<Void> updateCar(Car car) {
-  return $ -> {
-    Router.navigate("gui", "CarUpdate", String.valueOf(car.getGemId()));
-  };
-}
-```
-To be able to access Routing functionality of a webpage there is the class
-`umlp.guiutil.Router` which contains the static method
-`public static void navigate(String... paths)` that gets transpiled to
-an Angular router, which works like this: 
-Every TypeScript component has access to a `_router` object that has functions for
-navigation, such as `navigate` that accepts an array of URL parts (values
-between `/`). Every domain object, such as a `car` has a unique identfier
-`gemId`, accessible via `getGemId` method. The same id is used for routing.
+!!! note
+    Navigate is a predefined function that does not need to be implemented in handwritten code.
 
 ## Creating objects
 
@@ -210,7 +195,7 @@ package gui;
 
 import carrental.Car;
 import carrental.CarrentalManager;
-import umlp.guiutil.Router;
+import app.AppRouter;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.function.Consumer;
@@ -225,12 +210,16 @@ public class CarCreate extends CarCreateTOP {
         .model(car.getModel())
         .name(car.getName())
         .build();
-      Router.navigate("gui", "CarOverview");
+      AppRouter.navigateToGuiCarOverview();
     };
   }
 }
 ```
 To save the object, we simply need to call the `build` method of the object.
+
+To be able to access Routing functionality of a webpage from handwritten code,
+there is the generated class `app.AppRouter` which contains static navigation methods
+for every page.
 
 <!--
 Unfortunately, this method will not work, because the object has to be valid
