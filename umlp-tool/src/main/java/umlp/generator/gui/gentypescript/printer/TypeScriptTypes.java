@@ -123,7 +123,8 @@ public enum TypeScriptTypes {
         || SymTypeRelations.isInt(type)
         || SymTypeRelations.isFloat(type)
         || SymTypeRelations.isLong(type)
-        || SymTypeRelations.isShort(type);
+        || SymTypeRelations.isShort(type)
+        || SymTypeRelations.isByte(type);
   }
 
   public String getMCType() {

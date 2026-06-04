@@ -3,9 +3,13 @@ package umlp.cli;
 import cd2gui.CD2GUITool;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdmerge.CDMerge;
+import de.monticore.cdmerge.config.MergeParameter;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
+import umlp.MCPathUtil;
 import umlp.MillConf;
 import umlp.UMLPMill;
 import umlp.UMLPTool;
@@ -15,11 +19,19 @@ import umlp.cli.common.Pipeline;
 import umlp.generator.domain.UMLAddGemIdTrafo;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import static umlp.UMLPToolOptions.MERGE;
+import static umlp.UMLPToolOptions.PRETTYPRINT;
 
 public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
 
@@ -27,15 +39,42 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation2<UMLPPipelineData> addBuiltInTypes;
   public final IOperation<UMLPPipelineData> generateGui;
   public final Pipeline<DataWithAst> modelPipeline;
-
+  public final Pipeline<DataWithAst> loadModelPathPipe;
+  //public final IOperation<DataWithAst> mergeAST;
+  
+  
   public CD2GUIPipeline(IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck) {
     register("setupUMLPReports", setupUMLPReports);
     register("check_umlp_filetype", isUMLPFileCheck);
     register("init", init = data -> {
       MillConf.switchTo(MillConf.UMLP);
+      UMLPMill.globalScope().setSymbolPath(data.importedSymbolPath);
       return true;
     });
     register("addBuiltInTypes", addBuiltInTypes = this::addBuiltInTypes);
+    
+    // Pipeline dealing with how to load models into the model path
+    loadModelPathPipe = createLoadModelPathPipe();
+    register("loadModelpath", IOperation.withDependantPipelines(data -> {
+      String report_on = data.inputFile.getName().replace(".", "__");   // TODO: Is this name unique? Should it be unique?
+      
+      List<URL> models = MCPathUtil.getAllModels(data.modelPath, ".*[.]umlp");
+      for (URL modelUrl : models) {
+        try (Reader reader = new InputStreamReader(modelUrl.openStream())) {
+          ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
+          Reporting.reportParseInputFile(data.inputFile.toPath().toAbsolutePath(), report_on);
+          Data dataWithAst = new Data(data);
+          dataWithAst.setAst(ast);
+          loadModelPathPipe.doWork(dataWithAst);
+        } catch (IOException e) {
+          e.printStackTrace();
+          Log.error("Can not load model for url " + modelUrl, e);
+          return false;
+        }
+      }
+      return true;
+    }, Collections.singletonList(loadModelPathPipe)));
+    
 
     modelPipeline = createModelPipeline();
     register("generateGui",
@@ -43,6 +82,52 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
           modelPipeline.doWork(new Data(data));
           return true;
         }, Collections.singletonList(modelPipeline)));
+    
+    /*modelPipeline.registerAfter(model_pipe_symbol_table,"mergeAST", mergeAST = data -> {
+      // First step of an AST: If --merge was provided, override AST with merged AST
+      if (!data.getData().modelPath.isEmpty()){
+        List<ASTCDCompilationUnit> mergeSet = new ArrayList<>();
+        mergeSet.add(data.getAst());
+        // Parse and report parsing of merge-inputs
+        List<URL> models = MCPathUtil.getAllModels(data.getData().modelPath, ".*[.]umlp");
+        for (URL modelUrl : models) {
+          try (Reader reader = new InputStreamReader(modelUrl.openStream())) {
+            ASTCDCompilationUnit ast = UMLPMill.parser().parse(reader).orElseThrow();
+            mergeSet.add(ast);
+          // Note: Do NOT use reportParseInputFile, as it resets it. Instead, use reportOpenInputFile
+          Reporting.reportOpenInputFile(modelUrl.getFile().toString());
+          } catch (IOException e) {
+            e.printStackTrace();
+            Log.error("Can not load model for url " + modelUrl, e);
+            return false;
+          }
+        }
+        // Construct a name for the merged file
+        String cdName = "Merge";
+        if (PRETTYPRINT.isSelected(data.getData().cmd)
+            && PRETTYPRINT.getValue(data.getData().cmd) != null ){
+          cdName = Path.of(PRETTYPRINT.getValue(data.getData().cmd)).getFileName().toString();
+          if (PRETTYPRINT.getValue(data.getData().cmd).endsWith(".cd")){
+            cdName = cdName.substring(0, cdName.length() - 3);
+          } else if (PRETTYPRINT.getValue(data.getData().cmd).endsWith(".umlp")) {
+            cdName = cdName.substring(0, cdName.length() - 5);
+          } else {
+            cdName = "Merge";
+          }
+        }
+        ASTCDCompilationUnit merge = CDMerge.merge(mergeSet, cdName,
+            Set.of(MergeParameter.FAIL_AMBIGUOUS));
+        if (merge != null){
+          // Continue with the merged AST
+          data.setAst(merge);
+        } else {
+          // Abort (return false) and report error on unsuccessful merge
+          Log.error("Merge was unsuccessful");
+          return false;
+        }
+      }
+      return true;
+    });*/
   }
 
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_parse = data -> {
@@ -116,6 +201,32 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
 
     pipe.addFinally(data -> Reporting.flush(data.getAst()));
     return pipe;
+  }
+  
+  public final IOperation.ISimpleOperation<DataWithAst> create_pipe_afterParseTrafo = data -> {
+    data.getTool().runAfterParseTrafo(data.getAst());
+  };
+  public final IOperation.ISimpleOperation<DataWithAst> create_pipe_create_st = data -> {
+    data.getTool().createSymbolTable(data.getAst());
+  };
+  public final IOperation.ISimpleOperation<DataWithAst> create_pipe_run_def_coco = data -> {
+    data.getTool().runDefaultCoCos(data.getAst());
+  };
+  public final IOperation.ISimpleOperation<DataWithAst> create_pipe_run_def_trafos = data -> {
+    data.getTool().runDefaultTrafos(data.getAst());
+  };
+//  public final IOperation.ISimpleOperation<DataWithAst> create_pipe_recreate_st = data -> {
+//    data.setSymbolTable(data.getTool().recreateSymbolTable(data.getAst()));
+//  };
+  
+  <T extends DataWithAst> Pipeline<T> createLoadModelPathPipe() {
+    Pipeline<DataWithAst> pipe = new Pipeline<>();
+    pipe.register("create_pipe_afterParseTrafo", create_pipe_afterParseTrafo);
+    pipe.register("create_pipe_create_st", create_pipe_create_st);
+    pipe.register("create_pipe_run_def_coco", create_pipe_run_def_coco);
+    pipe.register("create_pipe_run_def_trafos", create_pipe_run_def_trafos);
+//    pipe.register("create_pipe_recreate_st", create_pipe_recreate_st);
+    return (Pipeline<T>) pipe;
   }
 
   protected final String getReportingOnModelName(Path modelPath) {
