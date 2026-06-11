@@ -15,10 +15,12 @@ import gui.navigation.NavContainer;
 
 import Mydomain.ErrorMessageSubject;
 import Mydomain.LinkedAccessRoot;
+import Mydomain.ProjectBudget;
 import gui.OclE2EEditComp;
+import gui.OclE2EBudgetEditComp;
 import gui.OclE2ELinkedAccessEditComp;
 
-page Start(List<ErrorMessageSubject> errorMessageSubjects, List<LinkedAccessRoot> linkedAccessRoots) {
+page Start(List<ErrorMessageSubject> errorMessageSubjects, List<LinkedAccessRoot> linkedAccessRoots, List<ProjectBudget> projectBudgets) {
   @GemButton(label="Add Error Message Subject", leftClick=createErrorMessageSubject());
   @iterate(ErrorMessageSubject subject : errorMessageSubjects){
     @GemCard(
@@ -30,6 +32,12 @@ page Start(List<ErrorMessageSubject> errorMessageSubjects, List<LinkedAccessRoot
   @iterate(LinkedAccessRoot linkedAccessRoot : linkedAccessRoots){
     @GemCard(
       component=linkEditComp@OclE2ELinkedAccessEditComp(linkedAccessRoot=linkedAccessRoot)
+    );
+  }
+  @GemButton(label="Add Project Budget", leftClick=createProjectBudget());
+  @iterate(ProjectBudget budget : projectBudgets){
+    @GemCard(
+      component=budgetEditComp@OclE2EBudgetEditComp(budget=budget)
     );
   }
 }

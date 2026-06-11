@@ -1,0 +1,9 @@
+package gui;
+
+import Mydomain.ProjectBudget;
+import mc.fenix.input.GemTextInput;
+
+component OclE2EBudgetEditComp(ProjectBudget budget) {
+  budgetSpentInput@GemTextInput(labelText="spent", inputType = "number", entry=budget.spent);
+  budgetLimitInput@GemTextInput(labelText="limit", inputType = "number", entry=budget.limit);
+}

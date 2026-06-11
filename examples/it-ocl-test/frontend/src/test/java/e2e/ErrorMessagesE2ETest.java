@@ -76,6 +76,35 @@ public class ErrorMessagesE2ETest extends AbstractMydomainE2ETest {
     assertThat(page.locator(".resultGemText")).hasText("0");
   }
 
+  @Test
+  void showsProjectBudgetConstraintErrorAtBothComparedInputs(Page page) {
+    page.getByText("Add Project Budget").click();
+    waitForBackend();
+
+    Locator spentInput =
+        locator(page, ".budgetEditComp .budgetSpentInput", ComponentKind.GemTextInput);
+    Locator limitInput =
+        locator(page, ".budgetEditComp .budgetLimitInput", ComponentKind.GemTextInput);
+
+    assertThat(spentInput).hasValue("40");
+    assertThat(limitInput).hasValue("100");
+
+    spentInput.fill("120");
+    waitForBackend();
+
+    Pattern errorClass = Pattern.compile(".*\\bgem-input-error\\b.*");
+    assertThat(spentInput).hasClass(errorClass);
+    assertThat(limitInput).hasClass(errorClass);
+
+    String shortError = "Project budget exceeded: spent 120, limit 100";
+
+    spentInput.hover();
+    assertVisibleText(page, shortError);
+
+    limitInput.hover();
+    assertVisibleText(page, shortError);
+  }
+
   private void assertVisibleText(Page page, String text) {
     assertTrue(page.getByText(text).all().stream().anyMatch(Locator::isVisible));
   }

@@ -23,4 +23,9 @@ ocl ErrorMsgs1 {
     root.target.size() <= 2;
     shortError: "Must have at most 2 targets";
     error: "Must have at most 2 targets";
+
+  context ProjectBudget budget inv:
+    budget.spent < budget.limit;
+    shortError: "Project budget exceeded: spent " + budget.spent + ", limit " + budget.limit;
+    error: "The project spending must be below its budget limit.";
 }

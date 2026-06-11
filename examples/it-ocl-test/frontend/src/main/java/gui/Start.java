@@ -33,4 +33,13 @@ public class Start extends StartTOP {
           .build();
     };
   }
+
+  public Consumer<Void> createProjectBudget () {
+    return $ -> {
+      MydomainManager.projectBudgetBuilder()
+          .spent(40)
+          .limit(100)
+          .build();
+    };
+  }
 }

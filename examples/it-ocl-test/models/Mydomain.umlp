@@ -24,6 +24,11 @@ umlp Mydomain {
   }
   association [0..1] LinkedAccessRoot -> (target) LinkedAccessTarget [*];
 
+  class ProjectBudget {
+    int spent;
+    int limit;
+  }
+
 	class Student extends Person {
 		int matrNr;
 
