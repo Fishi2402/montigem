@@ -23,7 +23,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     CoverageColumnRange range = CoverageDashboardManager.coverageColumnRangeBuilder()
         .fromColumn(0)
         .toColumn(10)
-        .covered(true)
+        .hits(1)
         .build().get();
 
     CoverageLine line = CoverageDashboardManager.coverageLineBuilder()
@@ -38,8 +38,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
 
     CoverageDashboardManager.coverageSourceFileBuilder()
         .name("Debug test name")
-        .type("java")
-        .content("0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789")
+        .path("some/path")
         .linesAdd(line)
         .build();
 
