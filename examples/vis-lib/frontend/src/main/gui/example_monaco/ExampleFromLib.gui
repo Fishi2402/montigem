@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package example_monaco;
-import example_input.GemChat;
+import mc.fenix.basic.GemText;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.editor.MonacoEditor;
 import Domain.Person;
@@ -19,7 +19,8 @@ page ExampleFromLib(Person p) {
         hoverContents=getHoverContents(),
         initialScrollToLine = 20,
         language="mySpecialLanguage"
-      )
+      ),
+      @GemText(value="You will also have to add @umlp/editor to your package.json and add the src/assets aka node_modules/monaco-editor to your angular.json!")
     ]),
     basePath = "example_monaco",
     componentName = "ExampleFromLib"
