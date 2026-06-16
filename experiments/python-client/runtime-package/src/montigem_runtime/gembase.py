@@ -3,6 +3,7 @@ import typing
 from typing import Any
 from montigem_runtime.commandmanager import CommandManager, Command, uncap
 from pydantic import BaseModel
+from collections.abc import Iterator, AsyncIterator
 import asyncio
 
 class NotificationScope(enum.Enum):
@@ -90,6 +91,9 @@ class GemList(BaseModel, typing.Generic[DataT]):
   def __len__(self) -> int:
     return len(self.indexes)
 
+  def gem_ids(self) -> Iterator[GEM_ID]:
+    return map(self.get_gem_id, self.indexes)
+
 class GlobalGemList(GemList):
   _cache: typing.MutableMapping[int, DataT] = {}
 
@@ -164,3 +168,15 @@ class DomainManager:
       raise GemProtocolException(f"Create not successful", command=cmd, resp=r)
     return await self.get(type(obj), obj.gemId)
 
+
+  async def get_list(self, domaintype: typing.Type[G], gem_id_iterator:Iterator[GEM_ID]) -> AsyncIterator[G]:
+    """
+
+    [obj.name async for obj in my_manager.get_list(MyDomain.Type, parent.list.gem_ids()]
+
+    :param domaintype: domain class, similar to #get
+    :param gem_id_iterator: the iterator
+    :return:
+    """
+    for gem_id in gem_id_iterator:
+      yield await self.get(domaintype, gem_id)

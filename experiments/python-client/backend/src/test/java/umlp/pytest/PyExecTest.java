@@ -244,6 +244,13 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(e1.listA.get_gem_id(0))").get()); // correct on client?
     assertEquals(Long.toString(e1.getGemId()), handler.sendCommand("print(a1.listE.get_gem_id(0))").get()); // correct on client?
 
+    // test iterable
+    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(next(e1.listA.gem_ids()))").get()); // test next(Gemlist as iterable) -> first index
+    assertEquals("[" + a1.getGemId() + "]", handler.sendCommand("print([i for i in e1.listA.gem_ids()])").get()); // test
+    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print((await anext(my_domain_manager.get_list(MyDomain.TestAssoc_2_A.TestAssoc_2_A, e1.listA.gem_ids()) )).gemId )").get()); // correct on client?
+    assertEquals("[" + a1.getGemId() + "]", handler.sendCommand("print([a.gemId async for a in my_domain_manager.get_list(MyDomain.TestAssoc_2_A.TestAssoc_2_A, e1.listA.gem_ids())])").get()); // correct on client?
+
+
     // TODO: Somehow test unloaded too? Currently all objects are loaded at the client
 
 
