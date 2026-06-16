@@ -43,16 +43,24 @@ public class AbstractPyTest extends AbstractE2ETest {
     System.err.println("[Test-Init]: Initialize python venv");
     int i;
     try {
-      i = new ProcessBuilder("python3", "-m", "venv", "venv").directory(workingDir).inheritIO()
+      i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
           .start().waitFor();
       Assertions.assertEquals(0, i, "Failed to initialize python venv");
     } catch (IOException e) {
-      e.printStackTrace();
-      Assertions.fail("Failed to run python command: Is python installed?\n" + e.getMessage());
+      System.err.println("[Test-Init]: Falling back to python3");
+      try {
+        // linux/windows
+        i = new ProcessBuilder("python3", "-m", "venv", "venv").directory(workingDir).inheritIO()
+            .start().waitFor();
+        Assertions.assertEquals(0, i, "Failed to initialize python3 venv");
+      } catch (IOException e2) {
+        Assertions.fail("Failed to run python command: Is python or python3 installed?\n" + e.getMessage() + "\n" + e2.getMessage());
+      }
     }
 
     System.err.println("[Test-Init]: Installing pip dependencies");
-    i = processBuilder(processName("pip"), "install", "pydantic==2.10.1", "websockets").start()
+    i = processBuilder(processName("pip"), "install", "pydantic==2.10.1", "websockets")
+        .start()
         .waitFor();
     Assertions.assertEquals(0, i, "Failed to install pip dependencies");
 
