@@ -3,7 +3,6 @@ package umlp.pytest;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Timeout;
 import org.slf4j.Logger;
@@ -44,12 +43,12 @@ public class AbstractPyTest extends AbstractE2ETest {
     System.err.println("[Test-Init]: Initialize python venv");
     int i;
     try {
-      i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
+      i = new ProcessBuilder("python3", "-m", "venv", "venv").directory(workingDir).inheritIO()
           .start().waitFor();
       Assertions.assertEquals(0, i, "Failed to initialize python venv");
     } catch (IOException e) {
       e.printStackTrace();
-      Assumptions.abort("Failed to run python command: Is python installed?");
+      Assertions.fail("Failed to run python command: Is python installed?\n" + e.getMessage());
     }
 
     System.err.println("[Test-Init]: Installing pip dependencies");
@@ -110,7 +109,7 @@ public class AbstractPyTest extends AbstractE2ETest {
 
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new IllegalStateException(e);
       }
     });
     stderr.start();
@@ -154,7 +153,7 @@ public class AbstractPyTest extends AbstractE2ETest {
           }
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new IllegalStateException(e);
       }
     });
 
