@@ -35,9 +35,26 @@ dependencies {
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
 }
 
+// the UMLPToolOptions file is shared between two projects
+// Instead of creating a new super-dependency, we sync/copy the file
+tasks.register("syncToolOptions", Sync.class) {
+  from('../src/main/java')
+  include ('umlp/UMLPToolOptions.java') // only copy UMLPToolOptions.java
+  into(project.layout.buildDirectory.dir("syncUMLPToolOptions"))
+}
+["compileJava", "processResources"].forEach {
+  tasks.named(it) {
+    dependsOn(tasks.named("syncToolOptions"))
+  }
+}
+
 sourceSets {
   main.compileClasspath += configurations.umlpTool
   test.compileClasspath += configurations.umlpTool
+  main.java {
+    // include the synced ToolOptions class
+    srcDir(tasks.named("syncToolOptions"))
+  }
 }
 
 test {
