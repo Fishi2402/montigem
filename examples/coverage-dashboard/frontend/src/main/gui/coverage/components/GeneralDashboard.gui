@@ -1,0 +1,49 @@
+package coverage.components;
+
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+
+import mc.fenix.basic.GemText;
+
+import mc.fenix.charts.GemLineChart;
+
+import CoverageDashboard.App;
+
+component GeneralDashboard(App app) {
+  @GemGrid(
+    height = "100%",
+    width = "100%",
+    rowGap = "15px",
+    y = ["auto", "auto"],
+    rows =[
+      [
+        @GemCard(
+          title = "Coverage Trajectory",
+          height = "600px",
+          component = @GemLineChart(
+            data = app.getCoverageTrajectory())
+        )
+      ],
+      [
+        @GemRow(
+          hAlign = "space-evenly",
+          components = [
+            @GemCard(
+              title = "TODO - What's interesting",
+              component = @GemText(value = "Lorem ipsum")
+            ),
+            @GemCard(
+              title = "TODO - What's interesting",
+              component = @GemText(value = "Lorem ipsum")
+            ),
+            @GemCard(
+              title = "TODO - What's interesting",
+              component = @GemText(value = "Lorem ipsum")
+            )
+          ]
+        )
+      ]
+    ]
+  );
+}
