@@ -1,0 +1,21 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemDropdownInputTypes.Option;
+
+import Jsweettest.DropdownInIterateSingleton;
+import Jsweettest.Placeholder;
+
+page DropdownInIterate(DropdownInIterateSingleton singleton){
+  @GemButton(label = "Add row", leftClick = addRow());
+  @iterate(Placeholder p : singleton.placeholders){
+    @GemText(value="Placeholder:");
+    @GemText(value=p.anAttribute.isPresent() ? p.anAttribute.get() : "");
+    @GemDropdownInput(
+      entry=p.anAttribute,
+      options=[Option("o1")]
+    );
+  }
+}

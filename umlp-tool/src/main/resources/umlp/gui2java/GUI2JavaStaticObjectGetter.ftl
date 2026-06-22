@@ -16,6 +16,6 @@ if (this.${name} == null
         .containsKey(${key.getName()})
   </#list>
 ) {
-  return null;
+  this.init${name?cap_first}(<#list keys as key>${key.getName()}<#sep>, </#list>);
 }
 return this.${name}<#list keys as key>.get(${key.getName()})</#list>;

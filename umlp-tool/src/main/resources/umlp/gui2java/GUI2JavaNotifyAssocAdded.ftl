@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("type", "assoc")}
+${tc.signature("type", "assoc", "calledMethods")}
 <#assign mcType = type.printType()>
 <#assign javaType = cdPrinter.printType(type)>
 <#assign arg = "val_$">

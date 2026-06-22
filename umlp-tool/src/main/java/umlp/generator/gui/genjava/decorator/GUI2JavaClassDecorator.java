@@ -79,6 +79,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected Set<String> subscribedManagerEvents = new LinkedHashSet<>();
   protected Map<String, NotifyMethodTemplate> notifyDeleted = new LinkedHashMap<>();
   protected Map<String, NotifyMethodTemplate> notifyAdded = new LinkedHashMap<>();
+  protected Map<String, NotifyMethodTemplate> notifyAssocAdded = new LinkedHashMap<>();
 
   public GUI2JavaClassDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -145,6 +146,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     // add
     for (NotifyMethodTemplate notifyAdded : this.notifyAdded.values()) {
       getCD4C().addMethod(clazz, notifyAdded.getTemplate(), notifyAdded.getArguments().toArray());
+    }
+
+    for (NotifyMethodTemplate notifyAssocAdded : this.notifyAssocAdded.values()) {
+      getCD4C().addMethod(clazz, notifyAssocAdded.getTemplate(), notifyAssocAdded.getArguments().toArray());
     }
 
     addConstructor();
@@ -840,6 +845,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
             type, name, params);
+        if(!isRTELibrary) {
+          glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+        }
 
         // add attr init
         IterationItemsFinder finder = new IterationItemsFinder();
@@ -976,6 +984,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add getter
         ASTCDMethodSignature getter = getCD4C().addMethod(clazz, getStaticObjectGetterTemplate(),
             type, name, params);
+        if(!isRTELibrary) {
+          glex.replaceTemplate("cd2java.Annotations", getter, new StringHookPoint("@ObserverRegistrationParams"));
+        }
 
         // add builder init
         Optional<InitDependency> dep = InitDependencyTree.getInstance()
@@ -1301,6 +1312,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return res;
   }
 
+  protected String getAssocNotifyKey(SymTypeExpression ownerType, String assocName) {
+    return ownerType.printFullName() + "#" + assocName;
+  }
+
   protected void extendDomainObserver() {
     // extend observer
     if (!clazz.isPresentCDExtendUsage()) {
@@ -1358,14 +1373,16 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
   protected void addAssocObserverMethods(SymTypeExpression ownerType, ASTFieldAccessExpression assoc) {
     if (!implementedAssocObservers.contains(ownerType.printFullName())) {
       implementAssocObserver(ownerType, assoc);
-      ASTMCType type = getSimpleType(createTypeAndAddImports(ownerType));
-      // add observer init
-      getCD4C().addMethod(clazz, getNotifyAssocAddedTemplate(),
-          type, assoc.getName());
       implementedAssocObservers.add(ownerType.printFullName());
 
       // implement getScope method of observer
       addGetScope();
+    }
+
+    String key = getAssocNotifyKey(ownerType, assoc.getName());
+    if (!notifyAssocAdded.containsKey(key)) {
+      ASTMCType type = getSimpleType(createTypeAndAddImports(ownerType));
+      notifyAssocAdded.put(key, new NotifyMethodTemplate(getNotifyAssocAddedTemplate(), type, assoc.getName()));
     }
   }
 

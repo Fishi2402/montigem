@@ -97,4 +97,13 @@ classdiagram Jsweettest {
   association [1] ISource -> Reference [*];
 
   class ReferenceImpl implements ISource;
+
+  <<singleton>>
+  class DropdownInIterateSingleton {
+    List<Placeholder> placeholders;
+  }
+
+  class Placeholder {
+    Optional<String> anAttribute;
+  }
 }
