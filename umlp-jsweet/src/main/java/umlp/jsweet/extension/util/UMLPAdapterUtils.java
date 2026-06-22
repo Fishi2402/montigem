@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package umlp.jsweet.extension.util;
 
+import com.google.gson.Gson;
 import de.se_rwth.commons.logging.Log;
 import jsweet.lang.Erased;
 import org.jsweet.JSweetConfig;
@@ -17,10 +18,14 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -239,4 +244,20 @@ public class UMLPAdapterUtils {
       return variableName;
     }
   }
+  public static void addAsyncListAnnotationsToContext(JSweetContext context) {
+    try (
+        InputStream is = UMLPAdapterUtils.class.getResourceAsStream("/asynclist.json")) {
+      Map<String, Object> config = new Gson().fromJson(
+          new String(is.readAllBytes(), StandardCharsets.UTF_8)
+          , Map.class);
+      if (config != null) {
+        standalone.com.sun.tools.sjavac.Log.info("Using Async List.");
+        context.applyExtraConfiguration(config);
+      }
+    } catch (
+        IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

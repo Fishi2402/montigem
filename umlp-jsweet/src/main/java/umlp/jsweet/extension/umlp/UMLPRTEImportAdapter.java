@@ -133,21 +133,25 @@ public class UMLPRTEImportAdapter extends AbstractAdapter {
 
   @Override
   public void onTranspilationStarted() {
+    super.onTranspilationStarted();
+
+    if(isAsyncList) {
+      UMLPAdapterUtils.addAsyncListAnnotationsToContext(this.getContext());
+    }
+
     if (rte.equals(RTE_OPTION.COMMONJ2TS_RTE)) {
-      new UMLPAsyncAwaitPropagationScanner(context, isAsyncList).process(
+      new UMLPAsyncAwaitPropagationScanner(context).process(
           getContext().compilationUnits, getContext().trees);
     }
     new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
     if (rte.equals(RTE_OPTION.COMMONJ2TS_RTE)) {
-      new UMLPAsyncAwaitPropagationScanner(context, isAsyncList).process(
+      new UMLPAsyncAwaitPropagationScanner(context).process(
           getContext().compilationUnits, getContext().trees);
       new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
       new AdditionalAsyncAwaitPropagationScanner(context).process(
           getContext().compilationUnits, getContext().trees);
       new AsyncAwaitPropagationScanner(context).process(getContext().compilationUnits, getContext().trees);
     }
-
-    super.onTranspilationStarted();
   }
 
   protected List<Pattern> getExcludes() {

@@ -4,16 +4,18 @@ package umlp.jsweet.extension.umlp;
 import org.jsweet.JSweetConfig;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.OverloadScanner;
-import org.jsweet.transpiler.model.MethodInvocationElement;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import org.jsweet.transpiler.util.Util;
 import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;
 import standalone.com.sun.source.tree.EnhancedForLoopTree;
+import standalone.com.sun.source.tree.ExpressionTree;
 import standalone.com.sun.source.tree.LambdaExpressionTree;
+import standalone.com.sun.source.tree.MemberSelectTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.Tree;
+import standalone.com.sun.source.util.TreePath;
 import standalone.com.sun.source.util.Trees;
 import umlp.jsweet.extension.util.GUIAdapterUtils;
 
@@ -21,19 +23,22 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class adds the async keyword to every method that targets
  * an asynchronous RTE method.
  */
 public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
-
-  private final boolean isAsyncList;
 
   private boolean stillWorking = false;
 
@@ -42,10 +47,9 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
   /**
    * Creates a new global scanner.
    */
-  public UMLPAsyncAwaitPropagationScanner(JSweetContext context, boolean isAsyncList) {
+  public UMLPAsyncAwaitPropagationScanner(JSweetContext context) {
     super(null, context, null);
     this.adapterUtils = new GUIAdapterUtils(types(), context, util());
-    this.isAsyncList = isAsyncList;
   }
 
   @Override
@@ -71,20 +75,54 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
 
       boolean isAsyncFromSuper = false;
       // Methods overriding async methods from the RTE must be async again
-      Element typeElement = method.getEnclosingElement();
-      if (typeElement instanceof TypeElement) {
-        TypeElement parentElement = (TypeElement) typeElement;
-        for (String superType : adapterUtils.listSuperTypesNames(parentElement)) {
-          if (isRTEAsyncMethod(superType, invocation.toString())) {
+      ExpressionTree select = invocation.getMethodSelect();
+      Element receiverType;
+      if (select instanceof MemberSelectTree mst) {
+        receiverType = ((DeclaredType) trees.getTypeMirror(
+            new TreePath(getCurrentPath(), mst.getExpression()))).asElement();
+      } else {
+        // implicit receiver (this)
+        receiverType = method.getEnclosingElement();
+      }
+      if (receiverType instanceof TypeElement) {
+        TypeElement parentElement = (TypeElement) receiverType;
+        ExecutableElement methodElement = Util.getElement(invocation.getMethodSelect());
+        List<ExecutableElement> candidates = new ArrayList<>();
+        util().findMethodDeclarationsInType(
+            parentElement,
+            Collections.singleton(methodElement.getSimpleName().toString()),
+            Collections.emptySet(),
+            candidates
+        );
+        findMethodsInInterfaces(parentElement, methodElement.getSimpleName().toString(), candidates);
+        for (ExecutableElement candidate : candidates) {
+          if (context.hasAnnotationType(candidate, JSweetConfig.ANNOTATION_ASYNC)) {
             isAsyncFromSuper = true;
             break;
+          }
+        }
+
+        // TODO After refactoring the Async Detection this is needed to print .stream() on Lists as Async
+        // in the Future when Sets are also async it will not be necessary anymore
+        if(types().isSubtype(types().erasure(receiverType.asType()), types().erasure(util().getType(List.class)))) {
+          if(methodElement.getSimpleName().toString().startsWith("stream")) {
+            ExecutableElement setMethod = ((DeclaredType)util().getType(List.class)).asElement().getEnclosedElements().stream()
+                .filter(e -> e.getKind() == ElementKind.METHOD)
+                .map(ExecutableElement.class::cast)
+                .filter(m -> m.getSimpleName().contentEquals("set"))
+                .filter(m -> m.getParameters().size() == 2)
+                .findFirst()
+                .orElseThrow();
+            if(context.hasAnnotationType(setMethod, JSweetConfig.ANNOTATION_ASYNC)) {
+              isAsyncFromSuper = true;
+            }
           }
         }
       }
 
       boolean isAsync = false;
 
-      if (isAsyncFromSuper || isUMLPRTEAsync(method, invocation)) {
+      if (isAsyncFromSuper || context.hasAnnotationType(method, JSweetConfig.ANNOTATION_ASYNC)) {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();
         isAsync = true;
@@ -94,12 +132,6 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
           isInvocatedGemListAccessor(invocation, trees)) {
         context.addAwaitInvocation(invocation);
         addAsyncKeywordToMethod();
-        isAsync = true;
-      }
-
-      else if (context.hasAnnotationType(method, JSweetConfig.ANNOTATION_ASYNC)
-          && "void".equals(method.getReturnType().toString())) {
-        addAsyncKeywordToVoid(invocation);
         isAsync = true;
       }
 
@@ -122,185 +154,6 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     if (invocatedType != null && invocatedType instanceof TypeElement &&
         adapterUtils.isSubTypeOf((TypeElement) invocatedType, "java.util.List")) {
       return true;
-    }
-    return false;
-  }
-
-  // Returns true for asynchronous method calls
-  private boolean isUMLPRTEAsync(ExecutableElement method, MethodInvocationTree invocation) {
-    TypeMirror targetType = ((MethodInvocationElement) createExtendedElement(
-        invocation)).getTargetType();
-    String methodSimpleName = method.getSimpleName().toString();
-    String targetClassName = method.getEnclosingElement().toString();
-
-    if (isRTEAsyncMethod(targetClassName, methodSimpleName)) {
-      return true;
-    }
-
-    // Lists
-    if (isAsyncList && isListAsyncMethod(targetType, methodSimpleName)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private boolean isListAsyncMethod(TypeMirror targetType, String methodSimpleName) {
-    try {
-      if (targetType != null && types().isSubtype(types().erasure(targetType),
-          types().erasure(util().getType(java.util.List.class)))) {
-        if (stringStartsWith(methodSimpleName,
-            "add",
-            "addAll",
-            "contains",
-            "containsAll",
-            "equals",
-            "get",
-            "hashCode",
-            "indexOf",
-            "lastIndexOf",
-            "map",
-            "remove",
-            "removeElement",
-            "removeIndex",
-            "removeAll",
-            "set",
-            "stream",
-            "toArray")) {
-          return true;
-        }
-      }
-    } catch (Exception e) {
-      return false;
-    }
-    return false;
-  }
-
-  private static boolean isRTEAsyncMethod(String targetClassName, String methodSimpleName) {
-    switch (targetClassName) {
-      case "umlp.backendrte.command.CommandManager":
-      case "umlp.backendrte.command.ClientCommandCommunication":
-        switch (methodSimpleName) {
-          case "executeCommand":
-          case "_executeCommand":
-          case "register":
-          case "_register":
-          case "deregister":
-          case "_deregister":
-          case "sendCommandToSubscribers":
-          case "_sendCommandToSubscribers":
-            return true;
-        }
-        break;
-      case "umlp.backendrte.command.ClientCommandWebsocketCommunication":
-        switch (methodSimpleName) {
-          case "sendCommandToServerAndReceiveResult":
-          case "handleTextMessage":
-            return true;
-        }
-      case "umlp.backendrte.common.GemList":
-      case "umlp.backendrte.common.GemListBuilder":
-        switch (methodSimpleName) {
-          case "build":
-          case "loadIfRequired":
-          case "_internal_add":
-          case "_internal_remove":
-            return true;
-        }
-        break;
-      case "umlp.backendrte.common.Gem":
-        switch (methodSimpleName) {
-          case "loadIfRequired":
-          case "isPresent":
-          case "get":
-            return true;
-        }
-        break;
-      case "umlp.backendrte.command.Command":
-      case "umlp.backendrte.command.SyncError":
-      case "umlp.backendrte.command.ServerError":
-        switch (methodSimpleName) {
-          case "doRun":
-          case "doAction":
-          case "checkAccessPolicy":
-          case "checkContract":
-            return true;
-        }
-        break;
-      case "umlp.backendrte.command.CommandResult":
-      case "umlp.backendrte.command.SimpleResult":
-      case "umlp.backendrte.command.ListResult":
-        switch (methodSimpleName) {
-          case "isSuccessful":
-            return true;
-        }
-      case "umlp.backendrte.command.StatusResult":
-        switch (methodSimpleName) {
-          case "wasSuccessful":
-          case "isSuccessful":
-            return true;
-        }
-      case "umlp.backendrte.common.AggregatedCommandDeSer":
-      case "umlp.backendrte.common.BaseClassObjectMapper":
-      case "umlp.backendrte.common.BooleanDeSer":
-      case "umlp.backendrte.common.ByteDeSer":
-      case "umlp.backendrte.common.CharacterDeSer":
-      case "umlp.backendrte.common.DateDeSer":
-      case "umlp.backendrte.common.DoubleDeSer":
-      case "umlp.backendrte.common.FloatDeSer":
-      case "umlp.backendrte.common.IntegerDeSer":
-      case "umlp.backendrte.common.LongDeSer":
-      case "umlp.backendrte.common.SerializableDeSer":
-      case "umlp.backendrte.common.ShortDeSer":
-      case "umlp.backendrte.common.StringDeSer":
-      case "umlp.backendrte.command.CommandDeSer":
-      case "umlp.backendrte.command.CommandObjectMapper":
-      case "umlp.backendrte.command.JsonDeSer":
-      case "umlp.backendrte.command.DeSer":
-        switch (methodSimpleName) {
-          case "fromJson":
-          case "fromJsonString":
-          case "fromJsonObject":
-          case "serialize":
-          case "deserialize":
-          case "_serialize":
-          case "_deserialize":
-          case "serializeCommand":
-          case "deserializeCommand":
-          case "_serializeCommand":
-          case "_deserializeCommand":
-          case "serializeResponse":
-          case "deserializeResponse":
-          case "_serializeResponse":
-          case "_deserializeResponse":
-            return true;
-        }
-        break;
-      case "umlp.backendrte.command.Participant":
-        switch (methodSimpleName) {
-          case "subscribe":
-            return true;
-        }
-      case "umlp.backendrte.common.IDOrBuilder":
-        switch (methodSimpleName) {
-          case "getIdAndMaybeBuild":
-            return true;
-        }
-      case "umlp.backendrte.common.SimpleIdStorage":
-        switch (methodSimpleName) {
-          case "addAll":
-          case "remove":
-            return true;
-        }
-        break;
-      case "java.util.concurrent.CompletableFuture":
-      case "java.util.concurrent.Future":
-      case "java.util.concurrent.CompletionStage":
-        switch (methodSimpleName) {
-          case "get":
-          case "join":
-            return true;
-        }
     }
     return false;
   }
@@ -334,11 +187,19 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
       return super.visitMethod(node, trees);
     }
 
-    // Methods overriding async methods from the RTE must be async again
+    // Methods overriding async methods must be async again
     if (elementOfParent instanceof TypeElement) {
       TypeElement parentElement = (TypeElement) elementOfParent;
-      for (String superType : adapterUtils.listSuperTypesNames(parentElement)) {
-        if (isRTEAsyncMethod(superType, node.getName().toString())) {
+      List<ExecutableElement> candidates = new ArrayList<>();
+      util().findMethodDeclarationsInType(
+          parentElement,
+          Collections.singleton(node.getName().toString()),
+          Collections.emptySet(),
+          candidates
+      );
+      findMethodsInInterfaces(parentElement, node.getName().toString(), candidates);
+      for (ExecutableElement candidate : candidates) {
+        if (context.hasAnnotationType(candidate, JSweetConfig.ANNOTATION_ASYNC)) {
           addAsyncKeywordToMethod(node);
           break;
         }
@@ -403,48 +264,53 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
     }
   }
 
-  private void addAsyncKeywordToVoid(MethodInvocationTree invocation) {
-    MethodTree parent = getParent(MethodTree.class);
-    if (parent != null) {
-      ExecutableElement parentMethodElement = Util.getElement(parent);
-      if (!context.hasAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC)) {
-        context.addExtraAnnotationType(parentMethodElement, JSweetConfig.ANNOTATION_ASYNC);
+  private void findMethodsInInterfaces(
+      TypeElement typeElement,
+      String methodName,
+      List<ExecutableElement> result) {
 
-        if (context.isInvalidOverload(parentMethodElement)) {
-          OverloadScanner.Overload overload = context.getOverload(
-              (TypeElement) parentMethodElement.getEnclosingElement(), parentMethodElement);
-
-          for (OverloadScanner.OverloadMethodEntry overloadEntry : overload.getEntries()) {
-            context.addExtraAnnotationType(overloadEntry.methodElement,
-                JSweetConfig.ANNOTATION_ASYNC);
-          }
-        }
-        List<ExecutableElement> candidates = new ArrayList<>();
-        util().collectMatchingMethodDeclarationsInType(
-            (TypeElement) parentMethodElement.getEnclosingElement(), parent.getName().toString(),
-            (ExecutableType) parentMethodElement.asType(), true, candidates);
-        for (ExecutableElement candidate : candidates) {
-          context.addExtraAnnotationType(candidate, JSweetConfig.ANNOTATION_ASYNC);
-        }
-
-        stillWorking = true;
-      }
-    }
-    LambdaExpressionTree lambdaParent = getParent(LambdaExpressionTree.class);
-    if (lambdaParent != null) {
-      context.addAsyncLambda(lambdaParent);
-    }
-    Tree directParent = getParent();
-    if (!(context.isAwaitInvocation(invocation) || (directParent instanceof MethodInvocationTree
-        && (directParent.toString().equals("await") || directParent.toString().endsWith(".await"))))) {
-
-      context.addAwaitInvocation(invocation);
-      stillWorking = true;
-    }
+    findMethodsInInterfaces(typeElement, methodName, result, new HashSet<>());
   }
 
-  private boolean stringStartsWith(String str, String... others) {
-    return Arrays.stream(others).anyMatch(str::startsWith);
+
+  private void findMethodsInInterfaces(
+      TypeElement typeElement,
+      String methodName,
+      List<ExecutableElement> result,
+      Set<TypeElement> visited) {
+
+    if (!visited.add(typeElement)) {
+      return;
+    } // Direct interfaces
+    for (TypeMirror interfaceMirror : typeElement.getInterfaces()) {
+      Element interfaceElement = types().asElement(interfaceMirror);
+      if (interfaceElement instanceof TypeElement) {
+        TypeElement interfaceTypeElement = (TypeElement) interfaceElement;
+        for (Element element : interfaceTypeElement.getEnclosedElements()) {
+          if (element instanceof ExecutableElement) {
+            ExecutableElement execElement = (ExecutableElement) element;
+            if (execElement.getSimpleName().toString().equals(methodName)) {
+              result.add(execElement);
+            }
+          }
+        }
+        findMethodsInInterfaces(interfaceTypeElement, methodName, result);
+      }
+    }
+
+    // Superclass chain
+    TypeMirror superclass = typeElement.getSuperclass();
+    if (superclass.getKind() != TypeKind.NONE) {
+      Element superElement = types().asElement(superclass);
+
+      if (superElement instanceof TypeElement superTypeElement) {
+        findMethodsInInterfaces(
+            superTypeElement,
+            methodName,
+            result,
+            visited);
+      }
+    }
   }
 
   public void process(List<CompilationUnitTree> compilationUnits, Trees trees) {
