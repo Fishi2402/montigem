@@ -33,7 +33,6 @@ import umlp.generator.gui.gentypescript.java2ts.ComponentObserverManagerGenerato
 import umlp.generator.gui.gentypescript.printer.TSImportMap;
 import umlp.generator.util.UMLPSymbolTables;
 import umlp.generator.ocl.OCL2JavaGeneratorTool;
-import umlp.generator.validator.ocl.OCLASTPreProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -216,8 +215,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
                 return false;
               }
               ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
-              // UMLPTool.getOclCompilationUnits().add(OCLASTPreProcessor.preProcessInvariants(oCLAst));
-              UMLPTool.getOclCompilationUnits().add(oCLAst);
+              data.oclCompilationUnits.add(oCLAst);
 
               if (data.symbolPath != null && data.symbolPath.toFile().exists()) {
                 SymbolTableUtil.loadSymbolFile(data.symbolPath.toString());
@@ -274,7 +272,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
         // execute generator
         UMLPGenerator generator = new UMLPGenerator(data.genSetup, config);
         String configTemplate = data.data.cmd.getOptionValue("ct", UMLPTool.DEFAULT_CONFIGTEMPLATE);
-        generator.generate(data.ast, configTemplate);
+        generator.generate(data.ast, configTemplate, data.oclCompilationUnits);
       }
     });
 
@@ -339,6 +337,7 @@ public class UMLPFilePipeline extends Pipeline<UMLPPipelineData> {
   public static class Data implements DataWithCDASTAndTool {
     final UMLPPipelineData data;
     ASTCDCompilationUnit ast;
+    List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
 
     public Data(UMLPPipelineData data, ASTCDCompilationUnit ast) {
       this.data = data;

@@ -9,6 +9,7 @@ import umlp.generator.domain.UMLPGeneratorConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,7 +25,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     recreateSymbolTable(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
-    gen.generate(ast, "umlp.UMLP2Java");
+    gen.generate(ast, "umlp.UMLP2Java", List.of());
 
     assertNoErrors();
   }
@@ -38,7 +39,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     recreateSymbolTable(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
-    gen.generate(ast, "umlp.UMLP2Java");
+    gen.generate(ast, "umlp.UMLP2Java", List.of());
 
     assertNoErrors();
 
@@ -55,7 +56,7 @@ public class UMLPGeneratorTest extends AbstractUMLPTest {
     recreateSymbolTable(ast);
 
     UMLPGenerator gen = new UMLPGenerator(getGenSetup(), UMLPGeneratorConfig.getInstance());
-    gen.generate(ast, "umlp.UMLP2Java");
+    gen.generate(ast, "umlp.UMLP2Java", List.of());
 
     File f1 = new File(BUILD_FOLDER + "/generated-test-sources/derivedattributegetter/commands/Foo_calculateFirstAttribute.java");
     assertTrue(f1.exists());

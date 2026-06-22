@@ -5,7 +5,7 @@
   Call it using the CLI: .. -ct umlp.UMLP2JavaTestInfrastructure
 
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator", "oclCompilationUnits")}
 
 <#-- Initialize all modules, adding their templates to the other hookpoints, e.g., BeforeTransform -->
 ${includeArgs("umlp.generator.hook.InitModules", glex)}

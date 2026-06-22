@@ -11,10 +11,12 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import umlp.generator.db.sql.SQLSchemaGenerator;
 import umlp.generator.domain.decorator.GenService;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * configures and employs generators of individual UML/P languages to generate
@@ -40,7 +42,8 @@ public class UMLPGenerator {
     schemaGenerator = new SQLSchemaGenerator(genSetup);
   }
 
-  public void generate(ASTCDCompilationUnit cdAST, String configTemplate) {
+  public void generate(ASTCDCompilationUnit cdAST, String configTemplate,
+                       List<ASTOCLCompilationUnit> oclCompilationUnits) {
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
@@ -49,7 +52,12 @@ public class UMLPGenerator {
     TemplateController tc = genSetup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
     // translate the CD-AST into Java with the CD Generator
-    hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST, genSetup.getGlex(), genSetup.getHandcodedPath(), cdGenerator, schemaGenerator));
+    hpp.processValue(tc, cdAST, Arrays.asList(decoratedAST,
+        genSetup.getGlex(),
+        genSetup.getHandcodedPath(),
+        cdGenerator,
+        schemaGenerator,
+        oclCompilationUnits));
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){

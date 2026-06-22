@@ -7,13 +7,15 @@ import org.junit.jupiter.api.Test;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.decorator.DomainClassDecorator;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AssocsDecoratorTest extends DecoratorTest {
 
   @Override
   protected AbstractDecorator getDecorator(GlobalExtensionManagement glex) {
-    return new DomainClassDecorator(glex, hwPath);
+    return new DomainClassDecorator(glex, hwPath, List.of());
   }
 
   @Test

@@ -27,7 +27,7 @@ public class DeSerDecorator extends DomainClassDecorator {
 
   public DeSerDecorator(GlobalExtensionManagement glex, MCPath hwPath,
                         Set<String> supportedDesers) {
-    super(glex, hwPath);
+    super(glex, hwPath, List.of());
     this.supportedDesers = supportedDesers;
   }
 

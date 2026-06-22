@@ -5,13 +5,15 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
+import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import de.se_rwth.commons.logging.Log;
-import umlp.UMLPTool;
 import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLPGeneratorConfig;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BEDecorator extends AbstractDecorator {
@@ -23,12 +25,19 @@ public class BEDecorator extends AbstractDecorator {
   boolean shell = false;
 
   protected MCPath hwPath;
+  protected List<ASTOCLCompilationUnit> oclCompilationUnits;
 
   protected Set<String> supportedDesers = new LinkedHashSet<>();
 
   public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
+    this(glex, hwPath, List.of());
+  }
+
+  public BEDecorator(GlobalExtensionManagement glex, MCPath hwPath,
+                     List<ASTOCLCompilationUnit> oclCompilationUnits) {
     super(glex);
     this.hwPath = hwPath;
+    this.oclCompilationUnits = new ArrayList<>(oclCompilationUnits);
 
     initExtraDeSers();
 
@@ -64,7 +73,7 @@ public class BEDecorator extends AbstractDecorator {
 
     DomainClassDecorator domainClassDecorator;
 
-    domainClassDecorator = new DomainClassDecorator(glex, hwPath);
+    domainClassDecorator = new DomainClassDecorator(glex, hwPath, oclCompilationUnits);
     domainClassDecorator.transform(cdAST, decoratedAST);
     Log.debug("After decorator: CreateDecorator", BEDecorator.class.getName());
 

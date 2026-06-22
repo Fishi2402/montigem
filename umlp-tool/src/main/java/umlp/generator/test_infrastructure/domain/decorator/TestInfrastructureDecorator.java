@@ -10,6 +10,7 @@ import umlp.generator.domain.decorator.BEDecorator;
 import umlp.generator.domain.decorator.DiagramObserverDecorator;
 import umlp.generator.domain.decorator.ObserverDecorator;
 
+import java.util.List;
 import java.util.StringJoiner;
 
 public class TestInfrastructureDecorator extends BEDecorator {
@@ -18,7 +19,7 @@ public class TestInfrastructureDecorator extends BEDecorator {
   boolean generateMonitor = false;
 
   public TestInfrastructureDecorator(GlobalExtensionManagement glex, MCPath hwPath) {
-    super(glex, hwPath);
+    super(glex, hwPath, List.of());
 
     if (glex.hasGlobalVar("UMLPGeneratorConfig")) {
       playwright = UMLPGeneratorConfig.getInstance().isUsePlaywright();

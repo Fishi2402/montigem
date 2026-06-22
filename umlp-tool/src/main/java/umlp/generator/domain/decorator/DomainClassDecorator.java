@@ -37,7 +37,6 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import org.jetbrains.annotations.NotNull;
 import umlp.UMLPMill;
-import umlp.UMLPTool;
 import umlp.generator.domain.decorator.commands.OwnCommands;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
@@ -65,11 +64,14 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
   // TODO: add/remove methods for lists of basic types, e.g. List<String>
 
   protected final MCPath hwPath;
+  protected final List<ASTOCLCompilationUnit> oclCompilationUnits;
 
   public DomainClassDecorator(final GlobalExtensionManagement glex,
-                              MCPath hwPath) {
+                              MCPath hwPath,
+                              List<ASTOCLCompilationUnit> oclCompilationUnits) {
     super(glex);
     this.hwPath = hwPath;
+    this.oclCompilationUnits = new ArrayList<>(oclCompilationUnits);
   }
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {
@@ -452,15 +454,14 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
   }
 
   protected void createOCLValidationMethods(ASTCDClass domainClass, ASTCDClass clazz) {
-    List<ASTOCLCompilationUnit> ocls = UMLPTool.getOclCompilationUnits();
     String typeName = domainClass.getName();
     List<InvariantInfo> typeInvariants = new ArrayList<>();
     Map<String, List<InvariantInfo>> attrInvariants = new HashMap<>();
 
-    if (!ocls.isEmpty()) {
+    if (!oclCompilationUnits.isEmpty()) {
       String domainPackage = domainClass.getSymbol().getPackageName().toLowerCase();
 
-      for (ASTOCLCompilationUnit ocl : ocls) {
+      for (ASTOCLCompilationUnit ocl : oclCompilationUnits) {
         String oclClassName = ocl.getOCLArtifact().getName();
         String oclPackage = ocl.isPresentPackage() ? ocl.getPackage() : "";
 

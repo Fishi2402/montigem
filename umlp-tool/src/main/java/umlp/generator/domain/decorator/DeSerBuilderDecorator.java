@@ -26,7 +26,7 @@ public class DeSerBuilderDecorator extends DomainClassDecorator {
   public static final String DESER_BUILDER_SUFFIX = "DeSerBuilder";
 
   public DeSerBuilderDecorator(final GlobalExtensionManagement glex, MCPath hwPath) {
-    super(glex, hwPath);
+    super(glex, hwPath, List.of());
   }
 
   public void transform(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD) {

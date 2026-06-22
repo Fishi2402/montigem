@@ -5,10 +5,10 @@
   Call it using the CLI: .. -ct umlp.UMLP2JavaShellAPI
 
 -->
-${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator", "oclCompilationUnits")}
 
 <#-- Call all decorators -->
-<#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath])>
+<#assign beDecorator = tc.instantiate("umlp.generator.domain.decorator.BEDecorator", [glex, hwPath, oclCompilationUnits])>
 ${beDecorator.setSpring(true)}
 <#assign commandDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.CommandDecorator", [glex])>
 <#assign requestDecorator = tc.instantiate("umlp.generator.domain.decorator.commands.GetFreeGemIdRequestDecorator", [glex])>

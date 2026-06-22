@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator")}
+${tc.signature("decoratedAST", "glex", "hwPath", "cdGenerator", "schemaGenerator", "oclCompilationUnits")}
 
 <#-- Call teaching CoCos -->
 <#assign cocoChecker = tc.instantiate("umlp._cocos.teaching.UMLPTeachingCoCos")>
@@ -10,7 +10,7 @@ ${cocoChecker.check(ast)}
 ${restGetAllDecorator.transform(ast, decoratedAST)}
 
 <#-- Generate default backend -->
-${includeArgs("umlp.UMLP2Java", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator)}
+${includeArgs("umlp.UMLP2Java", decoratedAST, glex, hwPath, cdGenerator, schemaGenerator, oclCompilationUnits)}
 
 <#-- Generate GUI for teaching -->
 <#assign uiGenerator = tc.instantiate("umlp.generator.gui.UI4TeachingGenerator", [tc.getGeneratorSetup()])>

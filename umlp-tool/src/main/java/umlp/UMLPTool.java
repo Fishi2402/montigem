@@ -96,8 +96,6 @@ public class UMLPTool extends UMLPToolTOP {
   public static final String DEFAULT_CONFIGTEMPLATE_GUI2TS = "umlp.GUI2TypeScript";
   public static final String DEFAULT_CONFIGTEMPLATE_RTE2JAVA = "umlp.RTE2Java";
 
-  private static final List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
-
   public UMLPTool() {
     this(true);
   }
@@ -107,10 +105,6 @@ public class UMLPTool extends UMLPToolTOP {
       MillConf.switchTo(MillConf.UMLP);
       BuiltInTypes.addBuiltInTypes(CD4CodeMill.globalScope(), false);
     }
-  }
-
-  public static List<ASTOCLCompilationUnit> getOclCompilationUnits() {
-    return oclCompilationUnits;
   }
 
   public static GlobalExtensionManagement createGlex(List<String> moduleConfigTemplates) {
@@ -264,8 +258,6 @@ public class UMLPTool extends UMLPToolTOP {
     AbstractDecorator.cleanUp();
     TagLookUp.cleanUp();
     CD4C.reset();
-
-    oclCompilationUnits.clear();
 
     MillConf.switchTo();
 

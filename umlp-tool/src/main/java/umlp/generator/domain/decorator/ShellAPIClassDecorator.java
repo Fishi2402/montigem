@@ -35,7 +35,7 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
   public static final String SUFFIX = "ShellAPI";
 
   public ShellAPIClassDecorator(GlobalExtensionManagement glex, MCPath hwPath, Set<String> supportedDesers) {
-    super(glex, hwPath);
+    super(glex, hwPath, List.of());
     this.supportedDesers = supportedDesers;
   }
 
@@ -270,9 +270,9 @@ public class ShellAPIClassDecorator extends DomainClassDecorator {
     } else {
       type = assoc.getSymbol().getType().print();
     }
-    
+
     String assocTypeCdName = getClassDiagramName(assoc);
-    
+
     ASTCDMethodSignature m = getCD4C().addMethod(api, template, cdName, assocTypeCdName,
         originalClassName, assoc.getName(), type, true);
     String annotation = String.format(methodAnnotation,
