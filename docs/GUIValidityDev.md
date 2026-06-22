@@ -1,22 +1,21 @@
 # GUI Validity Generator Internals
 
-This document describes the generator-side contracts for automatic GUI validity
-binding from OCL constraints. It is intended for developers changing
-`umlp-tool`, component tags, or the generated validation API.
+This document is aimed at generator developers/tool smiths and describes the generator implementation
+and configuration for generation of GUI Form validity checks from OCL constraints.
 
-The user-facing modeling workflow is documented in
+The application developer modeling workflow is documented in
 [`tutorial/12_OCLGUIValidityChecking.md`](tutorial/12_OCLGUIValidityChecking.md).
 
 ## Overview
 
-Automatic GUI validity connects these generated pieces:
+OCL based GUI validity connects these generated pieces:
 
-1. OCL invariants with error messages are generated as Java validation methods.
+1. OCL invariants with error messages are transformed into Java classes with a method for checking validity and a method to get the error msg.
 2. Domain classes expose per-attribute validation accessors.
-3. GUI component declarations mark one argument as the domain entry and one
+3. Tagging of GUI components marks one argument as the domain entry and one
    argument as the generated validity target.
 4. GUI Java generation adds a getter that converts a domain validation error
-   into the component validity type.
+   into the displayable component validity type.
 5. GUI HTML generation binds the target argument automatically unless the GUI
    model already provides it explicitly.
 
@@ -30,9 +29,11 @@ is generated as if the `validity` argument was also bound to a generated getter.
 If the model contains an explicit `validity = ...`, automatic generation is
 disabled for that component instance.
 
-## Domain Validation API
+## Domain Validation
 
-`DomainClassDecorator` creates the domain-side API used by GUI generation.
+`DomainClassDecorator` creates the per attribute methods to check validity used by the GUI generation.
+The check methode is generated even if no ocl constraint is given for an attribute or association. 
+This allows application developers to override them via the TOP-Mechanism.
 
 Relevant files:
 
@@ -62,10 +63,10 @@ Associations are included in the generated accessor set as well, because GUI
 validity can be derived from an association when validating inputs inside an
 iteration over that association.
 
-## Component Tag Contract
+## Component Tags
 
-Automatic GUI validity is opt-in per component type through tags. A component
-must tag exactly the source value parameter and the target validity parameter:
+GUI validity generated from OCL constraints is opt-in per component type through tags.
+A component must tag exactly the source value parameter and the target validity parameter:
 
 ```text
 tags GemTextInput {
