@@ -170,13 +170,15 @@ public abstract class FrontendPlugin implements Plugin<Project> {
         return FileUtils.removeExtension(((MergeTask)t).getOutputFile().getAsFile().get().getName());
       }
     });
-
+    
+    var oclFiles = models.dir("ocl").getAsFileTree().matching(pf -> pf.include("**/*.ocl"));
     TaskProvider<CD2GUITask> cd2gui = project.getTasks().register(CD2GUI_TASK, CD2GUITask.class);
     cd2gui.configure(task -> {
       task.setGroup(UMLP_GROUP_NAME);
       task.dependsOn(mergeUMLP);
       task.getInput().from(umlpFile);
       task.getOutputDir().set(cd2guiDir);
+      task.getOcl().from(oclFiles);
 
       task.onlyIf(t -> withCD2GUI.get());
     });

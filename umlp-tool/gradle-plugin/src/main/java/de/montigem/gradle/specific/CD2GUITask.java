@@ -20,12 +20,20 @@ import java.util.stream.StreamSupport;
 
 public abstract class CD2GUITask extends MGSingleFileTask {
   
+  ConfigurableFileCollection ocl = getProject().getObjects().fileCollection();
+  
   @InputFiles
   @org.gradle.api.tasks.Optional
   @PathSensitive(PathSensitivity.RELATIVE)
   @Incremental
   // This Annotation requires custom java-logic to run correctly. See "getStreamOfChanges()"
   public abstract ConfigurableFileCollection getModelDir();
+  
+  @InputFiles
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public ConfigurableFileCollection getOcl() {
+    return ocl;
+  }
   
   public CD2GUITask() {
     super("CD2GUITask", null);
@@ -43,6 +51,11 @@ public abstract class CD2GUITask extends MGSingleFileTask {
     for (File file : this.getModelDir()) {
       result.add("-modelPath");
       result.add(handlePath.apply(file.toPath()));
+    }
+    
+    if(!this.getOcl().isEmpty()) {
+      result.add("-ocl");
+      result.add(handlePath.apply(Path.of(getOcl().getAsPath())));
     }
 
     result.add("-" + UMLPToolOptions.CD2GUI.getCMD());

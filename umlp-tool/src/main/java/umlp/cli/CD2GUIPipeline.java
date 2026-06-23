@@ -3,33 +3,37 @@ package umlp.cli;
 import cd2gui.CD2GUITool;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdmerge.CDMerge;
-import de.monticore.cdmerge.config.MergeParameter;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.MCPath;
+import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
+import de.monticore.ocl.util.SymbolTableUtil;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import oclwitherrormessages.OCLWithErrorMessagesMill;
 import umlp.*;
 import umlp._symboltable.IUMLPArtifactScope;
 import umlp.cli.common.IOperation;
 import umlp.cli.common.Pipeline;
+import umlp.generator.AbstractDecorator;
 import umlp.generator.domain.UMLAddGemIdTrafo;
+import umlp.generator.ocl.OCL2JavaGeneratorTool;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
-import static umlp.UMLPToolOptions.MERGE;
-import static umlp.UMLPToolOptions.PRETTYPRINT;
+import static umlp.UMLPToolOptions.DOMAIN;
+import static umlp.UMLPToolOptions.OCL;
 
 public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
 
@@ -38,8 +42,6 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation<UMLPPipelineData> generateGui;
   public final Pipeline<DataWithAst> modelPipeline;
   public final Pipeline<DataWithAst> loadModelPathPipe;
-  //public final IOperation<DataWithAst> mergeAST;
-  
   
   public CD2GUIPipeline(IOperation<UMLPPipelineData> setupUMLPReports, IOperation<UMLPPipelineData> isUMLPFileCheck) {
     register("setupUMLPReports", setupUMLPReports);
@@ -101,10 +103,7 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithAst> model_pipe_default_trafos =
       data -> data.getTool().runDefaultTrafos(data.getAst());
 
-  public final IOperation.ISimpleOperation<DataWithAst> model_pipe_recreate_symbol_table =
-      data -> data.getTool().recreateSymbolTable(data.getAst());
-
-  public final IOperation.ISimpleOperation<DataWithAst> model_pipe_set_options = data -> {
+  public final IOperation.ISimpleOperation<DataWithAst> model_pipe_set_cd2gui_options = data -> {
     // Do not gen Forms for singletons
     for (String singletonClass : data.getTool().getSingletonClasses(data.getAst())) {
       data.addExtraOption("ExcludeForm", singletonClass);
@@ -112,9 +111,9 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     }
   };
 
-  public final IOperation.ISimpleOperation<DataWithAst> model_pipe_generate_gui = data -> {
+  public final IOperation.ISimpleOperation<DataWithAst> model_pipe_cd2gui_tool = data -> {
     CD2GUITool guiTool =
-        new CD2GUITool(data.getAst(), data.getData().outDir, data.getData().hwcPath,
+        new CD2GUITool(data.getAst(), data.getOclCompilationUnits(), data.getData().outDir, data.getData().hwcPath,
             data.getExtraOptions().toArray(new String[0]));
     guiTool.generateGUI();
   };
@@ -132,6 +131,7 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
             data.getData().outDir.getPath() + File.separator + "symbols" + File.separator
                 + Names.getPathFromPackage(symbolTable.getPackageName()) + File.separator
                 + symbolTable.getName() + ".umlpsym");
+        data.setSymbolPath(symbolPath);
         JsonPrinter.disableIndentation();
         data.getTool().storeSymbols(symbolTable, symbolPath.toString());
         data.setSymbolTable(symbolTable);
@@ -147,6 +147,49 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     TagRelated.doStoreTagStereos(data.getAst(), data.getData().tool, data.getSymbolTable(), data.getData().cmd, tagPath);
     TagRelated.initLookup(new MCPath(tagPath));
   };
+  
+  public final IOperation.ISimpleOperation<DataWithAst> model_pipe_load_ocl =  data -> {
+    if (OCL.isSelected(data.getData().cmd)) {
+      MCPath oclModelPath = new MCPath();
+      for (String v : data.getData().cmd.getOptionValues(OCL.getCMD())) {
+        oclModelPath.addEntry(Paths.get(v));
+      }
+      List<URL> oclFiles = MCPathUtil.getAllModels(oclModelPath, ".*[.]ocl");
+      if (!oclFiles.isEmpty()) {
+        List<Path> symbolPaths = new ArrayList<>(data.getData().importedSymbolPath.getEntries());
+        List<String> domainModels = DOMAIN.isSelected(data.getData().cmd) ? List.of(data.getData().cmd.getOptionValues(DOMAIN.getCMD())) : List.of();
+        
+        for (URL modelUrl : oclFiles) {
+          try {
+            File oclFile = new File(modelUrl.toURI());
+            // Use OCLWithErrorMessagesMill to parse so we don't lose error messages
+            
+            OCL2JavaGeneratorTool.initSymtab(symbolPaths, domainModels);
+            
+            Optional<ASTOCLCompilationUnit> oclCompilationUnit;
+            try {
+              oclCompilationUnit = OCLWithErrorMessagesMill.parser().parse(oclFile.getAbsolutePath());
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+            if (oclCompilationUnit.isEmpty()) {
+              Log.error("0xE0001 Could not parse OCL file");
+            }
+            ASTOCLCompilationUnit oCLAst = oclCompilationUnit.get();
+            data.addOclCompilationUnit(oCLAst);
+            
+            if (data.getSymbolPath() != null && data.getSymbolPath().toFile().exists()) {
+              SymbolTableUtil.loadSymbolFile(data.getSymbolPath().toString());
+            }
+            OCL2JavaGeneratorTool.createSymtab(oCLAst);
+          } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+          }
+        }
+        AbstractDecorator.hasOCL = true;
+      }
+    }
+  };
 
   Pipeline<DataWithAst> createModelPipeline() {
     Pipeline<DataWithAst> pipe = new Pipeline<>();
@@ -155,9 +198,11 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     pipe.register("model_pipe_symbol_table", model_pipe_symbol_table);
     pipe.register("model_pipe_default_cocos", model_pipe_default_cocos);
     pipe.register("model_pipe_default_trafos", model_pipe_default_trafos);
-    pipe.register("model_pipe_recreate_symbol_table", model_pipe_recreate_symbol_table);
-    pipe.register("model_pipe_set_options", model_pipe_set_options);
-    pipe.register("model_pipe_generate_gui", model_pipe_generate_gui);
+    pipe.register("model_pipe_recreate_and_store_symbol_table",
+        model_pipe_recreate_and_store_symbol_table);
+    pipe.register("model_pipe_load_ocl", model_pipe_load_ocl);
+    pipe.register("model_pipe_set_cd2gui_options", model_pipe_set_cd2gui_options);
+    pipe.register("model_pipe_cd2gui_tool", model_pipe_cd2gui_tool);
     pipe.register("model_pipe_add_gem_id_trafo", model_pipe_add_gem_id_trafo);
     pipe.register("model_pipe_recreate_and_store_symbol_table",
         model_pipe_recreate_and_store_symbol_table);
@@ -185,7 +230,6 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     pipe.register("create_pipe_create_st", create_pipe_create_st);
     pipe.register("create_pipe_run_def_coco", create_pipe_run_def_coco);
     pipe.register("create_pipe_run_def_trafos", create_pipe_run_def_trafos);
-//    pipe.register("create_pipe_recreate_st", create_pipe_recreate_st);
     return (Pipeline<T>) pipe;
   }
 
@@ -198,8 +242,10 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
 
     final UMLPPipelineData data;
     ASTCDCompilationUnit ast;
+    List<ASTOCLCompilationUnit> oclCompilationUnits = new ArrayList<>();
     List<String> extraOptions;
     IUMLPArtifactScope symbolTable;
+    Path symbolPath;
     
     public Data(UMLPPipelineData data) {
       this.data = data;
@@ -225,7 +271,17 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     public void setAst(ASTCDCompilationUnit ast) {
       this.ast = ast;
     }
-
+    
+    @Override
+    public List<ASTOCLCompilationUnit> getOclCompilationUnits() {
+      return oclCompilationUnits;
+    }
+    
+    @Override
+    public void addOclCompilationUnit(ASTOCLCompilationUnit oclCompUnit) {
+      oclCompilationUnits.add(oclCompUnit);
+    }
+    
     @Override
     public List<String> getExtraOptions() {
       return extraOptions;
@@ -236,6 +292,16 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
       extraOptions.add("-");
       extraOptions.add(key);
       extraOptions.add(value);
+    }
+    
+    @Override
+    public void setSymbolPath(Path path) {
+      symbolPath = path;
+    }
+    
+    @Override
+    public Path getSymbolPath() {
+      return symbolPath;
     }
     
     @Override
@@ -257,10 +323,18 @@ public class CD2GUIPipeline extends Pipeline<UMLPPipelineData> {
     ASTCDCompilationUnit getAst();
 
     void setAst(ASTCDCompilationUnit ast);
+    
+    List<ASTOCLCompilationUnit> getOclCompilationUnits();
+    
+    void addOclCompilationUnit(ASTOCLCompilationUnit oclCompUnit);
 
     List<String> getExtraOptions();
 
     void addExtraOption(String key, String value);
+    
+    Path getSymbolPath();
+    
+    void setSymbolPath(Path path);
     
     IUMLPArtifactScope getSymbolTable();
     
