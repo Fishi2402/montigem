@@ -76,10 +76,14 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
       boolean isAsyncFromSuper = false;
       // Methods overriding async methods from the RTE must be async again
       ExpressionTree select = invocation.getMethodSelect();
-      Element receiverType;
+      Element receiverType = null;
       if (select instanceof MemberSelectTree mst) {
-        receiverType = ((DeclaredType) trees.getTypeMirror(
-            new TreePath(getCurrentPath(), mst.getExpression()))).asElement();
+        TypeMirror typeMirror =
+            trees.getTypeMirror(new TreePath(getCurrentPath(), mst.getExpression()));
+
+        if (typeMirror instanceof DeclaredType declaredType) {
+          receiverType = declaredType.asElement();
+        }
       } else {
         // implicit receiver (this)
         receiverType = method.getEnclosingElement();
