@@ -226,19 +226,22 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     getCD4C().addAttribute(clazz, "public boolean " + setExternName + " = false");
 
     // add wait external value attr
-    String waitName = addWaitAttr(name);
     String externInitName = addExternInitAttr(name);
+
+    // observer notification (will be populated by JSweet)
+    String notifyObserversName = "notify" + StringTransformations.capitalize(node.getName()) + "Observers";
+    ASTCDMethodSignature notifyObservers = getCD4C().addMethod(clazz, getNotifyObserversTemplate(), notifyObserversName);
+    if(!isRTELibrary) {
+      glex.replaceTemplate("cd2java.Annotations",notifyObservers, new StringHookPoint(
+          "@NotifyAboutFieldUpdate(observedField= \""
+              +attr.getName()+"\", methodRequiringUpdate=\""
+              +angularGetter.get().getName()+"\")"));
+    }
 
     // add setter
     String setterName = "set" + StringTransformations.capitalize(node.getName());
-    ASTCDMethodSignature setter = getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
-        setExternName, waitName);
-    if(!isRTELibrary) {
-      glex.replaceTemplate("cd2java.Annotations",setter, new StringHookPoint(
-          "@NotifyAboutFieldUpdate(observedField= \""
-          +attr.getName()+"\", methodRequiringUpdate=\""
-          +angularGetter.get().getName()+"\")"));
-    }
+    getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
+        setExternName, notifyObserversName);
 
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
@@ -290,14 +293,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       ASTMCType simpleInnerType = getSimpleType(innerType);
       String manager = getAndImportManager(util.getDomainListInnerType(typeSTE).get().asObjectType());
 
-      // add remove
-      ASTCDMethodSignature remove = getCD4C().addMethod(
-          clazz, getRemoveDomainListTemplate(), node.getName(), getterName);
-
-      // add add
-      ASTCDMethodSignature add = getCD4C().addMethod(
-          clazz, getAddDomainListTemplate(), simpleInnerType, node.getName(), getterName);
-
       // add list item observer
       if (gui.getGUIComponentDeclaration().isPage()) {
         addDomainObserverMethods();
@@ -324,14 +319,14 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
           notifyDeleted.put(simpleInnerType.printType(),
               new NotifyMethodTemplate(getNotifyDeletedTemplate(), simpleInnerType));
         }
-        notifyDeleted.get(simpleInnerType.printType()).addCalledMethod(remove.getName());
+        notifyDeleted.get(simpleInnerType.printType()).addCalledMethod(notifyObservers.getName());
 
         // add notifyAdded method
         if (!notifyAdded.containsKey(simpleInnerType.printType())) {
           notifyAdded.put(simpleInnerType.printType(),
               new NotifyMethodTemplate(getNotifyAddedTemplate(), simpleInnerType));
         }
-        notifyAdded.get(simpleInnerType.printType()).addCalledMethod(add.getName());
+        notifyAdded.get(simpleInnerType.printType()).addCalledMethod(notifyObservers.getName());
       }
 
       // add attr init
@@ -360,10 +355,6 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         ));
       }
     }
-  }
-
-  protected String addWaitAttr(String attrName) {
-    return "";
   }
 
   protected String addExternInitAttr(String attrName) {
@@ -1657,12 +1648,8 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     return "umlp.gui2java.GUI2JavaInitDomainList";
   }
 
-  protected String getRemoveDomainListTemplate() {
-    return "umlp.gui2java.GUI2JavaRemoveDomainList";
-  }
-
-  protected String getAddDomainListTemplate() {
-    return "umlp.gui2java.GUI2JavaAddDomainList";
+  protected String getNotifyObserversTemplate() {
+    return "umlp.gui2java.GUI2JavaNotifyObservers";
   }
 
   protected String getNotifyDeletedTemplate() {

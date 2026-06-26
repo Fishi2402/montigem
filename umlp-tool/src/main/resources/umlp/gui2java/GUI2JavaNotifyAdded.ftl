@@ -5,8 +5,7 @@ ${tc.signature("type", "addList")}
 <#assign arg = "val_$">
 
 ${cd4c.method("public void notify${javaType}Added(${mcType} ${arg})")}
-/*
+
 <#list addList as add>
-this.${add}(${arg});
+this.${add}();
 </#list>
-*/

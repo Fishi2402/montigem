@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_html_override;
+
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+
+page TestHtmlOverride(CounterService service) {
+  @GemButton(label = "Increment counter", leftClick = incrementCounter());
+  @GemText(value = service.counter);
+  @MyComp(counterValue = service.counter);
+}

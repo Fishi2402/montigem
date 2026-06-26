@@ -7,6 +7,10 @@ classdiagram LoadingTests {
     int age;
   }
 
+  class Student extends Person {
+    int matNr;
+  }
+
   class Animal {
     String name;
     int legs;
@@ -117,5 +121,10 @@ classdiagram LoadingTests {
   }
   class CommandTestResult {
     String field;
+  }
+
+  <<singleton>>
+  class CounterService {
+    int counter = 0;
   }
 }
