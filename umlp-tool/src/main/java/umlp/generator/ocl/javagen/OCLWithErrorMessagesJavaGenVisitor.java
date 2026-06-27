@@ -3,6 +3,9 @@ package umlp.generator.ocl.javagen;
 import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.ocl.ocl._ast.ASTOCLContextDefinition;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.TypeCheck3;
 import oclwitherrormessages._ast.ASTOCLInvariant;
 import oclwitherrormessages._visitor.OCLWithErrorMessagesHandler;
 import oclwitherrormessages._visitor.OCLWithErrorMessagesTraverser;
@@ -134,7 +137,7 @@ public class OCLWithErrorMessagesJavaGenVisitor implements OCLWithErrorMessagesH
 
       // Anonymous parameter
       if (t1.isPresentMCType()) {
-        printer.print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(t1.getMCType()));
+        printer.print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(t1.getMCType())));
         printer.print(" _this");
       }
     }

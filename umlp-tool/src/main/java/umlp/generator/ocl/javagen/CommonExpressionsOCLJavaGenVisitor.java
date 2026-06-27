@@ -1,13 +1,13 @@
 package umlp.generator.ocl.javagen;
 
 
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressionsJavaGenVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.ocl.types3.OCLCollectionSymTypeRelations;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.ISymbol;
@@ -23,8 +23,8 @@ import umlp.generator.ocl.javagen.field_access.FieldAccessInfo;
 import java.util.Optional;
 
 public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGenVisitor {
-  public CommonExpressionsOCLJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  public CommonExpressionsOCLJavaGenVisitor(JavaGenVisitorState state) {
+    super(state);
   }
 
   @Override
@@ -38,9 +38,9 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
     }
 
     if (!handled) {
-      startParentheses();
+      state.startParentheses();
       node.getExpression().accept(getTraverser());
-      startParentheses();
+      state.startParentheses();
       boolean first = true;
       for (ASTExpression arg : node.getArguments().getExpressionList()) {
         if (!first) {
@@ -49,8 +49,8 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
         arg.accept(getTraverser());
         first = false;
       }
-      endParentheses();
-      endParentheses();
+      state.endParentheses();
+      state.endParentheses();
     }
   }
 
@@ -205,10 +205,10 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
 
   private void printCollectionSupplierStart(ASTCallExpression node, String variableName, String implementationType) {
     getPrinter().print("((java.util.function.Supplier<");
-    getPrinter().print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(TypeCheck3.typeOf(node)));
+    getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.typeOf(node)));
     getPrinter().println(">)()->{");
     getPrinter().indent();
-    getPrinter().print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(TypeCheck3.typeOf(node)));
+    getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.typeOf(node)));
     getPrinter().print(" ");
     getPrinter().print(variableName);
     getPrinter().print(" = new ");
@@ -229,9 +229,9 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
   }
 
   private void printReceiverInParentheses(ASTFieldAccessExpression fa) {
-    startParentheses();
+    state.startParentheses();
     printReceiver(fa);
-    endParentheses();
+    state.endParentheses();
   }
 
   private void printArgument(ASTCallExpression node, int index) {
@@ -241,7 +241,7 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
   private void printCollectionElementType(ASTCallExpression node) {
     SymTypeExpression collectionType = TypeCheck3.typeOf(node);
     if (collectionType.isGenericType() && !collectionType.asGenericType().getArgumentList().isEmpty()) {
-      getPrinter().print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(
+      getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(
           collectionType.asGenericType().getArgument(0)));
     } else {
       getPrinter().print("Object");
@@ -253,8 +253,8 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
     // functions should not be replaced by getter name conversion
     if (TypeCheck3.typeOf(node).isFunctionType()) {
       node.getExpression().accept(getTraverser());
-      printer.print(".");
-      printer.print(node.getName());
+      getPrinter().print(".");
+      getPrinter().print(node.getName());
       return;
     }
 
@@ -306,10 +306,10 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
 
       // - association with opt mult cardinality
       if (isCollectionType && isDomainType) {
-        printer.print(".stream().flatMap(it -> it.");
-        printer.print("get");
-        printer.print(StringTransformations.capitalize(node.getName()));
-        printer.print("List().stream()).to");
+        getPrinter().print(".stream().flatMap(it -> it.");
+        getPrinter().print("get");
+        getPrinter().print(StringTransformations.capitalize(node.getName()));
+        getPrinter().print("List().stream()).to");
         printCollectorFor(lhsType);
       }
     } else {
@@ -319,34 +319,34 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
   }
 
   private void printFlatteningMap(String fieldName, String accessorPrefix, SymTypeExpression lhsType) {
-    printer.print(".stream().map(it -> it.");
-    printer.print(accessorPrefix);
-    printer.print(StringTransformations.capitalize(fieldName));
-    printer.print("()).to");
+    getPrinter().print(".stream().map(it -> it.");
+    getPrinter().print(accessorPrefix);
+    getPrinter().print(StringTransformations.capitalize(fieldName));
+    getPrinter().print("()).to");
     printCollectorFor(lhsType);
   }
 
   private void printCollectorFor(SymTypeExpression lhsType) {
     if (OCLCollectionSymTypeRelations.isList(lhsType)) {
-      printer.print("List()");
+      getPrinter().print("List()");
     } else if (OCLCollectionSymTypeRelations.isSet(lhsType)) {
-      printer.print("Set()");
+      getPrinter().print("Set()");
     } else {
-      printer.print("Collection()");
+      getPrinter().print("Collection()");
     }
   }
 
   private void printFieldAccess(FieldAccessInfo info, String nodeName) {
     switch (info.getKind()) {
       case TO_ONE_DOMAIN ->
-          printer.print(".get" + StringTransformations.capitalize(nodeName) + "()");
+          getPrinter().print(".get" + StringTransformations.capitalize(nodeName) + "()");
       case TO_MANY_DOMAIN, COLLECTION_OF_SIMPLE_VALUE ->
-          printer.print(".get" + StringTransformations.capitalize(nodeName) + "List()");
+          getPrinter().print(".get" + StringTransformations.capitalize(nodeName) + "List()");
       case SIMPLE_VALUE -> {
         if (SymTypeRelations.isBoolean(info.getFieldType())) {
-          printer.print(".is" + StringTransformations.capitalize(nodeName) + "()");
+          getPrinter().print(".is" + StringTransformations.capitalize(nodeName) + "()");
         } else {
-          printer.print(".get" + StringTransformations.capitalize(nodeName) + "()");
+          getPrinter().print(".get" + StringTransformations.capitalize(nodeName) + "()");
         }
       }
     }

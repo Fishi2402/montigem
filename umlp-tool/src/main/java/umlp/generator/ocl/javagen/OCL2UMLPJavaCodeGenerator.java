@@ -1,13 +1,17 @@
 package umlp.generator.ocl.javagen;
 
-import de.monticore.codegen.AbstractCodeGenVisitor;
+import de.monticore.codegen.CodeGenVisitorState;
 import de.monticore.codegen.javagen.JavaGenSymTypeExpressionConverter;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.bitexpressions.codegen.javagen.BitExpressionsJavaGenVisitor;
 import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressionsJavaGenVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
 import de.monticore.literals.mccommonliterals.codegen.javagen.MCCommonLiteralsJavaGenVisitor;
+import de.monticore.ocl.oclexpressions.codegen.javagen.OCLExpressionsJavaGenVisitor;
+import de.monticore.ocl.optionaloperators.codegen.javagen.OptionalOperatorsJavaGenVisitor;
+import de.monticore.ocl.setexpressions.codegen.javagen.SetExpressionsJavaGenVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -24,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
-public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
+public class OCL2UMLPJavaCodeGenerator extends CodeGenVisitorState {
   OCLWithErrorMessagesTraverser traverser;
   protected String fullPackage;
 
@@ -49,18 +53,19 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
 
     // Literals
 
-    MCCommonLiteralsJavaGenVisitor visMCCommonLiterals = new MCCommonLiteralsJavaGenVisitor(getPrinter());
+    JavaGenVisitorState state = new JavaGenVisitorState(printer);
+    MCCommonLiteralsJavaGenVisitor visMCCommonLiterals = new MCCommonLiteralsJavaGenVisitor(state);
     traverser.setMCCommonLiteralsHandler(visMCCommonLiterals);
 
     // Expressions
 
-    BitExpressionsJavaGenVisitor visBitExpressions = new BitExpressionsJavaGenVisitor(getPrinter());
+    BitExpressionsJavaGenVisitor visBitExpressions = new BitExpressionsJavaGenVisitor(state);
     traverser.setBitExpressionsHandler(visBitExpressions);
 
-    CommonExpressionsJavaGenVisitor visCommonExpressions = new CommonExpressionsOCLJavaGenVisitor(getPrinter());
+    CommonExpressionsJavaGenVisitor visCommonExpressions = new CommonExpressionsOCLJavaGenVisitor(state);
     traverser.setCommonExpressionsHandler(visCommonExpressions);
 
-    ExpressionsBasisJavaGenVisitor visExpressionBasis = new ExpressionsBasisJavaGenVisitor(getPrinter()) {
+    ExpressionsBasisJavaGenVisitor visExpressionBasis = new ExpressionsBasisJavaGenVisitor(state) {
       @Override
       public void handle(ASTNameExpression node) {
         Optional<VariableSymbol> symbol = ((IBasicSymbolsScope) node.getEnclosingScope()).resolveVariableMany(node.getName()).stream().findAny();
@@ -69,33 +74,22 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
           getPrinter().print(symbol.get().getFullName());
         } else if (type.isPresent() && OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(type.get())) {
           getPrinter().print(type.get().getFullName());
+        } else if ("this".equals(node.getName())) {
+          getPrinter().print("_this");
         } else {
-          // Handle scoped casts, e.g. from type if expression
-          if (!knowTypeOfVar.getOrDefault(node.getName(), new Stack<>()).isEmpty()) {
-            getPrinter().print("((");
-            getPrinter().print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(knowTypeOfVar.get(node.getName()).peek()));
-            getPrinter().print(")");
-            getPrinter().print(node.getName());
-            getPrinter().print(")");
-          } else {
-            if ("this".equals(node.getName())) {
-              getPrinter().print("_this");
-            } else {
-              getPrinter().print(node.getName());
-            }
-          }
+          getPrinter().print(node.getName());
         }
       }
     };
     traverser.setExpressionsBasisHandler(visExpressionBasis);
 
-    OCLExpressionsJavaGenVisitor visOCLExpressions = new OCLExpressionsJavaGenVisitor(getPrinter(), knowTypeOfVar);
+    OCLExpressionsJavaGenVisitor visOCLExpressions = new OCLExpressionsJavaGenVisitor(state);
     traverser.setOCLExpressionsHandler(visOCLExpressions);
 
-    OptionalOperatorsJavaGenVisitor visOptionalOperators = new OptionalOperatorsJavaGenVisitor(getPrinter());
+    OptionalOperatorsJavaGenVisitor visOptionalOperators = new OptionalOperatorsJavaGenVisitor(state);
     traverser.setOptionalOperatorsHandler(visOptionalOperators);
 
-    SetExpressionsJavaGenVisitor visSetExpressions = new SetExpressionsJavaGenVisitor(getPrinter());
+    SetExpressionsJavaGenVisitor visSetExpressions = new SetExpressionsJavaGenVisitor(state);
     traverser.setSetExpressionsHandler(visSetExpressions);
 
     // OCL
@@ -103,11 +97,10 @@ public class OCL2UMLPJavaCodeGenerator extends AbstractCodeGenVisitor {
     traverser.setOCLHandler(oclJavaGenVisitor);
 
     // OCLWithErrorMessages
-    OCLWithErrorMessagesJavaGenVisitor oclWithErrorMessagesJavaGenVisitor = new OCLWithErrorMessagesJavaGenVisitor(getPrinter());
+    OCLWithErrorMessagesJavaGenVisitor oclWithErrorMessagesJavaGenVisitor = new OCLWithErrorMessagesJavaGenVisitor(state.getPrinter());
     traverser.setOCLWithErrorMessagesHandler(oclWithErrorMessagesJavaGenVisitor);
   }
 
-  @Override
   public ITraverser getTraverser() {
     return traverser;
   }

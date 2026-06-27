@@ -5,6 +5,7 @@ import de.monticore.ocl.ocl._ast.*;
 import de.monticore.ocl.ocl._visitor.OCLHandler;
 import de.monticore.ocl.ocl._visitor.OCLTraverser;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class OCLJavaGenVisitor implements OCLHandler {
 
   @Override
   public void handle(ASTOCLParamDeclaration node) {
-    printer.print(SymTypeExpression2JavaConverter.printModelTypeAsJavaType(node.getMCType()));
+    printer.print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node.getMCType())));
     printer.print(" ");
     printer.print(node.getName());
 

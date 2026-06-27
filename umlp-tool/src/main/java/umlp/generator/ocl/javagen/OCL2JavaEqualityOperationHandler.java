@@ -1,25 +1,21 @@
 package umlp.generator.ocl.javagen;
 
 import de.monticore.codegen.CodeGenPrintAction;
+import de.monticore.codegen.javagen.JavaGenSymTypeRelations;
 import de.monticore.codegen.javagen.operationprinter.JavaEqualityOperationHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
-
 public class OCL2JavaEqualityOperationHandler extends JavaEqualityOperationHandler {
   @Override
   public void printEquals(IndentPrinter printer, SymTypeExpression leftType, SymTypeExpression rightType, CodeGenPrintAction leftExprPrintAction, CodeGenPrintAction rightExprPrintAction) {
-    SymTypeExpression leftJavaType = getJavaType(leftType);
-    SymTypeExpression rightJavaType = getJavaType(rightType);
-
     // note:
     // convert to same type beforehand to assure implicit conversion happens
     // (e.g., SI Units)
 
     // slight optimization for numbers:
-    if (isJavaPrimitive(leftJavaType) && isJavaPrimitive(rightJavaType)) {
+    if (JavaGenSymTypeRelations.generatesToJavaNumeric(leftType) && JavaGenSymTypeRelations.generatesToJavaNumeric(rightType)) {
       printWithEqualsOperator(
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction
