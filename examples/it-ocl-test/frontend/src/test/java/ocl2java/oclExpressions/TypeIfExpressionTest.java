@@ -4,8 +4,8 @@ import com.microsoft.playwright.junit.UsePlaywright;
 import mydomain.MydomainManager;
 import mydomain.Person;
 import mydomain.Student;
-// import mydomain.typeif.Boundaries_thenElseBranches;
-// import mydomain.typeif.ThenBranchPropertyAccess_safeForNonStudents;
+import mydomain.typeif.Boundaries_thenElseBranches;
+import mydomain.typeif.ThenBranchPropertyAccess_safeForNonStudents;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,9 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @UsePlaywright
 public interface TypeIfExpressionTest extends IOCL2XTest<Person> {
-  // TODO: AHe: Enabled once jsweet can transpile classes nested in functions
-  //       or an alternative generation pattern for typeif is implemented.
-/*  @Override
+  @Override
   default java.util.Map<String, java.util.function.Predicate<Person>> getConstraintToChecker() {
     java.util.Map<String, java.util.function.Predicate<Person>> res = new java.util.HashMap<>();
     res.put("Boundaries_thenElseBranches", Boundaries_thenElseBranches::checkInv0);
@@ -103,5 +101,5 @@ public interface TypeIfExpressionTest extends IOCL2XTest<Person> {
     assertEquals(Set.of(kid.getGemId()), Set.copyOf(violations));
     assertFalse(violations.contains(teen.getGemId()));
     assertFalse(violations.contains(s.getGemId()));
-  }*/
+  }
 }
