@@ -7,7 +7,7 @@ export const routes: Route[] = [
   {
     path:"",
     pathMatch: "full",
-    redirectTo:"Dashboard"
+    redirectTo:"coverage/Dashboard"
   },
   ...routesTOP
 ]

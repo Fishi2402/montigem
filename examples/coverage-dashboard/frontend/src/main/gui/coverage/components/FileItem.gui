@@ -1,0 +1,13 @@
+package coverage.components;
+
+import mc.fenix.basic.GemButton;
+
+import CoverageDashboard.CoverageSourceFile;
+
+component FileItem(CoverageSourceFile file, Event<CoverageSourceFile> fileSelect) {
+  fileItemButton@GemButton(
+    width = "100%",
+    label = file.name,
+    leftClick = onLeftClick()
+  );
+}

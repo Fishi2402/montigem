@@ -1,0 +1,39 @@
+package coverage.components;
+
+import java.util.Optional;
+
+import mc.fenix.arrange.GemTreeNode;
+
+import mc.fenix.basic.GemText;
+
+import CoverageDashboard.CoverageModule;
+import CoverageDashboard.CoverageSourceFile;
+
+import coverage.components.FileItem;
+
+component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageSourceFile> fileSelect) {
+  @GemTreeNode(
+    content = @GemText(value = name),
+    children = [
+      // At first, show possible sub-modules
+      @iterate(CoverageModule subModule : rootModule.subModules){
+        @GemTreeNode(
+          children = [
+            @ModuleTreeView(
+              rootModule = subModule,
+              name = subModule.name,
+              fileSelect = fileSelect)
+          ]
+        );
+      },
+      // Then the files
+      @iterate(CoverageSourceFile file : rootModule.sourceFiles){
+       @GemTreeNode(
+         content = @FileItem(
+          file = file,
+          fileSelect = fileSelect)
+       );
+     }
+    ]
+  );
+}
