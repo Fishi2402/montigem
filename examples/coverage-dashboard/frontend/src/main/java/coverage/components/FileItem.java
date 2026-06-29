@@ -1,7 +1,10 @@
 package coverage.components;
 
+import umlp.jsweet.extension.annotation.Component;
+
 import java.util.function.Consumer;
 
+@Component
 public class FileItem extends FileItemTOP {
 
   @Override

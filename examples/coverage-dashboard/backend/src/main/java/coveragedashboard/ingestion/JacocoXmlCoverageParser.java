@@ -148,6 +148,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
             CoverageSourceFileBuilder sourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
                 .path(path)
                 .name(currentSourceFileName)
+                .physicalPath((basePath + path).toString())
                 .category(ArtifactCategory.GENERATED)
                 .metrics(fileMetrics);
 
@@ -188,14 +189,4 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
       return 0;
     }
   }
-
-  private String extractRelativePath(String fullPath, Path basePath){
-    if(fullPath == null || fullPath.isBlank())
-      return "unknown";
-    Path target = Paths.get(fullPath).normalize();
-    if(basePath == null || !target.startsWith(basePath))
-      return fullPath;
-    return basePath.relativize(target).toString();
-  }
-
 }

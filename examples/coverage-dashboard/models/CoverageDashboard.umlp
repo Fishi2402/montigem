@@ -28,6 +28,7 @@ classdiagram CoverageDashboard{
   class CoverageSourceFile{
     String name;
     String path;
+    String physicalPath;
   }
 
   enum ArtifactCategory{
@@ -97,5 +98,8 @@ classdiagram CoverageDashboard{
   class App{
     GemLineChartData getCoverageTrajectory();
     CoverageSourceFile getDummyCoverageFile();
+    CoverageReport getDummyCoverageReport();
+    String getSourceFileContent(CoverageSourceFile file);
+    String getFileContent(CoverageSourceFile file);
   }
 }
