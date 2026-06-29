@@ -1,0 +1,7 @@
+{
+  "@Async": {
+    "include": [
+      "list.TestArrayListTranspilation.test()"
+    ]
+  }
+}
