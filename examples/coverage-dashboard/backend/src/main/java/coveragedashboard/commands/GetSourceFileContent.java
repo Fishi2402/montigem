@@ -3,6 +3,7 @@ package coveragedashboard.commands;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 
+import coveragedashboard.StringContent;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
 import umlp.jsweet.extension.annotation.BackendOnly;
@@ -19,17 +20,17 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
   }
 
   @Override
-  public SimpleResult<String> doAction(){
-    Optional<String> result = getSourceFileContent(this.getFileGemId());
+  public SimpleResult<StringContent> doAction(){
+    Optional<StringContent> result = getSourceFileContent(this.getFileGemId());
     if(result.isEmpty()){
       return new SimpleResult<>(
-          getId(), LoadingState.FAILED_TO_LOAD, String.class.getName());
+          getId(), LoadingState.FAILED_TO_LOAD, StringContent.class.getName());
     }
-    return new SimpleResult<>(getId(), result.get(), String.class.getName());
+    return new SimpleResult<>(getId(), result.get(), StringContent.class.getName());
   }
 
   @BackendOnly(BackendOnlyModes.THROW_ERROR)
-  protected Optional<String> getSourceFileContent(long fileGemId){
+  protected Optional<StringContent> getSourceFileContent(long fileGemId){
     // Try to get file and read content
     Optional<CoverageSourceFile> sourceFileOpt = CoverageDashboardManager.coverageSourceFileOpt(fileGemId);
     if(sourceFileOpt.isEmpty())
@@ -38,9 +39,11 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
 
     // Check if there is a source-map for this file
     if(Files.exists(Path.of(sourceFile.getPhysicalPath(), ".map"))){
-      return Optional.of("Source-map decoding not implemented yet.");
+      StringContent value = CoverageDashboardManager.stringContentBuilder().content("Source-map decoding not implemented yet.").build().get();
+      return Optional.of(value);
     }else{
-      return Optional.of("No source-file available.");
+      StringContent value = CoverageDashboardManager.stringContentBuilder().content("No source-file available.").build().get();
+      return Optional.of(value);
     }
   }
 }
