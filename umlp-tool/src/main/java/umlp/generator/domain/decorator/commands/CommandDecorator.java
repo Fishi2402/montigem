@@ -46,6 +46,11 @@ public class CommandDecorator extends AbstractDecorator {
     addedDeSers.addAll(getDecorator.getAddedDeSers());
     Log.debug("After decorator: GetDecorator", CommandDecorator.class.getName());
 
+    LoadAllWithIDsDecorator loadAllWithIDsDecorator = new LoadAllWithIDsDecorator(glex);
+    loadAllWithIDsDecorator.transform(cdAST, decoratedAST);
+    addedDeSers.addAll(loadAllWithIDsDecorator.getAddedDeSers());
+    Log.debug("After decorator: LoadAllWithIDsDecorator", CommandDecorator.class.getName());
+
     SetDecorator setDecorator = new SetDecorator(glex, supportedDeSers);
     setDecorator.transform(cdAST, decoratedAST);
     addedDeSers.addAll(setDecorator.getAddedDeSers());

@@ -144,6 +144,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
     }
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.LoadAllWithIDs", name, getPackageName(origCD, DEFAULT_PACKAGE), isSingleton, domainClass.getModifier().isAbstract());
 
     if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addMethod(managerClass, "umlp.managerimpl.DoBuilderParam", name);
@@ -157,6 +158,7 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainClass.getName() + "_get_filtered"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), "LoadAll" + name + "WithIDs"));
 
     if (!domainClass.getModifier().isAbstract()) {
       getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, CLIENT_PACKAGE), domainClass.getName() + "CommandObserver"));
@@ -198,9 +200,11 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managerimpl.DoGetSure", name);
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetList", name, true, true);
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoGetFilteredList", name, true, true);
+    getCD4C().addMethod(managerClass, "umlp.managerclientimpl.LoadAllWithIDs", name, getPackageName(origCD, DEFAULT_PACKAGE), true, true);
     getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get"));
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), domainInterface.getName() + "_get_filtered"));
+    getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, COMMAND_PACKAGE), "LoadAll" + name + "WithIDs"));
 
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), name + "GemList"));
 

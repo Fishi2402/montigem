@@ -35,12 +35,13 @@ import java.util.function.Consumer;
 
 public class ClientCommandWebsocketCommunication extends TextWebSocketHandler implements
     ClientCommandCommunication {
-  private long maxWaitingTime = 6000; // 6 seconds
+  private long maxWaitingTime = 60000; // 6 seconds
   private Optional<Long> participantId = Optional.empty();
   private WebSocketSession session;
   private final String uri;
   private final WebSocketHttpHeaders headers;
   private Map<Long, CommandResult<?>> messages = new HashMap<>();
+  private StringBuilder messageBuffer = new StringBuilder();
 
   private List<CommandReceiveObserver> commandObserver = new ArrayList<>();
   private List<CommandResultReceiveObserver> commandResultObserver = new ArrayList<>();
@@ -133,11 +134,24 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
   }
 
   @Override
+  public boolean supportsPartialMessages() {
+    return true;
+  }
+
+  @Override
   protected synchronized void handleTextMessage(WebSocketSession session, TextMessage message) {
+    messageBuffer.append(message.getPayload());
+    if (!message.isLast()) {
+      return; // Wait for more parts
+    }
+
+    String completeMessage = messageBuffer.toString();
+    messageBuffer = new StringBuilder(); // Reassign to allow Garbage Collection of large buffers
+
     if (expectInitMessage()) {
       // Fall initialisierung der Verbindung
       try {
-        this.participantId = Optional.of(Long.parseLong(message.getPayload()));
+        this.participantId = Optional.of(Long.parseLong(completeMessage));
       } catch (NumberFormatException e) {
         this.participantId = Optional.empty();
       }
@@ -146,7 +160,7 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
       // Fall Antwort eines Requests, oder Erhalt eines weitergeleiteten Commands zur
       // Datensynchronisierung.
       Optional<CommandResult<?>> commandResultOptional
-          = CommandObjectMapper.deserializeResponse(message.getPayload());
+          = CommandObjectMapper.deserializeResponse(completeMessage);
 
       if (commandResultOptional.isPresent()) { // TODO MH: Need to check for participantId
         // Fall Antwort eines Requests
@@ -160,7 +174,7 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
         }
       } else {
         Optional<Command<Object>> commandOptional
-            = CommandObjectMapper.deserializeCommand(message.getPayload());
+            = CommandObjectMapper.deserializeCommand(completeMessage);
 
         if (commandOptional.isPresent()) {
           //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
@@ -197,7 +211,12 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
   }
 
   public void close() throws IOException {
-    session.close();
+    if (executor != null && !executor.isShutdown()) {
+      executor.shutdown();
+    }
+    if (session != null && session.isOpen()) {
+      session.close();
+    }
   }
 
   @Override

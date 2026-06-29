@@ -25,6 +25,7 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
 
   protected Map<String, Long> clientIds = new HashMap<>();
   protected Map<WebSocketSession, Participant> participants = new HashMap<>();
+  private final Map<WebSocketSession, StringBuilder> messageBuffers = new HashMap<>();
 
   protected String getSessionPrincipalName(WebSocketSession session) {
     return session.getPrincipal().getName();
@@ -49,9 +50,23 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
   }
 
   @Override
+  public boolean supportsPartialMessages() {
+    return true;
+  }
+
+  @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-    String payload = message.getPayload();
-    System.out.println("Received:\t" + LogUtil.concealSensitives(payload));
+    StringBuilder buffer = messageBuffers.computeIfAbsent(session, k -> new StringBuilder());
+    buffer.append(message.getPayload());
+
+    if (!message.isLast()) {
+      return; // Wait for the final part
+    }
+
+    String payload = buffer.toString();
+    messageBuffers.remove(session); // Remove from map to allow Garbage Collection of large buffers
+
+    Log.info("Received:\t" + LogUtil.concealSensitives(payload), this.getClass().getName());
     String returnResult = "";
     try {
       Optional<Command<Object>> commandOptional = CommandObjectMapper.deserializeCommand(payload);
@@ -82,16 +97,17 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
       Log.error("Command could not be parsed:\n"+ payload, e);
       returnResult = handleUnknownError(payload);
     }
-    System.out.println("Responding: " + LogUtil.concealSensitives(returnResult));
+    Log.info("Responding: " + LogUtil.concealSensitives(returnResult), this.getClass().getName());
     TextMessage msg = new TextMessage(returnResult);
     synchronized (session) {
-      System.out.println(session);
+      Log.info(session.toString(), this.getClass().getName());
       session.sendMessage(msg);
     }
   }
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    messageBuffers.remove(session);
     if (clientIds.containsKey(session.getId())) {
       CommandManager.deregister(clientIds.get(session.getId()));
       clientIds.remove(session.getId());

@@ -131,7 +131,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
         getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
         getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredList", name, concreteSubclassesInclSelf);
       }
-
+      
       if (isSingleton) {
         addAttribute(managerClass, "protected Optional<" + name + "> " + lName + "Instance", "Optional.empty()");
       }else {
@@ -157,6 +157,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetListAbstract", name);
       getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredListAbstract", name);
     }
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoLoadAllWithIDs", name);
 
     // Associations
     assocs.stream()
@@ -190,6 +191,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredList", name, concreteSubclassesInclSelf);
     getCD4C().addMethod(managerClass, "umlp.managermock.IsLoaded", name, concreteSubclassesInclSelf);
+    getCD4C().addMethod(managerClass, "umlp.managermock.DoLoadAllWithIDs", name);
 
     // Imports
     getCD4C().addImport(managerClass, Joiners.DOT.join(getPackageName(origCD, GEMLIST_PACKAGE), domainClass.getName() + "GemList"));

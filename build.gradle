@@ -99,7 +99,11 @@ subprojects {
   }
 
   test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+      if (!project.hasProperty('runBatchLoading')) {
+        excludeTags 'BatchLoading'
+      }
+    }
     testLogging {
       showStandardStreams = false
       events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
