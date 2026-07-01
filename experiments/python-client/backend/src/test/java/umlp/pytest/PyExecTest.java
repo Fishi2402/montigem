@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PyExecTest extends AbstractPyTest {
 
@@ -42,8 +41,8 @@ public class PyExecTest extends AbstractPyTest {
     // Create a new object
     MyDomainManager.bBuilder().build();
     assertEquals(2, MyDomainManager.getBList().size());
-    assertEquals("2", handler.sendCommand(
-        "print(len((await my_domain_manager.list_filtered(MyDomain.B.B))['list']))").get());
+    assertWait(() -> assertEquals("2", handler.sendCommand(
+        "print(len((await my_domain_manager.list_filtered(MyDomain.B.B))['list']))").get()));
 
   }
 
@@ -67,7 +66,7 @@ public class PyExecTest extends AbstractPyTest {
             " gemId=await my_domain_manager.get_free_gem_id(),\n" +
             " b=new_b.gemId, directB=" + secondB.get().getGemId() + ", myStr=\"hello world\", strList=[]" +
             "))\nprint(my_a.gemId)").get());
-    assertEquals(1, MyDomainManager.getAList().size());
+    assertWait(() -> assertEquals(1, MyDomainManager.getAList().size()));
     var my_a = MyDomainManager.getASure(2);
 
     assertEquals("hello world", my_a.getMyStr());
@@ -82,16 +81,16 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals("", handler.sendCommand("await my_a.setMyStr(\"test\")").get());
     assertEquals("test", my_a.getMyStr());
     my_a.setMyStr("test2");
-    assertWait( () -> assertEquals("test2", handler.sendCommand("print(my_a.myStr)").get()));
+    assertWait(() -> assertEquals("test2", handler.sendCommand("print(my_a.myStr)").get()));
 
     // strList
     assertEquals("", handler.sendCommand("await my_a.strList_add(0, \"test\")").get());
     assertEquals(List.of("test"), my_a.getStrListList());
     my_a.addStrList(1, "test_from_java");
-    assertWait( () -> assertEquals("['test', 'test_from_java']", handler.sendCommand("print(my_a.strList)").get()));
+    assertWait(() -> assertEquals("['test', 'test_from_java']", handler.sendCommand("print(my_a.strList)").get()));
     my_a.removeStrList(0);
     assertEquals(List.of("test_from_java"), my_a.getStrListList());
-    assertWait( () -> assertEquals("['test_from_java']", handler.sendCommand("print(my_a.strList)").get()));
+    assertWait(() -> assertEquals("['test_from_java']", handler.sendCommand("print(my_a.strList)").get()));
     assertEquals("", handler.sendCommand("await my_a.strList_rem(0)").get());
     assertEquals(List.of(), my_a.getStrListList());
     //
@@ -101,7 +100,7 @@ public class PyExecTest extends AbstractPyTest {
     System.out.println(my_a.getGemId() + "//" + my_a.getI());
     assertEquals(3, my_a.getI());
     my_a.setI(3);
-    assertWait( () -> assertEquals("3", handler.sendCommand("print(my_a.i)").get()));
+    assertWait(() -> assertEquals("3", handler.sendCommand("print(my_a.i)").get()));
 
     //
 
@@ -111,13 +110,13 @@ public class PyExecTest extends AbstractPyTest {
     my_a.setDirectB(secondB.get());
 
     // enum
-    assertWait( () -> assertEquals("A", handler.sendCommand("print(my_a.enumState)").get()));
+    assertWait(() -> assertEquals("A", handler.sendCommand("print(my_a.enumState)").get()));
     assertEquals("<enum 'MyEnum'>", handler.sendCommand("print(type(my_a.enumState))").get());
     assertEquals("", handler.sendCommand("import MyDomain.MyEnum").get());
     assertEquals("", handler.sendCommand("await my_a.setEnumState(MyDomain.MyEnum.MyEnum.B)").get());
-    assertWait( () -> assertEquals(MyEnum.B, my_a.getEnumState()));
+    assertWait(() -> assertEquals(MyEnum.B, my_a.getEnumState()));
     my_a.setEnumState(MyEnum.C);
-    assertWait( () -> assertEquals("C", handler.sendCommand("print(my_a.enumState)").get()));
+    assertWait(() -> assertEquals("C", handler.sendCommand("print(my_a.enumState)").get()));
     assertEquals("<enum 'MyEnum'>", handler.sendCommand("print(type(my_a.enumState))").get());
     // enum
 
@@ -140,28 +139,28 @@ public class PyExecTest extends AbstractPyTest {
 //     test optional gem
     assertEquals("-1", handler.sendCommand("print(a1.optB.gemId)").get());
     a1.setOptB(b2);
-    assertWait( () -> assertEquals(Long.toString(b2.getGemId()), handler.sendCommand("print(a1.optB.gemId)").get()));
+    assertWait(() -> assertEquals(Long.toString(b2.getGemId()), handler.sendCommand("print(a1.optB.gemId)").get()));
     // TODO: is present?
     a1.setOptBAbsent();
-    assertWait( () -> assertEquals("-1", handler.sendCommand("print(a1.optB.gemId)").get()));
+    assertWait(() -> assertEquals("-1", handler.sendCommand("print(a1.optB.gemId)").get()));
     //
     assertEquals("", handler.sendCommand("await a1.setOptB( " + b2.getGemId() + ")").get());
-    assertEquals(b2.getGemId(), a1.getOptBGem().getGemId());
+    assertWait(() -> assertEquals(b2.getGemId(), a1.getOptBGem().getGemId()));
     assertEquals("", handler.sendCommand("await a1.setOptB(-1)").get());
-    assertFalse(a1.isPresentOptB());
+    assertWait(() -> assertFalse(a1.isPresentOptB()));
 
 
     assertEquals("0", handler.sendCommand("print(len(a1.listB))").get());
     a1.addListB(b1);
-    assertWait( () -> assertEquals("1", handler.sendCommand("print(len(a1.listB))").get()));
+    assertWait(() -> assertEquals("1", handler.sendCommand("print(len(a1.listB))").get()));
 
-    assertEquals("", handler.sendCommand("await a1.listB_add(1, " +b2.getGemId()+")").get());
-    assertEquals(2, a1.getListBList().size());
+    assertEquals("", handler.sendCommand("await a1.listB_add(1, " + b2.getGemId() + ")").get());
+    assertWait(() -> assertEquals(2, a1.getListBList().size()));
 
     assertEquals("", handler.sendCommand("await a1.listB_rem(1)").get());
-    assertEquals(1, a1.getListBList().size());
+    assertWait(() -> assertEquals(1, a1.getListBList().size()));
     a1.clearListBs();
-    assertWait( () -> assertEquals("0", handler.sendCommand("print(len(a1.listB))").get()));
+    assertWait(() -> assertEquals("0", handler.sendCommand("print(len(a1.listB))").get()));
 
 
   }
@@ -173,8 +172,7 @@ public class PyExecTest extends AbstractPyTest {
     TestAssoc_2_CBuilder c1;
     var a1Builder = MyDomainManager.testAssoc_2_ABuilder()
 //        .test((b1 = MyDomainManager.testAssoc_2_BBuilder()))
-        .single((c1 = MyDomainManager.testAssoc_2_CBuilder()))
-        ;
+        .single((c1 = MyDomainManager.testAssoc_2_CBuilder()));
 
 
     System.err.println(a1Builder.isBuildable());
@@ -202,28 +200,28 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals(Long.toString(d1.getGemId()), handler.sendCommand("print(d1.gemId)").get());
 
     d1.setOptA(a1);
-    assertWait( () -> assertEquals(a1.getOptGem().getGemId(), d1.getGemId())); // correct on server?
-    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(d1.optA.gemId)").get()); // correct on client?
+    assertWait(() -> assertEquals(a1.getOptGem().getGemId(), d1.getGemId())); // correct on server?
+    assertWait(() -> assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(d1.optA.gemId)").get())); // correct on client?
     assertEquals(Long.toString(a1.getOptGem().getGemId()), handler.sendCommand("print(a1.opt.gemId)").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await d1.setOptA(-1)").get()); // check that the client is able to send the correct command
-    assertEquals(-1, a1.getOptGem().getGemId());
+    assertWait(() -> assertEquals(-1, a1.getOptGem().getGemId()));
     assertEquals(Long.toString(-1), handler.sendCommand("print(a1.opt.gemId)").get());
     assertEquals(Long.toString(-1), handler.sendCommand("print(d1.optA.gemId)").get());
 
-    assertEquals("", handler.sendCommand("await d1.setOptA(" + a1.getGemId() +")").get());
-    assertEquals(a1.getOptGem().getGemId(), d1.getGemId());
+    assertEquals("", handler.sendCommand("await d1.setOptA(" + a1.getGemId() + ")").get());
+    assertWait(() -> assertEquals(a1.getOptGem().getGemId(), d1.getGemId()));
     assertEquals(Long.toString(a1.getOptGem().getGemId()), handler.sendCommand("print(a1.opt.gemId)").get());
 
     // And now: The reverse (because associations are finicky)
     assertEquals("", handler.sendCommand("await a1.setOpt(-1)").get()); // check that the client is able to send the correct command
-    assertEquals(-1, a1.getOptGem().getGemId());
+    assertWait(() -> assertEquals(-1, a1.getOptGem().getGemId()));
     assertEquals(-1, d1.getOptAGem().getGemId());
     assertEquals(Long.toString(-1), handler.sendCommand("print(a1.opt.gemId)").get());
     assertEquals(Long.toString(-1), handler.sendCommand("print(d1.optA.gemId)").get());
 
-    assertEquals("", handler.sendCommand("await a1.setOpt(" + d1.getGemId() +")").get());
-    assertEquals(d1.getOptAGem().getGemId(), a1.getGemId());
+    assertEquals("", handler.sendCommand("await a1.setOpt(" + d1.getGemId() + ")").get());
+    assertWait(() -> assertEquals(d1.getOptAGem().getGemId(), a1.getGemId()));
     assertEquals(Long.toString(d1.getOptAGem().getGemId()), handler.sendCommand("print(d1.optA.gemId)").get());
 
 
@@ -238,7 +236,7 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals(Long.toString(e2.getGemId()), handler.sendCommand("print(e2.gemId)").get());
 
     e1.addListA(a1);
-    assertWait( () -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
+    assertWait(() -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
     assertEquals("1", handler.sendCommand("print(len(e1.listA))").get()); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listE))").get()); // correct on client?
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(e1.listA.get_gem_id(0))").get()); // correct on client?
@@ -255,7 +253,7 @@ public class PyExecTest extends AbstractPyTest {
 
 
     a1.addListE(e2);
-    assertWait( () -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
+    assertWait(() -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
     assertEquals(a1.getListEList().get(1).getGemId(), e2.getGemId()); // correct on server?
     assertEquals("1", handler.sendCommand("print(len(e1.listA))").get()); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(e2.listA))").get()); // correct on client?
@@ -267,17 +265,17 @@ public class PyExecTest extends AbstractPyTest {
 
     var e3Unloaded = MyDomainManager.testAssoc_2_EBuilder().build().get();
     a1.addListE(e3Unloaded);
-    assertWait( () -> assertEquals("3", handler.sendCommand("print(len(a1.listE))").get())); // correct on client?
+    assertWait(() -> assertEquals("3", handler.sendCommand("print(len(a1.listE))").get())); // correct on client?
 
-    System.err.println("Indexes "  + handler.sendCommand("print(a1.listE)").get());
-    System.err.println("Indexes "  + handler.sendCommand("print(a1.listE.indexes)").get());
+    System.err.println("Indexes " + handler.sendCommand("print(a1.listE)").get());
+    System.err.println("Indexes " + handler.sendCommand("print(a1.listE.indexes)").get());
 
     a1.removeListE(e3Unloaded);
-    assertWait( () -> assertEquals("2", handler.sendCommand("print(len(a1.listE))").get())); // correct on client?
+    assertWait(() -> assertEquals("2", handler.sendCommand("print(len(a1.listE))").get())); // correct on client?
 
 
     a1.removeListE(e2);
-    assertWait( () -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
+    assertWait(() -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
     assertEquals(1, a1.getListEList().size()); // correct on server?
     assertEquals(1, e1.getListAList().size()); // correct on server?
     assertEquals(0, e2.getListAList().size()); // correct on server?
@@ -286,8 +284,8 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals("1", handler.sendCommand("print(len(a1.listE))").get()); // correct on client?
 
 
-    assertEquals("", handler.sendCommand("await e2.listA_add(0, " + a1.getGemId() +")").get());
-    assertEquals(2, a1.getListEList().size()); // correct on server?
+    assertEquals("", handler.sendCommand("await e2.listA_add(0, " + a1.getGemId() + ")").get());
+    assertWait(() -> assertEquals(2, a1.getListEList().size())); // correct on server?
     assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId()); // correct on server?
     assertEquals(a1.getListEList().get(1).getGemId(), e2.getGemId()); // correct on server?
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(e1.listA.get_gem_id(0))").get()); // correct on client?
@@ -297,7 +295,7 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals(Long.toString(e2.getGemId()), handler.sendCommand("print(a1.listE.get_gem_id(1))").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await a1.listE_rem(1)").get()); // remove e2
-    assertEquals(1, a1.getListEList().size()); // correct on server?
+    assertWait(() -> assertEquals(1, a1.getListEList().size())); // correct on server?
     assertEquals(1, e1.getListAList().size()); // correct on server?
     assertEquals(0, e2.getListAList().size()); // correct on server?
     assertEquals(e1.getGemId(), a1.getListEList().get(0).getGemId()); // correct on server?
@@ -308,7 +306,7 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals(Long.toString(e1.getGemId()), handler.sendCommand("print(a1.listE.get_gem_id(0))").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await e1.listA_rem(0)").get()); // remove a1
-    assertEquals(0, a1.getListEList().size()); // correct on server?
+    assertWait(() -> assertEquals(0, a1.getListEList().size())); // correct on server?
     assertEquals(0, e1.getListAList().size()); // correct on server?
     assertEquals("0", handler.sendCommand("print(len(a1.listE))").get()); // correct on client?
     assertEquals("0", handler.sendCommand("print(len(e1.listA))").get()); // correct on client?
@@ -326,13 +324,13 @@ public class PyExecTest extends AbstractPyTest {
 
     // add via server
     f1.setOptA(a1);
-    assertWait( () -> assertEquals(1, a1.getListFList().size()));
+    assertWait(() -> assertEquals(1, a1.getListFList().size()));
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
 
     a1.addListF(f2);
-    assertWait( () -> assertEquals(2, a1.getListFList().size()));
+    assertWait(() -> assertEquals(2, a1.getListFList().size()));
     assertEquals("2", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
     assertEquals(Long.toString(f2.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(1))").get()); // correct on client?
@@ -341,26 +339,26 @@ public class PyExecTest extends AbstractPyTest {
 
     // remove via client
     assertEquals("", handler.sendCommand("await f1.setOptA(-1)").get()); // remove a1
-    assertEquals(Long.toString(-1), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
+    assertWait(() -> assertEquals(Long.toString(-1), handler.sendCommand("print(f1.optA.gemId)").get())); // correct on client?
     assertFalse(f1.getOptAGem().isPresent());
     assertEquals(1, a1.getListFList().size());
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await a1.listF_rem(0)").get()); // remove f2
-    assertEquals(0, a1.getListFList().size());
+    assertWait(() -> assertEquals(0, a1.getListFList().size()));
     assertEquals("0", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(-1), handler.sendCommand("print(f2.optA.gemId)").get()); // correct on client?
     assertFalse(f2.getOptAGem().isPresent());
 
     // add via client
     assertEquals("", handler.sendCommand("await f1.setOptA(" + a1.getGemId() + ")").get()); // f1.setOptA(a1);
-    assertEquals(1, a1.getListFList().size());
+    assertWait(() -> assertEquals(1, a1.getListFList().size()));
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await a1.listF_add(1, " + f2.getGemId() + ")").get()); // a1.addListF(f2);
-    assertEquals(2, a1.getListFList().size());
+    assertWait(() -> assertEquals(2, a1.getListFList().size()));
     assertEquals("2", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
     assertEquals(Long.toString(f2.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(1))").get()); // correct on client?
@@ -370,13 +368,13 @@ public class PyExecTest extends AbstractPyTest {
     // remove via backend
     // remove via client
     f1.setOptAAbsent(); // remove a1
-    assertWait( () -> assertEquals(Long.toString(-1), handler.sendCommand("print(f1.optA.gemId)").get())); // correct on client?
+    assertWait(() -> assertEquals(Long.toString(-1), handler.sendCommand("print(f1.optA.gemId)").get())); // correct on client?
     assertFalse(f1.getOptAGem().isPresent());
     assertEquals(1, a1.getListFList().size());
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
 
     a1.removeListF(f2); // await a1.listF_rem(0)
-    assertWait( () -> assertEquals(0, a1.getListFList().size()));
+    assertWait(() -> assertEquals(0, a1.getListFList().size()));
     assertEquals("0", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(-1), handler.sendCommand("print(f2.optA.gemId)").get()); // correct on client?
     assertFalse(f2.getOptAGem().isPresent());
@@ -407,12 +405,12 @@ public class PyExecTest extends AbstractPyTest {
 
   @FunctionalInterface
   public interface AwaitRunnable {
-     void run() throws IOException, ExecutionException, InterruptedException;
+    void run() throws IOException, ExecutionException, InterruptedException;
   }
 
   protected String getAndStore(String name, String type, long gemId)
       throws IOException, ExecutionException, InterruptedException {
     return handler.sendCommand(
-        String.format("%1$s = await my_domain_manager.get(MyDomain.%2$s.%2$s, %3$s)\nprint(%1$s.gemId)", name, type, gemId) ).get();
+        String.format("%1$s = await my_domain_manager.get(MyDomain.%2$s.%2$s, %3$s)\nprint(%1$s.gemId)", name, type, gemId)).get();
   }
 }
