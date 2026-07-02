@@ -1,53 +1,78 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import { Component, Input } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { config, GemPieChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemPieChartComponent';
-import { ChartDataset, ChartOptions } from "chart.js";
-import { NgChartsModule } from 'ng2-charts';
 import { GemPieChartData } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gempiecharttypes/GemPieChartData';
 import { autoColors } from './colors';
-import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import { PlotlyModule } from 'angular-plotly.js';
+import * as Plotly from 'plotly.js-dist-min';
+
+PlotlyModule.plotlyjs = Plotly;
 
 @Component({
   standalone: true,
-  imports: [...config.imports, NgChartsModule, GemChartOptions, GemChartLegend],
+  imports: [...config.imports, CommonModule, GemChartOptions, PlotlyModule],
   selector: config.selector,
   styleUrls: config.styleUrls,
   templateUrl: config.templateUrl,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GemPieChart extends GemPieChartComponent {
-  /**all labels of the entries in the chart*/
-  public labels: string[];
+export class GemPieChart extends GemPieChartComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  /**contains the data for each entry */
-  public dataSets: ChartDataset<'pie'>[] = [];
+  @HostBinding('style.display')
+  get hostDisplay() { return 'block'; }
 
-  /**all colors of the entries */
-  public colors = [];
+  @HostBinding('style.width')
+  get hostWidth() { return '100%'; }
 
-  /**variable with the size of the inner radius */
-  public _innerRadius: number;
+  @HostBinding('style.height')
+  get hostHeight() { return '100%'; }
 
-  /**labels for chart legend */
-  public legendLabels: string[];
-
-  /**colors for chart legend */
-  public legendColors: string[] = [];
-
-  /** defines the position of the legend */
-  public legendPosition: string;
-
-  /**variable that enables or disables the legend */
+  /** variable that enables or disables the legend */
   public displayLegend = true;
 
-  /**variable with the settings of the chart */
-  public options: ChartOptions<'doughnut'> = {
-    responsive: true,
-    maintainAspectRatio: true,
+  /** defines the position of the legend */
+  public legendPosition: string = 'bottom';
+
+  /** variable with the size of the inner radius (0-100) */
+  public _innerRadius: number = 0;
+
+  /** Plotly trace data */
+  public plotlyData: any[] = [];
+
+  /** Plotly layout configuration */
+  public _layout: any = {
+    autosize: true,
+    margin: { t: 30, b: 30, l: 30, r: 30 },
+    showlegend: true,
+    legend: { orientation: 'v', yanchor: 'auto', y: 0.5, xanchor: 'left', x: 1.02 }
   };
 
-  /**gives the colors from the constant autoColors */
+  /** Plotly display configuration */
+  public _config: any = {
+    displaylogo: false,
+    responsive: true
+  };
+
+  private resizeObserver!: ResizeObserver;
+
+  constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
+    super();
+  }
+
+  /** gives the colors from the constant autoColors */
   public getColors() {
     return autoColors;
   }
@@ -58,128 +83,160 @@ export class GemPieChart extends GemPieChartComponent {
     if (!data) {
       return;
     }
-    this.labels = data.getEntriesList().map(entry => entry.getLabel());
-    const colors = [];
-    const labels = [];
-    let autocolors = this.getColors();
-    let pointerAutoColors = 0;
 
-    for (let i = 0; i < data.getEntriesList().length; i++) {
-      if (!data.getEntries(i).getBackgroundColor() || !CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
-        data.getEntries(i).setBackgroundColor(autocolors[(pointerAutoColors++) % autocolors.length]);
-      }
-      const bgrColor = data.getEntries(i).getBackgroundColor();
-      const label = data.getEntries(i).getLabel();
-
-      labels.push(label);
-      colors.push(bgrColor);
+    const entries = typeof data.getEntriesList === 'function' ? data.getEntriesList() : (data as any).entries;
+    if (!entries || !Array.isArray(entries)) {
+      console.warn("GemPieChart: Received empty or structurally invalid data payload.", data);
+      this.plotlyData = [];
+      this.updatePlot();
+      this.cdr.detectChanges();
+      return;
     }
 
-    const hoverColors = colors.map(c => this.lightenColor(c, 20));
+    const labels: string[] = [];
+    const values: number[] = [];
+    const colors: string[] = [];
+    const autocolors = this.getColors();
+    let pointerAutoColors = 0;
 
-    this.dataSets = [{
-      data: data.getEntriesList().map(entry => entry.getValue()),
-      backgroundColor: colors,
-      hoverBackgroundColor: hoverColors,
-      hoverBorderColor: hoverColors
+    for (const entry of entries) {
+      const rawEntry: any = entry;
+      const label = typeof rawEntry.getLabel === 'function' ? rawEntry.getLabel() : rawEntry.label;
+      const value = typeof rawEntry.getValue === 'function' ? rawEntry.getValue() : rawEntry.value;
+      let color = typeof rawEntry.getBackgroundColor === 'function' ? rawEntry.getBackgroundColor() : rawEntry.backgroundColor;
+
+      if (!color || !CSS.supports('color', color)) {
+        color = autocolors[pointerAutoColors % autocolors.length];
+        pointerAutoColors++;
+        if (typeof rawEntry.setBackgroundColor === 'function') {
+          rawEntry.setBackgroundColor(color);
+        } else {
+          rawEntry.backgroundColor = color;
+        }
+      }
+
+      labels.push(label);
+      values.push(value);
+      colors.push(color);
+    }
+
+    this.plotlyData = [{
+      type: 'pie',
+      labels: labels,
+      values: values,
+      marker: { colors: colors },
+      hole: this._innerRadius / 100,
+      hoverinfo: 'label+value+percent',
+      textinfo: 'none'
     }];
 
-    this.legendLabels = labels;
-    this.legendColors = colors;
+    this.updatePlot();
+    this.cdr.detectChanges();
   }
 
   @Input()
   public set innerRadius(innerRadius: number) {
-    this._innerRadius = innerRadius;
-    this.saveAllOptionsChanges();
-  }
-
-  /**function to set the color of entries where color is not set in input*/
-  colorsWithoutInput(colors) {
-    let autoColors: string[] = this.getColors();
-    let pointerNewColor: number = 0;
-    for (let i = 0; i < colors[0].backgroundColor.length; i++) {
-      if (colors[0].backgroundColor[i] === undefined) {
-        colors[0].backgroundColor[i] = autoColors[pointerNewColor];
-        pointerNewColor++;
-      }
-      else {
-        continue;
-      }
+    this._innerRadius = innerRadius !== undefined ? innerRadius : 0;
+    if (this.plotlyData && this.plotlyData.length > 0) {
+      this.plotlyData = [{
+        ...this.plotlyData[0],
+        hole: this._innerRadius / 100
+      }];
+      this.updatePlot();
+      this.cdr.detectChanges();
     }
-    return colors;
   }
 
-  /**
-   * Helper function to lighten a hex color by a percentage
-   * @param color The hex color string (e.g. #FF0000)
-   * @param percent The percentage to lighten (e.g. 20)
-   */
-  private lightenColor(color: string, percent: number): string {
-    if (!color || !color.startsWith('#')) {
-      return color; // Return original if not a valid hex code
-    }
-    const num = parseInt(color.replace('#', ''), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = ((num >> 8) & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
-
-    return '#' + (0x1000000 +
-      (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
-      (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
-      (B < 255 ? (B < 1 ? 0 : B) : 255)
-    ).toString(16).slice(1);
+  /** updates the inner radius from the slider input */
+  public changeInnerRadius(innerRadius: number) {
+    this.innerRadius = innerRadius;
   }
 
-  /**
-   * saves all unchanged settings of the chart when one specific setting is changed
-   */
-  saveAllOptionsChanges() {
-    this.options = {
-      responsive: true,
-      aspectRatio: 1,
-      maintainAspectRatio: false,
-      cutout: this._innerRadius,
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function (tooltipItem) {
-              return tooltipItem.label + ': ' + tooltipItem.raw;
-            }
-          }
-        },
-        legend: {
-          display: false
-        }
-      }
-    };
-  }
-
-  changeInnerRadius(innerRadius: number) {
-    this._innerRadius = innerRadius;
-    this.saveAllOptionsChanges();
-  }
-
+  /** sets the legend position and updates the Plotly layout */
   public setLegendPosition(legendPosition: string) {
     this.legendPosition = legendPosition;
+    this.applyLegendPosition(legendPosition);
+    this.updatePlot();
+    this.cdr.detectChanges();
   }
 
-  /** changes container style depending on legend position */
+  /** changes container style depending on legend position (kept for compatibility) */
   public changeContainer() {
-    switch (this.legendPosition) {
-      case 'left':
-        return 'wholeChartWithLegendLeftContainer';
-      case 'top':
-        return 'wholeChartWithLegendTopContainer';
-      case 'bottom':
-        return 'wholeChartWithLegendBottomContainer';
-      case 'right':
-        return 'wholeChartWithLegendRightContainer';
-      default:
-        return 'wholeChartWithLegendBottomContainer';
+    return '';
+  }
+
+  public ngOnInit(): void {
+    this.applyLegendPosition(this.legendPosition);
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const initialRect = this.el.nativeElement.getBoundingClientRect();
+      if (initialRect.width > 0 && initialRect.height > 0) {
+        this.handleResize(initialRect.width, initialRect.height);
+      }
+      window.dispatchEvent(new Event('resize'));
+    }, 0);
+
+    this.resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        setTimeout(() => {
+          this.handleResize(entry.contentRect.width, entry.contentRect.height);
+        }, 0);
+      }
+    });
+    this.resizeObserver.observe(this.el.nativeElement);
+  }
+
+  ngOnDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
     }
   }
 
-  public ngOnInit(): void { }
+  private handleResize(width: number, height: number) {
+    if (width === 0 || height === 0) {
+      return;
+    }
+
+    const isSmall = width < 450 || height < 250;
+    const fontSize = isSmall ? 9 : 12;
+
+    if (this._layout.legend) {
+      this._layout.legend = { ...this._layout.legend, font: { ...(this._layout.legend.font || {}), size: fontSize } };
+    }
+
+    this.updatePlot();
+    this.cdr.detectChanges();
+  }
+
+  private applyLegendPosition(legendPosition: string) {
+    this._layout.showlegend = this.displayLegend;
+    const baseMargin = { t: 30, b: 30, l: 30, r: 30 };
+
+    if (legendPosition === 'top') {
+      this._layout.legend = { orientation: 'h', yanchor: 'bottom', y: 1.02, xanchor: 'center', x: 0.5 };
+      this._layout.margin = { ...baseMargin, t: 50 };
+    } else if (legendPosition === 'bottom') {
+      this._layout.legend = { orientation: 'h', yanchor: 'top', y: -0.25, xanchor: 'center', x: 0.5 };
+      this._layout.margin = { ...baseMargin, b: 50 };
+    } else if (legendPosition === 'left') {
+      this._layout.legend = { orientation: 'v', yanchor: 'auto', y: 0.5, xanchor: 'right', x: -0.1 };
+      this._layout.margin = { ...baseMargin, l: 50 };
+    } else {
+      this._layout.legend = { orientation: 'v', yanchor: 'auto', y: 0.5, xanchor: 'left', x: 1.02 };
+      this._layout.margin = { ...baseMargin, r: 50 };
+    }
+
+    this.updatePlot();
+  }
+
+  private updatePlot(): void {
+    this.plotlyData = [...this.plotlyData];
+    this._layout = {
+      ...this._layout,
+      margin: { ...this._layout.margin },
+      legend: this._layout.legend ? { ...this._layout.legend } : this._layout.legend
+    };
+  }
 }
