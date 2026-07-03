@@ -223,7 +223,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
     // add set externally check attr
     String setExternName = name + "SetExternally";
-    getCD4C().addAttribute(clazz, "private boolean " + setExternName + " = false");
+    getCD4C().addAttribute(clazz, "protected boolean " + setExternName + " = false");
 
     // add wait external value attr
     String externInitName = addExternInitAttr(name);
@@ -243,6 +243,9 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
     getCD4C().addMethod(clazz, getParamSetterTemplate(), type, name, setterName,
         setExternName, notifyObserversName);
 
+    String setterInternalName = "set" + StringTransformations.capitalize(node.getName()) + "Internal";
+    getCD4C().addMethod(clazz, getParamSetterInternalTemplate(), type, name, setterInternalName);
+
     String initName = "init" + StringTransformations.capitalize(node.getName());
 
     // case 1: component Foo(App app)
@@ -255,7 +258,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
       if (dep.isPresent()) {
         dep.get().setInitMethod(new MethodTemplate(
             getInitParamSingletonTemplate(), type, name, manager,
-            initName, setExternName, externInitName
+            initName, setExternName, externInitName, setterInternalName
         ));
       }
     }
@@ -268,7 +271,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
               getInitDerivedDomainParamTemplate(), type, name, manager,
-              initName, setExternName, externInitName
+              initName, setExternName, externInitName, setterInternalName
           ));
         }
       }
@@ -281,7 +284,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         if (dep.isPresent()) {
           dep.get().setInitMethod(new MethodTemplate(
               getInitDomainParamTemplate(), type, name, manager, id,
-              initName, setExternName, externInitName, util.isAbstractDomainType(typeSTE)
+              initName, setExternName, externInitName, util.isAbstractDomainType(typeSTE), setterInternalName
           ));
         }
       }
@@ -336,7 +339,7 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
         // add init
         dep.get().setInitMethod(new MethodTemplate(
             getInitDomainListTemplate(), getSimpleType(innerType), name, manager,
-            initName, setExternName, externInitName
+            initName, setExternName, externInitName, setterInternalName
         ));
       }
     }
@@ -1718,6 +1721,10 @@ public class GUI2JavaClassDecorator extends GUI2ClassDecorator implements GUIDSL
 
   protected String getParamSetterTemplate() {
     return "umlp.gui2java.GUI2JavaParamSetter";
+  }
+
+  protected String getParamSetterInternalTemplate() {
+    return "umlp.gui2java.GUI2JavaParamSetterInternal";
   }
 
   protected String getArgGetterTemplate() {

@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test_gui;
+
+import LoadingTests.Person;
+
+component OverrideInit(List<Person> domainObjList, Person domainObj, UpdateListHelper singleton)
