@@ -47,11 +47,6 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
 
     // Check if there is a source-map for this file
     Path sourceMap = Path.of(sourceFile.getPhysicalPath() + ".map");
-    if(sourceMap.getFileName().endsWith("TOP")){
-      String value = "Source-map for TOP not implemented yet.";
-      return Optional.of(StringEscapeUtils.escapeJava(value));
-    }
-
     if(Files.exists(sourceMap)){
       try {
         JsonFactory factory = new JsonFactory();
@@ -67,7 +62,6 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
             if ("sources".equals(field) && token == JsonToken.START_ARRAY) {
               if (parser.nextToken() == JsonToken.VALUE_STRING) {
                 String relativeSource = parser.getText();
-                relativeSource = "..\\" + relativeSource;
                 sourcePath = sourceMap.getParent()
                     .resolve(relativeSource)
                     .normalize()
