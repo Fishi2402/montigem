@@ -1,6 +1,6 @@
 {
   "name": "comment",
-  "version": "7.6.0",
+  "version": "8.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -20,10 +20,10 @@
     "@angular/platform-browser": "^17.0.7",
     "@angular/platform-browser-dynamic": "^17.0.7",
     "@angular/router": "^17.0.7",
-    "@umlp/arrange": "^7.6.0",
-    "@umlp/input": "^7.6.0",
-    "@umlp/common": "^7.6.0",
-    "@umlp/basic": "^7.6.0",
+    "@umlp/arrange": "^8.0.0",
+    "@umlp/input": "^8.0.0",
+    "@umlp/commonj2ts": "^8.0.0",
+    "@umlp/basic": "^8.0.0",
     "many-keys-map": "2.0.1",
     "async-mutex": "^0.5.0",
     "moment": "2.29.4",
