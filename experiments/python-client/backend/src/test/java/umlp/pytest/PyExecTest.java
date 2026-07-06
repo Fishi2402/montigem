@@ -325,13 +325,13 @@ public class PyExecTest extends AbstractPyTest {
     // add via server
     f1.setOptA(a1);
     assertWait(() -> assertEquals(1, a1.getListFList().size()));
-    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
+    assertWait(() -> assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get())); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
 
     a1.addListF(f2);
     assertWait(() -> assertEquals(2, a1.getListFList().size()));
-    assertEquals("2", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
+    assertWait(() ->assertEquals("2", handler.sendCommand("print(len(a1.listF))").get())); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
     assertEquals(Long.toString(f2.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(1))").get()); // correct on client?
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
@@ -340,26 +340,26 @@ public class PyExecTest extends AbstractPyTest {
     // remove via client
     assertEquals("", handler.sendCommand("await f1.setOptA(-1)").get()); // remove a1
     assertWait(() -> assertEquals(Long.toString(-1), handler.sendCommand("print(f1.optA.gemId)").get())); // correct on client?
-    assertFalse(f1.getOptAGem().isPresent());
+    assertWait(() -> assertFalse(f1.getOptAGem().isPresent()));
     assertEquals(1, a1.getListFList().size());
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await a1.listF_rem(0)").get()); // remove f2
     assertWait(() -> assertEquals(0, a1.getListFList().size()));
-    assertEquals("0", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
+    assertWait(() -> assertEquals("0", handler.sendCommand("print(len(a1.listF))").get())); // correct on client?
     assertEquals(Long.toString(-1), handler.sendCommand("print(f2.optA.gemId)").get()); // correct on client?
     assertFalse(f2.getOptAGem().isPresent());
 
     // add via client
     assertEquals("", handler.sendCommand("await f1.setOptA(" + a1.getGemId() + ")").get()); // f1.setOptA(a1);
     assertWait(() -> assertEquals(1, a1.getListFList().size()));
-    assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
+    assertWait(() -> assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get())); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
 
     assertEquals("", handler.sendCommand("await a1.listF_add(1, " + f2.getGemId() + ")").get()); // a1.addListF(f2);
     assertWait(() -> assertEquals(2, a1.getListFList().size()));
-    assertEquals("2", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
+    assertWait(() -> assertEquals("2", handler.sendCommand("print(len(a1.listF))").get())); // correct on client?
     assertEquals(Long.toString(f1.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(0))").get()); // correct on client?
     assertEquals(Long.toString(f2.getGemId()), handler.sendCommand("print(a1.listF.get_gem_id(1))").get()); // correct on client?
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(f1.optA.gemId)").get()); // correct on client?
@@ -375,7 +375,7 @@ public class PyExecTest extends AbstractPyTest {
 
     a1.removeListF(f2); // await a1.listF_rem(0)
     assertWait(() -> assertEquals(0, a1.getListFList().size()));
-    assertEquals("0", handler.sendCommand("print(len(a1.listF))").get()); // correct on client?
+    assertWait(() -> assertEquals("0", handler.sendCommand("print(len(a1.listF))").get())); // correct on client?
     assertEquals(Long.toString(-1), handler.sendCommand("print(f2.optA.gemId)").get()); // correct on client?
     assertFalse(f2.getOptAGem().isPresent());
 
