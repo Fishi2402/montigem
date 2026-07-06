@@ -14,8 +14,9 @@ public abstract class FrontendCIImageTask extends FrontendImageTask {
         return result;
     }));
     getUseRegistry().convention(true);
-    getRegistryUser().convention(System.getenv("CI_REGISTRY_USER"));
-    getRegistryPassword().convention(System.getenv("CI_REGISTRY_PASSWORD"));
+    // Use the "same" properties as the targets of the backend
+    getRegistryUser().convention(getProject().provider(() -> System.getProperty("jib.to.auth.username")));
+    getRegistryPassword().convention(getProject().provider(() -> System.getProperty("jib.to.auth.password")));
     dependsOn(getProject().getTasks().findByName("build"));
   }
 }
