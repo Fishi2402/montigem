@@ -86,6 +86,8 @@ classdiagram CoverageDashboard{
   association [1] CoverageSourceFile -> (metrics) CoverageMetrics [1];
   association [1] CoverageSourceFile -> (scopes) CoverageScope[*];
   association [1] CoverageSourceFile -> (category) ArtifactCategory [1];
+  association [1] CoverageSourceFile -> (generatedBy) CoverageSourceFile [*];
+
 
   association [1] CoverageScope -> (metrics) CoverageMetrics [1];
   association [1] CoverageScope -> (subScopes) CoverageScope [*];

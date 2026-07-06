@@ -8,6 +8,7 @@ import coveragedashboard.ArtifactCategory;
 import coveragedashboard.ColumnRangeType;
 import coveragedashboard.CoverageColumnRange;
 import coveragedashboard.CoverageDashboardManager;
+import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageLineBuilder;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
@@ -15,15 +16,24 @@ import coveragedashboard.CoverageReport;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.ReportType;
+import de.monticore.sourcemap.DecodedMapping;
+import de.monticore.sourcemap.DecodedSource;
+import de.monticore.sourcemap.DecodedSourceMap;
+import de.monticore.sourcemap.Decoding;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 class C8JsonCoverageParser implements CoverageReportParser {
@@ -104,7 +114,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private CoverageSourceFile createSourceFile(
       String filePath, Path basePath, Map<String, Range> statementMap,
       Map<String, List<Range>> branchMap, Map<String, Integer> statementHits,
-      Map<String, List<Integer>> branchHits){
+      Map<String, List<Integer>> branchHits) throws IOException{
     Map<Integer, CoverageLineBuilder> lines = new HashMap<>();
 
     int fileCoveredInstructions = 0;
@@ -170,8 +180,8 @@ class C8JsonCoverageParser implements CoverageReportParser {
       // instructions or branches
       if(lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0){
         fileMissedLines++;
-        fileCoveredLines++;
       }else{
+        fileCoveredLines++;
       }
     }
 
@@ -195,7 +205,108 @@ class C8JsonCoverageParser implements CoverageReportParser {
       coverageSourceFileBuilder.linesAdd(lineBuilder.build().get());
     }
 
+    // Check if the file was generated
+    try {
+      List<CoverageSourceFile> coverageSourceFileGeneratedBy = getGenerationFiles(coverageSourceFileBuilder, basePath);
+      coverageSourceFileBuilder.addAllGeneratedBys(coverageSourceFileGeneratedBy);
+    }catch (URISyntaxException e){
+      Log.error("Not able to resolve source-map for " + coverageSourceFileBuilder.getPath() + ": " + e.getMessage());
+    }
+
     return coverageSourceFileBuilder.build().get();
+  }
+
+
+  private List<CoverageSourceFile> getGenerationFiles(CoverageSourceFileBuilder targetFileBuilder, Path basePath) throws IOException, URISyntaxException {
+    List<CoverageSourceFile> generatedBy = new ArrayList<>();
+
+    // Check if a source-map exists
+    Path sourceMapPath = Path.of(targetFileBuilder.getPhysicalPath() + ".map");
+    if(Files.exists(sourceMapPath)){
+      String sourceMapContent = Files.readString(sourceMapPath);
+      DecodedSourceMap sourceMap = Decoding.parseSourceMapJson(
+          sourceMapContent, sourceMapPath.getParent().toUri().toURL());
+      List<DecodedMapping> decodedMappings = sourceMap.getMappings();
+
+      // Performance: Pre-map target lines for O(1) lookup
+      Map<Integer, CoverageLine> targetLineMap = targetFileBuilder.getLinesList().stream().collect(
+          Collectors.toMap(CoverageLine::getLineNumber, l -> l, (existing, replacement) -> existing)
+      );
+
+      for(DecodedSource decodedSource : sourceMap.sources){
+        // Skip if we can not find the source, or it is explicitly ignored
+        if(decodedSource.ignored || decodedSource.url == null)
+          continue;
+
+        CoverageSourceFileBuilder sourceCoverageFile = CoverageDashboardManager.coverageSourceFileBuilder()
+            .path(extractRelativePath(Path.of(decodedSource.url.toURI()), basePath))
+            .name(extractFileName(Path.of(decodedSource.url.toURI())))
+            .physicalPath(Path.of(decodedSource.url.toURI()).toString())
+            // Check how we will decide this later on!
+            .category(ArtifactCategory.GENERATED);
+
+        Map<Integer, CoverageLineBuilder> lineBuilders = new HashMap<Integer, CoverageLineBuilder>();
+        // Get all mappings for this source and build the lines based on the coverage data
+        decodedMappings.stream().filter(mapping -> mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url))
+            .forEach(mapping ->{
+
+              CoverageLine targetLine = targetLineMap.get(mapping.generatedLine);
+              if(targetLine == null)
+                return;
+
+              // Get the line-coverage for this line in the target file and based on this, we set the coverage for the source-file
+              CoverageLineBuilder line = lineBuilders.computeIfAbsent(mapping.originalLine,
+                    (lineNumber) -> CoverageDashboardManager.coverageLineBuilder()
+                        .lineNumber(lineNumber)
+                        .coveredInstructions(0)
+                        .missedInstructions(0)
+                        .coveredBranches(0)
+                        .missedBranches(0));
+
+              // For now, only map the lines back
+              line.missedInstructions(line.getMissedInstructions() + targetLine.getMissedInstructions());
+              line.coveredInstructions(line.getCoveredInstructions() + targetLine.getCoveredInstructions());
+              line.missedBranches(line.getMissedBranches() + targetLine.getMissedBranches());
+              line.coveredBranches(line.getCoveredBranches() + targetLine.getCoveredBranches());
+        });
+
+        int fileCoveredInstructions = 0;
+        int fileMissedInstructions = 0;
+        int fileCoveredBranches = 0;
+        int fileMissedBranches = 0;
+        int fileCoveredLines = 0;
+        int fileMissedLines = 0;
+
+        // Finish the builder and add to the source-file and build up the file-metrics on the fly
+        for(CoverageLineBuilder lineBuilder : lineBuilders.values()){
+          sourceCoverageFile.linesAdd(lineBuilder.build().get());
+          fileCoveredBranches += lineBuilder.getCoveredBranches();
+          fileCoveredInstructions += lineBuilder.getCoveredInstructions();
+          fileMissedBranches += lineBuilder.getMissedBranches();
+          fileMissedInstructions += lineBuilder.getMissedInstructions();
+          if(lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0){
+            fileMissedLines++;
+          }else{
+            fileCoveredLines++;
+          }
+        }
+
+        CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(fileCoveredInstructions)
+            .missedInstructions(fileMissedInstructions)
+            .coveredBranches(fileCoveredBranches)
+            .missedBranches(fileMissedBranches)
+            .coveredLines(fileCoveredLines)
+            .missedLines(fileMissedLines)
+            .build().get();
+
+        sourceCoverageFile.metrics(fileMetrics);
+
+        generatedBy.add(sourceCoverageFile.build().get());
+      }
+    }
+
+    return generatedBy;
   }
 
   private CoverageColumnRange createColumnRange(Range range, int hits, ColumnRangeType type){
@@ -210,17 +321,24 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private String extractFileName(String fullPath){
     if(fullPath == null || fullPath.isBlank())
       return "unknown";
-    Path path = Paths.get(fullPath).normalize();
-    Path fileName = path.getFileName();
+    return extractFileName(Path.of(fullPath));
+  }
+
+  private String extractFileName(Path fullPath){
+    Path fileName = fullPath.normalize().getFileName();
     return fileName != null ? fileName.toString() : "unknown";
   }
 
   private String extractRelativePath(String fullPath, Path basePath){
     if(fullPath == null || fullPath.isBlank())
       return "unknown";
-    Path target = Paths.get(fullPath).normalize();
+    return extractRelativePath(Path.of(fullPath), basePath);
+  }
+
+  private String extractRelativePath(Path fullPath, Path basePath){
+    Path target = fullPath.normalize();
     if(basePath == null || !target.startsWith(basePath))
-      return fullPath;
+      return fullPath.toString();
     return basePath.relativize(target).toString();
   }
 
