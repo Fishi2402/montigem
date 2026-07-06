@@ -28,6 +28,7 @@ public abstract class DependencyPlugin implements Plugin<Project> {
 
   public static final String UMLP_CONFIG_TOOL = "umlpTool";
   public static String version;
+  public static String mc_version;
 
   @Override
   public void apply(Project project) {
@@ -37,21 +38,25 @@ public abstract class DependencyPlugin implements Plugin<Project> {
     toolConfig.setDescription("Classpath of the executed montigem/umlp-tool (jar)");
     // Load the buildInfo.properties file (containing the current version)
     Properties buildInfo = new Properties();
-    try (InputStream is = DependencyPlugin.class.getResourceAsStream("/buildInfo.properties")) {
+    try (InputStream is = DependencyPlugin.class.getResourceAsStream("/mg3BuildInfo.properties")) {
       buildInfo.load(is);
     } catch (Exception e) {
-      Log.error("Cannot load /buildInfo.properties from classpath", e);
+      Log.error("Cannot load /mg3BuildInfo.properties from classpath", e);
     }
     version = Objects.requireNonNull(
         buildInfo.getProperty("version"),
-        "Cannot find version in buildInfo.properties"
+        "Cannot find version in mg3BuildInfo.properties"
+    );
+    mc_version = Objects.requireNonNull(
+        buildInfo.getProperty("mc_version"),
+        "Cannot find mc_version in mg3BuildInfo.properties"
     );
     // Add the dependencies to the toolConfig
     toolConfig.setCanBeResolved(true);
     toolConfig.defaultDependencies(dependencies -> {
       dependencies.add(project.getDependencies().create("umlp:umlp-tool:" + version));
-      dependencies.add(project.getDependencies().create("de.monticore.lang:cd4analysis:" + version + ":cdmerge"));
-      dependencies.add(project.getDependencies().create("de.monticore.lang:od:" + version));
+      dependencies.add(project.getDependencies().create("de.monticore.lang:cd4analysis:" + mc_version + ":cdmerge"));
+      dependencies.add(project.getDependencies().create("de.monticore.lang:od:" + mc_version));
     });
     toolConfig.attributes(it -> {
       // Do not use the shadowed bundling variant

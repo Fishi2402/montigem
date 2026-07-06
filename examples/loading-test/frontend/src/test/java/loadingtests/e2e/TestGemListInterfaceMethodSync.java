@@ -32,7 +32,6 @@ public class TestGemListInterfaceMethodSync extends AbstractLoadingTestsE2ETest 
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
   }
 
-  @Disabled
   @Test
   public void testAdd(Page page) throws Exception{
     navAndWait(page, "/test_gemlist_listinterface_sync/TestGemListListInterface/"
@@ -47,7 +46,6 @@ public class TestGemListInterfaceMethodSync extends AbstractLoadingTestsE2ETest 
     assertEquals(rightSide.getGemId(), leftSide.getConnectedRightListList().get(0).getGemId());
   }
 
-  @Disabled
   @Test
   public void testRemove(Page page) throws Exception{
     leftSide.addConnectedRightList(rightSide);

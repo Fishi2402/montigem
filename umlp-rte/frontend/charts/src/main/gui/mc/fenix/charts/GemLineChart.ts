@@ -8,6 +8,7 @@ import { GemLineChartData } from '../../../../../../build/gui2java2ts/mc/fenix/c
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -83,32 +84,33 @@ export class GemLineChart extends GemLineChartComponent {
     this.dataSets = [];
     const colors = [];
     const labels = [];
-    this.labels = data.getLabelsList();
-    let autocolors = this.getColors();
-    let pointerAutoColors = 0;
+    (async () => {
+      this.labels = await GemListUtil.toArraySync(data.getLabelsList());
+      let autocolors = this.getColors();
+      let pointerAutoColors = 0;
 
-    for (let i = 0; i < data.getEntriesList().length; i++) {
-      if (!CSS.supports('color', data.getEntries(i).getBorderColor())) {
-        data.getEntries(i).setBorderColor(autocolors[pointerAutoColors++]);
+      for await(const lCEntry of data.getEntriesList()) {
+        if (!CSS.supports('color', lCEntry.getBorderColor())) {
+          lCEntry.setBorderColor(autocolors[pointerAutoColors++]);
+        }
+        // TODO: apply alpha value to color string support
+        let entry: ChartDataset<'line'> = {
+          data: (await GemListUtil.toArraySync(lCEntry.getDataList())),
+          label: lCEntry.getLabel(),
+          borderColor: lCEntry.getBorderColor(),
+          backgroundColor: lCEntry.getBackgroundColor() + "30",
+          pointBackgroundColor: lCEntry.getPointBackgroundColor()
+        }
+
+        // TODO: option to fill background
+        entry.fill = false;
+        labels.push(entry.label);
+        colors.push(entry.borderColor);
+        this.dataSets.push(entry);
       }
-      // TODO: apply alpha value to color string support
-      let entry: ChartDataset<'line'> = {
-        data: data.getEntries(i).getDataList(),
-        label: data.getEntries(i).getLabel(),
-        borderColor: data.getEntries(i).getBorderColor(),
-        backgroundColor: data.getEntries(i).getBackgroundColor() + "30",
-        pointBackgroundColor: data.getEntries(i).getPointBackgroundColor()
-      }
-
-      // TODO: option to fill background
-      entry.fill = false;
-      labels.push(entry.label);
-      colors.push(entry.borderColor);
-      this.dataSets.push(entry);
-    }
-
-    this.legendLabels = labels;
-    this.legendColors = colors;
+      this.legendLabels = labels;
+      this.legendColors = colors;
+    })();
   }
 
   @Input()

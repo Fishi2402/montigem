@@ -59,6 +59,7 @@ import static de.montigem.gradle.FrontendBasePlugin.getModels;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.FrontendBasePlugin.umlpVersion;
 import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
 import static de.montigem.gradle.FrontendPlugin.CD2JAVA_TASK;
 import static de.montigem.gradle.FrontendPlugin.CD2SYM_TASK;
@@ -174,7 +175,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         project.getDependencies().add("implementation", project.project(":umlp-rte:backend"));
       }
       else {
-        project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
+        project.getDependencies().add("implementation", "umlp:umlp-rte:" + umlpVersion(project));
       }
     }
 
@@ -205,6 +206,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
         Provider<Directory> cd2tagsDir = subproject.getLayout().getBuildDirectory().dir("cd2tags");
         Provider<Directory> umlp2tsDir = subproject.getLayout().getBuildDirectory().dir("umlp2ts");
         Provider<Directory> gui2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("gui2jsweetAdapter");
+        Provider<Directory> cd2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("cd2jsweetAdapter");
         Provider<Directory> internalJSweetDir = subproject.getLayout().getBuildDirectory().dir("internal_jsweet");
         Provider<Directory> umlpJava2tsDir = subproject.getLayout().getBuildDirectory().dir("umlpJava2ts");
         Provider<Directory> umlp2jsweetAdapterDir = subproject.getLayout().getBuildDirectory().dir("umlp2jsweetAdapter");
@@ -380,6 +382,8 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
           task.getInput().from(srcGUI);
           if (cdPresent) {
             task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+            task.getCD2JavaInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+            task.getCD2JavaJSweetAdapterDir().set(cd2jsweetAdapterDir);
           }
           task.getModelDir().from(srcGUI);
           task.getHandWrittenCodeDir().from(srcGUI);
@@ -621,7 +625,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
       project.getDependencies().add("implementation", jsweet.get());
     }
     else {
-      project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + mcVersion(project));
+      project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + umlpVersion(project));
     }
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)

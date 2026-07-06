@@ -1,4 +1,4 @@
-import {Stream, StringHelper} from "./";
+import {AsyncStream, StringHelper} from "./";
 
 export class Arrays {
   public static asList<T>(...a: T[]): T[] {
@@ -27,11 +27,11 @@ export class Arrays {
     a.sort();
   }
 
-  public static stream<T>(array: T[]): Stream<T> {
-    return new Stream(array);
+  public static stream<T>(array: T[]): AsyncStream<T> {
+    return AsyncStream.of(array)
   }
 
-  public static streamRange<T>(array: T[], startInclusive: number, endExclusive: number): Stream<T> {
+  public static streamRange<T>(array: T[], startInclusive: number, endExclusive: number): AsyncStream<T> {
     return this.stream(array.slice(startInclusive, endExclusive));
   }
 

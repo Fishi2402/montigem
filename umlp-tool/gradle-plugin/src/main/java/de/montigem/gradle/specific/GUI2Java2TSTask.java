@@ -100,6 +100,20 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
   @Classpath
   public abstract ConfigurableFileCollection getClassPath();
 
+  /**
+   * Java sources from the cd2java step, transpiled in a separate first Java2TSAction.
+   * Leave empty when no .cd files are present.
+   */
+  @InputFiles
+  @Optional
+  @IgnoreEmptyDirectories
+  @PathSensitive(PathSensitivity.RELATIVE)
+  public abstract ConfigurableFileCollection getCD2JavaInput();
+
+  @OutputDirectory
+  @Optional
+  public abstract DirectoryProperty getCD2JavaJSweetAdapterDir();
+
   @Override
   protected boolean shouldRunAgain(InputChanges inputChanges) {
     return getInputFilesAsStream()
@@ -132,7 +146,18 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
       params.getHandWrittenJSweetDir().set(getHandWrittenJSweetDir());
       params.getSrcDirs().from(filteredSrcDirs);
     });
-    // wait for gui2jsweetAdapter to complete
+
+    if (getCD2JavaJSweetAdapterDir().isPresent()) {
+      filteredSrcDirs.plus(getCD2JavaInput());
+      workQueue2.submit(GUI2JSweetAdapterAction.class, params -> {
+        params.getDomain().set(getDomain());
+        params.getUseModuleGUIAdapter().set(false);
+        params.getJSweetAdapterDir().set(getCD2JavaJSweetAdapterDir());
+        params.getHandWrittenJSweetDir().set(getHandWrittenJSweetDir());
+        params.getSrcDirs().from(filteredSrcDirs);
+      });
+    }
+    // wait for both gui2jsweetAdapter actions to complete
     workQueue2.await();
 
     try {
@@ -166,29 +191,22 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     // classpath passed to jsweet
     List<String> classPath = new ArrayList<>();
     classPath.add(getProject().getConfigurations().getByName("runtimeClasspath").getAsPath());
-
-    // Prepare a WorkQueue in the jsweet class path
-    WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec ->
-        spec.getClasspath().from(getJSweetClassPath())
-    );
+    String classPathStr = String.join(File.pathSeparator, classPath);
 
     // collect all .java files
     Set<Path> individualInputPaths = walkAndCollectJavaFiles(inputOutputDir.getAsFileTree().getFiles());
     individualInputPaths.addAll(walkAndCollectJavaFiles(getInput4RelativePathCalculation().getFiles()));
     individualInputPaths.addAll(walkAndCollectJavaFiles(getHandWrittenCodeDir().getFiles()));
 
+    // cd2java files get their own first action
+    Set<Path> cd2javaPaths = walkAndCollectJavaFiles(getCD2JavaInput().getFiles());
+
     // excluded matchers
     FileSystem fs = FileSystems.getDefault();
-    List<PathMatcher> matchers = getExcludeSource().get().stream()
+    List<PathMatcher> excludeMatchers = getExcludeSource().get().stream()
         .map(fs::getPathMatcher).collect(Collectors.toList());
 
-    // collection for the .java sources
-    ConfigurableFileCollection filteredSources = getProject().getObjects().fileCollection();
-    // add all files to the collection if they are not excluded
-    individualInputPaths.stream().filter(p -> matchers.stream().noneMatch(pm -> pm.matches(p)))
-        .forEach(filteredSources::from);
-
-    // and collect the excluded from transpilation sources
+    // collect the excluded from transpilation sources (shared across both actions)
     ConfigurableFileCollection excludedFromTr = getProject().getObjects().fileCollection();
     List<PathMatcher> excludeFromTransMatchers = getExcludeTranspile().get().stream()
         .map(fs::getPathMatcher).collect(Collectors.toList());
@@ -203,8 +221,54 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     // also add all files (recursively) from getExcludeTranspileFiles
     walkAndCollectJavaFiles(getExcludeTranspileFiles().getFiles()).forEach(excludedFromTr::from);
 
-    // Copy relevant properties into the transpile-work-action
-    workQueue.submit(Java2TSAction.class, params -> {
+    // Single WorkQueue so both actions share the same isolated classloader
+    WorkQueue jsweetQueue = getWorkerExecutor().classLoaderIsolation(spec ->
+        spec.getClasspath().from(getJSweetClassPath())
+    );
+
+    // First action: cd2java Java files (if any)
+    if (!cd2javaPaths.isEmpty()) {
+
+      // Only now add HWC Java Paths to CD2JavaPaths because they will be ignored in the second transpilation
+      Set<Path> hwcJavaPaths = walkAndCollectJavaFiles(getHandWrittenCodeDir().getFiles());
+      cd2javaPaths.addAll(hwcJavaPaths);
+
+      File cd2javaBaseDirectory = getCD2JavaJSweetAdapterDir().isPresent()
+          ? getCD2JavaJSweetAdapterDir().get().getAsFile()
+          : baseDirectory;
+
+      // collection for the .java sources
+      ConfigurableFileCollection cd2javaSources = getProject().getObjects().fileCollection();
+      cd2javaPaths.stream()
+          .filter(p -> excludeMatchers.stream().noneMatch(pm -> pm.matches(p)))
+          .forEach(cd2javaSources::from);
+
+      jsweetQueue.submit(Java2TSAction.class, params -> {
+        params.getInput().setFrom(cd2javaSources);
+        params.getExcludedFromTranspilation().setFrom(excludedFromTr);
+        params.getVerbose().set(getVerbose());
+        params.getBaseDirectory().set(cd2javaBaseDirectory);
+        params.getWorkingDirectory().set(workingDir);
+        params.getOutputDir().set(inputOutputDir);
+        params.getExtractedCandiesJavascriptDir().set(candiesJsOut);
+        params.getClassPath().set(classPathStr);
+        params.getNodeVersion().set(getNodeVersion().orElse(Java2TSTask.NODE_VERSION));
+      });
+      jsweetQueue.await();
+    }
+
+    // Second action: all sources; cd2java files present as sources but excluded from transpilation
+    ConfigurableFileCollection filteredSources = getProject().getObjects().fileCollection();
+    individualInputPaths.stream().filter(p -> excludeMatchers.stream().noneMatch(pm -> pm.matches(p)))
+        .forEach(filteredSources::from);
+
+    // cd2java files are excluded from transpilation in the second action (still available as sources)
+    if(!cd2javaPaths.isEmpty()) {
+      System.out.println("CDJavaPaths"+cd2javaPaths);
+      cd2javaPaths.forEach(excludedFromTr::from);
+    }
+
+    jsweetQueue.submit(Java2TSAction.class, params -> {
       params.getInput().setFrom(filteredSources);
       params.getExcludedFromTranspilation().setFrom(excludedFromTr);
       params.getVerbose().set(getVerbose());
@@ -217,7 +281,7 @@ public abstract class GUI2Java2TSTask extends GUI2JavaTask {
     });
 
     // Block until jsweet finishes
-    workQueue.await();
+    jsweetQueue.await();
   }
 
   protected Set<Path> walkAndCollectJavaFiles(Set<File> input) throws IOException {

@@ -69,16 +69,16 @@ export class Bingo extends BingoComponent {
     let messageText ="[" + this.user.getUsername() + "|" + date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes() + "]: " + value;
     let b = await SehubManager.messageBuilder();
     let message = await b.text(messageText).build();
-    this.messages.push(message);
+    this.messages.add(message);
     // Bad Workaround to reduce chats back to 40 if it managed to get somehow > 40
 
-    if(this.messages.length > 31) {
-      let m = this.messages[0];
+    if(await this.messages.size() > 31) {
+      let m = await this.messages.get(0);
       SehubManager.deleteMessage(m.getGemId());
-      m = this.messages[0]
+      m = await this.messages.get(0)
       SehubManager.deleteMessage(m.getGemId());
-    } else if(this.messages.length > 30) {
-      let m = this.messages[0]
+    } else if(await this.messages.size() > 30) {
+      let m = await this.messages.get(0)
       SehubManager.deleteMessage(m.getGemId());
     }
 

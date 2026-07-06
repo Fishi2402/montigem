@@ -27,7 +27,12 @@ export class ${cdName}ComponentObserverManager extends ComponentObserverManager 
     super();
     // AllObserver factory
 <#list domainClassNamesCDMap as domainClassName, package>
-    this.observerFactory.set("${domainClassName}", (update) => new ${domainClassName}AllObserver(update));
+    this.observerFactory.set("${domainClassName}", (update) => {
+      // Avoid Async Constructor here
+      const obs : ${domainClassName}AllObserver = new ${domainClassName}AllObserver();
+      obs.consumer = update;
+      return obs;
+    });
 </#list>
     // domain object getter factory
 <#list domainClassNamesCDMap as domainClassName, package>

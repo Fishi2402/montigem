@@ -9,6 +9,7 @@ import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
 import { GemBoxPlotData } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gemboxplottypes/GemBoxPlotData';
+import {GemListUtil} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -106,12 +107,14 @@ export class GemBoxPlot extends GemBoxPlotComponent {
     if (!data || !data.getEntriesList()) {
       return;
     }
-    const bgrColor = this.colorScheme.domain.map(x => x + "70");
-    this._entries = data.getEntriesList();
+    GemListUtil.toArraySync(data.getEntriesList()).then(arr => {
+      const bgrColor = this.colorScheme.domain.map(x => x + "70");
+      this._entries = arr;
 
-    this.legendColors = bgrColor;
+      this.legendColors = bgrColor;
 
-    this.updateValues();
+      this.updateValues();
+    })
   }
 
   constructor(private componentRef: ElementRef) {
@@ -250,23 +253,36 @@ export class GemBoxPlot extends GemBoxPlotComponent {
     // Add individual points "jitter"
     var jitterWidth = boxWidth * 2 / 3
     if (this.showDataPoints) {
-      svg
-        .selectAll("indPoints")
-        .data(this._entries.reduce((arraySoFar: [string, number][], currentValue: GemBoxPlotEntry) => {
-          currentValue.getPointsList().map(v => [currentValue.getGroup(), v]).forEach((e: [string, number]) => arraySoFar.push(e))
-          return arraySoFar
-        }, [] as [string, number][]))
-        .enter()
-        .append("circle")
-        .attr("cx", (d) => { return ((ordinalAxis(d[0]) || 0) - jitterWidth / 2 + Math.random() * jitterWidth) })
-        .attr("cy", (d) => { return (scalarAxis(d[1])) })
-        .attr("r", 4)
-        .style("fill", "white")
-        .attr("stroke", "black")
+      (async () => {
+        const points: [string, number][] = [];
+
+        for (const entry of this._entries) {
+          const group = entry.getGroup();
+
+          for await (const value of entry.getPointsList()) {
+            points.push([group, value]);
+          }
+        }
+
+        svg
+          .selectAll("indPoints")
+          .data(points)
+          .enter()
+          .append("circle")
+          .attr("cx", d =>
+            (ordinalAxis(d[0]) || 0) - jitterWidth / 2 + Math.random() * jitterWidth
+          )
+          .attr("cy", d => scalarAxis(d[1]))
+          .attr("r", 4)
+          .style("fill", "white")
+          .attr("stroke", "black");
+      })().catch(error => {
+        console.error("Failed to load box plot points:", error);
+      });
     }
   }
 
-  public drawHorizontalBoxDiagram(svg, boxes, margin, width, height) {
+  public async drawHorizontalBoxDiagram(svg, boxes, margin, width, height) {
     // Show the X scale
     var ordinalAxis = d3.scaleBand()
       .range([margin.top, height + margin.top])
@@ -355,19 +371,30 @@ export class GemBoxPlot extends GemBoxPlotComponent {
     // Add individual points "jitter"
     var jitterWidth = boxWidth * 2 / 3
     if (this._showDataPoints) {
+      const pointData: [string, number][] = [];
+
+      for (const currentValue of this._entries) {
+        for await (const v of currentValue.getPointsList()) {
+          pointData.push([currentValue.getGroup(), v]);
+        }
+      }
+
       svg
         .selectAll("indPoints")
-        .data(this._entries.reduce((arraySoFar: [string, number][], currentValue: GemBoxPlotEntry) => {
-          currentValue.getPointsList().map(v => [currentValue.getGroup(), v]).forEach((e: [string, number]) => arraySoFar.push(e))
-          return arraySoFar
-        }, [] as [string, number][]))
+        .data(pointData)
         .enter()
         .append("circle")
-        .attr("cx", (d) => { return (scalarAxis(d[1])) })
-        .attr("cy", (d) => { return ((ordinalAxis(d[0]) || 0) - jitterWidth / 2 + Math.random() * jitterWidth) })
+        .attr("cx", (d) => scalarAxis(d[1]))
+        .attr(
+          "cy",
+          (d) =>
+            (ordinalAxis(d[0]) || 0) -
+            jitterWidth / 2 +
+            Math.random() * jitterWidth
+        )
         .attr("r", 4)
         .style("fill", "white")
-        .attr("stroke", "black")
+        .attr("stroke", "black");
     }
   }
 

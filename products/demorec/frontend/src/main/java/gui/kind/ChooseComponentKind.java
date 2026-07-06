@@ -6,6 +6,7 @@ import demorec.DemoRecManager;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ public class ChooseComponentKind extends ChooseComponentKindTOP {
 
   public String selectComponentKindEntry = "";
 
-  public ChooseComponentKind(BatteryPackService service) {
+  BatteryPackService service = AngularUtils.inject(BatteryPackService.class);
+
+  public ChooseComponentKind() {
     super();
     service.addObserverFunction((BatteryPack p) -> {
       this.setPack(p);

@@ -118,21 +118,4 @@ public class GUIUtilAdapter extends AbstractAdapter {
     return super.getModuleImportDescriptor(currentCompilationUnit, importedName, importedClass);
   }
 
-  // TODO Migrate to new RTE TS Types Adapter
-
-  @Override
-  public boolean substituteNewClass(NewClassElement newClass) {
-    switch (newClass.getTypeAsElement().toString()) {
-      case "mc.fenix.input.gemtextinputtypes.GemTextInputValidity":
-        if (newClass.getArgumentCount() == 2) {
-          print("new GemTextInputValidity(").print(newClass.getArgument(0)).print(", ").print(newClass.getArgument(1)).print(")");
-          return true;
-        }
-        else if (newClass.getArgumentCount() == 0) {
-          print("new GemTextInputValidity(null, null)");
-          return true;
-        }
-    }
-    return super.substituteNewClass(newClass);
-  }
 }

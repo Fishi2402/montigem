@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { DataSet, DataView, Network, Options } from 'vis-network/standalone';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -57,18 +58,23 @@ export class GemNetworkGraph extends GemNetworkGraphComponent {
     this._data.setEdgesList(data.getEdgesList());
     this._nodes = new DataSet();
 
+    (async () => {
     if (!this._labelEqualsID) {
-      this._nodes.add(data.getNodesList().map(n => ({
-        id: n.getId(),
-        value: n.getValue(),
-        label: n.getLabel(),
-        mass: n.getMass(),
-        color: n.getColor(),
-        group: n.getGroup(),
-        year: n.getYear()
-      })));
+      const newNodes = [];
+      for await (let n of data.getNodesList()) {
+        newNodes.push({
+          id: n.getId(),
+          value: n.getValue(),
+          label: n.getLabel(),
+          mass: n.getMass(),
+          color: n.getColor(),
+          group: n.getGroup(),
+          year: n.getYear()
+        })
+      }
+      this._nodes.add(newNodes);
     } else {
-      for (let elem of data.getNodesList()) {
+      for await (let elem of data.getNodesList()) {
         if (typeof elem.getId() === "string") {
           elem.setLabel(elem.getId());
         }
@@ -84,14 +90,15 @@ export class GemNetworkGraph extends GemNetworkGraphComponent {
       }
     }
 
-    let nodeColors = data.getNodesList().map(entry => entry.getColor());
+    let nodeColors = (await GemListUtil.toArraySync(data.getNodesList())).map(entry => entry.getColor());
     const bgrColor = [...new Set(nodeColors)];
 
     this.legendColors = bgrColor;
     this.legendLabels = ["acylic", "cylic"]
 
     this.prepareData();
-    this.redrawGraph();
+    await this.redrawGraph();
+    })();
   }
 
   @Input()
@@ -146,41 +153,47 @@ export class GemNetworkGraph extends GemNetworkGraphComponent {
         });
         this._data.setNodesList(this.nodesView);
       } else {
-        this._data.setNodesList(this._nodes.map(n => new GemNetworkNodeBuilder()
-          .id(n.id)
-          .year(n.year)
-          .value(n.value)
-          .label(n.label)
-          .mass(n.mass)
-          .color(n.color)
-          .group(n.group)
-          .year(n.year)
-          .build()
+        this._data.setNodesList(this._nodes.map(n => {
+            const builder = new GemNetworkNodeBuilder();
+            builder.realBuilder = builder;
+            return builder
+              .id(n.id)
+              .year(n.year)
+              .value(n.value)
+              .label(n.label)
+              .mass(n.mass)
+              .color(n.color)
+              .group(n.group)
+              .year(n.year)
+              .build();
+          }
         ));
       }
     }
   }
 
-  private redrawGraph() {
+  private async redrawGraph() {
     const container = document.getElementById("network");
+    const nodes = (await GemListUtil.toArraySync(this._data.getNodesList())).map(n => ({
+      id: n.getId(),
+      value: n.getValue(),
+      label: n.getLabel(),
+      mass: n.getMass(),
+      color: n.getColor(),
+      group: n.getGroup(),
+      year: n.getYear(),
+    }));
+    const edges = (await GemListUtil.toArraySync(this._data.getEdgesList())).map(e => ({
+      from: e.getFrom(),
+      to: e.getTo(),
+      length: e.getLength()
+    }));
     let data = {
-      nodes: this._data.getNodesList().map(n => ({
-        id: n.getId(),
-        value: n.getValue(),
-        label: n.getLabel(),
-        mass: n.getMass(),
-        color: n.getColor(),
-        group: n.getGroup(),
-        year: n.getYear(),
-      })),
-      edges: this._data.getEdgesList().map(e => ({
-        from: e.getFrom(),
-        to: e.getTo(),
-        length: e.getLength()
-      }))
+      nodes: nodes,
+      edges: edges
     };
     this._network = new Network(container, data, this._options);
-    if (this.hasData()) {
+    if (data.nodes && data.nodes.length !=0) {
       this._network.on("stabilizationProgress", (params) => {
         let networkheight = container.offsetHeight;
         let networkwidth = container.offsetWidth;
@@ -208,10 +221,6 @@ export class GemNetworkGraph extends GemNetworkGraphComponent {
         }, 500);
       });
     }
-  }
-
-  public hasData(): boolean {
-    return !!this._data.getNodesList() && this._data.getNodesList().length != 0;
   }
 
   public setLegendPosition(legendPosition: string) {

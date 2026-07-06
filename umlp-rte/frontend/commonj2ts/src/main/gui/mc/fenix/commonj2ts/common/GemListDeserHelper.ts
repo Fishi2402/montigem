@@ -18,7 +18,19 @@ export class GemListDeserHelper {
   /*private*/
   initialIds: IUMLPList<number>;
 
-  public constructor(gemId: number, size: number, ids: IUMLPList<number>) {
+  public constructor() {
+    if (this.gemID === undefined) {
+      this.gemID = 0;
+    }
+    if (this.size === undefined) {
+      this.size = 0;
+    }
+    if (this.initialIds === undefined) {
+      this.initialIds = null;
+    }
+  }
+
+  public async __GemListDeserHelperConstructor(gemId?: any, size?: any, ids?: any): Promise<void> {
     if (this.gemID === undefined) {
       this.gemID = 0;
     }

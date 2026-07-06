@@ -57,6 +57,7 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
   protected final Path outPath;
   protected final MCPath importsPath;
   protected TSImportHelper importHelper;
+  protected boolean isRTELibrary;
 
   public GUI2AngularClassDecorator(final GlobalExtensionManagement glex, MCPath hwPath, Path outPath, MCPath importsPath) {
     super(glex);
@@ -65,6 +66,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     this.hwPath = hwPath;
     this.outPath = outPath;
     this.importsPath = importsPath;
+
+    if(glex.hasGlobalVar("UMLPGeneratorConfig")){
+      isRTELibrary = UMLPGeneratorConfig.getInstance().is4TSLib() &&
+          !UMLPGeneratorConfig.getInstance().is4Domain();
+    }
   }
 
   public void transform(ASTGUICompilationUnit gui, ASTCDCompilationUnit cd) {
@@ -76,6 +82,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
     addInit();
     addDestroy();
     addConstructor();
+    if(!isRTELibrary) {
+      addImportString("import { IUMLPList,AsyncList } from '@umlp/commonj2ts';");
+    } else {
+      addImportString("import { IUMLPList, GemListUtil } from '@umlp/commonj2ts';");
+    }
   }
 
   @Override
@@ -198,15 +209,11 @@ public class GUI2AngularClassDecorator extends GUI2ClassDecorator implements GUI
 
       // attr overrides top class attr
       glex.replaceTemplate("umlp.gui2ts.TSAttribute", attr,
-          new TemplateHookPoint("umlp.gui2ts.TSOverrideAttribute"));
+          new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrSetter", mcType, node.getName(), getterName, setterName, isRTELibrary));
 
       addImportString("import { Input } from '@angular/core';");
       // setter + getter
-//        addImport(PathUtil.getBackendRTECommonPath("UMLPArrayList"));
       mcType = createTypeAndAddImports(typeSTE);
-      glex.replaceTemplate("umlp.Empty", attr,
-          new TemplateHookPoint("umlp.gui2ts.GUI2AngularAttrGetterSetter",
-              mcType, node.getName(), getterName, setterName));
 
       // Ref attr
       if (node.getSymbol().isIsReference()) {

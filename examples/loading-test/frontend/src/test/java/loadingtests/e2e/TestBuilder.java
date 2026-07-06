@@ -43,7 +43,7 @@ public class TestBuilder extends AbstractLoadingTestsE2ETest {
     testUpdateOfPage(page);
   }
 
-  @Disabled
+  @Disabled("The route is not even generated. Test can probably be removed")
   @Test
   void testUpdateWithNonBuilderAnimal(Page page) {
     Long gemIdOfAnimal = this.animalGemIds.get(0);

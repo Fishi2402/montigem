@@ -34,17 +34,17 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {
           case 'data': {
-            if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
+            if (this.data) this.rearrange_array(this.data.getEntriesList()).then(arr => this.computed_data = arr);
             break;
           }
           case 'xBins': {
             if (this.xBins) this._xBins = this.xBins;
-            if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
+            if (this.data) this.rearrange_array(this.data.getEntriesList()).then(arr => this.computed_data = arr);
             break;
           }
           case 'yBins': {
             if (this.yBins) this._yBins = this.yBins;
-            if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
+            if (this.data) this.rearrange_array(this.data.getEntriesList()).then(arr => this.computed_data = arr);
             break;
           }
           case 'defaultColor': {
@@ -160,7 +160,7 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
       else if (value > this.max_num_seperations) { this._xBins = this.max_num_seperations; }
       else this._xBins = value;
     } else { this._xBins = +value; }
-    if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
+    if (this.data) this.rearrange_array(this.data.getEntriesList()).then(arr => this.computed_data = arr);
   }
 
   /**
@@ -172,7 +172,7 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
       else if (value > this.max_num_seperations) { this._yBins = this.max_num_seperations; }
       else this._yBins = value;
     } else { this._yBins = +value; }
-    if (this.data) this.computed_data = this.rearrange_array(this.data.getEntriesList());
+    if (this.data) this.rearrange_array(this.data.getEntriesList()).then(arr => this.computed_data = arr);
   }
 
 
@@ -180,15 +180,15 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
    * @param somedata A list of entries.
    * @returns a matrix of entries.
    */
-  rearrange_array(somedata) {
-    if (!somedata || somedata.length === 0) return [];
+  async rearrange_array(somedata) : Promise<Array<any>>{
+    if (!somedata || (await somedata.size()) === 0) return [];
 
-    let minX = somedata[0].getXValue();
-    let maxX = somedata[0].getXValue();
-    let minY = somedata[0].getYValue();
-    let maxY = somedata[0].getYValue();
+    let minX = (await somedata.get(0)).getXValue();
+    let maxX = (await somedata.get(0)).getXValue();
+    let minY = (await somedata.get(0)).getYValue();
+    let maxY = (await somedata.get(0)).getYValue();
 
-    for (const entry of somedata) {
+    for await (const entry of somedata) {
       if (entry.getXValue() < minX) minX = entry.getXValue();
       if (entry.getXValue() > maxX) maxX = entry.getXValue();
       if (entry.getYValue() < minY) minY = entry.getYValue();
@@ -209,7 +209,7 @@ export class GemHeatmapChart extends GemHeatmapChartComponent {
       grid[i] = new Array(yBins).fill(0);
     }
 
-    for (const entry of somedata) {
+    for await(const entry of somedata) {
       let xIdx = Math.floor((entry.getXValue() - minX) / stepX);
       let yIdx = Math.floor((entry.getYValue() - minY) / stepY);
       if (xIdx >= xBins) xIdx = xBins - 1;

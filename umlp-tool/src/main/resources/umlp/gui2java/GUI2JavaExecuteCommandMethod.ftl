@@ -9,7 +9,7 @@ ${cd4c.method("public ${mcType} ${name}(${paramString})")}
   <#if genHelper.isDomainType(symType)>
   var arg__${param?index} = ${param.getName()}.getGemId();
   <#elseif genHelper.isDomainListType(symType)>
-  UMLPArrayList<Long> arg__${param?index} = new UMLPArrayList<Long>();
+  ArrayList<Long> arg__${param?index} = new ArrayList<Long>();
   for(var i : ${param.getName()}) {
     arg__${param?index}.add(i.getGemId());
   }

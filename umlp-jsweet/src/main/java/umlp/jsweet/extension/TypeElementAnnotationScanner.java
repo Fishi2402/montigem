@@ -12,6 +12,7 @@ import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Could probably be replaced by "JSweet-way" Annotation Manager?
 public class TypeElementAnnotationScanner extends AbstractTreeScanner {
   protected boolean hasAnnotation = false;
   protected String annotation;

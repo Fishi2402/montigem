@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 // import { ServerError } from '../command/ServerError';
-import {UMLPArrayList} from '../common/UMLPArrayList';
+import {AsyncList} from '../javautil/AsyncList';
 import {IUMLPList} from '../common/IUMLPList';
 import {GeneralErrorObserver} from './GeneralErrorObserver';
 
@@ -10,7 +10,11 @@ export class GeneralErrorCollector {
   observers: IUMLPList<GeneralErrorObserver>;
 
   constructor() {
-    this.observers = <any>(new UMLPArrayList());
+  }
+
+  public async __GeneralErrorCollectorConstructor(): Promise<GeneralErrorCollector> {
+    this.observers = <any>(await new AsyncList().__AsyncListConstructor());
+    return this;
   }
 
   public static init() {

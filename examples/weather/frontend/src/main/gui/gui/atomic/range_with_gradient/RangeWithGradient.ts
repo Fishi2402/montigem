@@ -11,8 +11,8 @@ import {RangeWithGradientComponent,config} from "gui/atomic/range_with_gradient/
 export class RangeWithGradient extends RangeWithGradientComponent {
   uuid: string;
 
-  override init(): void {
-    super.init();
+  override async init(): Promise<void> {
+    await super.init();
     this.uuid = crypto.randomUUID();
   }
 

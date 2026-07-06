@@ -5,6 +5,10 @@ export class CharacterDeSer implements DeSer<string> {
   constructor() {
   }
 
+  public async __CharacterDeSerConstructor(): Promise<CharacterDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Character(obj: string): Promise<string> {
     return "" + obj;
   }

@@ -46,14 +46,18 @@ export class ForgotPassword extends ForgotPasswordComponent {
             if (result.success) {
               alert("Got success - TODO: Improve this message :) ")
             } else if (result.error === 'disabled') {
-              this.setValidity(new GemTextInputValidity(
-                'Error',
-                'Password resets have been disabled. Please contact an administrator.'
-              ))
+              const validity = new GemTextInputValidity()
+              validity._status = 'Error';
+              validity._message = 'Password resets have been disabled. Please contact an administrator.';
+              this.setValidity(validity)
               this.setErrorMessage('Password resets have been disabled. Please contact an administrator.')
             } else {
               console.warn(result);
-              this.setValidity(new GemTextInputValidity('Error', 'Failed to request password reset'))
+              const validity = new GemTextInputValidity()
+              validity._status = 'Error';
+              validity._message = 'Password resets have been disabled. Please contact an administrator.';
+              this.setValidity(validity)
+              this.setValidity(validity)
               this.setErrorMessage('Failed to request password reset: ' + result.error);
             }
           })

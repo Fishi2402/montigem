@@ -65,9 +65,14 @@ export class GemAutocompleteInput extends GemAutocompleteInputComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["options"]) {
+   /* if (changes["options"]) {
       this.filteredOptions = changes["options"].currentValue;
-    }
+    }*/
+  }
+
+  public override setOptions(val: Array<Option>) {
+    super.setOptions(val);
+    this.filteredOptions = val;
   }
 
   onEntryChange(entry: string): void {

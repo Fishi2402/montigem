@@ -31,7 +31,7 @@ public enum TSImportMap {
   // key: javaPackage, value: tsPackage
   private final Map<String, String> importMap = new LinkedHashMap<>();
   public static final String JSWEET_RTE = "@umlp/commonj2ts";
-  public static final String COMMON = "@umlp/common";
+  public static final String COMMON = "@umlp/commonj2ts";
   public static final String BACKEND_RTE = "umlp.backendrte";
 
   TSImportMap() {
@@ -76,7 +76,7 @@ public enum TSImportMap {
 
     // default map
     add("mc.fenix.common", COMMON);
-    add(BACKEND_RTE, "@umlp/common");
+    add(BACKEND_RTE, "@umlp/commonj2ts");
 
     Set<File> mapFiles = importedSymbolPath.getEntries().stream()
         .map(x -> x.toFile().listFiles(f -> f.getName().endsWith("import.map")))

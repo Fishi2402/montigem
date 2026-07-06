@@ -2,6 +2,7 @@ package gui.kind;
 
 import demorec.ComponentKind;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;
@@ -10,11 +11,10 @@ import java.util.function.Consumer;
 @Component
 public class CreateComponentKind extends CreateComponentKindTOP {
 
-  BatteryPackService packService = null;
+  BatteryPackService packService = AngularUtils.inject(BatteryPackService.class);;
 
-  public CreateComponentKind(BatteryPackService service) {
+  public CreateComponentKind() {
     super();
-    this.packService = service;
   }
 
   public Consumer<Void> createNewComponentKind() {

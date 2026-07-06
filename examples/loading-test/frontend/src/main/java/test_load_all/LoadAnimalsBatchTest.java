@@ -4,15 +4,12 @@ package test_load_all;
 import jsweet.lang.Replace;
 import loadingtests.Animal;
 import loadingtests.LoadingTestsManager;
-import umlp.backendrte.common.UMLPArrayList;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component(
-    tsImports = {"GemList, @umlp/commonj2ts"}
-)
+@Component()
 public class LoadAnimalsBatchTest extends LoadAnimalsBatchTestTOP {
 
   @Override
@@ -35,7 +32,7 @@ public class LoadAnimalsBatchTest extends LoadAnimalsBatchTestTOP {
       for (int i = 0; i < createdAnimalIds.size(); i += this.getBatchSize()) {
         int endIndex = Math.min(i + this.getBatchSize(), createdAnimalIds.size());
         List<Long> idsBatchArray = createdAnimalIds.subList(i, endIndex);
-        UMLPArrayList<Long> idsBatchList = new UMLPArrayList<>();
+        List<Long> idsBatchList = new ArrayList<>();
         idsBatchList.addAll(idsBatchArray);
         animals.addAll(LoadingTestsManager.loadAllAnimalWithIDs(idsBatchList));
       }
@@ -49,10 +46,6 @@ public class LoadAnimalsBatchTest extends LoadAnimalsBatchTestTOP {
     }
   }
 
-  @Replace(
-        "var animalsGemList = await LoadingTestsManager.getAnimalList();\n"
-            + "        var ids = animalsGemList.getIDs$();\n"
-            + "        return ids.toArray();")
   private List<Long> getAnimalIds() {
     return LoadingTestsManager.getAnimalList().getIDs();
   }

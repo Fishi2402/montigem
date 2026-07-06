@@ -8,6 +8,8 @@ import { GemBarChartData } from '../../../../../../build/gui2java2ts/mc/fenix/ch
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
+import {GemBarChartEntry} from "../../../../../../build/gui2java2ts/mc/fenix/charts/gembarcharttypes/GemBarChartEntry";
 
 @Component({
   standalone: true,
@@ -69,18 +71,21 @@ export class GemBarChart extends GemBarChartComponent {
     const labels = [];
     let pointerAutoColors = 0;
     let autocolors = this.getColors();
-    this.labels = data.getLabelsList();
+    (async () => {
+    this.labels = await GemListUtil.toArraySync(data.getLabelsList());
 
-    for (let i = 0; i < data.getEntriesList().length; i++) {
-      if (!CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
-        data.getEntries(i).setBackgroundColor(autocolors[pointerAutoColors++]);
+    for (let i = 0; i < await data.getEntriesList().size(); i++) {
+      const bcEntry : GemBarChartEntry = (await data.getEntries(i));
+      if (!CSS.supports('color', bcEntry.getBackgroundColor())) {
+        bcEntry.setBackgroundColor(autocolors[pointerAutoColors++]);
       }
+      const _data = (await GemListUtil.toArraySync(bcEntry.getDataList()));
 
       let entry: ChartDataset<'bar'> = {
-        data: data.getEntries(i).getDataList(),
-        label: data.getEntries(i).getLabel(),
-        backgroundColor: data.getEntries(i).getBackgroundColor(),
-        hoverBackgroundColor: data.getEntries(i).getBackgroundColor(),
+        data: _data,
+        label:bcEntry.getLabel(),
+        backgroundColor: bcEntry.getBackgroundColor(),
+        hoverBackgroundColor: bcEntry.getBackgroundColor(),
         hoverBorderWidth: 2,
       };
 
@@ -90,6 +95,7 @@ export class GemBarChart extends GemBarChartComponent {
     }
     this.legendLabels = labels;
     this.legendColors = colors;
+    })();
   }
 
   @Input()

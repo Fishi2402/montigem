@@ -8,6 +8,7 @@ import {SehubManager} from 'sehub/SehubManager';
 import {SehubSecurityManager} from "sehub/SehubSecurityManager";
 import {User} from 'sehub/User';
 import {Option} from '@umlp/input';
+import {AsyncList, IUMLPList} from '@umlp/commonj2ts';
 
 @Component({
   standalone:true,
@@ -19,15 +20,20 @@ import {Option} from '@umlp/input';
 })
 export class UserDisplay extends UserDisplayComponent {
 
-  public override getRoleOptions(): Array<Option> {
-    let res: Array<Option> = [];
+  public override getRoleOptions(): IUMLPList<Option> {
+    let res: AsyncList<Option> = new AsyncList();
+    let arr: Array<Option> = [];
 
     for (let role of Object.values(SehubRole)) {
       if (isNaN(Number(role))) {
         let value = role + '';
-        res.push(new Option(value));
+        const option = new Option();
+        option._value = value;
+        option._display = value;
+        arr.push(option);
       }
     }
+    res._data = arr;
     return res;
   }
 

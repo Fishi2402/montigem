@@ -8,6 +8,7 @@ public class TypeScriptCollectionTypesPrettyPrinter extends MCCollectionTypesPre
     super(printer, false);
   }
 
+  // TODO this is never called because we use java.util.List instead of List symbol from CD
   public void handle(de.monticore.types.mccollectiontypes._ast.ASTMCListType node) {
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());

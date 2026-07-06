@@ -10,6 +10,10 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
   constructor() {
   }
 
+  public async __CommandResultDeSerConstructor() : Promise<CommandResultDeSer> {
+    return this;
+  }
+
   /* Default method injected from umlp.backendrte.command.JsonDeSer */
   serialize$java_lang_Object(obj: any): Promise<string> {
     const printer: JsonPrinter = new JsonPrinter(true);
@@ -111,12 +115,12 @@ export class CommandResultDeSer implements JsonDeSer<CommandResult<any>> {
     return printer.getContent();
 }
 
-  public fromJson(jsonObject: any): Promise<CommandResult<any>> {
+  public async fromJson(jsonObject: any): Promise<CommandResult<any>> {
     if (/* orElse */((v, v2) => v == null ? v2 : v)(jsonObject["statusResult"], false)) {
       return Promise.resolve((v => {
         if (v == null) throw new Error('value is null');
         return v;
-      })(new StatusResult(jsonObject["commandId"], jsonObject["successful"])));
+      })(await new StatusResult().__StatusResultConstrcutor(jsonObject["commandId"], jsonObject["successful"])));
     }
 
     return Promise.resolve(null);

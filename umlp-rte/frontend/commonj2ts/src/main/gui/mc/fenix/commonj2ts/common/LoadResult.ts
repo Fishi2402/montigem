@@ -7,12 +7,18 @@ export class LoadResult<E> {
 
   loadingState: LoadingState;
 
-  public constructor(loadingState?: any) {
+  public constructor() {
+    if (this.loadingState === undefined) {
+      this.loadingState = null;
+    }
+  }
+
+  public async __LoadResultConstructor(loadingState?: any): Promise<LoadResult<E>> {
+    if (this.loadingState === undefined) {
+      this.loadingState = null;
+    }
     if (((typeof loadingState === 'number') || loadingState === null)) {
       let __args = arguments;
-      if (this.loadingState === undefined) {
-        this.loadingState = null;
-      }
       this.obj = null;
       if (loadingState === LoadingState.LOADED || loadingState === LoadingState.NOT_YET_LOADED) {
         Log.error("0xE2922 Object was set to unexpected state");
@@ -21,13 +27,11 @@ export class LoadResult<E> {
     } else if (((loadingState != null) || loadingState === null)) {
       let __args = arguments;
       let obj: any = __args[0];
-      if (this.loadingState === undefined) {
-        this.loadingState = null;
-      }
       this.obj = null;
       this.obj = obj;
       this.loadingState = LoadingState.LOADED;
     } else throw new Error('invalid overload');
+    return this;
   }
 
   public getLoadingState(): LoadingState {

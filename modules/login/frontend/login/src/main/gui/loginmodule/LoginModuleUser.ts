@@ -21,7 +21,10 @@ export class LoginModuleUser extends LoginModuleUserTOP {
   }
 
   public getValidityUsername(): GemTextInputValidity {
-    return new GemTextInputValidity(this._statusUsername, this._validityUsername);
+    const validity = new GemTextInputValidity()
+    validity._status = this._statusUsername;
+    validity._message = this._validityUsername;
+    return validity;
   }
 
   public set validityUsername(value: string) {
@@ -37,7 +40,10 @@ export class LoginModuleUser extends LoginModuleUserTOP {
   protected _validityPassword = '';
 
   public getValidityPassword(): GemTextInputValidity {
-    return new GemTextInputValidity(this._statusPassword, this._validityPassword);
+    const validity = new GemTextInputValidity()
+    validity._status = this._statusPassword;
+    validity._message = this._validityPassword;
+    return validity;
   }
 
   public set validityPassword(value: string) {
@@ -53,7 +59,10 @@ export class LoginModuleUser extends LoginModuleUserTOP {
   protected _validityEmail = '';
 
   public getValidityEmail(): GemTextInputValidity {
-    return new GemTextInputValidity(this._statusEmail, this._validityEmail);
+    const validity = new GemTextInputValidity()
+    validity._status = this._statusEmail;
+    validity._message = this._validityEmail;
+    return validity;
   }
 
   public set validityEmail(value: string) {

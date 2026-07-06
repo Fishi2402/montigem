@@ -30,16 +30,24 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
 
   loadFunction: () => LoadResult<E>;
 
-  public constructor(gemId?: any, supplier?: any) {
+  public constructor() {
+    if (this.gemId === undefined) {
+      this.gemId = 0;
+    }
+    if (this.loadingState === undefined) {
+      this.loadingState = null;
+    }
+  }
+
+  public async __GemConstructor(gemId?: any, supplier?: any): Promise<Gem<E>> {
+    if (this.gemId === undefined) {
+      this.gemId = 0;
+    }
+    if (this.loadingState === undefined) {
+      this.loadingState = null;
+    }
     if (((typeof gemId === 'number') || gemId === null) && ((typeof supplier === 'function' && (<any>supplier).length === 0) || supplier === null)) {
       let __args = arguments;
-      if (this.gemId === undefined) {
-        // TODO why do we need this line? I have not found no use in not setting the gemId directly so far; CBu
-        this.gemId = 0;
-      }
-      if (this.loadingState === undefined) {
-        this.loadingState = null;
-      }
       this.object = null;
       this.loadFunction = <any>(((funcInst: any) => {
         if (funcInst == null || typeof funcInst == 'function') {
@@ -68,12 +76,6 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
       let __args = arguments;
       let gemID: any = __args[0];
       let loadingState: any = __args[1];
-      if (this.gemId === undefined) {
-        this.gemId = 0;
-      }
-      if (this.loadingState === undefined) {
-        this.loadingState = null;
-      }
       this.object = null;
       this.loadFunction = <any>(((funcInst: any) => {
         if (funcInst == null || typeof funcInst == 'function') {
@@ -89,12 +91,6 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
     } else if (((gemId != null) || gemId === null) && supplier === undefined) {
       let __args = arguments;
       let object: any = __args[0];
-      if (this.gemId === undefined) {
-        this.gemId = 0;
-      }
-      if (this.loadingState === undefined) {
-        this.loadingState = null;
-      }
       this.object = null;
       this.loadFunction = <any>(((funcInst: any) => {
         if (funcInst == null || typeof funcInst == 'function') {
@@ -107,12 +103,6 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
       this.loadingState = LoadingState.LOADED;
     } else if (gemId === undefined && supplier === undefined) {
       let __args = arguments;
-      if (this.gemId === undefined) {
-        this.gemId = 0;
-      }
-      if (this.loadingState === undefined) {
-        this.loadingState = null;
-      }
       this.object = null;
       this.loadFunction = <any>(((funcInst: any) => {
         if (funcInst == null || typeof funcInst == 'function') {
@@ -129,6 +119,7 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
       };
       this.loadingState = LoadingState.EMPTY;
     } else throw new Error('invalid overload');
+    return this;
   }
 
   /**
@@ -169,10 +160,12 @@ export class Gem<E extends GemIdentifiable> implements GemIdentifiable {
   loadPromise: Promise<LoadResult<E>>;
   loadIfRequired(): Promise<LoadResult<E>> {
     if (this.loadPromise === undefined && this.object !== undefined && this.object !== null) {
-      this.loadPromise = Promise.resolve(new LoadResult(this.object));
+      const lr = new LoadResult<E>();
+      this.loadPromise = lr.__LoadResultConstructor(this.object).then(() => lr);
     }
     else if (this.loadingState === LoadingState.EMPTY) {
-      this.loadPromise = Promise.resolve(new LoadResult(LoadingState.EMPTY));
+      const lr = new LoadResult<E>();
+      this.loadPromise = lr.__LoadResultConstructor(LoadingState.EMPTY).then(() => lr);
     }
     else if (this.loadPromise === undefined && this.loadingState === LoadingState.NOT_YET_LOADED) {
       this.loadPromise = Promise.resolve(this.loadFunction()).then((result: LoadResult<E>) => {

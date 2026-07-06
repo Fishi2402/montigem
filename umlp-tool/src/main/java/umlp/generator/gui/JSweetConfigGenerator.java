@@ -39,8 +39,12 @@ public class JSweetConfigGenerator {
     generatorSetup.setTracing(false);
   }
 
-  public void generate(String outputDir, List<String> srcDirs) {
-    createJsweetConfig("umlp/jsweetconfig/jsweetGUINoDomain.json", outputDir, srcDirs);
+  public void generate(String outputDir, boolean forCD, List<String> srcDirs) {
+    if(forCD) {
+      createJsweetConfig("umlp/jsweetconfig/jsweetCDConfig.json", outputDir, srcDirs);
+    } else {
+      createJsweetConfig("umlp/jsweetconfig/jsweetGUINoDomain.json", outputDir, srcDirs);
+    }
   }
 
   // forDomain differentiates between the config file generated for the Domain JSweet Task and the

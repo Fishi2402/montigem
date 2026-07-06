@@ -1,5 +1,6 @@
 package gui.test;
 
+import de.se_rwth.commons.logging.Log;
 import def.dom.HTMLInputElement;
 import jsweettest.C2;
 import jsweettest.JsweettestManager;
@@ -75,8 +76,7 @@ public class DomainStreamAdapterTest extends DomainStreamAdapterTestTOP {
   private String names(List<C2> items) {
     return items.stream()
         .map(C2::getString)
-        .collect(Collectors.toList())
-        .toString();
+        .collect(Collectors.joining(", "));
   }
 
   public Consumer<Void> testMap() {
@@ -275,6 +275,8 @@ public class DomainStreamAdapterTest extends DomainStreamAdapterTestTOP {
   public Consumer<Void> testCollectToSet() {
     return (Void) -> {
       Set<C2> uniqueSet = getDomainObjectsWithDuplicate().stream().collect(Collectors.toSet());
+
+      Log.warn(uniqueSet.toString());
 
       List<C2> list = uniqueSet.stream()
           .sorted((a, b) -> a.getInt1() - b.getInt1())

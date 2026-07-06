@@ -7,8 +7,12 @@ export class SimpleResult<T> extends CommandResult<T> {
 
   loadingState: LoadingState;
 
-  public constructor(id?: number, obj?: T, typeParameter?: string) {
+  public constructor() {
     super();
+  }
+
+  async __SimpleResultConstructor(id?: number, obj?: T, typeParameter?: string){
+
     if (id !== undefined && id !== null) {
       this.createFromObject(id, obj, typeParameter);
     }

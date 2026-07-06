@@ -5,9 +5,11 @@ import {GemIdentifiable} from "../common/GemIdentifiable";
 import {GemBuildable} from "../common/GemBuildable";
 import {LoadResult} from "../common/LoadResult";
 import {LoadingState} from "../common/LoadingState";
-import {GemListBehaviorSubject, IUMLPList} from "../common/IUMLPList";
-import {UMLPArrayList} from "../common/UMLPArrayList";
-import {NgIterable} from "@angular/core";
+import {IUMLPList} from "../common/IUMLPList";
+import {AsyncList} from "../javautil/AsyncList";
+import {AsyncSet} from "../javautil/AsyncSet";
+import {Collection} from "../javautil/Collection";
+import {AsyncStream} from "../javautil";
 
 export abstract class GemList<E extends GemIdentifiable> implements GemBuildable, IUMLPList<E> {
   protected ids: Array<number> = [];
@@ -15,9 +17,6 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   // the state of loading this list
   protected state: LoadingState = LoadingState.NOT_YET_LOADED;
-
-  // This has to be a member, due to forEach signatures of list and Subject colliding
-  public subject: GemListBehaviorSubject<NgIterable<E>>;
 
   /**
    * Notify about a change to the GemList (as seen by the toArray)
@@ -29,17 +28,19 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
 
-  public constructor(ids?: Array<number> | IUMLPList<number>) {
-    // this.subject = new GemListBehaviorSubject(this.asArray, this._onSub.bind(this));
+  public constructor() {}
+
+  public async __GemListConstructor(ids?: Array<number> | Collection<number>) : Promise<GemList<E>> {
     this.state = LoadingState.NOT_YET_LOADED;
     if (ids instanceof Array) {
       this.ids = ids;
     } else if (typeof ids !== 'undefined' && ids != null) {
       // ids.toArray().then(numbers => this.ids = [...numbers]);
-      this.ids = [...ids.toArray()];
+      this.ids = [...await ids.toArrayDeepSync()];
     } else if (typeof ids === 'undefined') {
       this.ids = [];
     }
+    return this;
   }
 
   // Be notified about subscription, so we can load on-demand
@@ -52,7 +53,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   protected loadAll() {
     this.state = LoadingState.LOADING;
-    this.loadObjects(new UMLPArrayList(this.ids)).then(value => {
+    new AsyncList<number>().__AsyncListConstructor(this.ids).then(x => this.loadObjects(x).then(value => {
       this.state = LoadingState.LOADED;
       this.asArray = [];
       value.forEach(element => {
@@ -62,7 +63,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       });
 
       this.updateIds();
-    })
+    }))
   }
 
 
@@ -86,9 +87,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    *
    * @return {number}
    */
-  public size(): number {
-    let g: GemList<any>;
-    return /* size */(<number>this.ids.length);
+  public async size(): Promise<number> {
+    return this.ids.length;
   }
 
   /**
@@ -97,8 +97,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @return {*}
    */
   public async get(idx: number): Promise<E> {
-    if (this.isNotIdxInInclusiveBounds(idx)) {
-      this.logIndexError("0xAC729", "get", idx);
+    if (await this.isNotIdxInInclusiveBounds(idx)) {
+      await this.logIndexError("0xAC729", "get", idx);
     }
     const id: number = await this.getID$int(idx);
     const lr: LoadResult<E> = await this.loadSingleObject(id);
@@ -123,8 +123,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
-  public async containsAll(o: IUMLPList<any> | Array<any>): Promise<boolean> {
-    if (this.size() === 0) {
+  public async containsAll(o: AsyncIterable<E>): Promise<boolean> {
+    if (await this.size() === 0) {
       return new Promise((resolve) => resolve(true));
     }
     for await (const e of o) {
@@ -139,10 +139,10 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if (!(o instanceof GemList)) {
       return false;
     }
-    if (this.size() != o.size()) {
+    if (await this.size() !== await o.size()) {
       return false;
     }
-    for (let i = 0; i < this.size(); i++) {
+    for (let i = 0; i < await this.size(); i++) {
       if ((await this.get(i)).getGemId() !== (await o.get(i)).getGemId()) {
         return false;
       }
@@ -173,8 +173,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @return {*}
    */
   public async set(idx: number, elem: E): Promise<E> {
-    if (this.isNotIdxInInclusiveBounds(idx)) {
-      this.logIndexError("0xAC725", "set", idx);
+    if (await this.isNotIdxInInclusiveBounds(idx)) {
+      await this.logIndexError("0xAC725", "set", idx);
     }
     const oldElem: E = await this.get(idx);
     await this._internal_setAndSync(idx, elem.getGemId());
@@ -189,8 +189,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   abstract _internal_setAndSync(idx: number, gemID: number);
 
   public async _internal_set(idx: number, gemID: number) {
-    if (this.isNotIdxInInclusiveBounds(idx)) {
-      this.logIndexError("0xAC726", "_internal_set", idx);
+    if (await this.isNotIdxInInclusiveBounds(idx)) {
+      await this.logIndexError("0xAC726", "_internal_set", idx);
     }
     this.ids[idx] = gemID;
 
@@ -202,21 +202,19 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   public async add(idxOrElem: number | E, elem?: E): Promise<boolean> {
     if ((elem === undefined || elem === null) && (<E>idxOrElem).getGemId) {
-      await this._internal_addAndSync(this.size(), new UMLPArrayList([(<E>idxOrElem).getGemId()]));
+      await this._internal_addAndSync(await this.size(), await new AsyncList<number>().__AsyncListConstructor([(<E>idxOrElem).getGemId()]));
     } else if (typeof idxOrElem === 'number') {
-      await this._internal_addAndSync(idxOrElem, new UMLPArrayList([elem.getGemId()]));
+      await this._internal_addAndSync(idxOrElem, await new AsyncList<number>().__AsyncListConstructor([elem.getGemId()]));
     }
     return true;
   }
 
-  public async addAll(idxOrElems: number | IUMLPList<E> | Array<E>, elems?: IUMLPList<E>): Promise<boolean> {
-    if (elems === undefined || elems === null && idxOrElems instanceof Array) {
-      var gemIds = (<Array<E>>idxOrElems).map((elem: E) => elem.getGemId());
-      await this._internal_addAndSync(0, new UMLPArrayList(gemIds));
-    } else if (elems === undefined || elems === null) {
-      await this._internal_addAndSync(0, await (<IUMLPList<E>>idxOrElems).map((elem: E) => elem.getGemId()));
+  public async addAll(idxOrElems: number | Collection<E>, elems?: Collection<E>): Promise<boolean> {
+    if (elems === undefined || elems === null && Symbol.asyncIterator in Object(idxOrElems)) {
+      var gemIds = await (await new AsyncList().__AsyncListConstructor(<Collection<E>>idxOrElems)).map((elem: E) => elem.getGemId());
+      await this._internal_addAndSync(0, await new AsyncList<number>().__AsyncListConstructor(gemIds));
     } else {
-      await this._internal_addAndSync(<number>idxOrElems, await elems.map((elem: E) => elem.getGemId()));
+      await this._internal_addAndSync(<number>idxOrElems, await (await new AsyncList().__AsyncListConstructor(<Collection<E>>elems)).map((elem: E) => elem.getGemId()));
     }
     return true;
   }
@@ -231,13 +229,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   // TODO: TSAddToListOfDomain.ftl with concrete object reference?
   // right now we have to load the object twice
   public async _internal_add(idx: number, gemIDs: IUMLPList<number>) {
-    if (this.isNotIdxInExclusiveBounds(idx)) {
-      this.logIndexError("0xAC727", "_internal_add", idx);
+    if (await this.isNotIdxInExclusiveBounds(idx)) {
+      await this.logIndexError("0xAC727", "_internal_add", idx);
     }
-    this.ids.splice(idx, 0, ...(await gemIDs.toArray()));
+    this.ids.splice(idx, 0, ...(await gemIDs.toArrayDeepSync()));
 
     if (this.asArray != null) {
-      if (gemIDs.size() != 1) {
+      if (await(gemIDs.size()) != 1) {
         throw Error("Did not expect an internal_add with size of" + gemIDs.size() + gemIDs);
       }
       const loadResult = await this.loadSingleObject(await gemIDs.get(0));
@@ -249,19 +247,19 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.updateIds();
   }
 
-  public clear() {
-    this.removeRange(0, this.size());
+  public async clear(): Promise<void> {
+    await this.removeRange(0, await this.size());
   }
 
   /**
    *
-   * @param {number} idx
-   * @return {*}
+   * @param {*} element
+   * @return {boolean}
    */
   public async removeElement(element: E): Promise<boolean> {
     let index = await this.indexOf(element);
     if (index > 0) {
-      await this._internal_removeAndSync(new UMLPArrayList([index]));
+      await this._internal_removeAndSync(await new AsyncSet<number>().__AsyncSetConstructor([index]));
       return true;
     } else {
       return false;
@@ -269,9 +267,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async removeIndex(index: number): Promise<E> {
-    if (index >= 0 && index < this.size()) {
+    if (index >= 0 && index < await this.size()) {
       const elem: E = await this.get(index);
-      await this._internal_removeAndSync(new UMLPArrayList([index]));
+      await this._internal_removeAndSync(await new AsyncSet<number>().__AsyncSetConstructor([index]));
       return elem;
     } else {
       return Promise.resolve(undefined);
@@ -283,11 +281,15 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
       throw new Error("Invalid range: toIndex is less than fromIndex");
     }
     const indicesToRemove: Array<number> = Array.from({length: toIndex - fromIndex + 1}, (_, i) => i + fromIndex);
-    await this._internal_removeAndSync(new UMLPArrayList(indicesToRemove));
+    await this._internal_removeAndSync(await new AsyncSet<number>().__AsyncSetConstructor(indicesToRemove));
   }
 
-  public async removeAll(gemIDs: IUMLPList<number>): Promise<boolean> {
-    await this._internal_removeAndSync(gemIDs);
+  // TODO this looks very wrong to me -> removeAll gemIds?
+  // Old version: await this._internal_removeAndSync(await gemIDs.map(e => e.getGemId()));
+  public async removeAll(elems: AsyncList<E>): Promise<boolean> {
+    for await(const element of elems) {
+      await this.removeElement(element)
+    }
     return true;
   }
 
@@ -295,9 +297,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * to be overridden by a subclass to add synchronization
    * @param {number[]} idxs
    */
-  abstract _internal_removeAndSync(idxs: IUMLPList<number> | Array<number>);
+  abstract _internal_removeAndSync(idxs: AsyncSet<number> | Array<number>);
 
-  public async _internal_remove(idxs: IUMLPList<number> | Array<number>) {
+  public async _internal_remove(idxs: AsyncSet<number> | Array<number>) {
     const toSort: Array<number> = [];
     for await (let idx of idxs) {
       toSort.push(idx);
@@ -318,8 +320,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.updateIds();
   }
 
-  public isEmpty(): boolean {
-    return this.size() == 0;
+  public async isEmpty(): Promise<boolean> {
+    return (await this.size() )=== 0;
   }
 
   /**
@@ -330,8 +332,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @return {boolean}
    */
   public async isPresent(idx: number): Promise<boolean> {
-    if (this.isNotIdxInInclusiveBounds(idx)) {
-      this.logIndexError("oxAC728", "isPresent", idx);
+    if (await this.isNotIdxInInclusiveBounds(idx)) {
+      await this.logIndexError("oxAC728", "isPresent", idx);
     }
     return (await this.loadSingleObject(await this.getID$int(idx))).isPresent();
   }
@@ -353,26 +355,26 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   async loadSingleObject(id: number): Promise<LoadResult<E>> {
-    const res: IUMLPList<LoadResult<E>> = await this.loadObjects(new UMLPArrayList([id]));
-    if ((res.size() == 0)) {
-      return <any>(new LoadResult<any>(LoadingState.FAILED_TO_LOAD));
+    const res: IUMLPList<LoadResult<E>> = await this.loadObjects(await new AsyncList<number>().__AsyncListConstructor([id]));
+    if ((await res.size()) == 0) {
+      return await <any>(new LoadResult<any>().__LoadResultConstructor(LoadingState.FAILED_TO_LOAD));
     }
     return await res.get(0);
   }
 
-  isNotIdxInInclusiveBounds(idx: number): boolean {
-    return idx < 0 || idx >= this.size();
+  async isNotIdxInInclusiveBounds(idx: number): Promise<boolean> {
+    return idx < 0 || idx >= await this.size();
   }
 
-  isNotIdxInExclusiveBounds(idx: number): boolean {
-    return idx < 0 || idx > this.size();
+  async isNotIdxInExclusiveBounds(idx: number): Promise<boolean> {
+    return idx < 0 || idx > await this.size();
   }
 
-  logIndexError(errorCode: string, methodName: string, idx: number) {
+  async logIndexError(errorCode: string, methodName: string, idx: number): Promise<never> {
     Log.error(
       errorCode +
       " GemList::" + methodName + " index out of bounds" +
-      ", size: " + this.size() +
+      ", size: " + await this.size() +
       ", idx: " + idx
     );
     throw Object.defineProperty(new Error(), '__classes', {
@@ -381,8 +383,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     });
   }
 
-  assertExclusiveIdxInBounds(idx: number) {
-    if (idx < 0 || idx > this.size()) {
+  async assertExclusiveIdxInBounds(idx: number): Promise<void> {
+    if (idx < 0 || idx > await this.size()) {
       throw Object.defineProperty(new Error(), '__classes', {
         configurable: true,
         value: ['java.lang.Throwable', 'java.lang.IndexOutOfBoundsException', 'java.lang.Object', 'java.lang.RuntimeException', 'java.lang.Exception']
@@ -391,23 +393,23 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async getID$int(idx: number): Promise<number> {
-    return await this.getIDs$int$int(idx, idx + 1).get(0);
+    return (await this.getIDs$int$int(idx, idx + 1)).get(0);
   }
 
-  public getIDs$int$int(startIdx: number, endIdx: number): IUMLPList<number> {
-    return new UMLPArrayList(this.ids.slice(startIdx, endIdx));
+  public async getIDs$int$int(startIdx: number, endIdx: number): Promise<IUMLPList<number>> {
+    return new AsyncList<number>().__AsyncListConstructor(this.ids.slice(startIdx, endIdx));
   }
 
-  public getIDs(startIdx?: any, endIdx?: any): IUMLPList<number> {
+  public async getIDs(startIdx?: any, endIdx?: any): Promise<IUMLPList<number>> {
     if (((typeof startIdx === 'number') || startIdx === null) && ((typeof endIdx === 'number') || endIdx === null)) {
-      return this.getIDs$int$int(startIdx, endIdx);
+      return await this.getIDs$int$int(startIdx, endIdx);
     } else if (startIdx === undefined && endIdx === undefined) {
-      return this.getIDs$();
+      return await this.getIDs$();
     } else throw new Error('invalid overload');
   }
 
-  public getIDs$(): IUMLPList<number> {
-    return new UMLPArrayList(this.ids);
+  public getIDs$(): Promise<IUMLPList<number>> {
+    return new AsyncList<number>().__AsyncListConstructor(this.ids);
   }
 
   public getID$umlp_backendrte_common_GemIdentifiable(elem: E): number {
@@ -436,7 +438,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   public async removeIdSure(gemId: number) {
     console.info(this.ids);
     const indexToBeRemoved = this.ids.indexOf(gemId);
-    await this._internal_removeAndSync(new UMLPArrayList([indexToBeRemoved]));
+    await this._internal_removeAndSync(await new AsyncSet<number>().__AsyncSetConstructor([indexToBeRemoved]));
   }
 
   public indexOfId(gemId: number): number {
@@ -447,8 +449,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this.ids.lastIndexOf(gemId);
   }
 
-  public subList(fromIndex: number, toIndex: number): IUMLPList<E> {
-    this.subListRangeCheck(fromIndex, toIndex);
+  public async subList(fromIndex: number, toIndex: number): Promise<IUMLPList<E>> {
+    await this.subListRangeCheck(fromIndex, toIndex);
     return null; // TODO
   }
 
@@ -456,7 +458,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return new GemListAsyncIterator(this);
   }
 
-  indexOf(o: any): Promise<number> {
+  public async indexOf(o: any): Promise<number> {
     return Promise.resolve(undefined); // TODO
   }
 
@@ -472,19 +474,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this[Symbol.asyncIterator]();
   }
 
-  retainAll(c: IUMLPList<E>): boolean {
+  public async retainAll(c: AsyncIterable<E>): Promise<boolean> {
     return false; // TODO
   }
 
   // protected asArrayMap: any<Array<E>> = {};
   toArray(startIndex?: number, endIndex?: number): Array<E> {
     // TODO Beachtung von startIndex und endIndex
-    // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
-    //   if (asArrayMap[{startIndex, endIndex} == null]) {
-    //
-    //   }
-    //   return asArrayMap[{startIndex, endIndex}];
-    // }
     this.toArraySync(startIndex, endIndex);
     return this.asArray == null ? [] : [...this.asArray];
   }
@@ -495,16 +491,10 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     if (this.asArrayPromise == null) {
       this.asArrayPromise = new Promise(async resolve => {
         // TODO Beachtung von startIndex und endIndex
-        // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
-        //   if (asArrayMap[{startIndex, endIndex} == null]) {
-        //
-        //   }
-        //   return asArrayMap[{startIndex, endIndex}];
-        // }
         if (this.asArray === null) {
           this.asArray = [];
           const arr = [];
-          await this.loadObjects(new UMLPArrayList(this.ids));
+          await this.loadObjects(await new AsyncList<number>().__AsyncListConstructor(this.ids));
           for await (let gemListElement of this) {
             arr.push(gemListElement);
           }
@@ -533,21 +523,30 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
-  async map<T>(consumer: (element: E) => T): Promise<IUMLPList<T>> {
-    return Promise.resolve(new UMLPArrayList((await this.toArray()).map(consumer)));
+  stream(): AsyncStream<E> {
+    return AsyncStream.of(this);
   }
 
-  sort(param: any): void {
+  async map<T>(consumer: (element: E) => T): Promise<AsyncList<T>> {
+    return Promise.resolve(await new AsyncList<T>().__AsyncListConstructor((await this.toArray()).map(consumer)));
+  }
+
+  public async sort(param?: any): Promise<void> {
   }
 
   join(delimiter: string): string {
     return [this.toArray()].join(delimiter);
   }
 
-  private subListRangeCheck(fromIndex: number, toIndex: number) {
-    if (fromIndex > 0 || toIndex > this.size() || fromIndex > toIndex) {
+  // TODO remove
+  private async subListRangeCheck(fromIndex: number, toIndex: number): Promise<void> {
+    if (fromIndex > 0 || toIndex > await this.size() || fromIndex > toIndex) {
       throw new Error("Invalid range");
     }
+  }
+
+  __internalArray() : Array<E> {
+    throw Error("Not allowed, since GemLists are always asynchronous.");
   }
 }
 

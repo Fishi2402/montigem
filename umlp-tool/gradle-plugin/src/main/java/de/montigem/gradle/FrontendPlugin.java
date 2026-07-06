@@ -116,6 +116,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
     Provider<Directory> cd2javaDir = project.getLayout().getBuildDirectory().dir("cd2java");
     Provider<Directory> cd2tagsDir = project.getLayout().getBuildDirectory().dir("cd2tags");
     Provider<Directory> gui2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("gui2jsweetAdapter");
+    Provider<Directory> cd2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("cd2jsweetAdapter");
     Provider<Directory> internalJSweetDir = project.getLayout().getBuildDirectory().dir("internal_jsweet");
     Provider<Directory> umlp2jsweetAdapterDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetAdapter");
     Provider<Directory> umlp2jsweetObserverDir = project.getLayout().getBuildDirectory().dir("umlp2jsweetObserver");
@@ -291,6 +292,8 @@ public abstract class FrontendPlugin implements Plugin<Project> {
       task.getInput().from(cd2gui.flatMap(CommonMCTask::getOutputDir));
       if (cdPresent) {
         task.getInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+        task.getCD2JavaInput().from(cd2java.flatMap(CommonMCTask::getOutputDir));
+        task.getCD2JavaJSweetAdapterDir().set(cd2jsweetAdapterDir);
       }
       task.getInput().from(guiVariability.flatMap(CommonMCTask::getOutputDir));
       task.getGuiCreateModelsAsFile().set(

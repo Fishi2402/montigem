@@ -61,7 +61,7 @@ export class CommandManager {
     CommandManager.getInstance()._sendCommandToSubscribers<any>(command);
   }
 
-  public static shouldSendCommand<T>(command: Command<T>, participant: Participant): boolean {
+  public static async shouldSendCommand<T>(command: Command<T>, participant: Participant): Promise<boolean> {
     return this.getInstance()._shouldSendCommand(command, participant);
   }
 
@@ -124,7 +124,7 @@ export class CommandManager {
           if (!(participantId === command.getParticipantId())) {
             let match: boolean = false;
             {
-              for await (let gemId of command.getEffectedGemIds()) {
+              for await (let gemId of await command.getEffectedGemIds()) {
                 if (participant.isSubscribedTo(gemId)) {
                   match = true;
                   break;
@@ -176,8 +176,8 @@ export class CommandManager {
     return res;
   }
 
-  protected _shouldSendCommand<T>(command: Command<T>, participant: Participant): boolean {
-    for (let gemId of command.getEffectedGemIds()) {
+  protected async _shouldSendCommand<T>(command: Command<T>, participant: Participant): Promise<boolean> {
+    for await (let gemId of await command.getEffectedGemIds()) {
       if (participant.isSubscribedTo(gemId)) {
         return true;
       }

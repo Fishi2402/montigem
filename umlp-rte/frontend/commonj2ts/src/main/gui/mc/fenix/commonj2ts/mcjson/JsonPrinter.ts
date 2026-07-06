@@ -6,8 +6,10 @@ export class JsonPrinter {
   // Is a queue
   currElements = [];
 
-  constructor(b: boolean) {
+  constructor(b?: boolean) {}
 
+  async __JsonPrinterConstructor(b: boolean) {
+    return this;
   }
 
   beginObject(kind?: string): void {

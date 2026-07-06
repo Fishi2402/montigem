@@ -34,13 +34,13 @@ import { EdgeProcessorService } from "./graph-processing/edge-processor.service"
 import { GraphProcessorService } from "./graph-processing/graph-processor.service";
 import { GroupMappingService } from "./graph-processing/group-mapping.service";
 import { NodeProcessorService } from "./graph-processing/node-processor.service";
-import { MetricInformationComponent } from "./metric-information/metric-information.component";        
+import { MetricInformationComponent } from "./metric-information/metric-information.component";
 import { SearchNodeComponent } from "./search-node/search-node.component";
 import { GraphLayoutService } from "./services/graph-layout.service";
 import { GraphMetricsService } from "./services/graph-metrics.service";
 import { GraphSettingsService } from "./services/graph-settings.service";
 import { AutoUnsubscribe } from "./shared/decorators/auto-unsubscribe.decorator";
-import { ControlButton, ControlButtonsLayout, SpeedDialConfig } from "./types/control-buttons.types";  
+import { ControlButton, ControlButtonsLayout, SpeedDialConfig } from "./types/control-buttons.types";
 import { GraphEvent, MouseEvent, TouchEvent } from "./types/graph-events.types";
 import {
   ComplexGraphLayoutConfiguration,
@@ -141,7 +141,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
   @Input() showInformation: boolean = true;
 
   /** Array of keys representing metrics to be displayed. */
-  @Input() metricKeys: string[] = this.graphManager.graphMetrics.getAllInformationMetricKeys();        
+  @Input() metricKeys: string[] = this.graphManager.graphMetrics.getAllInformationMetricKeys();
 
   /** Custom function for generating metrics, if provided. */
   /*@Input() customMetricsGenerator?: CustomMetricsGenerator;*/
@@ -165,7 +165,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
         }
       }
       return {
-        nodes: graph._nodes.map(n => {
+        nodes: graph._nodes.__internalArray().map(n => {
           return {
             id: n.getId(),
             value: n.getValue(),
@@ -184,7 +184,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
           }
         }),
 
-        edges: graph._edges.map(e => {
+        edges: graph._edges.__internalArray().map(e => {
           return {
             id: e.getId(),
             source: e.getSource(),
@@ -354,7 +354,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
   @Output() graphAfterRender: EventEmitter<GraphEvent<"afterRender">> = this.createLazyGraphEvent("afterRender");
 
   /** Event emitted when the graph is resized. */
-  @Output() graphResize: EventEmitter<GraphEvent<"resize">> = this.createLazyGraphEvent("resize");     
+  @Output() graphResize: EventEmitter<GraphEvent<"resize">> = this.createLazyGraphEvent("resize");
 
   /** Event emitted when the graph is killed or destroyed. */
   @Output() graphKill: EventEmitter<GraphEvent<"kill">> = this.createLazyGraphEvent("kill");
@@ -375,7 +375,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
   // Output Events - Mouse and Touch Interaction Events
   // ========================================================================================
   /** Event emitted when the mouse captor is clicked. */
-  @Output() mouseCaptorClick: EventEmitter<MouseEvent<"click">> = this.createLazyMouseEvent("click");  
+  @Output() mouseCaptorClick: EventEmitter<MouseEvent<"click">> = this.createLazyMouseEvent("click");
 
   /** Event emitted when the mouse captor is right-clicked. */
   @Output() mouseCaptorRightClick: EventEmitter<MouseEvent<"rightClick">> = this.createLazyMouseEvent("rightClick");
@@ -384,7 +384,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
   @Output() mouseCaptorDoubleClick: EventEmitter<MouseEvent<"doubleClick">> = this.createLazyMouseEvent("doubleClick");
 
   /** Event emitted when a mouseup event occurs on the mouse captor. */
-  @Output() mouseCaptorUp: EventEmitter<MouseEvent<"mouseup">> = this.createLazyMouseEvent("mouseup"); 
+  @Output() mouseCaptorUp: EventEmitter<MouseEvent<"mouseup">> = this.createLazyMouseEvent("mouseup");
 
   /** Event emitted when a mousedown event occurs on the mouse captor. */
   @Output() mouseCaptorDown: EventEmitter<MouseEvent<"mousedown">> = this.createLazyMouseEvent("mousedown");
@@ -396,31 +396,31 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
   @Output() mouseCaptorMoveBody: EventEmitter<MouseEvent<"mousemovebody">> = this.createLazyMouseEvent("mousemovebody");
 
   /** Event emitted when the mouse wheel is used on the mouse captor. */
-  @Output() mouseCaptorWheel: EventEmitter<MouseEvent<"wheel">> = this.createLazyMouseEvent("wheel");  
+  @Output() mouseCaptorWheel: EventEmitter<MouseEvent<"wheel">> = this.createLazyMouseEvent("wheel");
 
   /** Event emitted when a touchup event occurs. */
-  @Output() touchUp: EventEmitter<TouchEvent<"touchup">> = this.createLazyTouchEvent("touchup");       
+  @Output() touchUp: EventEmitter<TouchEvent<"touchup">> = this.createLazyTouchEvent("touchup");
 
   /** Event emitted when a touchmove event occurs. */
-  @Output() touchMove: EventEmitter<TouchEvent<"touchmove">> = this.createLazyTouchEvent("touchmove"); 
+  @Output() touchMove: EventEmitter<TouchEvent<"touchmove">> = this.createLazyTouchEvent("touchmove");
 
   /** Event emitted when a touchdown event occurs. */
-  @Output() touchDown: EventEmitter<TouchEvent<"touchdown">> = this.createLazyTouchEvent("touchdown"); 
+  @Output() touchDown: EventEmitter<TouchEvent<"touchdown">> = this.createLazyTouchEvent("touchdown");
 
   // ========================================================================================
   // Output Events - Node and Edge Highlight and Selection Events
   // ========================================================================================
   /** Event emitted when the highlighted node changes. */
-  @Output() highlightedNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();    
+  @Output() highlightedNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
   /** Event emitted when the selected node changes. */
-  @Output() selectedNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();       
+  @Output() selectedNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
   /** Event emitted when the selected edge changes. */
-  @Output() selectedEdgeChange: EventEmitter<string | null> = new EventEmitter<string | null>();       
+  @Output() selectedEdgeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
   /** Event emitted when the dragged node changes. */
-  @Output() draggedNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();        
+  @Output() draggedNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
   /** Event emitted when the dragging state changes. */
   @Output() isDraggingChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -431,7 +431,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
    * @remarks
    *   - The {@link Settings.enableEdgeHoverEvents} needs to be activated in order to work.
    */
-  @Output() hoveredNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();        
+  @Output() hoveredNodeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
   /**
    * Event emitted when the hovered edge changes.
@@ -439,7 +439,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
    * @remarks
    *   - The {@link Settings.enableEdgeHoverEvents} needs to be activated in order to work.
    */
-  @Output() hoveredEdgeChange: EventEmitter<string | null> = new EventEmitter<string | null>();        
+  @Output() hoveredEdgeChange: EventEmitter<string | null> = new EventEmitter<string | null>();
 
   // ========================================================================================
   // Layout Event
@@ -464,8 +464,10 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
     effect(() => this.hoveredNodeChange.emit(this.graphManager.graphData.hoveredNode));
     effect(() => this.hoveredEdgeChange.emit(this.graphManager.graphData.hoveredEdge));
     this.graphManager.layoutService.finishedLayouting.subscribe(x => {
-      this.nodePositionsAfterLayout.emit(this.graphManager.graphData.getGraphData().nodes?.map(n => {  
-        const nodePosBuilder = new NodePosBuilder().id(n.key);
+      this.nodePositionsAfterLayout.emit(this.graphManager.graphData.getGraphData().nodes?.map(n => {
+        const nodePosBuilder = new NodePosBuilder();
+        nodePosBuilder.realBuilder=nodePosBuilder;
+        nodePosBuilder.id(n.key);
         if (n.attributes?.x) {
           nodePosBuilder.x(n.attributes?.x)
         }
@@ -485,7 +487,9 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
       const nodeId = event.node;
       const attributes = this.graphManager.graph?.getNodeAttributes(nodeId);
       if (attributes) {
-        const builder = new GraphNodeBuilder().id(nodeId);
+        const builder = new GraphNodeBuilder();
+        builder.realBuilder=builder;
+        builder.id(nodeId);
         if (attributes.label) builder.label(attributes.label);
         if (attributes.size) builder.size(attributes.size);
         if (attributes.color) builder.color(attributes.color);
@@ -511,7 +515,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
       });
 
       // Trigger change detection whenever something in the data changes
-      this.graphManager.graphData.onDataChanged$.subscribe(() => this.cdReference.detectChanges());    
+      this.graphManager.graphData.onDataChanged$.subscribe(() => this.cdReference.detectChanges());
     });
   }
 
@@ -533,7 +537,7 @@ export class GemGraph extends GemGraphBasis implements OnChanges {
       shouldRefresh = true;
     }
     if (this.hasChanged(changes, "settings") && this.settings) {
-      // TODO: Somehow check if only the settings have changed and if so, then try to redraw only...?  
+      // TODO: Somehow check if only the settings have changed and if so, then try to redraw only...?
       this.graphManager.updateSettings(this.settings);
       shouldRefresh = true;
     }

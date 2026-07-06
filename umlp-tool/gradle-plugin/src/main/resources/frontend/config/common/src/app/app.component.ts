@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WeatherManagerClientImpl } from 'weather/WeatherManagerClientImpl';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
 
 @Component({
   selector: 'app-root',

@@ -64,12 +64,17 @@ export class GemDropdownInput extends GemDropdownInputComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["options"]) {
+/*    if (changes["options"]) {
       this.filteredOptions = changes["options"].currentValue;
-    }
+    }*/
     if (changes["entry"]) {
       this.selectedOption = this.options?.find(o => o.getValue() === this.entry);
     }
+  }
+
+  public override setOptions(val: Array<Option>) {
+    super.setOptions(val);
+    this.filteredOptions = val;
   }
 
   onKeyPress(event: KeyboardEvent): void {

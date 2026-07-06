@@ -32,7 +32,9 @@ export class UserLogin extends UserLoginComponent {
     }
     this.loadModuleConfigFromPublic();
     if (this.loginUser == null) {
-      this.loginUser = LoginModuleManager.loginModuleUserBuilderFromId(-32);
+      LoginModuleManager.loginModuleUserBuilderFromId(-32).then(u => {
+        this.loginUser = u;
+      })
       // this.loginUser = new LoginModuleUser(); // TODO: builder? constructor?
     }
 

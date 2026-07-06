@@ -1,11 +1,18 @@
 import {Command} from '../command/Command';
 
+/**
+ * @deprecated CBu: I think this class should be moved to package command/Request?
+ */
 export abstract class Request<T> extends Command<T> {
 
   private filter: string;
 
-  public constructor(commandType: string, filter?: string) {
-    super(commandType);
+  public constructor() {
+    super()
+  }
+
+  async __RequestConstructor(commandType: string, filter?: string) {
+    await super.__CommandConstructor(commandType);
     this.filter = filter;
   }
 

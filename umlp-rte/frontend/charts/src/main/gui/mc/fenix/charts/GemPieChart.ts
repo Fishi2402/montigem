@@ -16,6 +16,7 @@ import { config, GemPieChartComponent } from '../../../../../../build/gui2java2t
 import { GemPieChartData } from '../../../../../../build/gui2java2ts/mc/fenix/charts/gempiecharttypes/GemPieChartData';
 import { autoColors } from './colors';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
 import { PlotlyModule } from 'angular-plotly.js';
 import * as Plotly from 'plotly.js-dist-min';
 
@@ -83,55 +84,56 @@ export class GemPieChart extends GemPieChartComponent implements OnInit, AfterVi
     if (!data) {
       return;
     }
-
-    const entries = typeof data.getEntriesList === 'function' ? data.getEntriesList() : (data as any).entries;
-    if (!entries || !Array.isArray(entries)) {
-      console.warn("GemPieChart: Received empty or structurally invalid data payload.", data);
-      this.plotlyData = [];
-      this.updatePlot();
-      this.cdr.detectChanges();
-      return;
-    }
-
-    const labels: string[] = [];
-    const values: number[] = [];
-    const colors: string[] = [];
-    const autocolors = this.getColors();
-    let pointerAutoColors = 0;
-
-    for (const entry of entries) {
-      const rawEntry: any = entry;
-      const label = typeof rawEntry.getLabel === 'function' ? rawEntry.getLabel() : rawEntry.label;
-      const value = typeof rawEntry.getValue === 'function' ? rawEntry.getValue() : rawEntry.value;
-      let color = typeof rawEntry.getBackgroundColor === 'function' ? rawEntry.getBackgroundColor() : rawEntry.backgroundColor;
-
-      if (!color || !CSS.supports('color', color)) {
-        color = autocolors[pointerAutoColors % autocolors.length];
-        pointerAutoColors++;
-        if (typeof rawEntry.setBackgroundColor === 'function') {
-          rawEntry.setBackgroundColor(color);
-        } else {
-          rawEntry.backgroundColor = color;
-        }
+    (async () => {
+      const entries = typeof data.getEntriesList === 'function' ? await GemListUtil.toArraySync(data.getEntriesList()) : (data as any).entries;
+      if (!entries || !Array.isArray(entries)) {
+        console.warn("GemPieChart: Received empty or structurally invalid data payload.", data);
+        this.plotlyData = [];
+        this.updatePlot();
+        this.cdr.detectChanges();
+        return;
       }
 
-      labels.push(label);
-      values.push(value);
-      colors.push(color);
-    }
+      const labels: string[] = [];
+      const values: number[] = [];
+      const colors: string[] = [];
+      const autocolors = this.getColors();
+      let pointerAutoColors = 0;
 
-    this.plotlyData = [{
-      type: 'pie',
-      labels: labels,
-      values: values,
-      marker: { colors: colors },
-      hole: this._innerRadius / 100,
-      hoverinfo: 'label+value+percent',
-      textinfo: 'none'
-    }];
+      for (const entry of entries) {
+        const rawEntry: any = entry;
+        const label = typeof rawEntry.getLabel === 'function' ? rawEntry.getLabel() : rawEntry.label;
+        const value = typeof rawEntry.getValue === 'function' ? rawEntry.getValue() : rawEntry.value;
+        let color = typeof rawEntry.getBackgroundColor === 'function' ? rawEntry.getBackgroundColor() : rawEntry.backgroundColor;
 
-    this.updatePlot();
-    this.cdr.detectChanges();
+        if (!color || !CSS.supports('color', color)) {
+          color = autocolors[pointerAutoColors % autocolors.length];
+          pointerAutoColors++;
+          if (typeof rawEntry.setBackgroundColor === 'function') {
+            rawEntry.setBackgroundColor(color);
+          } else {
+            rawEntry.backgroundColor = color;
+          }
+        }
+
+        labels.push(label);
+        values.push(value);
+        colors.push(color);
+      }
+
+      this.plotlyData = [{
+        type: 'pie',
+        labels: labels,
+        values: values,
+        marker: { colors: colors },
+        hole: this._innerRadius / 100,
+        hoverinfo: 'label+value+percent',
+        textinfo: 'none'
+      }];
+
+      this.updatePlot();
+      this.cdr.detectChanges();
+    })();
   }
 
   @Input()

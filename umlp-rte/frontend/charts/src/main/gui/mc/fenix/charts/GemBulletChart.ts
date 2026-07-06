@@ -3,6 +3,7 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { config, GemBulletChartComponent } from '../../../../../../build/gui2java2ts/mc/fenix/charts/GemBulletChartComponent';
+import {GemListUtil, IUMLPList} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -194,8 +195,7 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
     }
   }
 
-  @Input()
-  public set range(range: number[]) {
+  public setRange(range: number[]) {
     this._data[0].gauge.axis.range = range;
     this.updatePlot();
   }
@@ -206,8 +206,7 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
     this.updatePlot();
   }
 
-  @Input()
-  public set steps(steps: number[]) {
+  public setSteps(steps: number[]) {
     if (!steps || steps.length === 0) return;
 
     this._data[0].gauge.steps = [];
@@ -251,6 +250,7 @@ export class GemBulletChart extends GemBulletChartComponent implements AfterView
     this.updatePlot();
   }
 
+  // TODO can this ever be used? Is not part of GUI-DSL Model
   @Input()
   public set margins(margins: number[] | number) {
     if (margins != null) {

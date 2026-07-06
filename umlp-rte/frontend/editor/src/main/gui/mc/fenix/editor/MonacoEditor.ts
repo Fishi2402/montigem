@@ -41,9 +41,9 @@ import {HoverContent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/
 export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit, OnDestroy {
 
   @HostBinding('style.width') get styleWidth() { return this.getWidth(); }
-  @HostBinding('style.height') get styleHeight() { 
+  @HostBinding('style.height') get styleHeight() {
       if (this.isAutoHeight()) return 'auto';
-      return this.getHeight(); 
+      return this.getHeight();
   }
 
   protected editor: monacoTypes.editor.ICodeEditor;
@@ -70,33 +70,38 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   };
 
   public constructor(private elementRef: ElementRef) {
-    setTimeout( () =>
+    setTimeout(() => {
       monaco.languages.registerHoverProvider("*", {
-        provideHover: (model,position) =>  {
-          if(this.getHoverContents()) {
-            for(let hC of this.getHoverContents()) {
-              if((position.lineNumber > hC.getRange().getStartLin() ||
-                (position.lineNumber === hC.getRange().getStartLin() && position.column >= hC.getRange().getStartCol())) &&
-                (position.lineNumber < hC.getRange().getEndLin() ||
-                  position.lineNumber === hC.getRange().getEndLin() && position.column <= hC.getRange().getEndCol())) {
-                return {
-                  contents:
-                    hC.getHoverContentList().map(c => {
-                      return {
-                        value: c
-                      };
-                    })
-                };
-              }
-            }
+        provideHover: async (model, position, token) => {
+          const hoverContents = this.getHoverContents();
+          if (!hoverContents) {
+            return null;
           }
-          return {
-            contents: [
-              { value: ''}
-            ]
-          };
+          for (const hC of hoverContents) {
+            const range = hC.getRange();
+            const isInRange =
+              (position.lineNumber > range.getStartLin() ||
+                (position.lineNumber === range.getStartLin() &&
+                  position.column >= range.getStartCol())) &&
+              (position.lineNumber < range.getEndLin() ||
+                (position.lineNumber === range.getEndLin() &&
+                  position.column <= range.getEndCol()));
+            if (!isInRange) {
+              continue;
+            }
+            const contents: { value: string }[] = [];
+            for await (const content of hC.getHoverContentList()) {
+              if (token.isCancellationRequested) {
+                return null;
+              }
+              contents.push({ value: content });
+            }
+            return { contents };
+          }
+          return null;
         }
-      }), 1000)
+      });
+    }, 1000);
 
     super();
   }
@@ -136,7 +141,7 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       this.highlightInitialization(editorInstance)
       this.scrollToLine(this.editor)
     }
-    
+
     if (this.isAutoHeight()) {
         this.updateHeight();
         this.contentSizeListener = this.editor.onDidContentSizeChange(() => {
@@ -147,16 +152,16 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
     // Initial layout
     setTimeout(() => this.editor.layout(), 0);
   }
-  
+
   private updateHeight() {
       if (!this.editor) return;
       const contentHeight = this.editor.getContentHeight();
       const lineHeight = this.editor.getOption(monaco.editor.EditorOption.lineHeight);
       const maxLines = this.getMaxLines() || 30; // Default 30 if not set
       const maxHeight = maxLines * lineHeight;
-      
+
       const height = Math.min(contentHeight, maxHeight);
-      
+
       const width = this.elementRef.nativeElement.clientWidth;
       this.elementRef.nativeElement.style.height = `${height}px`;
       this.editor.layout({ width: width, height: height });
@@ -226,7 +231,7 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       this.highlightInitialization(this.editor);
     }
   }
-  
+
   public override setAutoHeight(val: boolean) {
       super.setAutoHeight(val);
       this.updateOptions();

@@ -64,7 +64,7 @@ public class StatisticData {
 
     try {
       Properties localProperties = new Properties();
-      localProperties.load(this.getClass().getResourceAsStream("/buildInfo.properties"));
+      localProperties.load(this.getClass().getResourceAsStream("/mg3BuildInfo.properties"));
 
       result.putMember("Version", new UserJsonString(localProperties.getProperty("version")));
     }catch(IOException ignored){}

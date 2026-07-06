@@ -9,7 +9,19 @@ export class AssociationDBEntry {
   /*private*/
   positionInList: number;
 
-  public constructor(lhsGemId: number, rhsGemId: number, positionInList: number) {
+  public constructor() {
+    if (this.lhsGemId === undefined) {
+      this.lhsGemId = 0;
+    }
+    if (this.rhsGemId === undefined) {
+      this.rhsGemId = 0;
+    }
+    if (this.positionInList === undefined) {
+      this.positionInList = 0;
+    }
+  }
+
+  public async __AssociationDBEntryConstructor(lhsGemId?: any, rhsGemId?: any, positionInList?: any): Promise<AssociationDBEntry> {
     if (this.lhsGemId === undefined) {
       this.lhsGemId = 0;
     }
@@ -22,6 +34,7 @@ export class AssociationDBEntry {
     this.lhsGemId = lhsGemId;
     this.rhsGemId = rhsGemId;
     this.positionInList = positionInList;
+    return this;
   }
 
   public getLhsGemId(): number {

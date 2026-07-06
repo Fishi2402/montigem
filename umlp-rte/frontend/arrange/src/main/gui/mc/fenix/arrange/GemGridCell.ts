@@ -2,6 +2,7 @@
 
 import { Component, HostBinding, Input, TemplateRef } from "@angular/core";
 import { config, GemGridCellComponent } from '../../../../../../build/gui2java2ts/mc/fenix/arrange/GemGridCellComponent';
+import {GemListUtil, IUMLPList} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -26,8 +27,8 @@ export class GemGridCell extends GemGridCellComponent {
   _a: number[] = [];
   _b: number[] = [];
 
-  @Input()
-  set a(val: number[]) {
+  public override setA(val : Array<number>) {
+    super.setA(val)
     if (!val) {
       return;
     }
@@ -35,8 +36,8 @@ export class GemGridCell extends GemGridCellComponent {
     this.update();
   }
 
-  @Input()
-  set b(val: number[]) {
+  public override setB(val : Array<number>) {
+    super.setB(val)
     if (!val) {
       return;
     }

@@ -22,6 +22,11 @@ export class LoginSecManager extends LoginSecManagerTOP {
 
   static readonly LS_KEY: string = "MightBeLoggedIn";
 
+  public async __LoginSecManagerConstructor(): Promise<LoginSecManager> {
+    await super.__LoginSecManagerTOPConstructor();
+    return this;
+  }
+
   public finishLoginAs(currentUser: LoginModuleUser) {
     // User logged in
     localStorage.setItem(LoginSecManager.LS_KEY, "true");

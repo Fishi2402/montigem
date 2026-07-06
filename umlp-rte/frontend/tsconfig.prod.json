@@ -16,9 +16,6 @@
       "@umlp/charts": [
         "./build/dist/charts"
       ],
-      "@umlp/common": [
-        "./build/dist/common"
-      ],
       "@umlp/commonj2ts": [
         "./build/dist/commonj2ts"
       ],

@@ -2,6 +2,7 @@
 
 import { Component, Input, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { config, GemTableHeaderComponent } from '../../../../../../build/gui2java2ts/mc/fenix/table/GemTableHeaderComponent';
+import {GemListUtil, IUMLPList} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -22,11 +23,13 @@ export class GemTableHeader extends GemTableHeaderComponent {
     return this._cells;
   }
 
-  @Input() set cols(value: string[]) {
-    if (value == null) {
-      return;
-    }
-    this._cols = value;
+  @Input() set cols(value:IUMLPList<string> | Array<string>) {
+    GemListUtil.toArraySync(value).then(value => {
+      if (value == null) {
+        return;
+      }
+      this._cols = value;
+    });
   }
 
   @Input() set cells(value: TemplateRef<any>[]) {

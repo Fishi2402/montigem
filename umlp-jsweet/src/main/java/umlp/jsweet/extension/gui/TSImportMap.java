@@ -9,7 +9,7 @@ public enum TSImportMap {
   ARRANGE("mc.fenix.arrange", "@umlp/arrange"),
   BASIC("mc.fenix.basic", "@umlp/basic"),
   CHARTS("mc.fenix.charts", "@umlp/charts"),
-  COMMON("mc.fenix.common", "@umlp/common"),
+  COMMON("mc.fenix.common", "@umlp/commonj2ts"),
   NAVIGATION("mc.fenix.navigation", "@umlp/navigation"),
   INPUT("mc.fenix.input", "@umlp/input"),
   TABLE("mc.fenix.table", "@umlp/table"),

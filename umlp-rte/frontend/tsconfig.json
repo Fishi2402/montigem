@@ -3,9 +3,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@umlp/common": [
-        "./common"
-      ],
       "@umlp/commonj2ts": [
         "./commonj2ts"
       ],

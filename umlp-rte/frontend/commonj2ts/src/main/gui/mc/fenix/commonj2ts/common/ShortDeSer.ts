@@ -5,6 +5,10 @@ export class ShortDeSer implements DeSer<number> {
   constructor() {
   }
 
+  public async __ShortDeSerConstructor(): Promise<ShortDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Short(obj: number): Promise<string> {
     return "" + obj;
   }

@@ -18,7 +18,7 @@ import static def.dom.Globals.setInterval;
 public class PartialStepEdit extends PartialStepEditTOP {
 
   public String endEffectorEntry = "";
-  public List<Option> endEffectorOptions = new ArrayList<>();
+  public List<Option> endEffectorOptions;
 
 
   @Override
@@ -27,6 +27,7 @@ public class PartialStepEdit extends PartialStepEditTOP {
     if(this.getEndEffectors() == null) {
       return;
     }
+    this.endEffectorOptions = new ArrayList<>();
     for (EndEffector endEffector : this.getEndEffectors()) {
       this.endEffectorOptions.add(new Option(String.valueOf(endEffector.getGemId()), endEffector.getName()));
       this.endEffectorOptions.sort((l,r) -> l.getDisplay().compareTo(r.getDisplay()));

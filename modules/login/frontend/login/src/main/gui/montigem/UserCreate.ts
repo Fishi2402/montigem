@@ -51,16 +51,17 @@ export class UserCreate extends UserCreateComponent {
       if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
         return;
       }
-      let errorMessage = this.validateUser();
-      if (!errorMessage) {
-        //this.user.activated(ActivationStatus.AKTIVIERT);
-        this.newUser.setRegistrationDate(new Date());
-        // this.newUser.setRole(DtcockpitRole.USER);
-        this.newUser.build();
-        this._router.navigate(['gui', 'loginmodule', 'LoginPage']);
-      } else {
-        this.error = errorMessage;
-      }
+      this.validateUser().then(errorMessage => {
+        if (!errorMessage) {
+          // this.user.activated(ActivationStatus.AKTIVIERT);
+          this.newUser.setRegistrationDate(new Date());
+          // this.newUser.setRole(DtcockpitRole.USER);
+          this.newUser.build();
+          this._router.navigate(['gui', 'loginmodule', 'LoginPage']);
+        } else {
+          this.error = errorMessage;
+        }
+      });
     }
   }
 
@@ -68,23 +69,28 @@ export class UserCreate extends UserCreateComponent {
     return this.error;
   }
 
-  private validateUser(): string {
-    let res: string = '';
+  private validateUser(): Promise<string> {
     // Check Email format
     if (!UserCreate.email.test(this.getNewUser().getEmail())) {
-      return 'Wrong format for Email address!';
+      return Promise.resolve('Wrong format for Email address!');
     }
 
-    // Check if user is unique
-    this.users.filter(user => {
-      if (this.getNewUser().getUsername() === user.getUsername()) {
-        res += ' Account "' + this.getNewUser().getUsername() + '"';
-      }
-      if (this.getNewUser().getEmail() === user.getEmail()) {
-        res += (res.length === 0 ? '' : ' und ') + ' E-mail "' + this.getNewUser().getEmail() + '"';
-      }
+    return this.users.toArrayDeepSync().then(users => {
+      let res = '';
+
+      users.forEach(user => {
+        if (this.getNewUser().getUsername() === user.getUsername()) {
+          res += ` Account "${this.getNewUser().getUsername()}"`;
+        }
+
+        if (this.getNewUser().getEmail() === user.getEmail()) {
+          res += (res.length === 0 ? '' : ' und ') +
+            ` E-mail "${this.getNewUser().getEmail()}"`;
+        }
+      });
+
+      return res + (res.length === 0 ? '' : ' already being used!');
     });
-    return res + (res.length === 0 ? '' : ' already being used!');
   }
 
 }

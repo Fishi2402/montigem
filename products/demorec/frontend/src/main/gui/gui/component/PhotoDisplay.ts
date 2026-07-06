@@ -34,7 +34,7 @@ export class PhotoDisplay extends PhotoDisplayComponent {
 
   public override setComponent(component : DemoRecComponent) {
     if(component) {
-      component.getPhotoList().toArraySync().then(loadedArr => {
+      component.getPhotoList().toArrayDeepSync().then(loadedArr => {
         this.photoArray = loadedArr;
       })
     }
@@ -46,7 +46,7 @@ export class PhotoDisplay extends PhotoDisplayComponent {
       //console.debug(this.getComponent().getPhotoLocations())
       // Timeout so the Server has time to store the Picture
       //const photos: string[] = []
-      return await this.getComponent().getPhotoList().toArraySync()
+      return await this.getComponent().getPhotoList().toArrayDeepSync()
 
           //.forEach(photo => {
         //photos.push("umlp/api/images/" + photo.getFilename())

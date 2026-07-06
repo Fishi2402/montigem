@@ -13,21 +13,25 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import umlp.generator.domain.UMLPGeneratorConfig;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class TSUtilsPrinter extends CdUtilsPrinter {
 
   protected final TypeScriptTypesFullPrettyPrinter printer;
+  protected final TypeScriptTypesFullPrettyPrinter maybeAsyncPrinter;
 
   public TSUtilsPrinter() {
-    printer = new TypeScriptTypesFullPrettyPrinter(new IndentPrinter());
+    boolean rteGen = UMLPGeneratorConfig.getInstance().is4TSLib() &&
+        !UMLPGeneratorConfig.getInstance().is4Domain();
+    printer = new TypeScriptTypesFullPrettyPrinter(new IndentPrinter(),false);
+    maybeAsyncPrinter = new TypeScriptTypesFullPrettyPrinter(new IndentPrinter(), !rteGen);
   }
 
   /**
@@ -81,6 +85,14 @@ public class TSUtilsPrinter extends CdUtilsPrinter {
 
   public String printType(ASTMCReturnType type) {
     return printer.prettyprint(type);
+  }
+
+  public String printAsyncType(ASTMCType type) {
+    return maybeAsyncPrinter.prettyprint(type);
+  }
+
+  public String printAsyncType(ASTMCReturnType type) {
+    return maybeAsyncPrinter.prettyprint(type);
   }
 
   // TODO AGe

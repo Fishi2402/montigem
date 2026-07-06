@@ -9,6 +9,7 @@ import { GemRadarChartDataSet } from '../../../../../../build/gui2java2ts/mc/fen
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -70,56 +71,60 @@ export class GemRadarChart extends GemRadarChartComponent {
     let autocolors = this.getColors();
     this.legendLabels = [];
     this.legendColors = [];
-
-    this._dataSets = this._rawData.getDataSetsList().map((ds: GemRadarChartDataSet, index: number) => {
-      let label = ds.getLabel();
-      let backgroundColor = autoColors[index];
-      if (ds.getBackgroundColor() !== null) {
-        backgroundColor = ds.getBackgroundColor();
-      }
-
-      // Apply opacity if backgroundColor is a hex string or rgb string without alpha
-      if (this._opacity !== undefined && this._opacity !== null) {
-         backgroundColor = this.applyOpacity(backgroundColor, this._opacity);
-      }
-
-
-      let res = {
-        data: ds.getDataList(),
-        label: label,
-        fill: ds.getFill(),
-        backgroundColor: backgroundColor,
-      }
-
-      if (ds.getBorderColor() !== null) {
-        res["borderColor"] = ds.getBorderColor();
-      }
-      if (ds.getBorderWidth() !== null) {
-        res["borderWidth"] = ds.getBorderWidth();
-      }
-
-      this.legendLabels.push(label);
-      this.legendColors.push(backgroundColor);
-      return res;
-    });
-    this._labels = [];
-
-    for (const label of this._rawData.getLabelsList()) {
-      // split the label into maximum 15 character long chunks
-      let words = label.split(' ');
-      let labels = [];
-      let chunk = words[0];
-      for (let i = 1; i < words.length; i++) {
-        if ((chunk + ' ' + words[i]).length <= this._maxLabelLength) {
-          chunk += ' ' + words[i];
-        } else {
-          labels.push(chunk);
-          chunk = words[i];
+    console.warn("Process Data");
+    (async () => {
+      this._dataSets = (await GemListUtil.toArraySync(this._rawData.getDataSetsList())).map((ds: GemRadarChartDataSet, index: number) => {
+        let label = ds.getLabel();
+        let backgroundColor = autoColors[index];
+        if (ds.getBackgroundColor() !== null) {
+          backgroundColor = ds.getBackgroundColor();
         }
+
+        // Apply opacity if backgroundColor is a hex string or rgb string without alpha
+        if (this._opacity !== undefined && this._opacity !== null) {
+          backgroundColor = this.applyOpacity(backgroundColor, this._opacity);
+        }
+
+
+        let res = {
+          data: ds.getDataList().__internalArray(),
+          label: label,
+          fill: ds.getFill(),
+          backgroundColor: backgroundColor,
+        }
+
+        if (ds.getBorderColor() !== null) {
+          res["borderColor"] = ds.getBorderColor();
+        }
+        if (ds.getBorderWidth() !== null) {
+          res["borderWidth"] = ds.getBorderWidth();
+        }
+
+        this.legendLabels.push(label);
+        this.legendColors.push(backgroundColor);
+        return res;
+      });
+      const overall_labels = [];
+
+      for await (const label of this._rawData.getLabelsList()) {
+        // split the label into maximum 15 character long chunks
+        let words = label.split(' ');
+        let labels = [];
+        let chunk = words[0];
+        for (let i = 1; i < words.length; i++) {
+          if ((chunk + ' ' + words[i]).length <= this._maxLabelLength) {
+            chunk += ' ' + words[i];
+          } else {
+            labels.push(chunk);
+            chunk = words[i];
+          }
+        }
+        labels.push(chunk);
+        overall_labels.push(labels);
       }
-      labels.push(chunk);
-      this._labels.push(labels);
-    }
+      this._labels = overall_labels;
+      console.warn("Process Data finished");
+    })();
   }
 
   @Input()

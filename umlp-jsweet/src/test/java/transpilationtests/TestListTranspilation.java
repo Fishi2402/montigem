@@ -69,11 +69,10 @@ public class TestListTranspilation {
     String normalizedContent = transpiledContent
         .replaceAll("/\\*.*?\\*/", "")
         .replaceAll("\\s+", "");
-    assertTrue(normalizedContent.contains("return!((names).indexOf(<any>(name))>=0);"));
-    assertFalse(normalizedContent.contains("return!(names).indexOf(<any>(name))>=0;"));
+    assertTrue(normalizedContent.contains("!awaitnames.contains(name)"));
     assertTrue(normalizedContent.contains(
-        "return!((value!=null&&(valueinstanceofUMLPArrayList||valueinstanceofGemList||valueinstanceofArray)));"));
+        "return!((value!=null&&(valueinstanceofAsyncList||valueinstanceofGemList)));"));
     assertFalse(normalizedContent.contains(
-        "return!value!=null&&(valueinstanceofUMLPArrayList||valueinstanceofGemList||valueinstanceofArray);"));
+        "return!value!=null&&(valueinstanceofAsyncList||valueinstanceofGemList);"));
   }
 }

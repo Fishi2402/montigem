@@ -122,7 +122,19 @@ gradlePlugin {
   }
 }
 
-tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {}
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
+  buildInfoFile = getProjectLayout().getBuildDirectory().file("resources/main/mg3BuildInfo.properties")
+  doLast {
+    def props = new Properties()
+    def file = buildInfoFile.get().asFile
+    file.withInputStream { props.load(it) }
+    // Also write mc_version to build info
+    props.setProperty("mc_version", project.findProperty("mc_version"))
+    file.withOutputStream { out ->
+      props.store(out, null)
+    }
+  }
+}
 processResources.dependsOn("buildInfo")
 
 // configure deployment

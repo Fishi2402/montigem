@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import demorec.BatteryPack;
 import demorec.JointConnectionKind;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;
@@ -14,8 +15,9 @@ import java.util.function.Consumer;
 public class JointConnectionKindCreate extends JointConnectionKindCreateTOP {
 
   protected BatteryPack currentPack = null;
+  BatteryPackService service = AngularUtils.inject(BatteryPackService.class);
 
-  public JointConnectionKindCreate(BatteryPackService service) {
+  public JointConnectionKindCreate() {
     super();
     service.addObserverFunction((BatteryPack p) -> {
       this.currentPack = p;

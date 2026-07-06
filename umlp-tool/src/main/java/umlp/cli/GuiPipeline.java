@@ -192,9 +192,9 @@ public class GuiPipeline extends Pipeline<UMLPPipelineData> {
   public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_setup_glex_vars =
       data -> {
         // Get all ASTGUIComponents
-        data.getGenSetup().getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
         data.getGenSetup().getGlex().setGlobalValue("UMLPGeneratorConfig",
             UMLPGeneratorConfig.getInstance().initFromCmd(data.getCMD()));
+        data.getGenSetup().getGlex().setGlobalValue("genHelper", GUIGeneratorUtil.getInstance());
       };
 
   public final IOperation.ISimpleOperation<DataWithGenSetupAndModel> model_pipe_java_generator =

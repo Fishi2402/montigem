@@ -82,7 +82,7 @@ Each adapter can:
 **Procedure:**
 
 1. Choose suitable adapter:
-  * DOMAIN → `umlp.jsweet.extension.umlp.JavaBasicsAdapter`, `CollectionsAdapter`, `BasicsAdapter`.
+  * DOMAIN → `umlp.jsweet.extension.common.JavaBasicsAdapter`, `CollectionsAdapter`, `BasicsAdapter`.
   * GUI-specific → `umlp.jsweet.extension.gui.UMLPGUICollectionsAdapter`, `TSTypesAdapter`, `GUIUtilAdapter`.
 2. In this adapter:
   * Either register a function in `getTypeMirrorMappings()`:

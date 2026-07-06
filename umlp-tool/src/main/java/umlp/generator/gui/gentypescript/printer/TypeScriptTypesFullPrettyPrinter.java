@@ -5,8 +5,14 @@ import de.monticore.cd4code._prettyprint.CD4CodePrettyPrinter;
 
 public class TypeScriptTypesFullPrettyPrinter extends CD4CodeFullPrettyPrinter {
 
-  public TypeScriptTypesFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer) {
+  boolean asyncList;
+
+  public TypeScriptTypesFullPrettyPrinter(de.monticore.prettyprint.IndentPrinter printer, boolean asyncList) {
     super(printer, false);
+    this.asyncList = asyncList;
+
+    // Otherwise asyncList is always false!
+    this.initializeTraverser(false);
   }
 
   @Override
@@ -66,7 +72,7 @@ public class TypeScriptTypesFullPrettyPrinter extends CD4CodeFullPrettyPrinter {
     getTraverser().setMCFullGenericTypesHandler(mCFullGenericTypes);
     getTraverser().add4MCFullGenericTypes(mCFullGenericTypes);
     de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesPrettyPrinter mCSimpleGenericTypes =
-        new TypeScriptSimpleGenericTypesPrettyPrinter(getPrinter());
+        new TypeScriptSimpleGenericTypesPrettyPrinter(getPrinter(), asyncList);
     getTraverser().setMCSimpleGenericTypesHandler(mCSimpleGenericTypes);
     getTraverser().add4MCSimpleGenericTypes(mCSimpleGenericTypes);
     de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesPrettyPrinter mCCollectionTypes =

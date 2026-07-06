@@ -8,6 +8,7 @@ import { GemVennDiagramData } from '../../../../../../build/gui2java2ts/mc/fenix
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -50,16 +51,18 @@ export class GemVennDiagram extends GemVennDiagramComponent {
     if (!data) {
       return;
     }
-    const bgrColor = this.colorScheme.domain.map(x => x + "70");
-    this.labels = data.getEntriesList().map(entry => entry.getLabel());
-    this._data = data;
+    (async () => {
+      const bgrColor = this.colorScheme.domain.map(x => x + "70");
+      this.labels = (await GemListUtil.toArraySync(data.getEntriesList())).map(entry => entry.getLabel());
+      this._data = data;
 
-    this.legendLabels = this.labels.filter(entry => {
-      return entry !== undefined;
-    });
-    this.legendColors = bgrColor;
+      this.legendLabels = this.labels.filter(entry => {
+        return entry !== undefined;
+      });
+      this.legendColors = bgrColor;
 
-    this.updateValues();
+      this.updateValues();
+    })();
   }
 
   public colorScheme = {
@@ -72,8 +75,10 @@ export class GemVennDiagram extends GemVennDiagramComponent {
 
   init() {
     this.colors = this.getColors();
-    this.updateValues();
-    super.init();
+    this.updateValues()
+      .then(_ =>
+        super.init()
+      )
   }
 
   public get sets() {
@@ -84,14 +89,22 @@ export class GemVennDiagram extends GemVennDiagramComponent {
     return this.colors[index % this.colors.length];
   }
 
-  private updateValues() {
+  private async updateValues() {
+    if(!this._data) {
+      return;
+    }
     let div = d3.select("#venn");
-    let transformedData = {
-      entries: this._data.getEntriesList().map(e => ({
-        sets: e.getSetsList(),
+    const entries = [];
+    for await (const e of this._data.getEntriesList()) {
+      const sets = (await GemListUtil.toArraySync(e.getSetsList()))
+      entries.push({
+        sets: sets,
         label: e.getLabel(),
         size: e.getSize()
-      }))
+      })
+    }
+    let transformedData = {
+      entries: entries
     };
     div.datum(transformedData.entries).call(this._chart);
 

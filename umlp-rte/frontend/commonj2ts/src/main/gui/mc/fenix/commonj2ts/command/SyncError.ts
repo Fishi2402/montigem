@@ -5,7 +5,11 @@ import {StatusResult} from './StatusResult';
 
 export class SyncError extends Command<void> {
   public constructor() {
-    super("umlp.command.SyncError");
+    super()
+  }
+
+  public __SyncErrorConstructor(t: Error) {
+    super.__CommandConstructor("umlp.command.SyncError");
   }
 
   /**

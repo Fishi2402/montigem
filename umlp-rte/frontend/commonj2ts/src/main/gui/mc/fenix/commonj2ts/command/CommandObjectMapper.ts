@@ -13,6 +13,10 @@ import {Command} from './Command';
 export abstract class CommandObjectMapper {
   static instance: CommandObjectMapper = null;
 
+  public async __CommandObjectMapperConstructor() : Promise<CommandObjectMapper>{
+    return this;
+  }
+
   static getInstance(): CommandObjectMapper {
     return <any>(/* requireNonNull */(obj => {
       if (obj == undefined || obj == null) {
@@ -75,7 +79,7 @@ export abstract class CommandObjectMapper {
     } catch (e) {
       const msg: string = StringHelper.format("%s Could not serialize result: %s\n%s", "0xS0001", result.getTypeParameter(), e.message);
       Log.error(msg);
-      return await CommandObjectMapper.getInstance()._serializeResponse(StatusResult.error(result.getCommandId()));
+      return await CommandObjectMapper.getInstance()._serializeResponse(await StatusResult.error(result.getCommandId()));
     }
   }
 

@@ -2,7 +2,7 @@
 import {Component} from '@angular/core';
 import {PersonEditComponent,config} from 'stanley/personedit/PersonEditComponent';
 import {Person} from 'hardy/flensburg/Person';
-import { Event } from '@umlp/common';
+import { Event } from '@umlp/commonj2ts';
 
 @Component({
   standalone:true,

@@ -4,6 +4,7 @@ import def.dom.HTMLInputElement;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;

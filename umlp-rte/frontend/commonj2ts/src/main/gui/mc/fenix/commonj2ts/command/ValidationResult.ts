@@ -7,13 +7,18 @@ export class ValidationResult extends CommandResult<void> {
 
   protected validationResult : DomainValidationResult;
 
-  public constructor(id: number, validationResult: DomainValidationResult, type: string) {
-    super(id, type);
-    this.validationResult = validationResult;
+  public constructor(){
+    super()
   }
 
-  public static of(id: number, validationResult: DomainValidationResult, type: string): ValidationResult {
-    return new ValidationResult(id, validationResult, type);
+  public async __ValidationResultConstructor(id: number, validationResult: DomainValidationResult, type: string) : Promise<ValidationResult>{
+    super.__CommandResultConstructor(id, type);
+    this.validationResult = validationResult;
+    return this;
+  }
+
+  public static async of(id: number, validationResult: DomainValidationResult, type: string): Promise<ValidationResult> {
+    return await new ValidationResult().__ValidationResultConstructor(id, validationResult, type);
   }
 
   public isSuccessful(): Promise<boolean> {

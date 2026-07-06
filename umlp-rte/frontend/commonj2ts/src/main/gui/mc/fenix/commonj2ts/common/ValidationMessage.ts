@@ -5,11 +5,18 @@ export class ValidationMessage {
   private message: string;
   private status: ValidationStatus;
 
-  constructor(status: ValidationStatus, message: string) {
+  constructor() {
+    if (this.message === undefined) {
+      this.message = null;
+    }
+  }
+
+  public async __ValidationMessageConstructor(status?: any, message?: any): Promise<ValidationMessage> {
     if (this.message === undefined) {
       this.message = null;
     }
     this.message = message;
+    return this;
   }
 
   public getMessage(): string {

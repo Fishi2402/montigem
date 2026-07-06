@@ -1,6 +1,8 @@
 {
     "@Async": {
       "include": [
+        "mc.fenix.commonj2ts.deser.DeSerRepository.getDeSerMap()",
+
         "umlp.backendrte.command.CommandManager.executeCommand(**)",
         "umlp.backendrte.command.CommandManager.<*>executeCommand(**)",
         "umlp.backendrte.command.CommandManager._executeCommand(**)",
@@ -99,10 +101,16 @@
         "umlp.backendrte.command.SimpleResult.<*>isSuccessful(**)",
         "umlp.backendrte.command.ListResult.isSuccessful(**)",
         "umlp.backendrte.command.ListResult.<*>isSuccessful(**)",
+        "umlp.backendrte.command.ListResult.of(**)",
+        "umlp.backendrte.command.ListResult.<*>of(**)",
         "umlp.backendrte.command.StatusResult.wasSuccessful(**)",
         "umlp.backendrte.command.StatusResult.<*>wasSuccessful(**)",
         "umlp.backendrte.command.StatusResult.isSuccessful(**)",
         "umlp.backendrte.command.StatusResult.<*>isSuccessful(**)",
+        "umlp.backendrte.command.StatusResult.ok(**)",
+        "umlp.backendrte.command.StatusResult.<*>ok(**)",
+        "umlp.backendrte.command.StatusResult.error(**)",
+        "umlp.backendrte.command.StatusResult.<*>error(**)",
 
         "umlp.backendrte.common.*.fromJson(**)",
         "umlp.backendrte.common.*.<*>fromJson(**)",

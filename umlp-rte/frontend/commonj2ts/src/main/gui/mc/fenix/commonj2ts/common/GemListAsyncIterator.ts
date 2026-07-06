@@ -10,22 +10,16 @@ export class GemListAsyncIterator<E extends GemIdentifiable> implements AsyncIte
     this.done = false;
   }
 
-  next(): Promise<IteratorResult<E>> {
+  async next(): Promise<IteratorResult<E>> {
     if (this.done) {
-      return Promise.resolve({done: this.done, value: undefined});
-    } else if (this.index === this.gemList.size()) {
-      this.done = true;
-      return Promise.resolve({done: this.done, value: undefined});
+      return {done: true, value: undefined};
     }
-    let value: Promise<E> = this.gemList.get(this.index);
+    if (this.index === await this.gemList.size()) {
+      this.done = true;
+      return {done: true, value: undefined};
+    }
+    const value = await this.gemList.get(this.index);
     ++this.index;
-    return new Promise<IteratorResult<E>>((resolve) => {
-      value.then(val => {
-        resolve({
-          done: this.done,
-          value: val
-        });
-      })
-    });
+    return {done: false, value};
   }
 }

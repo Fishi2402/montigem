@@ -4,7 +4,7 @@ import {Component} from '@angular/core';
 import {SehubManager} from 'sehub/SehubManager';
 import {Post} from 'sehub/Post';
 import {SehubSecurityManager} from "sehub/SehubSecurityManager";
-import {Gem} from '@umlp/commonj2ts';
+import {AsyncSet, AsyncList, Gem} from '@umlp/commonj2ts';
 
 import { CommonModule } from "@angular/common";
 import { GemCard, GemColumn, GemRow } from "@umlp/arrange";
@@ -52,8 +52,10 @@ export class Note extends NoteComponent {
         if(!SehubSecurityManager.getCurrentUserIdOrNull()){
           alert("No User Logged In")
         } else {
+          const l : AsyncSet<Post> = new AsyncSet();
+          l._data = [];
           SehubSecurityManager.getCurrentUser().then(u => {
-            builder.responses([])
+            builder.responses(l)
                 .then(builder => builder.title(" | " + date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes() + " ]: " + this.post.getTitle()))
                 .then(builder => builder.author(u))
                 .then(builder => builder.text("<< YOUR REPLY >>"))

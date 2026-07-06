@@ -5,6 +5,10 @@ export class LongDeSer implements DeSer<number> {
   constructor() {
   }
 
+  public async __LongDeSerConstructor(): Promise<LongDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Long(obj: number): Promise<string> {
     return "" + obj;
   }

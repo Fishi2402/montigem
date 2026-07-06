@@ -3,6 +3,7 @@ package gui.pack;
 
 import demorec.BatteryPack;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 import java.util.function.Consumer;
@@ -16,11 +17,9 @@ public class BatteryPackOverview extends BatteryPackOverviewTOP {
     };
   }
 
-  BatteryPackService overallService;
+  BatteryPackService overallService = AngularUtils.inject(BatteryPackService.class);
 
-  public BatteryPackOverview(BatteryPackService service) {
-    overallService = service;
-  }
+  public BatteryPackOverview() {}
 
   @Override
   public void setPack(BatteryPack pack) {

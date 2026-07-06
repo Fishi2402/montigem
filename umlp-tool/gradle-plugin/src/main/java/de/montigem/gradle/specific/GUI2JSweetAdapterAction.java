@@ -28,6 +28,7 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
     if(getParameters().getUseModuleGUIAdapter().get()) {
       generator.generate(
           getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
+          false,
           srcDirs
       );
     } else if (getParameters().getDomain().isPresent() && !getParameters().getDomain().get().isEmpty()) {
@@ -36,8 +37,13 @@ public abstract class GUI2JSweetAdapterAction extends Model2JSweetAdapterAction<
           getParameters().getDomain().get().get(0), false,
           srcDirs
       );
-    }
-    else {
+    } else if(!getParameters().getDomain().isPresent() || getParameters().getDomain().get().isEmpty()) {
+      generator.generate(
+          getParameters().getJSweetAdapterDir().get().getAsFile().getAbsolutePath(),
+          true,
+          srcDirs
+      );
+    } else {
       Log.error("Could not derive which GUI2JSweetAdapter to use from the given Gradle configuration." +
           " You can either specify a Domain model or set useModuleGUIAdapter to true.");
     }

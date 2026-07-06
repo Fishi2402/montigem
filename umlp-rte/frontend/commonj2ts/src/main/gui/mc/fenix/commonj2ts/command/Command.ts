@@ -5,6 +5,9 @@ import {CommandManager} from './CommandManager';
 import {Log} from "../logging";
 import {LoadingState} from "../common";
 import {SimpleResult} from "./SimpleResult";
+import {IUMLPList} from "../common";
+import {AsyncList} from "../javautil";
+import {Collection} from "../javautil";
 
 // Der Typenparameter T gibt an, welchen Datentyp gewrapped in ein CommandResult<T> ein Command zurückgeben soll.
 // Falls es nur eine Status-Meldung ist, so wird T = Void genutzt und der Status aus dem CommandResult ausgelesen.
@@ -23,7 +26,7 @@ export abstract class Command<T> {
   // Wird bei der Deserialisierung benötigt um die korrekte Subklasse von Command zu instanziieren
   private commandType: string;
 
-  constructor(commandType: string) {
+  constructor() {
     if (this.id === undefined) {
       this.id = 0;
     }
@@ -33,6 +36,9 @@ export abstract class Command<T> {
     if (this.commandType === undefined) {
       this.commandType = null;
     }
+  }
+
+  public async __CommandConstructor(commandType: string) {
     this.id = CommandManager.getFreeCommandId();
     this.participantId = CommandManager.getParticipantId();
     this.commandType = commandType;
@@ -80,12 +86,12 @@ export abstract class Command<T> {
   // z.B Human_get.
 
   // GemIds, der Daten welcher dieser Command verändert
-  public getEffectedGemIds(): Array<number> {
-    return [];
+  public async getEffectedGemIds(): Promise<Collection<number>> {
+    return await new AsyncList<number>().__AsyncListConstructor();
   }
 
   // GemIds, zu welchen dieser Client updates erhalten muss
-  public getNewlySubscribedGemIds(): Array<number> {
+  public async getNewlySubscribedGemIds(): Promise<Collection<number>> {
     return this.getEffectedGemIds();
   }
 

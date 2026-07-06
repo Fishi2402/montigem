@@ -5,8 +5,7 @@ import ApexCharts from 'apexcharts';
 import {TimelineData} from "../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineData";
 import {GemTimelineChartComponent, config} from "../../../../../../build/gui2java2ts/mc/fenix/charts/GemTimelineChartComponent";
 import {Timeline} from "../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/Timeline";
-import {TimelineBlock} from "../../../../../../build/gui2java2ts/mc/fenix/charts/gemtimelinecharttypes/TimelineBlock";
-import { Event } from '@umlp/common';
+
 
 @Component({
     standalone: true,
@@ -131,6 +130,9 @@ export class GemTimelineChart extends GemTimelineChartComponent implements OnDes
     id2TimeSeriesIndex: Map<number, number> = new Map();
 
     private async processNewData(data: TimelineData): Promise<void> {
+        if(!data) {
+          return;
+        }
         for await (const timeline of data.getTimeLineList()) {
             if (this.id2TimeSeriesIndex.has(timeline.getIdentifier())) {
                 this.options.series[this.id2TimeSeriesIndex.get(timeline.getIdentifier())] = await this.transformData2Series(timeline);

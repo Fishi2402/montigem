@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class UMLPAdapterUtils {
@@ -244,14 +245,56 @@ public class UMLPAdapterUtils {
       return variableName;
     }
   }
-  public static void addAsyncListAnnotationsToContext(JSweetContext context) {
+
+  public static boolean isRTEIncluded(String fullyQualifiedName) {
+    if (isSpecificRTEClass(fullyQualifiedName)) {
+      return true;
+    }
+    if (!fullyQualifiedName.startsWith(RTEPathUtil.getBackendRTEPath())) {
+      return false;
+    }
+    for (Pattern exclude : getExcludes()) {
+      if (exclude.matcher(fullyQualifiedName).matches()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean isSpecificRTEClass(String fullyQualifiedName) {
+    switch (fullyQualifiedName) {
+      case "mc.fenix.commonj2ts.deser.DeSerRepository":
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  protected static List<Pattern> getExcludes() {
+    return excludes;
+  }
+
+  private static final List<Pattern> excludes = Arrays.asList(
+      Pattern.compile("umlp\\.backendrte\\.service\\.websocket\\.WebSocketConfig")
+  );
+
+  public static boolean isJdkType(TypeElement type) {
+    String qualifiedName = type.getQualifiedName().toString();
+    return qualifiedName.startsWith("java.")
+        || qualifiedName.startsWith("javax.")
+        || qualifiedName.startsWith("sun.")
+        || qualifiedName.startsWith("com.sun.")
+        || qualifiedName.startsWith("jdk.");
+  }
+
+  public static void addAsyncAnnotationsForJREToContext(JSweetContext context) {
     try (
-        InputStream is = UMLPAdapterUtils.class.getResourceAsStream("/asynclist.json")) {
+        InputStream is = UMLPAdapterUtils.class.getResourceAsStream("/asyncjre.json")) {
       Map<String, Object> config = new Gson().fromJson(
           new String(is.readAllBytes(), StandardCharsets.UTF_8)
           , Map.class);
       if (config != null) {
-        standalone.com.sun.tools.sjavac.Log.info("Using Async List.");
+        Log.info("The current transpilation will assume an asynchronous JavaRTE annotated by >asyncjre.json<.", UMLPAdapterUtils.class.getName());
         context.applyExtraConfiguration(config);
       }
     } catch (
@@ -259,5 +302,4 @@ public class UMLPAdapterUtils {
       throw new RuntimeException(e);
     }
   }
-
 }

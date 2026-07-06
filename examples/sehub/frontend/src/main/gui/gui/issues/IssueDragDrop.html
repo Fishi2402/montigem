@@ -4,10 +4,10 @@
   cdkDropList
   [id]="dropId"
   [cdkDropListData]="issues"
-  [cdkDropListConnectedTo]="canDropTo"
+  [cdkDropListConnectedTo]="dropTopWrapper"
   class="drag-drop-list"
   (cdkDropListDropped)="onDrop($event)">
-  <ng-container *ngFor="let issue of getIssuesForAngular__ChangeDetection()">
+  <ng-container *ngFor="let issue of getIt2IterableForAngular__ChangeDetection()">
     <issue-entry cdkDrag [issue]="issue"></issue-entry>
   </ng-container>
 </div>

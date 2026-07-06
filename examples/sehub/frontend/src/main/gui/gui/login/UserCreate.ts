@@ -7,7 +7,7 @@ import {SehubRole} from 'sehub/SehubRole';
 import {SehubManager} from 'sehub/SehubManager';
 import {BoardMapper} from 'sehub/BoardMapper';
 import {BingoEntry} from 'sehub/BingoEntry';
-import {GemList} from '@umlp/commonj2ts';
+import {GemList,AsyncList} from '@umlp/commonj2ts';
 import {UserCreateComponent,config} from 'gui/login/UserCreateComponent';
 
 @Component({
@@ -71,9 +71,9 @@ export class UserCreate extends UserCreateComponent {
 
     for (let i = 0; i <= 24; i++) {
       let builder = await SehubManager.boardMapperBuilder();
-      let boardMapper = await builder.bingoBoardEntry(this.entries[this.permutation[i]])
-          .isChecked(false)
-          .build();
+      let boardMapper = await (await
+          builder.bingoBoardEntry(this.entries[this.permutation[i]])
+              .then(b => b.isChecked(false))).build();
       gridEntrySet.add(boardMapper);
     }
     console.log(gridEntrySet)

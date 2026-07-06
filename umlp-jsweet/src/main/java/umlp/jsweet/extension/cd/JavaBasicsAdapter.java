@@ -4,7 +4,7 @@ package umlp.jsweet.extension.cd;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 
 public class JavaBasicsAdapter extends
-    umlp.jsweet.extension.umlp.JavaBasicsAdapter {
+    umlp.jsweet.extension.common.JavaBasicsAdapter {
   public JavaBasicsAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }

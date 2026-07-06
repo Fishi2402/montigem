@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { Component } from '@angular/core';
 import { DevProcessCockpitManagerClientImpl } from 'devprocesscockpit/DevProcessCockpitManagerClientImpl';
-import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/common';
+import { ClientCommandManager, ClientCommandWebsocketCommunication, CommandManager } from '@umlp/commonj2ts';
 
 @Component({
   selector: 'app-root',

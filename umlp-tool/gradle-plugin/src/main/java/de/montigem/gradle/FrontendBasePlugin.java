@@ -284,9 +284,9 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
         project.getDependencies().add("implementation", rteFrontend);
       }
       else {
-        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
-        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, "umlp:umlp-rte:" + mcVersion(project));
-        project.getDependencies().add("implementation", "umlp:umlp-rte:" + mcVersion(project));
+        project.getDependencies().add(MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG, "umlp:umlp-rte:" + umlpVersion(project));
+        project.getDependencies().add(MONTIGEM_MODULE_IMPORT_MAP_CONFIG, "umlp:umlp-rte:" + umlpVersion(project));
+        project.getDependencies().add("implementation", "umlp:umlp-rte:" + umlpVersion(project));
       }
     }
   }
@@ -304,15 +304,25 @@ public abstract class FrontendBasePlugin implements Plugin<Project> {
   public static String mcVersion(Project project) {
     String value = (String) project.findProperty("mc_version");
     if (value == null || value.isEmpty()) {
-      if (DependencyPlugin.version == null) {
+      if (DependencyPlugin.mc_version == null) {
         Log.error("0x00034 A MontiCore version was requested, but the version is unset." +
             "\nPlease make sure to specify it via, e.g., command line (`-Pmc_version=<value>`), "
             + " in a gradle.properties file or by applying `"
             + DependencyPlugin.class.getSimpleName() + "` plugin.");
       }
-      return DependencyPlugin.version;
+      return DependencyPlugin.mc_version;
     }
     return value;
+  }
+
+  public static String umlpVersion(Project project) {
+    if (DependencyPlugin.version == null) {
+      Log.error("0x00034 A MontiCore version was requested, but the version is unset." +
+          "\nPlease make sure to specify it via, e.g., command line (`-Pmc_version=<value>`), "
+          + " in a gradle.properties file or by applying `"
+          + DependencyPlugin.class.getSimpleName() + "` plugin.");
+    }
+    return DependencyPlugin.version;
   }
 
   public static String requireProjectProperty(Project project, String propertyName) {

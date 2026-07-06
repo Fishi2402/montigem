@@ -5,6 +5,7 @@ import jsweet.lang.Erased;
 import jsweet.lang.Replace;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.TranspilationHandler;
+import org.jsweet.transpiler.model.support.NewClassElementSupport;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;

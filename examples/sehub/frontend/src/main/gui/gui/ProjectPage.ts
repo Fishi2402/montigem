@@ -6,6 +6,7 @@ import {Artifact} from 'sehub/Artifact';
 import {Directory} from 'sehub/Directory';
 import { SehubSecurityManager } from "sehub/SehubSecurityManager";
 import {Component} from '@angular/core';
+import {AsyncList} from '@umlp/commonj2ts';
 
 @Component({
   standalone:true,
@@ -35,8 +36,12 @@ export class ProjectPage extends ProjectPageComponent {
 
     const artifacts: Artifact[] = this.getAllArtifactsFromDir(this.project, []);
 
-    networkData.setNodesList(this.getNodesFromArtifacts(artifacts));
-    networkData.setEdgesList(this.getEdgesFromArtifacts(artifacts));
+    const nodes : AsyncList<GemNetworkNode> = new AsyncList();
+    nodes._data = this.getNodesFromArtifacts(artifacts);
+    networkData.setNodesList(nodes);
+    const edges : AsyncList<GemNetworkEdge> = new AsyncList();
+    edges._data = this.getEdgesFromArtifacts(artifacts);
+    networkData.setEdgesList(edges);
     const newHash = JSON.stringify(networkData);
     if (this.networkDataCheck.hash !== newHash) {
       this.networkDataCheck.hash = newHash;

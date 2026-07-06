@@ -4,6 +4,7 @@ import { Component, } from '@angular/core';
 import { AddToFavoriteComponent ,config} from 'gui/AddToFavoriteComponent';
 import { WeatherManager } from 'weather/WeatherManager';
 import { Option } from '@umlp/input';
+import { AsyncList } from '@umlp/commonj2ts';
 
 @Component({
   standalone:true,
@@ -15,7 +16,7 @@ import { Option } from '@umlp/input';
 export class AddToFavorite extends AddToFavoriteComponent {
 
   public searchVal: string = "";
-  public options: Option[] = [];
+  public options: AsyncList<Option> = new AsyncList<Option>();
 
   public ngOnInit(): void {
     if (this.app == null) {
@@ -28,13 +29,12 @@ export class AddToFavorite extends AddToFavoriteComponent {
       this.cities = await val.toArraySync();
       for await (const city of this.cities) {
         let value = city.getName();
-        this.options.push(new Option(value));
+        this.options.add(await new Option().__OptionConstructor(value));
       }
-      this.options = this.options.slice();
     });
   }
 
-  public override getSearchOptions(): Array<Option> {
+  public override getSearchOptions(): AsyncList<Option> {
     return this.options;
   }
 

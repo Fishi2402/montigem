@@ -4,6 +4,7 @@ package umlp.generator.gui.gentypescript.printer;
 import de.monticore.guidsl._symboltable.BuiltInTypes;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
+import umlp.generator.domain.UMLPGeneratorConfig;
 import umlp.generator.gui.GUIGeneratorUtil;
 
 import java.util.Optional;
@@ -12,7 +13,7 @@ public enum TypeScriptTypes {
   OBJECT("Object", "any", "java.lang.Object"),
   STRING("String", "string"),
   EVENT(BuiltInTypes.EVENT.getName(), "Event",
-      BuiltInTypes.EVENT.getQName(), "@umlp/common"),
+      BuiltInTypes.EVENT.getQName(), "@umlp/commonj2ts"),
   TEMPLATE_REF(BuiltInTypes.GUI_VIEW_ELEMENT.getName(), "TemplateRef",
       BuiltInTypes.GUI_VIEW_ELEMENT.getQName(), "@angular/core"),
   // TODO: set proper router service when implemented
@@ -20,7 +21,9 @@ public enum TypeScriptTypes {
       "umlp.guiutil.Router", "@angular/router"),
   APP_ROUTER("AppRouter", "AppRouter", "app.AppRouter"),
   LIST("List", "Array", "java.util.List"),
+  ASYNC_LIST("List", "IUMLPList", "java.util.List"),
   ARRAY_LIST("ArrayList", "Array", "java.util.ArrayList"),
+  ASYNC_ARRAY_LIST("ArrayList", "IUMLPList", "java.util.ArrayList"),
   COLLECTION("Collection", "Array", "java.util.Collection"),
   MAP("Map", "Map", "java.util.Map"),
   HASH_MAP("HashMap", "Map", "java.util.HashMap"),
@@ -40,9 +43,9 @@ public enum TypeScriptTypes {
   FLOAT("float", "number"),
   FLOAT_BOXED("Float", "number", "java.lang.Float"),
   RUNNABLE("Runnable", "() => void", "java.lang.Runnable"),
-  CONSUMER("Consumer", "Event", "java.util.function.Consumer", "@umlp/common"),
+  CONSUMER("Consumer", "Event", "java.util.function.Consumer", "@umlp/commonj2ts"),
   DIRECTIVE("Directive", "Directive", "umlp.jsweet.extension.annotation.Directive", "@angular/core"),
-  GEM_LIST("GemList", "GemList", "umlp.backendrte.common.GemList", "@umlp/common");
+  GEM_LIST("GemList", "GemList", "umlp.backendrte.common.GemList", "@umlp/commonj2ts");
 
   private final String tsType;
   private final String mcType;
@@ -86,7 +89,27 @@ public enum TypeScriptTypes {
     for (TypeScriptTypes type : TypeScriptTypes.values()) {
       if ((type.mcType.equals(mcType)
           || (type.javaQName.isPresent() && type.javaQName.get().equals(mcType)))) {
-        res = type.tsType;
+        return type.tsType;
+      }
+    }
+
+    return res;
+  }
+
+  public static String toAsyncTSType(String mcType) {
+    String res = mcType;
+
+    for (TypeScriptTypes type : TypeScriptTypes.values()) {
+
+      if ((type.mcType.equals(mcType)
+          || (type.javaQName.isPresent() && type.javaQName.get().equals(mcType)))) {
+        if(type == LIST) {
+          return ASYNC_LIST.tsType;
+        } else if(type == ARRAY_LIST)  {
+          return ASYNC_ARRAY_LIST.tsType;
+        } else {
+          return type.tsType;
+        }
       }
     }
 

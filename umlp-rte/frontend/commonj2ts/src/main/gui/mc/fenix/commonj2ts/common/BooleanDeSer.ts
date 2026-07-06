@@ -5,6 +5,10 @@ export class BooleanDeSer implements DeSer<boolean> {
   constructor() {
   }
 
+  public async __BooleanDeSerConstructor(): Promise<BooleanDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Boolean(obj: boolean): Promise<string> {
     return "" + obj;
   }

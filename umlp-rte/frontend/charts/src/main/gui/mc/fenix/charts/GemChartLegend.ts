@@ -15,14 +15,26 @@ export class GemChartLegend extends GemChartLegendComponent {
   _entries: { label: string, color: string }[] = [];
 
   /** setter that processes the color data to be shown correctly by the legend. */
-  @Input()
-  set colors(colors: string[]) {
+  public override setColors(colors: string[]) {
+    super.setColors(colors)
+    this.updateOnInputChange()
+  }
+
+  public override setLabels(labels: string[]) {
+    super.setLabels(labels)
+    this.updateOnInputChange()
+  }
+
+  public updateOnInputChange() {
+    if(!this.getLabels() || !this.getColors()) {
+      return;
+    }
     this._entries = [];
 
-    for (let i = 0; i < this._labels.length; i++) {
+    for (let i = 0; i < this.getLabels().length; i++) {
       let legendEntry = {
-        label: this._labels[i],
-        color: colors[i]
+        label: this.getLabels()[i],
+        color: this.getColors()[i]
       };
       this._entries.push(legendEntry);
     }

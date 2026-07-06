@@ -65,11 +65,17 @@ export class UserSignUp extends UserSignUpComponent {
               this._router.navigate(['gui', 'loginmodule', 'LoginPage']);
             } else if (result.error === 'disabled') {
               this.error = 'SignUps have been disabled. Please contact an administrator.'
-              this.setValidityUsername(new GemTextInputValidity('Error', this.error))
+              const validity = new GemTextInputValidity()
+              validity._status = 'Error';
+              validity._message = this.error;
+              this.setValidityUsername(validity)
             } else {
               console.warn(result);
               this.error = 'Failed to signup: ' + result.error;
-              this.setValidityUsername(new GemTextInputValidity('Error', this.error))
+              const validity = new GemTextInputValidity()
+              validity._status = 'Error';
+              validity._message = this.error;
+              this.setValidityUsername(validity)
             }
           })
           .catch(error => {

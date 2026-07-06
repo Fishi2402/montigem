@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class UMLPRTEImportAdapter extends umlp.jsweet.extension.umlp.UMLPRTEImportAdapter {
+public class UMLPRTEImportAdapter extends umlp.jsweet.extension.common.UMLPRTEImportAdapter {
   public UMLPRTEImportAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
   }

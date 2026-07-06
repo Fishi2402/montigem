@@ -4,20 +4,25 @@ import {CommandResult} from './CommandResult';
 export class StatusResult extends CommandResult<void> {
   successful: boolean;
 
-  constructor(id: number, successful: boolean) {
-    super(id, "java.lang.Void");
+  constructor() {
+    super()
+  }
+
+  public async __StatusResultConstrcutor(id: number, successful: boolean) : Promise<StatusResult> {
+    await super.__CommandResultConstructor(id, "java.lang.Void");
     if (this.successful === undefined) {
       this.successful = false;
     }
     this.successful = successful;
+    return this;
   }
 
-  public static ok(id: number): StatusResult {
-    return new StatusResult(id, true);
+  public static async ok(id: number): Promise<StatusResult> {
+    return await new StatusResult().__StatusResultConstrcutor(id, true);
   }
 
-  public static error(id: number): StatusResult {
-    return new StatusResult(id, false);
+  public static async error(id: number): Promise<StatusResult> {
+    return await new StatusResult().__StatusResultConstrcutor(id, false);
   }
 
   public async wasSuccessful(): Promise<boolean> {

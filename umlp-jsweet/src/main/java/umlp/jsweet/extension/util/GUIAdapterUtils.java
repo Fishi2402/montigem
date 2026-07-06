@@ -224,6 +224,7 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
     return sunTypesHelper.getNewIdent(variableName);
   }
 
+  // TODO this should be removed, since we have Annotations for it
   public boolean isStateVarGetter(MethodInvocationElement invocation,
       Element parentElement, GUIComponentObserverPatternAdapter guiComponentObserverPatternAdapter) {
     return invocation.getMethodName().startsWith("get") &&

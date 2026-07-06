@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-// Solely used in GemListBuilder
+// Solely used in GemListBuilder <- THIS  IS A CONTRACT
 // SumType of a domain-objects GemID and builder
 // as the builder may not have an ID that can be used to get the element from the manager
 export class IDOrBuilder<E extends GemIdentifiable & GemBuildable> {
@@ -11,6 +11,9 @@ export class IDOrBuilder<E extends GemIdentifiable & GemBuildable> {
   public constructor(gemIdOrBuilder: number | E) {
     this.gemIDOpt = null;
     this.builderOpt = null;
+    if(gemIdOrBuilder === undefined || gemIdOrBuilder === null) {
+      console.error("Internal Error: gemIdOrBuilder cannot be null or undefined.")
+    }
     if (typeof gemIdOrBuilder === 'number') {
       this.gemIDOpt = (v => {
         if (v == null) throw new Error('value is null');

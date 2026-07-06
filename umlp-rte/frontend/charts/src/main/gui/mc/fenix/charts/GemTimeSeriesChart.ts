@@ -36,7 +36,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   private toListArray<T>(list: any): T[] {
     if (!list) return [];
     if (Array.isArray(list)) return list;
-    if (typeof list.toArray === 'function') return list.toArray();
+    if (typeof list.__internalArray === 'function') return list.__internalArray();
     const count = (typeof list.size === 'function') ? list.size() : (list.length || 0);
     const arr = [];
     for (let i = 0; i < count; i++) {
@@ -51,10 +51,10 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     this.options = {
       noData: { text: "Loading..." },
       dataLabels: { enabled: false },
-      chart: { 
-        id: this.chartId, 
-        type: 'area', 
-        height: '100%', 
+      chart: {
+        id: this.chartId,
+        type: 'area',
+        height: '100%',
         width: '100%',
         animations: {
             enabled: true,
@@ -165,7 +165,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     for (const series of seriesList) {
       let seriesData = [];
       const dpList = this.toListArray<any>(series.getDatapointsList());
-      
+
       for (const dp of dpList) {
           const timestamp = dp.getTimestamp();
           if (timestamp) {
@@ -212,9 +212,9 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
 
   private async refreshChart() {
     if (!this.chart) return;
-    
+
     this.lastUpdateTimestamp = Date.now();
-    const updateParams: any = { 
+    const updateParams: any = {
       series: this.options.series,
       annotations: this.options.annotations
     };
@@ -258,7 +258,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
             let millis = value * 1000;
             if (unit === 'm') millis *= 60;
             if (unit === 'h') millis *= 3600;
-            
+
             maxX = latestX;
             minX = maxX - millis;
           }

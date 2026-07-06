@@ -18,11 +18,16 @@ export abstract class CommandResult<T> {
 
   typeParameter: string;
 
-  public constructor(id?: number, typeParameter?: string) {
+  public constructor(){
+
+  }
+
+  public async __CommandResultConstructor(id?: number, typeParameter?: string) : Promise<CommandResult<T>> {
     if (id != undefined && id != null) {
       this.commandId = id;
       this.typeParameter = typeParameter;
     }
+    return this;
   }
 
   public getCommandId(): number {

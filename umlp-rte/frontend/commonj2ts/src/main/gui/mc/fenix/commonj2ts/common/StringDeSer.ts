@@ -5,6 +5,10 @@ export class StringDeSer implements DeSer<string> {
   constructor() {
   }
 
+  public async __StringDeSerConstructor(): Promise<StringDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_String(obj: string): Promise<string> {
     return "\"" + obj + "\"";
   }

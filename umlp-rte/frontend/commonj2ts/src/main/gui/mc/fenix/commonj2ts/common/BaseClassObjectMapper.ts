@@ -25,6 +25,7 @@ export class BaseClassObjectMapper {
   protected baseDeSers: Map<string, DeSer<any>> = new Map();
 
   public constructor() {
+    // Put this into construcot instead of async constructor
     this.baseDeSers.set("java.lang.Boolean", new BooleanDeSer());
     this.baseDeSers.set("java.lang.Short", new ShortDeSer());
     this.baseDeSers.set("java.lang.Character", new CharacterDeSer());
@@ -37,6 +38,10 @@ export class BaseClassObjectMapper {
 
     this.baseDeSers.set("java.time.LocalDate", new LocalDateDeSer());
     this.baseDeSers.set("java.time.LocalDateTime", new LocalDateTimeDeSer());
+  }
+
+  public async __BaseClassObjectMapperConstructor(): Promise<BaseClassObjectMapper> {
+    return this;
   }
 
   public getBaseDeSers() : Map<string, DeSer<any>> {

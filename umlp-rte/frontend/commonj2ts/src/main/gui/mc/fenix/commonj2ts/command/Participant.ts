@@ -49,7 +49,8 @@ export class Participant {
       /* addAll */
       ((l1, l2) => l1.push.apply(l1, l2))(this.gemIds, gemIds);
     } else {
-      this.gemIds.push(...await gemIds.toArray());
+      // TODO what is this toArray??
+      this.gemIds.push(...await gemIds.toArrayDeepSync());
     }
   }
 

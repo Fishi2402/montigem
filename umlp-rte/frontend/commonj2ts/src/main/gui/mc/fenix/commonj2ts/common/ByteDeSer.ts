@@ -5,6 +5,10 @@ export class ByteDeSer implements DeSer<number> {
   constructor() {
   }
 
+  public async __ByteDeSerConstructor(): Promise<ByteDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Byte(obj: number): Promise<string> {
     return "" + obj;
   }

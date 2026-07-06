@@ -2,5 +2,5 @@
 import { JsonDeSer } from '../command/JsonDeSer';
 
 export interface DeSerRepository {
-    getDeSerMap(): Map<string, JsonDeSer<any>>;
+    getDeSerMap(): Promise<Map<string, JsonDeSer<any>>>;
 }

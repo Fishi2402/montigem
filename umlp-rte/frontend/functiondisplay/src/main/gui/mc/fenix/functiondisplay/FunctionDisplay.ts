@@ -10,6 +10,7 @@ import { Port4Display } from "../../../../../../build/gui2java2ts/mc/fenix/funct
 import { Channel4Display } from "../../../../../../build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/Channel4Display";
 import { Port4Elk, Funktion4Elk } from "./FunctionStructure4Fenix";
 import { FunctionAction } from "../../../../../../build/gui2java2ts/mc/fenix/functiondisplay/functionstructure4fenix/FunctionAction";
+import {GemListUtil, AsyncList, IUMLPList} from "@umlp/commonj2ts";
 
 /**
  * Component for displaying and interacting with C&C (Component & Connector) models.
@@ -76,15 +77,15 @@ export class FunctionDisplay extends FunctionDisplayComponent {
    * Generates a stable logical ID for a channel based on its ports.
    * This is necessary because the same channel can be represented by multiple edges in ELK.
    */
-  private getLogicalChannelId(channel: Channel4Display): string {
+  private async getLogicalChannelId(channel: Channel4Display): Promise<string> {
     if (!channel) return "";
-    
+
     for (let i = 0; i < this.channelIdentityMap.length; i++) {
        let existing = this.channelIdentityMap[i];
        if (existing === channel) return "ch_" + i;
-       
-       let ports1 = existing.getPort4DisplayList() || [];
-       let ports2 = channel.getPort4DisplayList() || [];
+
+       let ports1 = (await GemListUtil.toArraySync(existing.getPort4DisplayList())) || [];
+       let ports2 = (await GemListUtil.toArraySync(channel.getPort4DisplayList())) || [];
        if (ports1.length === ports2.length && ports1.length > 0) {
           let allMatch = true;
           for (let p of ports1) {
@@ -95,7 +96,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           }
        }
     }
-    
+
     this.channelIdentityMap.push(channel);
     return "ch_" + (this.channelIdentityMap.length - 1);
   }
@@ -112,7 +113,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     if (this._data === data) {
       return;
     }
-    
+
     // Reset internal state for the new model
     this.channelIdentityMap = [];
     this.connectionMap = new Map<string, Channel4Display>();
@@ -123,77 +124,79 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     this.portSvgMap = new Map<Port4Display, Element>();
     this._data = data;
 
-    // 1. Transform CD model to ELK format (wrapped in a root node)
-    this.elkdata = this.funk2elkfunk(this.addWrapper(data), 1);
-    let transformed = this.transform(this.elkdata);
+    (async () => {
+      // 1. Transform CD model to ELK format (wrapped in a root node)
+      this.elkdata = await this.funk2elkfunk(await this.addWrapper(data), 1);
+      let transformed = this.transform(this.elkdata);
 
-    // 2. Perform ELK layouting
-    let layouted = this.elk.layout(transformed, {
-      layoutOptions: {
-        'elk.port.borderOffset': "-10",
-        'elk.nodeLabels.placement': "[H_CENTER, V_CENTER, INSIDE]",
-        "elk.layered.spacing.baseValue": "40",
-        "elk.spacing.portPort": "10",
-        "elk.spacing.portsSurrounding": "[top=10,left=10,bottom=10,right=10]",
-        "elk.nodeLabels.padding": "[top=30,left=10,bottom=10,right=10]",
-        "elk.layered.considerModelOrder.portModelOrder": "true",
-        "elk.portLabels.placement": "INSIDE",
-        "elk.portAlignment.west": "BEGIN",
-        "elk.portAlignment.east": "END",
-        "elk.alignment": "AUTOMATIC",
-        "elk.padding": "[top=30,left=30,bottom=30,right=30]",
-        "elk.layered.nodePlacement.strategy": "SIMPLE",
-      }
-    });
+      // 2. Perform ELK layouting
+      let layouted = this.elk.layout(transformed, {
+        layoutOptions: {
+          'elk.port.borderOffset': "-10",
+          'elk.nodeLabels.placement': "[H_CENTER, V_CENTER, INSIDE]",
+          "elk.layered.spacing.baseValue": "40",
+          "elk.spacing.portPort": "10",
+          "elk.spacing.portsSurrounding": "[top=10,left=10,bottom=10,right=10]",
+          "elk.nodeLabels.padding": "[top=30,left=10,bottom=10,right=10]",
+          "elk.layered.considerModelOrder.portModelOrder": "true",
+          "elk.portLabels.placement": "INSIDE",
+          "elk.portAlignment.west": "BEGIN",
+          "elk.portAlignment.east": "END",
+          "elk.alignment": "AUTOMATIC",
+          "elk.padding": "[top=30,left=30,bottom=30,right=30]",
+          "elk.layered.nodePlacement.strategy": "SIMPLE",
+        }
+      });
 
-    // 3. Render the resulting layout as SVG
-    layouted.then(v => {
-      const containerElement = this.container.nativeElement;
+      // 3. Render the resulting layout as SVG
+      layouted.then(async v => {
+        const containerElement = this.container.nativeElement;
 
-      if (containerElement.firstChild) {
-        containerElement.innerHTML = '';
-      }
-
-      containerElement.appendChild(this.renderNode(v));
-
-      // Setup viewbox for pan/zoom
-      this.currentViewBox = { x: 0, y: 0, w: v.width, h: v.height };
-      this.originalViewBox = { x: 0, y: 0, w: v.width, h: v.height };
-      containerElement.setAttribute("viewBox", `${this.currentViewBox.x} ${this.currentViewBox.y} ${this.currentViewBox.w} ${this.currentViewBox.h}`);
-      containerElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      
-      // Styling the container
-      containerElement.style.width = `100%`;
-      containerElement.style.height = `100%`;
-      containerElement.style.maxHeight = `500px`;
-      containerElement.style.minHeight = `400px`;
-      containerElement.style.border = `1px solid #ccc`;
-      containerElement.style.borderRadius = `4px`;
-      containerElement.style.backgroundColor = `#fdfdfd`;
-      containerElement.style.cursor = `default`;
-      
-      this.attachPanListeners();
-      this.addOutsideClickListener();
-
-      // Handle Minimap rendering if requested
-      const parent = containerElement.parentElement;
-      if (parent) {
-        if (getComputedStyle(parent).position === 'static') {
-          parent.style.position = 'relative';
+        if (containerElement.firstChild) {
+          containerElement.innerHTML = '';
         }
 
-        const oldMinimap = parent.querySelector('.function-minimap-container');
-        if (oldMinimap) {
-          parent.removeChild(oldMinimap);
-        }
+        containerElement.appendChild(await this.renderNode(v));
 
-        if (this.isShowMinimap() !== false) {
-          this.initMinimap(containerElement, parent);
-        }
-      }
-    });
+        // Setup viewbox for pan/zoom
+        this.currentViewBox = {x: 0, y: 0, w: v.width, h: v.height};
+        this.originalViewBox = {x: 0, y: 0, w: v.width, h: v.height};
+        containerElement.setAttribute("viewBox", `${this.currentViewBox.x} ${this.currentViewBox.y} ${this.currentViewBox.w} ${this.currentViewBox.h}`);
+        containerElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-    layouted.catch(e => console.error(e));
+        // Styling the container
+        containerElement.style.width = `100%`;
+        containerElement.style.height = `100%`;
+        containerElement.style.maxHeight = `500px`;
+        containerElement.style.minHeight = `400px`;
+        containerElement.style.border = `1px solid #ccc`;
+        containerElement.style.borderRadius = `4px`;
+        containerElement.style.backgroundColor = `#fdfdfd`;
+        containerElement.style.cursor = `default`;
+
+        this.attachPanListeners();
+        this.addOutsideClickListener();
+
+        // Handle Minimap rendering if requested
+        const parent = containerElement.parentElement;
+        if (parent) {
+          if (getComputedStyle(parent).position === 'static') {
+            parent.style.position = 'relative';
+          }
+
+          const oldMinimap = parent.querySelector('.function-minimap-container');
+          if (oldMinimap) {
+            parent.removeChild(oldMinimap);
+          }
+
+          if (this.isShowMinimap() !== false) {
+            this.initMinimap(containerElement, parent);
+          }
+        }
+      });
+
+      layouted.catch(e => console.error(e));
+    })();
   }
 
   /**
@@ -247,29 +250,29 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       const mapH = 100;
       const rect = containerElement.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
-      
+
       const viewRatio = this.currentViewBox.w / this.currentViewBox.h;
       const containerRatio = rect.width / rect.height;
       let visibleW = this.currentViewBox.w;
       let visibleH = this.currentViewBox.h;
-      
+
       // Account for pillarboxing or letterboxing
       if (containerRatio > viewRatio) {
           visibleW = this.currentViewBox.h * containerRatio;
       } else {
           visibleH = this.currentViewBox.w / containerRatio;
       }
-      
+
       const origW = this.originalViewBox.w;
       const origH = this.originalViewBox.h;
       if (origW === 0 || origH === 0) return;
-      
+
       const mapRatio = mapW / mapH;
       const origRatio = origW / origH;
       let minimapScale;
       let xOffset = 0;
       let yOffset = 0;
-      
+
       if (mapRatio > origRatio) {
           minimapScale = mapH / origH;
           xOffset = (mapW - (origW * minimapScale)) / 2;
@@ -277,14 +280,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           minimapScale = mapW / origW;
           yOffset = (mapH - (origH * minimapScale)) / 2;
       }
-      
+
       const visibleX = this.currentViewBox.x - (visibleW - this.currentViewBox.w) / 2;
       const visibleY = this.currentViewBox.y - (visibleH - this.currentViewBox.h) / 2;
       const indX = xOffset + ((visibleX - this.originalViewBox.x) * minimapScale);
       const indY = yOffset + ((visibleY - this.originalViewBox.y) * minimapScale);
       const indW = visibleW * minimapScale;
       const indH = visibleH * minimapScale;
-      
+
       indicator.style.left = `${indX}px`;
       indicator.style.top = `${indY}px`;
       indicator.style.width = `${indW}px`;
@@ -329,9 +332,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   /**
    * Input for programmatically selecting functions. Highlights them in the SVG.
    */
-  @Input()
-  public set selectedFunctions(f: Function4Display[]){
-    this.setSelectedFunctions(f);
+  public override setSelectedFunctions(f: Function4Display[]){
     if (f == null){
       return;
     }
@@ -342,40 +343,40 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         this.unmarkElement(value, key.getBorderColor());
       }
     })
+    super.setSelectedFunctions(f);
   }
 
   /**
    * Input for programmatically selecting channels. Highlights them in the SVG.
    */
-  @Input()
-  public set selectedChannels(c: Channel4Display[]){
-    this.setSelectedChannels(c);
-    let selectedIds = new Set<string>();
-    if (c != null) {
-      c.forEach(ch => {
-        if (ch) {
-          selectedIds.add(this.getLogicalChannelId(ch));
+  public override setSelectedChannels(c: Channel4Display[]){
+    (async () => {
+      let selectedIds = new Set<string>();
+      if (c != null) {
+        for (const ch of c) {
+          if (ch) {
+            selectedIds.add(await this.getLogicalChannelId(ch));
+          }
         }
+      }
+      this.channelSvgMap.forEach((data, id) => {
+        let isSelected = selectedIds.has(id);
+        data.elements.forEach(el => {
+          if (isSelected) {
+            this.markElement(el, data.channel.getLineColorHover());
+          } else {
+            this.unmarkElement(el, data.channel.getLineColor());
+          }
+        });
       });
-    }
-    this.channelSvgMap.forEach((data, id) => {
-      let isSelected = selectedIds.has(id);
-      data.elements.forEach(el => {
-        if (isSelected) {
-          this.markElement(el, data.channel.getLineColorHover());
-        } else {
-          this.unmarkElement(el, data.channel.getLineColor());
-        }
-      });
-    });
+      super.setSelectedChannels(c);
+    })();
   }
 
   /**
    * Input for programmatically selecting ports. Highlights them in the SVG.
    */
-  @Input()
-  public set selectedPorts(p: Port4Display[]){
-    this.setSelectedPorts(p);
+  public override setSelectedPorts(p: Port4Display[]){
     if (p == null){
       return;
     }
@@ -386,6 +387,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         this.unmarkElement(value, key.getBorderColor());
       }
     })
+    super.setSelectedPorts(p);
   }
 
   /**
@@ -505,12 +507,12 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       if (!this.isPanning) return;
       const dx = e.clientX - this.startPanClient.x;
       const dy = e.clientY - this.startPanClient.y;
-      
+
       // Minimum threshold to distinguish click from drag
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
         this.hasDragged = true;
       }
-      
+
       if (this.hasDragged) {
         const rect = svg.getBoundingClientRect();
         const ratio = Math.max(this.currentViewBox.w / rect.width, this.currentViewBox.h / rect.height);
@@ -545,7 +547,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       const ratio = Math.max(this.currentViewBox.w / rect.width, this.currentViewBox.h / rect.height);
       const mouseSvgX = this.currentViewBox.x + (e.clientX - rect.left) * ratio;
       const mouseSvgY = this.currentViewBox.y + (e.clientY - rect.top) * ratio;
-      
+
       this.currentViewBox.w *= zoomFactor;
       this.currentViewBox.h *= zoomFactor;
       this.currentViewBox.x += (mouseSvgX - this.currentViewBox.x) * (1 - zoomFactor);
@@ -568,10 +570,10 @@ export class FunctionDisplay extends FunctionDisplayComponent {
    * Adds a transparent wrapper around the root function to ensure it is layouted
    * correctly as a child of a containing system.
    */
-  private addWrapper(funk: Function4Display): Function4Display {
-    return new Function4DisplayBuilder()
+  private async addWrapper(funk: Function4Display): Promise<Function4Display> {
+    return (await (await new Function4DisplayBuilder().__Function4DisplayBuilderConstructor())
       .name(FunctionDisplay.wrapperId)
-      .subFunction([funk])
+      .subFunction(await new AsyncList<Function4Display>().__AsyncListConstructor([funk])))
       .owner(undefined)
       .build();
   }
@@ -580,30 +582,30 @@ export class FunctionDisplay extends FunctionDisplayComponent {
    * Recursively transforms the CD function model into an intermediate ELK-friendly format.
    * Calculates ports and logical connections.
    */
-  private funk2elkfunk(funk: Function4Display, depth: number): Funktion4Elk {
+  private async funk2elkfunk(funk: Function4Display, depth: number): Promise<Funktion4Elk> {
     let ret : Funktion4Elk = {name: funk.getName(), parts: null, connections: null, ports:null, self:funk};
-    let ports: Port4Elk[] = this.getTransformedPorts(funk, ret);
-    
+    let ports: Port4Elk[] = await this.getTransformedPorts(funk, ret);
+
     // Base case for recursion
     if (depth < 0){
       return {name: funk.getName(), parts: [], connections: [], ports:ports, self:funk};
     }
-    
+
     let subports : Port4Elk[] = [];
     let subfunkElks : Funktion4Elk[] = [];
     if (funk.getSubFunctionList() != null) {
-      for (let sf of funk.getSubFunctionList()) {
-        let sfelk = this.funk2elkfunk(sf, depth - 1);
+      for await (let sf of funk.getSubFunctionList()) {
+        let sfelk = await this.funk2elkfunk(sf, depth - 1);
         subfunkElks.push(sfelk);
-        subports.push(...this.getTransformedPorts(sf, sfelk));
+        subports.push(...(await this.getTransformedPorts(sf, sfelk)));
       }
     }
-    
+
     // Calculate logical connections between ports in this level
     let connections : [Port4Elk,Port4Elk][] = [];
     for(let port of ports){
       if (port.self.getChannel4Display()) {
-        for (let innerPort of port.self.getChannel4Display().getPort4DisplayList()){
+        for await (let innerPort of port.self.getChannel4Display().getPort4DisplayList()){
           if (!this.portElkMap.has(innerPort)) continue;
           for (let innerPortElk of this.portElkMap.get(innerPort)) {
             // Check for connections between this function's ports and its children's ports
@@ -618,20 +620,21 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           }
         }
       }
-      
+
       // Connections between ports of the same level (sibling connections)
       for(let toPort of ports){
-        if (toPort != port && port.isIn && !toPort.isIn && toPort.self.getChannel4Display() && toPort.self.getChannel4Display().getPort4DisplayList().includes(port.self)){
+        if (toPort != port && port.isIn && !toPort.isIn && toPort.self.getChannel4Display() &&
+          await toPort.self.getChannel4Display().getPort4DisplayList().contains(port.self)){
           connections.push([port,toPort]);
           this.connectionMap.set(this.portsToString(port, toPort), port.self.getChannel4Display());
         }
       }
     }
-    
+
     // Connections from children's output ports to other sibling children's input ports
     for(let port of subports){
       if (!port.isIn && port.self.getChannel4Display()){
-        for (let toPort of port.self.getChannel4Display().getPort4DisplayList()){
+        for await (let toPort of port.self.getChannel4Display().getPort4DisplayList()){
           if (!this.portElkMap.has(toPort)){
             continue;
           }
@@ -653,10 +656,10 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   /**
    * Extracts and transforms input/output ports from a CD function.
    */
-  private getTransformedPorts(funk : Function4Display, elkfunk: Funktion4Elk) : Port4Elk[] {
+  private async getTransformedPorts(funk : Function4Display, elkfunk: Funktion4Elk) : Promise<Port4Elk[]> {
     let ports : Port4Elk[] = [];
     if (funk.getInList() != null){
-      ports.push(...funk.getInList().map(p => {
+      ports.push(...(await GemListUtil.toArraySync(funk.getInList())).map(p => {
         let ret = {id:funk.getName() + '.' + p.getName(), isIn: true, funktion:elkfunk, self:p}
         if (!this.portElkMap.has(p)) this.portElkMap.set(p, []);
         this.portElkMap.get(p).push(ret);
@@ -664,7 +667,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       }));
     }
     if (funk.getOutList() != null) {
-      ports.push(...funk.getOutList().map(p => {
+      ports.push(...(await GemListUtil.toArraySync(funk.getOutList())).map(p => {
         let ret = {id: funk.getName() + '.' + p.getName(), isIn: false, funktion: elkfunk, self: p}
         if (!this.portElkMap.has(p)) this.portElkMap.set(p, []);
         this.portElkMap.get(p).push(ret);
@@ -718,17 +721,17 @@ export class FunctionDisplay extends FunctionDisplayComponent {
    * Recursively renders the layouted ELK nodes as SVG elements.
    * This includes the boxes, labels, ports, images, burger menus, and connection lines.
    */
-  public renderNode(node) {
+  public async renderNode(node) {
     let svgNS = "http://www.w3.org/2000/svg";
     let g = document.createElementNS(svgNS, "g");
     if (!node.funktion4display.isVisible()) {
       return g;
     }
-    
+
     let isWrapper = node.id === FunctionDisplay.wrapperId;
     g.setAttribute("transform", `translate(${node.x || 0}, ${node.y || 0})`);
     g.setAttribute("opacity", "1");
-    
+
     // Main rectangle for the component
     let rect = document.createElementNS(svgNS, "rect");
     rect.setAttribute("id", `function-${node.id}`);
@@ -737,7 +740,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     rect.setAttribute("y", "0");
     rect.setAttribute("width", `${node.width}`);
     rect.setAttribute("height", `${node.height}`);
-    
+
     if (isWrapper) {
       rect.setAttribute("fill", "transparent");
       rect.setAttribute("stroke", "transparent");
@@ -745,13 +748,13 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     } else {
       rect.setAttribute("fill", `${node.funktion4display.getBackgroundColor()}`);
       rect.setAttribute("stroke", `${node.funktion4display.getBorderColor()}`);
-      
+
       // Interaction listeners
       rect.addEventListener('click', () => this.functionClicked(node.funktion4display));
       rect.addEventListener('contextmenu', (e) => this.showContextMenu(e as MouseEvent, node.funktion4display));
       rect.addEventListener('mouseover', () => this.functionHovered(node.funktion4display));
       rect.addEventListener('mouseout', () => this.functionMouseouted(node.funktion4display));
-      
+
       // Handle programmatic and mouse selection highlighting
       if (this.getSelectedFunctions() && this.getSelectedFunctions().includes(node.funktion4display)){
         this.markElement(rect, node.funktion4display.getBorderColorHover());
@@ -764,7 +767,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
           this.unmarkElement(rect, node.funktion4display.getBorderColor());
         }
       })
-      
+
       this.functionSvgMap.set(node.funktion4display, rect);
       g.appendChild(rect);
 
@@ -772,7 +775,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       if (!isWrapper && node.funktion4display.getImageUrl()) {
         const img = document.createElementNS(svgNS, "image");
         img.setAttribute("href", node.funktion4display.getImageUrl());
-        
+
         // Increase size: 75% of node height
         const imgSize = node.height * 0.75;
         // Center horizontally
@@ -781,7 +784,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         img.setAttribute("y", `${(node.height - imgSize) / 2 + 15}`);
         img.setAttribute("width", `${imgSize}`);
         img.setAttribute("height", `${imgSize}`);
-        img.setAttribute("style", "pointer-events: none; opacity: 0.9;"); 
+        img.setAttribute("style", "pointer-events: none; opacity: 0.9;");
         g.appendChild(img);
       }
 
@@ -837,7 +840,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         text.textContent = label.text;
         g.appendChild(text);
       }
-      
+
       // Port rendering
       let incomingPortsG = document.createElementNS(svgNS, "g");
       incomingPortsG.setAttribute("class", "incoming-ports");
@@ -856,11 +859,11 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         portRect.setAttribute("height", `${port.height}`);
         portRect.setAttribute("fill", `${port.port4display.getBackgroundColor()}`);
         portRect.setAttribute("stroke", `${port.port4display.getBorderColor()}`);
-        
+
         portRect.addEventListener('click', () => this.portClicked(port.port4display));
         portRect.addEventListener('mouseover', () => this.portHovered(port.port4display));
         portRect.addEventListener('mouseout', () => this.portMouseouted(port.port4display));
-        
+
         if (this.getSelectedPorts() && this.getSelectedPorts().includes(port.port4display)) {
           this.markElement(portRect, port.port4display.getBorderColorHover());
         }
@@ -874,11 +877,11 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         });
         this.portSvgMap.set(port.port4display, portRect);
         portG.appendChild(portRect);
-        
+
         let title = document.createElementNS(svgNS, "title");
         title.textContent = port.title;
         portG.appendChild(title);
-        
+
         // Arrow indicator inside port
         let path = document.createElementNS(svgNS, "path");
         path.setAttribute("fill", "none");
@@ -888,7 +891,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         path.setAttribute("d", "M 0 -5 L 5 0 L 0 5 M 5 0 L -5 0");
         path.setAttribute("transform", "translate(10, 10)");
         portG.appendChild(path);
-        
+
         // Port Labels
         for (let label of port.labels ?? []) {
           if (!port.port4display.isLabelVisible()) continue;
@@ -912,18 +915,18 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       g.appendChild(incomingPortsG);
       g.appendChild(outgoingPortsG);
     }
-    
+
     // Edge (Channel) rendering
     for (let edge of node.edges ?? []) {
       if (!edge.channel4Display.isVisible()) continue;
-      let channelId = this.getLogicalChannelId(edge.channel4Display);
+      let channelId = await this.getLogicalChannelId(edge.channel4Display);
       if (!this.channelSvgMap.has(channelId)) {
         this.channelSvgMap.set(channelId, { elements: new Set<Element>(), groups: new Set<Element>(), channel: edge.channel4Display });
       }
       for (let section of edge.sections) {
         let edgeGroup = document.createElementNS(svgNS, "g");
         this.channelSvgMap.get(channelId)?.groups.add(edgeGroup);
-        
+
         // Visible line
         let polyline = document.createElementNS(svgNS, "polyline");
         polyline.setAttribute("id", edge.id);
@@ -932,37 +935,40 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         polyline.setAttribute("stroke-width", "1");
         polyline.setAttribute("fill", "none");
         this.channelSvgMap.get(channelId)?.elements.add(polyline);
-        
+
         // Transparent thick hit area for easier clicking
         let hiddenPolyline = document.createElementNS(svgNS, "polyline");
         hiddenPolyline.setAttribute("points", `${section.startPoint.x},${section.startPoint.y} ${(section.bendPoints ?? []).map(p => `${p.x},${p.y}`).join(" ")} ${section.endPoint.x},${section.endPoint.y}`);
         hiddenPolyline.setAttribute("stroke", "transparent");
         hiddenPolyline.setAttribute("stroke-width", "15");
         hiddenPolyline.setAttribute("fill", "none");
-        
+
         const markAll = () => {
           let mapEntry = this.channelSvgMap.get(channelId);
           mapEntry?.elements.forEach(el => this.markElement(el, edge.channel4Display.getLineColorHover()));
           // Move group to the end of parent to bring it to front
           mapEntry?.groups.forEach(grp => { if (grp.parentNode) grp.parentNode.appendChild(grp); });
         };
-        const unmarkAll = () => {
-          let selectedIds = (this.getSelectedChannels() || []).map(c => this.getLogicalChannelId(c));
+        const unmarkAll = async () => {
+          let selectedIds = [];
+          for (const c of (this.getSelectedChannels() || [])) {
+            selectedIds.push(await this.getLogicalChannelId(c));
+          }
           if (!selectedIds.includes(channelId)) {
             this.channelSvgMap.get(channelId)?.elements.forEach(el => this.unmarkElement(el, edge.channel4Display.getLineColor()));
           }
         };
-        
+
         polyline.addEventListener('click', () => this.channelClicked(edge.channel4Display));
         polyline.addEventListener('mouseover', () => { markAll(); this.channelHovered(edge.channel4Display); });
         polyline.addEventListener('mouseout', () => { unmarkAll(); this.channelMouseouted(edge.channel4Display); });
         hiddenPolyline.addEventListener('click', () => this.channelClicked(edge.channel4Display));
         hiddenPolyline.addEventListener('mouseover', () => { markAll(); this.channelHovered(edge.channel4Display); });
         hiddenPolyline.addEventListener('mouseout', () => { unmarkAll(); this.channelMouseouted(edge.channel4Display); });
-        
+
         edgeGroup.appendChild(polyline);
         edgeGroup.appendChild(hiddenPolyline);
-        
+
         // Arrow head
         let path = document.createElementNS(svgNS, "path");
         path.setAttribute("d", "M 0 0 L -7 -3.5 L -5.25 0 L -7 3.5 Z");
@@ -970,14 +976,14 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         path.setAttribute("fill", `${edge.channel4Display.getLineColor()}`);
         path.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
         edgeGroup.appendChild(path);
-        
+
         g.appendChild(edgeGroup);
       }
     }
-    
+
     // Recursively render children
     for (let child of node.children ?? []) {
-      g.appendChild(this.renderNode(child));
+      g.appendChild(await this.renderNode(child));
     }
     return g;
   }
@@ -1040,7 +1046,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         action.getFunctionClick()(this.contextMenuTargetFunction);
     }
   }
-  
+
   public channelHovered(channel: Channel4Display){
     if (this.getChannelMouseover()) this.getChannelMouseover()(channel);
   }

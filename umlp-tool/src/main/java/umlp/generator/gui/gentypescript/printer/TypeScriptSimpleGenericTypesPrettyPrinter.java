@@ -8,8 +8,11 @@ import de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypes
 import java.util.Iterator;
 
 public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyPrinter {
-  public TypeScriptSimpleGenericTypesPrettyPrinter(IndentPrinter printer) {
+  boolean asyncList;
+
+  public TypeScriptSimpleGenericTypesPrettyPrinter(IndentPrinter printer, boolean asyncList) {
     super(printer, false);
+    this.asyncList = asyncList;
   }
 
   @Override
@@ -23,7 +26,13 @@ public class TypeScriptSimpleGenericTypesPrettyPrinter extends MCSimpleGenericTy
       String last = node.getName(node.sizeNames() - 1);
       // java.util.Optional and java.util.List land here
       if (!last.equals("Optional")) {
-        getPrinter().print(TypeScriptTypes.toTSType(last));
+        String asyncType;
+        if(asyncList) {
+          asyncType = TypeScriptTypes.toAsyncTSType(last);
+        } else {
+          asyncType = TypeScriptTypes.toTSType(last);
+        }
+        getPrinter().print(asyncType);
         getPrinter().stripTrailing();
         getPrinter().print("<");
         if (iter_mCTypeArgument.hasNext()) {

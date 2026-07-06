@@ -90,14 +90,12 @@ export class GemGrid extends GemGridComponent {
     this.update();
   }
 
-  @Input()
-  public set x(val: string[]) {
+  public override setX(val: string[]){
     this._x = val;
     this.update();
   }
 
-  @Input()
-  public set y(val: string[]) {
+  public override setY(val: string[]){
     this._y = val;
     this.update();
   }

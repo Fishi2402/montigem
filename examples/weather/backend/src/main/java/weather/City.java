@@ -75,12 +75,12 @@ public class City extends CityTOP {
 
   @Override
   public Gem<Timeseries> getNextDaysDerivedGem() {
-    return calcNextDays().map(Gem<Timeseries>::new).orElseGet(Gem<Timeseries>::new);
+    return calcNextDays().map(t -> new Gem<Timeseries>(t)).orElseGet(() -> new Gem<Timeseries>());
   }
 
   @Override
   public Gem<Forecast> getCurrentDerivedGem() {
-    return calcCurrent().map(Gem<Forecast>::new).orElseGet(Gem<Forecast>::new);
+    return calcCurrent().map(t -> new Gem<Forecast>(t)).orElseGet(() -> new Gem<Forecast>());
   }
 
   @Override

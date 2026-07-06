@@ -7,11 +7,14 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
 import org.jsweet.transpiler.model.ImportElement;
+import umlp.jsweet.extension.util.GUIAdapterUtils;
 import umlp.jsweet.extension.util.UMLPAdapterUtils;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import java.util.LinkedHashMap;
+
+import static umlp.jsweet.extension.util.GUIAdapterUtils.CD2JAVA_ANNOTATION;
 
 /**
  * Combines common elements for all Adapters
@@ -20,12 +23,10 @@ import java.util.LinkedHashMap;
  */
 public abstract class AbstractAdapter extends PrinterAdapter {
   private static final String UMLP_COMMONJ2TS_RTE_POINTER = "@umlp/commonj2ts";
-  private static final String UMLP_COMMON_RTE_POINTER = "@umlp/common";
 
-  private LinkedHashMap<String, String> staticLibrary = new LinkedHashMap<>();
+  private final LinkedHashMap<String, String> staticLibrary = new LinkedHashMap<>();
 
   protected boolean isAsyncList = true;
-  protected RTE_OPTION rte = RTE_OPTION.COMMONJ2TS_RTE;
 
   public AbstractAdapter(PrinterAdapter parentAdapter) {
     super(parentAdapter);
@@ -34,10 +35,6 @@ public abstract class AbstractAdapter extends PrinterAdapter {
     Object asyncList = context.options.getConfiguration().get("asyncList");
     if (asyncList != null && "false".equals(asyncList.toString())) {
       isAsyncList = false;
-    }
-    Object rteUse = context.options.getConfiguration().get("rte");
-    if (rteUse != null && "common".equals(rteUse.toString())) {
-      rte = RTE_OPTION.COMMON_RTE;
     }
   }
 
@@ -80,20 +77,7 @@ public abstract class AbstractAdapter extends PrinterAdapter {
   }
 
   protected String getLibraryLocation() {
-    switch (rte) {
-      case COMMON_RTE:
-        return UMLP_COMMON_RTE_POINTER;
-      case COMMONJ2TS_RTE:
-        return UMLP_COMMONJ2TS_RTE_POINTER;
-      default:
-        Log.error("0JSA003 Unknown RTE option: " + rte);
-    }
-    return UMLP_COMMON_RTE_POINTER;
-  }
-
-  public enum RTE_OPTION {
-    COMMON_RTE,
-    COMMONJ2TS_RTE
+    return UMLP_COMMONJ2TS_RTE_POINTER;
   }
 
   @Override

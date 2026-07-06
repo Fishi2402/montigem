@@ -2,15 +2,15 @@ package gui.pack;
 
 import demorec.BatteryPack;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 @Component
 public class ComponentsOfPack extends ComponentsOfPackTOP {
 
-  BatteryPackService overallService;
+  BatteryPackService overallService = AngularUtils.inject(BatteryPackService.class);;
 
-  public ComponentsOfPack(BatteryPackService service) {
-    overallService = service;
+  public ComponentsOfPack() {
   }
 
   @Override

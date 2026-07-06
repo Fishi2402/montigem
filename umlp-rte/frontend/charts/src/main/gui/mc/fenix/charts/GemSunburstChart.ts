@@ -11,6 +11,7 @@ import { GemSunburstEntryBuilder } from '../../../../../../build/gui2java2ts/mc/
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil, AsyncList} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -24,7 +25,7 @@ export class GemSunburstChart extends GemSunburstChartComponent {
   public newData: GemSunburstData;
 
   // Placeholder values
-  public entry: GemSunburstEntry = new GemSunburstEntryBuilder().label("").value(0).build()
+  public entry: GemSunburstEntry = null;
   public subEntries: GemSunburstData[] = [];
 
   // Standard value scale
@@ -66,14 +67,17 @@ export class GemSunburstChart extends GemSunburstChartComponent {
   // User can decide if charts in which parent Nodes can have a higher value than the sum of the values of all subEntries are allowed
   @Input()
   public set ignoreError(iEI: boolean) {
-    if (iEI != null) {
+    if (iEI == null){
+      return
+    }
+    (async () => {
       this.ignoreErrorInput = iEI;
       // update hasData if there is data, because hasData is set to false when the error is reported
       if (this.newData != null) {
         this.hasData = true;
         // If newData equals a placeholder set in set data instead of real data update hasData to false
         if (this.newData.getSubEntriesList() == null
-          || (this.newData.getSubEntriesList().length == 0
+          || (await this.newData.getSubEntriesList().size() == 0
             && this.newData.getEntry().getLabel() == ""
             && this.newData.getEntry().getValue() == 0)) {
           this.hasData = false;
@@ -81,7 +85,7 @@ export class GemSunburstChart extends GemSunburstChartComponent {
         // call updateData to finish data calculations that were interrupted by hasData == false
         this.updateData();
       }
-    }
+    })();
   }
 
   // User can have own colors as input
@@ -96,9 +100,13 @@ export class GemSunburstChart extends GemSunburstChartComponent {
   // Input of data; starts calculation for the whole chart component
   @Input()
   public set data(data: any) {
-    if (data != null) {
+    if (data == null) {
+      return
+    }
+    (async () => {
       // Initialize newData as placeholder
-      this.newData = new GemSunburstDataBuilder().entry(this.entry).subEntries(this.subEntries).build()
+      this.newData = (await (await new GemSunburstDataBuilder().__GemSunburstDataBuilderConstructor()).entry(this.entry).subEntries(
+        await new AsyncList<GemSunburstData>().__AsyncListConstructor(this.subEntries))).build()
       // Check if data is an instance of GemSDNshort
       /*      if (gemInstanceOfSDNshort(data)) {
               // Set newData as the GemSunburstData that is equal to data in GemSDNshort notation
@@ -110,13 +118,13 @@ export class GemSunburstChart extends GemSunburstChartComponent {
       /*      }*/
       // Update placeholders
       this.entry = this.newData.getEntry();
-      this.subEntries = this.newData.getSubEntriesList();
+      this.subEntries = await GemListUtil.toArraySync(this.newData.getSubEntriesList());
 
       // There is data
       this.hasData = true;
       // If data has no subEntries or is just the placeholder -> No data for chart
       if (this.newData.getSubEntriesList() == null
-        || (this.newData.getSubEntriesList().length == 0
+        || (await this.newData.getSubEntriesList().size() == 0
           && this.newData.getEntry().getLabel() == ""
           && this.newData.getEntry().getValue() == 0)) {
         this.hasData = false;
@@ -124,29 +132,29 @@ export class GemSunburstChart extends GemSunburstChartComponent {
 
       // Start calculations for component
       this.updateData();
-    }
+    })()
   }
 
   // Comprises calculations of this component
-  updateData() {
+  async updateData() {
     // If sums get ignored
     if (this.ignoreErrorInput) {
       // Count the values of the subEntries and update the total value of the parentNode accordingly
       let total = 0;
-      for (let i = 0; this.newData.getSubEntriesList() != null && i < this.newData.getSubEntriesList().length; i++) {
-        total += this.newData.getSubEntries(i).getEntry().getValue();
+      for (let i = 0; this.newData.getSubEntriesList() != null && i < (await this.newData.getSubEntriesList().size()); i++) {
+        total += (await this.newData.getSubEntries(i)).getEntry().getValue();
       }
       this.newData.getEntry().setValue(total);
     }
-    setTimeout(() => {
+    setTimeout(async () => {
       // Check if data has right syntax
       this.check(this.newData);
       // If there is data
       if (this.hasData) {
         // Calculate depth of data tree
-        this.depth = this.getDepth(this.newData);
+        this.depth = await this.getDepth(this.newData);
         // Start calculation of chart entrys and labels
-        this.dataNodesToChart(this.newData);
+        await this.dataNodesToChart(this.newData);
         // Set ng2-charts options
         this.options = { cutout: 0, plugins: { legend: { display: false, } } };
       }
@@ -155,23 +163,23 @@ export class GemSunburstChart extends GemSunburstChartComponent {
 
 
   // Check the data for correct format
-  public check(node: GemSunburstData): void {
+  public async check(node: GemSunburstData): Promise<void> {
     // If data has no subEntries or hasData is already false there is nothing to check
-    if (this.hasData && node.getSubEntriesList() != null && node.getSubEntriesList().length > 0) {
+    if (this.hasData && node.getSubEntriesList() != null && (await node.getSubEntriesList().size()) > 0) {
       // cur is value of current node
       let cur = node.getEntry().getValue();
-      for (let i = 0; i < node.getSubEntriesList().length; i++) {
+      for (let i = 0; i < await node.getSubEntriesList().size(); i++) {
         // Substract value of every subNode from cur
-        cur -= node.getSubEntries(i).getEntry().getValue();
+        cur -= (await node.getSubEntries(i)).getEntry().getValue();
         // Go into every subNode of cur to check it recursively
-        this.check(node.getSubEntries(i));
+        this.check((await node.getSubEntries(i)));
       }
       // If values of subEntries does not have to sum up to value of parentNode
       if (this.ignoreErrorInput) {
         // If there is a part of the parentNode that is not filled by the subEntries
         if (cur > 0) {
           // Add empty node that fills the gap
-          node.getSubEntriesList().push(
+          await node.getSubEntriesList().add(
             new GemSunburstDataBuilder().entry(new GemSunburstEntryBuilder().label("").value(cur).build()).build());
         }
         // If the sum of the values of the subEntries is higher than the parent node's value -> Error and has no Data
@@ -199,15 +207,15 @@ export class GemSunburstChart extends GemSunburstChartComponent {
   }
 
   // Calculates the depth of the data tree from given node
-  public getDepth(node: GemSunburstData): number {
+  public async getDepth(node: GemSunburstData): Promise<number> {
     // If node has subEntries
-    if (node.getSubEntriesList() != null && node.getSubEntriesList().length > 0) {
+    if (node.getSubEntriesList() != null && (await node.getSubEntriesList().size()) > 0) {
       // First get depth of first child node
-      let cur = this.getDepth(node.getSubEntries(0));
+      let cur = await this.getDepth(await node.getSubEntries(0));
       // For every other child node
-      for (let i = 1; i < node.getSubEntriesList().length; i++) {
+      for (let i = 1; i < (await node.getSubEntriesList().size()); i++) {
         // Get depth of current child node
-        let newCur = this.getDepth(node.getSubEntries(i));
+        let newCur = await this.getDepth(await node.getSubEntries(i));
         // If depth of current child node is greater than the current maximum -> update maximum
         if (newCur > cur) cur = newCur;
       }
@@ -219,7 +227,7 @@ export class GemSunburstChart extends GemSunburstChartComponent {
   }
 
   // Converts the data of the GemSunburstData into data for the used doughnut chart
-  private dataNodesToChart(data: GemSunburstData): void {
+  private async dataNodesToChart(data: GemSunburstData): Promise<void> {
     // Initialized as empty
     this.labels = [];
     this.dataSets = [];
@@ -235,11 +243,11 @@ export class GemSunburstChart extends GemSunburstChartComponent {
 
     // curNodes are all subEntries of this data
     let curNodes = [];
-    for (let i = 0; i < data.getSubEntriesList().length; ++i) {
-      console.warn("Entry is", data.getSubEntries(i).getEntry())
+    for (let i = 0; i < (await data.getSubEntriesList().size()); ++i) {
+      console.warn("Entry is", (await data.getSubEntries(i)).getEntry())
       curNodes.push({
-        entry: data.getSubEntries(i).getEntry(),
-        subEntries: data.getSubEntries(i).getSubEntriesList(),
+        entry: (await data.getSubEntries(i)).getEntry(),
+        subEntries: (await GemListUtil.toArraySync((await data.getSubEntries(i)).getSubEntriesList())),
         color: definedColors[i]
       })
     }

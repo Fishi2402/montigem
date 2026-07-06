@@ -6,8 +6,12 @@ import {StatusResult} from './StatusResult';
 export class ServerError extends Command<void> {
   t: Error;
 
-  public constructor(t: Error) {
-    super("umlp.command.ServerError");
+  public constructor() {
+    super()
+  }
+
+  public __ServerErrorConstructor(t: Error) {
+    super.__CommandConstructor("umlp.command.ServerError");
     if (this.t === undefined) {
       this.t = null;
     }

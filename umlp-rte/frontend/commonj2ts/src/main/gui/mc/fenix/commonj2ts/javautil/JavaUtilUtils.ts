@@ -68,7 +68,7 @@ export class JavaUtilUtils {
 
   private static isListLike(value: any): boolean {
     return value instanceof Array ||
-        typeof value.toArraySync === "function" ||
+        typeof value.toArrayDeepSync === "function" ||
         typeof value.toArray === "function";
   }
 
@@ -77,8 +77,8 @@ export class JavaUtilUtils {
     if (value instanceof Array) {
       return value;
     }
-    if (typeof value.toArraySync === "function") {
-      return await value.toArraySync();
+    if (typeof value.toArrayDeepSync === "function") {
+      return await value.toArrayDeepSync();
     }
     if (typeof value.toArray === "function") {
       return await value.toArray();

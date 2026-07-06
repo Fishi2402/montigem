@@ -1,15 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 import {Log} from '../logging/Log';
 import {LogUtil} from '../util/LogUtil';
-import {UMLPArrayList} from '../common/UMLPArrayList';
 import {IUMLPList} from '../common/IUMLPList';
 import {IdStorage} from './IdStorage';
+import {AsyncList} from "../javautil/AsyncList";
 
 export class SimpleIdStorage implements IdStorage {
   idxToId: any;
 
   constructor() {
+  }
+
+  public async __SimpleIdStorageConstructor(): Promise<SimpleIdStorage> {
     this.idxToId = <any>({});
+    return this;
+  }
+
+  // Helper method
+  public async joinOnArrayOrIUMLPList(toJoin : number[] | IUMLPList<number>, joiner : string): Promise<string> {
+    if(Array.isArray(toJoin)) {
+      return toJoin.join(joiner);
+    } else {
+       const syncArr = await toJoin.toArrayDeepSync();
+       return syncArr.join(joiner);
+    }
   }
 
   /**
@@ -46,10 +60,10 @@ export class SimpleIdStorage implements IdStorage {
    * @param {IUMLPList} ids
    */
   public async addAll(i: number, ids: IUMLPList<number>) {
-    Log.trace("Adding ids " + /* implicit toString */ (a => a ? '[' + a.join(', ') + ']' : 'null')(ids) + " at index " + i, "IdStorage " + LogUtil.getLoggerName());
+    Log.trace("Adding ids " + /* implicit toString */ (a => a ? '[' + this.joinOnArrayOrIUMLPList(a,', ') + ']' : 'null')(ids) + " at index " + i, "IdStorage " + LogUtil.getLoggerName());
     Log.trace("Initial state: " + this.idxToId, "IdStorage " + LogUtil.getLoggerName());
     const res: any = <any>({});
-    const s: number = ids.size();
+    const s: number = await ids.size();
     {
       let array = /* keySet */((m) => {
         let r = [];
@@ -144,11 +158,11 @@ export class SimpleIdStorage implements IdStorage {
    * @param {number[]} indicies
    */
   public async remove(indicies: Array<number> | IUMLPList<number>) {
-    Log.trace("Removing indicies " + /* implicit toString */ (a => a ? '[' + a.join(', ') + ']' : 'null')(indicies), "IdStorage " + LogUtil.getLoggerName());
+    Log.trace("Removing indicies " + /* implicit toString */ (a => a ? '[' + this.joinOnArrayOrIUMLPList(a,', ') + ']' : 'null')(indicies), "IdStorage " + LogUtil.getLoggerName());
     Log.trace("Initial state: " + this.idxToId, "IdStorage " + LogUtil.getLoggerName());
     const offsets: any = <any>({});
     let i: number = 0;
-    const sorted: IUMLPList<number> = <any>(new UMLPArrayList(indicies));
+    const sorted: IUMLPList<number> = <any>(await new AsyncList<number>().__AsyncListConstructor(indicies));
     sorted.sort(<any>(((funcInst: any) => {
       if (funcInst == null || typeof funcInst == 'function') {
         return funcInst

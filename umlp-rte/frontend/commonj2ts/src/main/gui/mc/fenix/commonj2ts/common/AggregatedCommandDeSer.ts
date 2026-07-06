@@ -7,6 +7,9 @@ export abstract class AggregatedCommandDeSer {
   deSerMap: Map<String, CommandDeSer<any>> = new Map();
 
   constructor() {
+  }
+
+  public async __AggregatedCommandDeSerConstructor(): Promise<void> {
     this.deSerMap = new Map();
   }
 

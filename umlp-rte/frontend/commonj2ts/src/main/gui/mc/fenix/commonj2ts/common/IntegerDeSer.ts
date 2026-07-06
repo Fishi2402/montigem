@@ -5,6 +5,10 @@ export class IntegerDeSer implements DeSer<number> {
   constructor() {
   }
 
+  public async __IntegerDeSerConstructor(): Promise<IntegerDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Integer(obj: number): Promise<string> {
     return "" + obj;
   }

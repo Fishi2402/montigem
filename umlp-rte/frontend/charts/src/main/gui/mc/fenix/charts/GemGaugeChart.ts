@@ -7,6 +7,7 @@ import { GemGaugeChartData } from '../../../../../../build/gui2java2ts/mc/fenix/
 import { autoColors } from './colors';
 import { GemChartLegend } from './GemChartLegend';
 import { GemChartOptions } from './GemChartOptions';
+import {GemListUtil} from "@umlp/commonj2ts";
 
 @Component({
   standalone: true,
@@ -102,64 +103,66 @@ export class GemGaugeChart extends GemGaugeChartComponent {
     if (!data) {
       return;
     }
-    this.labels = data.getEntriesList().map(entry => entry.getName());
-    this.dataSets = [];
-    const colors = [];
-    const labels = [];
-    let autocolors = this.getColors();
-    let pointerAutoColors = 0;
+    (async () => {
+      this.labels = (await GemListUtil.toArraySync(data.getEntriesList())).map(entry => entry.getName());
+      this.dataSets = [];
+      const colors = [];
+      const labels = [];
+      let autocolors = this.getColors();
+      let pointerAutoColors = 0;
 
-    for (let i = 0; i < data.getEntriesList().length; i++) {
-      if (!CSS.supports('color', data.getEntries(i).getBackgroundColor())) {
-        data.getEntries(i).setBackgroundColor(autocolors[pointerAutoColors++]);
+      for await (const gCEntry of data.getEntriesList()) {
+        if (!CSS.supports('color', gCEntry.getBackgroundColor())) {
+          gCEntry.setBackgroundColor(autocolors[pointerAutoColors++]);
+        }
+        // Used library expects these fields, so we cannot use our generated datatypes
+        let entry = {
+          value: gCEntry.getValue(),
+          name: gCEntry.getName(),
+          type: gCEntry.getType(),
+          backgroundColor: gCEntry.getBackgroundColor()
+        };
+
+        labels.push(entry.name);
+        colors.push(entry.backgroundColor);
+        this.dataSets.push(entry);
       }
-      // Used library expects these fields, so we cannot use our generated datatypes
-      let entry = {
-        value: data.getEntries(i).getValue(),
-        name: data.getEntries(i).getName(),
-        type: data.getEntries(i).getType(),
-        backgroundColor: data.getEntries(i).getBackgroundColor()
+
+      this.legendLabels = labels;
+      this.legendColors = colors;
+      this.colors = colors;
+      this.colorScheme = {
+        ...this.colorScheme,
+        domain: this.colors
       };
 
-      labels.push(entry.name);
-      colors.push(entry.backgroundColor);
-      this.dataSets.push(entry);
-    }
+      let t = this;
 
-    this.legendLabels = labels;
-    this.legendColors = colors;
-    this.colors = colors;
-    this.colorScheme = {
-      ...this.colorScheme,
-      domain: this.colors
-    };
+      // Rename Sensor 1 to CO2 and Sensor 2 to Temperature
+      this.dataSets.forEach(function (entry) {
+        if (entry.name == "1") {
+          entry.name = "CO2";
+        } else if (entry.name == "2") {
+          entry.name = "Temperature";
+        }
+      });
 
-    let t = this;
+      this.dataSets.forEach(function (entry) {
+        if (entry.value < t._min) {
+          // Round down to whole tens
+          t._min = Math.floor(entry.value / 10) * 10;
+          t.recalcBigTicks();
+        }
+        if (entry.value > t._max) {
+          // Round up to whole tens
+          t._max = Math.ceil(entry.value / 10) * 10;
+          t.recalcBigTicks();
+        }
 
-    // Rename Sensor 1 to CO2 and Sensor 2 to Temperature
-    this.dataSets.forEach(function (entry) {
-      if (entry.name == "1") {
-        entry.name = "CO2";
-      } else if (entry.name == "2") {
-        entry.name = "Temperature";
-      }
-    });
+      });
 
-    this.dataSets.forEach(function (entry) {
-      if (entry.value < t._min) {
-        // Round down to whole tens
-        t._min = Math.floor(entry.value / 10) * 10;
-        t.recalcBigTicks();
-      }
-      if (entry.value > t._max) {
-        // Round up to whole tens
-        t._max = Math.ceil(entry.value / 10) * 10;
-        t.recalcBigTicks();
-      }
-
-    });
-
-    this.updateSelectedDataset();
+      this.updateSelectedDataset();
+    })();
   }
 
   /** set SensorType from extern to filter the data */
@@ -183,6 +186,16 @@ export class GemGaugeChart extends GemGaugeChartComponent {
       }
     }
     this.bigTicks = Math.round(this.bigTicks);
+  }
+
+  public override setMin(min: number) {
+    super.setMin(min);
+    this.recalcBigTicks()
+  }
+
+  public override setMax(max: number) {
+    super.setMax(max);
+    this.recalcBigTicks()
   }
 
   /** for input range to select smallTicksCount */
@@ -211,7 +224,9 @@ export class GemGaugeChart extends GemGaugeChartComponent {
   /** only show selected datatype */
   updateSelectedDataset() {
     this.selectedDataSet = [];
-    this._textValue = this._sensorType;
+    if(!this._textValueSetExternally) {
+      this._textValue = this._sensorType;
+    }
 
     let t = this;
 

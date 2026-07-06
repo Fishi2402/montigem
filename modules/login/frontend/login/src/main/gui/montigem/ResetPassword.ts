@@ -32,20 +32,26 @@ export class ResetPassword extends ResetPasswordComponent {
       if (!this.user || !this.user.getPassword() || !this.user.getEmail()) {
         return;
       }
-      let changed = this.users.filter(u => {
-        if (!!u && !!this.user.getEmail() && this.user.getEmail() === u.getEmail()) {
-          u.setPassword(this.user.getPassword());
-          alert("Successfully changed password of " + u.getUsername())
-          return true;
+      this.users.toArrayDeepSync().then(users => {
+        const changed = users.some(u => {
+          if (u && this.user!.getEmail() === u.getEmail()) {
+            u.setPassword(this.user!.getPassword());
+            alert(`Successfully changed password of ${u.getUsername()}`);
+            return true;
+          }
+          return false;
+        });
+
+        if (!changed) {
+          this.error = `There is no user with the E-mail "${this.user!.getEmail()}"!`;
+          this.user!.validityEmail = this.error;
+          this.user!.statusEmail = 'Error';
         }
-        return false;
+      }).catch(err => {
+        console.error('Failed to load users', err);
+        this.error = 'Failed to load users.';
       });
-      if (!changed) {
-        this.error = 'There is no user with the E-mail "' + this.user.getEmail() + '" !';
-        this.user.validityEmail = this.error;
-        this.user.statusEmail = 'Error';
-      }
-    }
+    };
   }
 
   public override getErrorValue(): string {

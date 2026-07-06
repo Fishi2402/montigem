@@ -4,7 +4,8 @@ import {GemIdentifiable} from "../common/GemIdentifiable";
 import {GemBuildable} from "../common/GemBuildable";
 import {IDOrBuilder} from "../common/IDOrBuilder";
 import {IUMLPList} from "../common/IUMLPList";
-import {UMLPArrayList} from "../common/UMLPArrayList";
+import {AsyncList} from "../javautil/AsyncList";
+import {AsyncSet} from "../javautil/AsyncSet";
 
 // GemList, welche bei der Erstellung von Objekten benutzt werden muss, da sie in diesem Zustand
 // noch nicht mit anderen Teilnehmen synchronisiert werden kann.
@@ -16,15 +17,22 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
   // Nach build() wird diese geleert und nicht weiter verwendet.
   protected builderElemStorage: Array<IDOrBuilder<E>> = [];
 
-  public constructor(initialIds: Array<number> | IUMLPList<number>) {
-    super(initialIds);
+  public constructor() {
+    super()
+  }
+
+  public async __GemListBuilderConstructor(initialIds: Array<number> | IUMLPList<number>): Promise<GemListBuilder<E>> {
+    await super.__GemListConstructor(initialIds);
     if (initialIds instanceof Array) {
       for (const initialId of initialIds) {
         this.builderElemStorage.push(new IDOrBuilder<E>(initialId));
       }
     } else {
-      initialIds.forEach(initialId => this.builderElemStorage.push(new IDOrBuilder<E>(initialId)));
+      for await (const initialId of initialIds) {
+        this.builderElemStorage.push(new IDOrBuilder<E>(initialId));
+      }
     }
+    return this;
   }
 
   override contains(gemID: number): Promise<boolean> {
@@ -39,8 +47,8 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     if (this.buildFinished) {
       return super.loadAll();
     } else {
-      await this.loadObjects(new UMLPArrayList(
-        this.builderElemStorage.filter(b => !b.isPresentBuilder()).map(b => b.getID())));
+      await this.loadObjects(await new AsyncList<number>().__AsyncListConstructor(
+                this.builderElemStorage.filter(b => !b.isPresentBuilder()).map(b => b.getID())));
     }
   }
 
@@ -84,7 +92,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    *
    * @return {number}
    */
-  public override size(): number {
+  public override async size(): Promise<number> {
     if (this.buildFinished) {
       return super.size();
     } else {
@@ -205,7 +213,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    *
    * @param {number[]} idxs
    */
-  public override async _internal_remove(idxs: IUMLPList<number> | Array<number>) {
+  public override async _internal_remove(idxs: AsyncSet<number> | Array<number>) {
     if (this.buildFinished) {
       await super._internal_remove(idxs);
     } else {
@@ -228,7 +236,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
-  public override getIDs$int$int(startIdx: number, endIdx: number): IUMLPList<number> {
+  public override async getIDs$int$int(startIdx: number, endIdx: number): Promise<IUMLPList<number>> {
     if (this.buildFinished) {
       return super.getIDs$int$int(startIdx, endIdx);
     } else {
@@ -245,7 +253,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
         }
         ;
       }
-      return new UMLPArrayList(ids);
+      return new AsyncList<number>().__AsyncListConstructor(ids);
     }
   }
 
@@ -255,19 +263,19 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
    * @param {number} endIdx
    * @return {number[]}
    */
-  public override getIDs(startIdx?: any, endIdx?: any): IUMLPList<number> {
+  public override async getIDs(startIdx?: any, endIdx?: any): Promise<IUMLPList<number>> {
     if (((typeof startIdx === 'number') || startIdx === null) && ((typeof endIdx === 'number') || endIdx === null)) {
-      return <any>this.getIDs$int$int(startIdx, endIdx);
+      return this.getIDs$int$int(startIdx, endIdx);
     } else if (startIdx === undefined && endIdx === undefined) {
-      return <any>this.getIDs$();
+      return this.getIDs$();
     } else throw new Error('invalid overload');
   }
 
-  public override getIDs$(): IUMLPList<number> {
+  public override async getIDs$(): Promise<IUMLPList<number>> {
     if (this.buildFinished) {
       return super.getIDs$();
     } else {
-      return this.getIDs$int$int(0, /* size */(<number>this.size()));
+      return this.getIDs$int$int(0, /* size */(await this.size()));
     }
   }
 

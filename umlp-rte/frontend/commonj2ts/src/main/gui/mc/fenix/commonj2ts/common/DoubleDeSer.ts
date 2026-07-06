@@ -5,6 +5,10 @@ export class DoubleDeSer implements DeSer<number> {
   constructor() {
   }
 
+  public async __DoubleDeSerConstructor(): Promise<DoubleDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Double(obj: number): Promise<string> {
     return "" + obj;
   }

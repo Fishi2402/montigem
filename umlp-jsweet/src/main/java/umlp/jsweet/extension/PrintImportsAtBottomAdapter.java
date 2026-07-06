@@ -1,10 +1,8 @@
 package umlp.jsweet.extension;
 
-import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.model.CompilationUnitElement;
-import umlp.jsweet.extension.umlp.JavaStreamAdapter;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;

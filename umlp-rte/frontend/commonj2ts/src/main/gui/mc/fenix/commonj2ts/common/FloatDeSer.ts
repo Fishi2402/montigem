@@ -5,6 +5,10 @@ export class FloatDeSer implements DeSer<number> {
   constructor() {
   }
 
+  public async __FloatDeSerConstructor(): Promise<FloatDeSer> {
+    return this;
+  }
+
   public async serialize$java_lang_Float(obj: number): Promise<string> {
     return "" + obj;
   }

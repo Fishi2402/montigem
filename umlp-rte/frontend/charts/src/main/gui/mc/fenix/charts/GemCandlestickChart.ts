@@ -253,7 +253,7 @@ export class GemCandlestickChart extends GemCandlestickChartComponent implements
     if (!data) return;
 
     // Duck typing: Check if it's a method (instantiated class) or a raw JSON array
-    let entries = typeof data.getEntriesList === 'function' ? data.getEntriesList() : data.entries;
+    let entries = typeof data.getEntriesList === 'function' ? data.getEntriesList().__internalArray() : data.entries;
 
     // Fallback if "data" is already the array
     if (Array.isArray(data)) entries = data;
@@ -276,7 +276,7 @@ export class GemCandlestickChart extends GemCandlestickChartComponent implements
       let label = typeof entry.getLabel === 'function' ? entry.getLabel() : entry.label;
       this._data[0].x.push(label);
 
-      let values = typeof entry.getValueList === 'function' ? entry.getValueList() : (entry.value || entry.values);
+      let values = typeof entry.getValueList === 'function' ? entry.getValueList().__internalArray() : (entry.value || entry.values);
 
       if (values && values.length >= 4) {
         this._data[0].open.push(values[0]);

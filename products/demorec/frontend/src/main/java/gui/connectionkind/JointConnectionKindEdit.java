@@ -9,6 +9,7 @@ import demorec.JointConnectionType;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import mc.fenix.input.gemtextinputtypes.GemTextInputValidity;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -21,18 +22,16 @@ import java.util.function.Consumer;
 public class JointConnectionKindEdit extends JointConnectionKindEditTOP {
   List<Option> jointConnectionTypeOptions = new ArrayList<>();
   List<Option> componentOptions = new ArrayList<>();
-  List<Option> filteredComponentOptions = new ArrayList<>();
   String connectsComponentEntry = "";
 
   //currentPack : BatteryPack
-  BatteryPackService packService = null;
+  BatteryPackService packService = AngularUtils.inject(BatteryPackService.class);
 
   protected BatteryPack currentPack = null;
 
 
-  public JointConnectionKindEdit(BatteryPackService service) {
+  public JointConnectionKindEdit() {
     super();
-    this.packService = service;
   }
 
   public void init() {
@@ -46,18 +45,20 @@ public class JointConnectionKindEdit extends JointConnectionKindEditTOP {
     this.jointConnectionTypeOptions.add(new Option(JointConnectionType.RIVET.toString(), "Rivet"));
     this.jointConnectionTypeOptions.add(new Option(JointConnectionType.UNDEFINED.toString(), "Undefined"));
 
-    super.init();
     this.packService.addObserverFunction(this.getUpdaterFunction());
+    super.init();
   }
 
   public List<Option> getComponentOptions(List<DemoRecComponent> components) {
     List<Option> options = new ArrayList<>();
+    if(this.currentPack == null) {
+      return options;
+    }
     // Hack for sorting and no prepend Functionality available in JSweet
     Option newOption = new Option("NEW", "AAAAAAAAA_NEW");
     options.add(newOption);
     for (DemoRecComponent comp : components) {
-      BatteryPack curPack = this.packService.getBatteryPack();
-      if(!(comp instanceof BatteryPack) && comp.getBatteryPack().getGemId() == curPack.getGemId()) {
+      if(!(comp instanceof BatteryPack) && comp.getBatteryPack().getGemId() == currentPack.getGemId()) {
         long gemId = comp.getGemId();
         String display = comp.getName();
         options.add(new Option(String.valueOf(gemId), display));
@@ -71,27 +72,19 @@ public class JointConnectionKindEdit extends JointConnectionKindEditTOP {
 
   public Consumer<BatteryPack> getUpdaterFunction() {
     return (BatteryPack p) -> {
-      this.currentPack = p;
-      this.filteredComponentOptions = new ArrayList<>();
-      for (DemoRecComponent comp : p.getAllComponentsList()) {
-        this.filteredComponentOptions.add(new Option(comp.getGemId()+"", comp.getName()));
+      if(p == null) {
+        return;
       }
+      this.currentPack = p;
+      // abuse this for update mechanism
+      this.setComponents(this.getComponents());
     };
-  }
-
-  private Set<String> getCurrentPackComponents() {
-    if(this.currentPack != null) {
-      Set<String> gemIds = new HashSet<>();
-      //return new HashSet<>(this.currentPack.getAllComponentsList().map(comp => comp.getGemId()+""))
-      return gemIds;
-    } else {
-      return new HashSet<>();
-    }
   }
 
   // Select Type of connection
   public List<Option> getSelectTypeOfConnectionOptions () {
-    Log.info("Slect Type Connection Options:"+this.jointConnectionTypeOptions, this.getClass().getName());
+    // TODO fix implicit .toString on Lists / IUMLPLists
+    //Log.info("Select Type Connection Options:"+this.jointConnectionTypeOptions, this.getClass().getName());
     return this.jointConnectionTypeOptions;
   }
 
@@ -108,27 +101,20 @@ public class JointConnectionKindEdit extends JointConnectionKindEditTOP {
     return (this.getSelectConnectsComponentEntry() === newOption.getValue())
   }*/
 
-  public String getSelectConnectsComponentEntry() {
-    if(this.connectsComponentEntry.equals("NEW")) {
-      return "NEW";
-    } else {
-      if(this.getConnectionKind() != null && this.getConnectionKind().sizeConnectss() > 0) {
-        return this.getConnectionKind().getConnects(this.getConnectionKind().sizeConnectss()-1).getName();
-      }
-    }
-    return "";
-  }
-
+  @Override
   public void setSelectConnectsComponentEntry(String value) {
 
     if(value == "NEW") {
       this.setNewCompGuard(true);
     } else {
-      this.getConnectionKind().addConnects(
-          DemoRecManager.getDemoRecComponentSure(Long.valueOf(value)));
-      this.connectsComponentEntry = "";
+      if(!value.isBlank()) {
+        this.getConnectionKind().addConnects(
+            DemoRecManager.getDemoRecComponentSure(Long.valueOf(value)));
+        this.connectsComponentEntry = "";
+      }
       this.setNewCompGuard(false);
     }
+    super.setSelectConnectsComponentEntry(value);
   }
 
   public Consumer<DemoRecComponent> addNewComponent() {

@@ -1,3 +1,5 @@
+import {Collection} from "../javautil";
+
 export class StringHelper {
   public static valueOf(obj: any) {
     // TODO better matching of Java's obj.toString()?
@@ -12,8 +14,24 @@ export class StringHelper {
     return res;
   }
 
-  public static join(delimiter: string, strs: string[]): string {
-    return strs.join(delimiter);
+  // TODO do we want to offer a non async join? This would not work on IUMLPList
+  public static async join(delimiter: string, strs: string[] | Collection<string>): Promise<string> {
+    if(Array.isArray(strs)) {
+      return strs.join(delimiter);
+    } else {
+      let res = "";
+      const size : number = await strs.size();
+      let it = 0;
+      for await(const elem of strs) {
+        res+=elem;
+        it++;
+        console.warn("it", it, "size", size )
+        if(it < size) {
+          res+=delimiter;
+        }
+      }
+      return res;
+    }
   }
 
   public static split(input: string, regex: string, limit?: number): string[] {

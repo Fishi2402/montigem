@@ -12,12 +12,11 @@ import { DemoRecComponentObserverManager } from 'DemoRecComponentObserverManager
 export class AppComponent {
   constructor() {
     DemoRecManagerClientImpl.init();
-    const ws_protocol = document.location.protocol == "https:" ? "wss": "ws";
+    const ws_protocol = document.location.protocol == "https:" ? "wss" : "ws";
     const cmdManager = new ClientCommandManager(new ClientCommandWebsocketCommunication(
       ws_protocol + '://' + document.location.host + '/umlp/api/command'
     ));
     CommandManager.initMe(cmdManager);
-
     DemoRecComponentObserverManager.init();
   }
 }

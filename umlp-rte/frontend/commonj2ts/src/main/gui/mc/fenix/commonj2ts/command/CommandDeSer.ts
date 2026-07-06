@@ -4,6 +4,11 @@ import {JsonPrinter} from "../mcjson";
 import {Command} from './Command';
 
 export abstract class CommandDeSer<T extends Command<any>> {
+  public async __CommandDeSerConstructor() : Promise<CommandDeSer<T>> {
+    // do nothing
+    return this;
+  }
+
   public buildJson(command: T, printer: JsonPrinter): void {
     printer.member("id", command.getId());
     printer.member("commandType", command.getCommandType());

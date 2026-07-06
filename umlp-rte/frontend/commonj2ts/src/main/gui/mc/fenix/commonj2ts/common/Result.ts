@@ -5,7 +5,16 @@ export class Result<T> {
 
   successful: boolean;
 
-  constructor(value: T, successful: boolean) {
+  constructor() {
+    if (this.value === undefined) {
+      this.value = null;
+    }
+    if (this.successful === undefined) {
+      this.successful = false;
+    }
+  }
+
+  public async __ResultConstructor(value?: any, successful?: any): Promise<Result<T>> {
     if (this.value === undefined) {
       this.value = null;
     }
@@ -14,14 +23,19 @@ export class Result<T> {
     }
     this.value = value;
     this.successful = successful;
+    return this;
   }
 
-  public static ok<T>(value: T): Result<T> {
-    return <any>(new Result(value, true));
+  public static async ok<T>(value: T): Promise<Result<T>> {
+    const r = new Result<T>();
+    await r.__ResultConstructor(value, true);
+    return r;
   }
 
-  public static error<T>(): Result<any> {
-    return <any>(new Result(null, false));
+  public static async error<T>(): Promise<Result<any>> {
+    const r = new Result<any>();
+    await r.__ResultConstructor(null, false);
+    return r;
   }
 
   public getValue(): T {

@@ -5,6 +5,7 @@ import demorec.BatteryPack;
 import demorec.DemoRecComponent;
 import demorec.State;
 import demorec.service.BatteryPackService;
+import umlp.guiutil.AngularUtils;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;
@@ -14,9 +15,11 @@ import java.util.function.Consumer;
 public class ComponentCreate extends ComponentCreateTOP {
 
   protected BatteryPack currentPack = null;
+  BatteryPackService service = AngularUtils.inject(BatteryPackService.class);
 
-  public ComponentCreate(BatteryPackService service) {
+  public ComponentCreate() {
     super();
+
     service.addObserverFunction((BatteryPack p) -> {
       this.currentPack = p;
     });

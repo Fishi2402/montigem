@@ -5,7 +5,6 @@ import { GemGaugeChartData, GemGaugeChartEntry, GemLineChartData, GemLineChartEn
 import { WeatherViewComponent,config } from 'gui/WeatherViewComponent';
 import { Forecast } from 'weather/Forecast';
 import {StringifyForBuilder} from "@umlp/commonj2ts";
-import { Event } from '@umlp/common';
 
 @Component({
   standalone:true,
@@ -37,6 +36,8 @@ export class WeatherView extends WeatherViewComponent {
     if (!this.getForecasts()) {
       return null;
     }
+    return null;
+    /* TODO remove Weather
     let forecasts = this.getForecasts();
 
     const list = forecasts.map(f => f.getDate()).sort((a, b) => a.getTime() - b.getTime());
@@ -71,7 +72,7 @@ export class WeatherView extends WeatherViewComponent {
       this.cache.chart.hash = hash;
       this.cache.chart.data = result;
     }
-    return this.cache.chart.data;
+    return this.cache.chart.data;*/
   }
 
   public getForecastsTableRows(): Array<any> {
@@ -79,7 +80,7 @@ export class WeatherView extends WeatherViewComponent {
       return null;
     }
 
-    const result = this.getForecasts();
+    const result = []; // this.getForecasts();
     const hash = JSON.stringify(result);
     if (this.cache.table.hash != hash) {
       this.cache.table.hash = hash;
@@ -97,6 +98,8 @@ export class WeatherView extends WeatherViewComponent {
     if (!this.getForecasts()) {
       return null;
     }
+    return null;
+    /*
     let forecasts = this.getForecasts();
     const sum = forecasts.reduce((acc, cur) => acc + cur.getWindspeed(), 0);
 
@@ -116,13 +119,15 @@ export class WeatherView extends WeatherViewComponent {
       this.cache.windspeed.hash = hash;
       this.cache.windspeed.data = result;
     }
-    return this.cache.windspeed.data;
+    return this.cache.windspeed.data;*/
   }
 
   public override getHumidityData(): GemGaugeChartData {
     if (!this.getForecasts()) {
       return null;
     }
+    return null;
+    /*
     let forecasts = this.getForecasts();
     const sum = forecasts.reduce((acc, cur) => acc + cur.getRealtiveHumidity(), 0);
 
@@ -142,7 +147,7 @@ export class WeatherView extends WeatherViewComponent {
       this.cache.humidity.hash = hash;
       this.cache.humidity.data = result;
     }
-    return this.cache.humidity.data;
+    return this.cache.humidity.data;*/
   }
 
 
