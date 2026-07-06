@@ -16,8 +16,9 @@ page VacuumGripper_Demo(FischertechnikVacuumGripperState state){
         labelText="Rotation: ",
         vertical=false,
         step=1,
-        minValue=1,
+        minValue=0,
         maxValue=360,
+        size="300px",
         value=state.rotationDeg
       ),
       @GemCheckBoxInput(
@@ -30,8 +31,9 @@ page VacuumGripper_Demo(FischertechnikVacuumGripperState state){
         labelText="Höhe:",
         vertical=false,
         step=1,
-        minValue=1,
+        minValue=0,
         maxValue=100,
+        size="300px",
         value=state.verticalPercentage
       ),
       @GemCheckBoxInput(
@@ -44,8 +46,9 @@ page VacuumGripper_Demo(FischertechnikVacuumGripperState state){
         labelText="Tiefe:",
         vertical=false,
         step=1,
-        minValue=1,
+        minValue=0,
         maxValue=100,
+        size="300px",
         value=state.horizontalPercentage
       ),
       @GemCheckBoxInput(
@@ -77,4 +80,3 @@ page VacuumGripper_Demo(FischertechnikVacuumGripperState state){
     valveEnabled=state.valveEnabled
   );
 }
-

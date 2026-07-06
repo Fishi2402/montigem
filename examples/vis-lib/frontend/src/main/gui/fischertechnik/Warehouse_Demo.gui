@@ -16,8 +16,9 @@ page Warehouse_Demo(FischertechnikWarehouseState state){
         labelText="Tiefe:",
         vertical=false,
         step=1,
-        minValue=1,
+        minValue=0,
         maxValue=100,
+        size="300px",
         value=state.depthPercentage
       ),
       @GemRangeInput(
@@ -25,8 +26,9 @@ page Warehouse_Demo(FischertechnikWarehouseState state){
         labelText="Höhe:",
         vertical=false,
         step=1,
-        minValue=1,
+        minValue=0,
         maxValue=100,
+        size="300px",
         value=state.verticalPercentage
       ),
       @GemRangeInput(
@@ -34,8 +36,9 @@ page Warehouse_Demo(FischertechnikWarehouseState state){
         labelText="Tiefe:",
         vertical=false,
         step=1,
-        minValue=1,
+        minValue=0,
         maxValue=100,
+        size="300px",
         value=state.horizontalPercentage
       )
     ]
@@ -46,4 +49,3 @@ page Warehouse_Demo(FischertechnikWarehouseState state){
     horizontalPercentage=state.horizontalPercentage
   );
 }
-
