@@ -99,7 +99,6 @@ classdiagram CoverageDashboard{
   <<singleton>>
   class App{
     GemLineChartData getCoverageTrajectory();
-    CoverageSourceFile getDummyCoverageFile();
     CoverageReport getDummyCoverageReport();
     String getSourceFileContent(CoverageSourceFile file);
     String getFileContent(CoverageSourceFile file);
