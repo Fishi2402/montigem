@@ -29,9 +29,8 @@ component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageS
       // Then the files
       @iterate(CoverageSourceFile file : rootModule.sourceFiles){
        @GemTreeNode(
-         content = @FileItem(
-          file = file,
-          fileSelect = fileSelect)
+         content = @GemText(value = file.name),
+         onClick = onFileNodeClick(file)
        );
      }
     ]
