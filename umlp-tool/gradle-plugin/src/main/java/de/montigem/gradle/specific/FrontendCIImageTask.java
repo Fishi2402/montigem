@@ -15,8 +15,19 @@ public abstract class FrontendCIImageTask extends FrontendImageTask {
     }));
     getUseRegistry().convention(true);
     // Use the "same" properties as the targets of the backend
-    getRegistryUser().convention(getProject().provider(() -> System.getProperty("jib.to.auth.username")));
-    getRegistryPassword().convention(getProject().provider(() -> System.getProperty("jib.to.auth.password")));
+    getRegistryUser().convention(getProject().provider(() -> getPropertyOrEnv("jib.to.auth.username", "CI_REGISTRY_USER")));
+    getRegistryPassword().convention(getProject().provider(() -> getPropertyOrEnv("jib.to.auth.password", "CI_REGISTRY_PASSWORD")));
     dependsOn(getProject().getTasks().findByName("build"));
+
+    getRegistryUser().convention(System.getenv("CI_REGISTRY_USER"));
+    getRegistryPassword().convention(System.getenv("CI_REGISTRY_PASSWORD"));
+  }
+
+  // Future work: Copy from jib task?
+  protected String getPropertyOrEnv(String propertyName, String envName) {
+    String property = System.getProperty(propertyName);
+    if (property == null)
+      return System.getenv(envName);
+    return property;
   }
 }
