@@ -61,18 +61,22 @@ public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
         if(Double.isNaN(coverage))
           coverage = 0d;
 
-        entryBuilders.computeIfAbsent(reportName, (name)->{
+        GemLineChartEntryBuilder entryBuilder = entryBuilders.computeIfAbsent(reportName, (name)->{
           GemLineChartEntryBuilder newEntryBuilder = new GemLineChartEntryBuilder().label(name);
           // Fill default data when not present from the beginning
           for(int i = 0; i < labels.size() - 1; i++){
             newEntryBuilder.addData(0d);
+            newEntryBuilder.addIds(0L);
           }
           return newEntryBuilder;
-        }).addData(coverage);
+        });
+        entryBuilder.addData(coverage);
+        entryBuilder.addIds(report.getGemId());
       }
       for (Map.Entry<String, GemLineChartEntryBuilder> entry : entryBuilders.entrySet()) {
         if (!processedReportsInRun.contains(entry.getKey())) {
           entry.getValue().addData(0d);
+          entry.getValue().addIds(0L);
         }
       }
     }
