@@ -6,7 +6,7 @@ import common.ExamplePage;
 
 page GemVideoExample() {
   @ExamplePage(
-    component = @GemVideo(source = "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"),
+    component = @GemVideo(source = "assets/video/video.mp4"),
     basePath = "example_basic",
     componentName = "GemVideoExample"
   );
