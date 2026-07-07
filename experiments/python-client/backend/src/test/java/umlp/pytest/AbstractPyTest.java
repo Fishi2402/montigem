@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class AbstractPyTest extends AbstractE2ETest {
     }
 
     System.err.println("[Test-Init]: Initialize python venv");
+    System.err.println("[Test-Init]: at " + LocalDateTime.now());
     int i;
     try {
       i = new ProcessBuilder("python", "-m", "venv", "venv").directory(workingDir).inheritIO()
@@ -169,6 +171,7 @@ public class AbstractPyTest extends AbstractE2ETest {
     stdout.start();
 
     this.handler = c -> {
+      System.err.println("[Py-Test, " + LocalDateTime.now() + "]: Sending command ");
       final String command = c.replace("\n", "###");
       CompletableFuture<String> ret = new CompletableFuture<>();
       if (ready.get()) {

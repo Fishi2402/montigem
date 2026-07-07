@@ -8,6 +8,7 @@ import mydomain.TestAssoc_2_A;
 import mydomain.TestAssoc_2_BBuilder;
 import mydomain.TestAssoc_2_CBuilder;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -167,6 +168,7 @@ public class PyExecTest extends AbstractPyTest {
 
 
   @Test
+  @Timeout(120)
   public void testDirAssocBiDirectional() throws Exception {
     TestAssoc_2_BBuilder b1;
     TestAssoc_2_CBuilder c1;
