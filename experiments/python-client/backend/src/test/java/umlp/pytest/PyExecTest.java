@@ -239,7 +239,7 @@ public class PyExecTest extends AbstractPyTest {
 
     e1.addListA(a1);
     assertWait(() -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
-    assertEquals("1", handler.sendCommand("print(len(e1.listA))").get()); // correct on client?
+    assertWait(() -> assertEquals("1", handler.sendCommand("print(len(e1.listA))").get())); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listE))").get()); // correct on client?
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(e1.listA.get_gem_id(0))").get()); // correct on client?
     assertEquals(Long.toString(e1.getGemId()), handler.sendCommand("print(a1.listE.get_gem_id(0))").get()); // correct on client?
@@ -257,7 +257,7 @@ public class PyExecTest extends AbstractPyTest {
     a1.addListE(e2);
     assertWait(() -> assertEquals(a1.getListEList().get(0).getGemId(), e1.getGemId())); // correct on server?
     assertEquals(a1.getListEList().get(1).getGemId(), e2.getGemId()); // correct on server?
-    assertEquals("1", handler.sendCommand("print(len(e1.listA))").get()); // correct on client?
+    assertWait(() -> assertEquals("1", handler.sendCommand("print(len(e1.listA))").get())); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(e2.listA))").get()); // correct on client?
     assertEquals("2", handler.sendCommand("print(len(a1.listE))").get()); // correct on client?
     assertEquals(Long.toString(a1.getGemId()), handler.sendCommand("print(e1.listA.get_gem_id(0))").get()); // correct on client?
@@ -281,7 +281,7 @@ public class PyExecTest extends AbstractPyTest {
     assertEquals(1, a1.getListEList().size()); // correct on server?
     assertEquals(1, e1.getListAList().size()); // correct on server?
     assertEquals(0, e2.getListAList().size()); // correct on server?
-    assertEquals("1", handler.sendCommand("print(len(e1.listA))").get()); // correct on client?
+    assertWait(() -> assertEquals("1", handler.sendCommand("print(len(e1.listA))").get())); // correct on client?
     assertEquals("0", handler.sendCommand("print(len(e2.listA))").get()); // correct on client?
     assertEquals("1", handler.sendCommand("print(len(a1.listE))").get()); // correct on client?
 
