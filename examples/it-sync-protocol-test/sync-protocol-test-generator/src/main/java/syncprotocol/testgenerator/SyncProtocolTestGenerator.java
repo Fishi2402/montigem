@@ -1,0 +1,975 @@
+package syncprotocol.testgenerator;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
+
+public final class SyncProtocolTestGenerator {
+  private SyncProtocolTestGenerator() {
+  }
+
+  enum Direction {
+    BIDIRECTIONAL(true),
+    UNIDIRECTIONAL(false);
+
+    final boolean bidirectional;
+
+    Direction(boolean bidirectional) {
+      this.bidirectional = bidirectional;
+    }
+  }
+
+  enum Cardinality {
+    OPT("0..1", false, false),
+    ONE("1", false, true),
+    MANY("*", true, false),
+    SOME("1..*", true, true);
+
+    final String umlp;
+    final boolean list;
+    final boolean required;
+
+    Cardinality(String umlp, boolean list, boolean required) {
+      this.umlp = umlp;
+      this.list = list;
+      this.required = required;
+    }
+  }
+
+  enum BuildState {
+    DONE_TO_DONE("DoneToDone", false),
+    BUILDER_TO_DONE("BuilderToDone", true),
+    BUILDER_TO_BUILDER("BuilderToBuilder", true);
+
+    final String namePart;
+    final boolean hasBuilder;
+
+    BuildState(String namePart, boolean hasBuilder) {
+      this.namePart = namePart;
+      this.hasBuilder = hasBuilder;
+    }
+  }
+
+  enum ContextPair {
+    SERVER_TO_SERVER("ServerToServer"),
+    CLIENT_TO_SERVER("ClientToServer"),
+    SERVER_TO_CLIENT("ServerToClient"),
+    CLIENT_TO_CLIENT("ClientToClient");
+
+    final String namePart;
+
+    ContextPair(String namePart) {
+      this.namePart = namePart;
+    }
+  }
+
+  enum LoadState {
+    FULL_OBJECT_LOADED("FullObjectLoaded"),
+    FULL_OBJECT_NOT_LOADED("FullObjectNotLoaded");
+
+    final String namePart;
+
+    LoadState(String namePart) {
+      this.namePart = namePart;
+    }
+  }
+
+  enum Operation {
+    BUILD_OBJECT("BuildObject"),
+    ADD_AT_BEGINNING_OR_SET_OPTIONAL("AddAtBeginningOrSetOptional"),
+    ADD_AT_MIDDLE("AddAtMiddle"),
+    ADD_AT_END("AddAtEnd"),
+    REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL("RemoveAtBeginningOrClearOptional"),
+    REMOVE_AT_MIDDLE("RemoveAtMiddle"),
+    REMOVE_AT_END("RemoveAtEnd"),
+    REPLACE("Replace"),
+    DELETE_OBJECT("DeleteObject");
+
+    final String namePart;
+
+    Operation(String namePart) {
+      this.namePart = namePart;
+    }
+
+    boolean isSensibleFor(Cardinality targetCardinality) {
+      return switch (this) {
+        case BUILD_OBJECT, ADD_AT_BEGINNING_OR_SET_OPTIONAL, REPLACE -> true;
+        case ADD_AT_MIDDLE, ADD_AT_END, REMOVE_AT_MIDDLE, REMOVE_AT_END -> targetCardinality.list;
+        case REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL -> targetCardinality == Cardinality.OPT || targetCardinality.list;
+        case DELETE_OBJECT -> targetCardinality != Cardinality.ONE;
+      };
+    }
+  }
+
+  record Association(
+      String name,
+      Cardinality lhsCardinality,
+      String lhsType,
+      Direction direction,
+      String rhsType,
+      Cardinality rhsCardinality) {
+    String className() {
+      return lhsType.substring(0, lhsType.length() - "Lhs".length()) + "SyncProtocolTest";
+    }
+  }
+
+  public static void main(String[] args) throws IOException {
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Usage: SyncProtocolTestGenerator <testOutputDir>");
+    }
+
+    Path outputDir = Path.of(args[0]);
+    recreateDirectory(outputDir);
+    generateSyncProtocolTests(outputDir, defaultAssociations());
+  }
+
+  private static List<Association> defaultAssociations() {
+    List<Association> associations = new ArrayList<>();
+    for (Direction direction : Direction.values()) {
+      for (Cardinality lhs : Cardinality.values()) {
+        for (Cardinality rhs : Cardinality.values()) {
+          if (isAllowedAssociation(lhs, rhs)) {
+            String typePrefix = direction == Direction.UNIDIRECTIONAL ? "Uni" : "";
+            String baseName = typePrefix + namePart(lhs) + "To" + namePart(rhs);
+            associations.add(new Association(
+                lowerFirst(baseName),
+                lhs,
+                baseName + "Lhs",
+                direction,
+                baseName + "Rhs",
+                rhs));
+          }
+        }
+      }
+    }
+    return associations;
+  }
+
+  private static void generateSyncProtocolTests(Path testOutputDir, List<Association> associations)
+      throws IOException {
+    Path packageDir = testOutputDir.resolve("syncprotocol/generated");
+    Files.createDirectories(packageDir);
+
+    for (Association association : associations) {
+      Files.writeString(
+          packageDir.resolve(association.className() + ".java"),
+          renderTestClass(association),
+          StandardCharsets.UTF_8);
+    }
+  }
+
+  private static String renderTestClass(Association association) {
+    StringBuilder content = new StringBuilder();
+    content.append("/* Generated by syncprotocol.testgenerator.SyncProtocolTestGenerator */\n\n");
+    content.append("package syncprotocol.generated;\n\n");
+    content.append("import associations.*;\n");
+    content.append("import associations.test_infrastructure.*;\n");
+    content.append("import org.junit.jupiter.api.Test;\n\n");
+    content.append("import org.junit.jupiter.api.Tag;\n\n");
+    content.append("import util.Operation;\n\n");
+    content.append("import util.SyncProtocolTestScenario;\n");
+    content.append("import util.SyncProtocolTestSupport;\n\n");
+    content.append("import static org.junit.jupiter.api.Assertions.assertEquals;\n");
+    content.append("import static org.junit.jupiter.api.Assertions.assertFalse;\n");
+    content.append("import static org.junit.jupiter.api.Assertions.assertNotEquals;\n");
+    content.append("import static org.junit.jupiter.api.Assertions.assertTrue;\n\n");
+
+    content.append("""
+    public interface <cn> extends SyncProtocolTestSupport {
+      public class <cn>Mock extends AssociationsMockTestSetup implements <cn> {
+        public <cn>Mock() {
+          super(2);
+        }
+      }
+
+      public class <cn>SQL extends AssociationsSQLDBTestSetup implements <cn> {
+        public <cn>SQL() {
+          super(2);
+        }
+      }
+
+      @Tag("SlowTest")
+      public class <cn>Neo4J extends AssociationsNeo4JDBTestSetup implements <cn> {
+        public <cn>Neo4J() {
+          super(2);
+        }
+      }
+    """.replace("<cn>", association.className()));
+    appendTestMethods(content, association);
+    appendScenarioSupport(content, association);
+    content.append("}\n");
+    return content.toString();
+  }
+
+  private static void appendTestMethods(StringBuilder content, Association association) {
+    for (BuildState buildState : BuildState.values()) {
+      for (ContextPair contextPair : ContextPair.values()) {
+        for (Operation operation : Operation.values()) {
+          for (LoadState loadState : LoadState.values()) {
+            if (isSensible(buildState, operation, association, contextPair)) {
+              appendTestMethod(content, buildState, contextPair, operation, loadState, association);
+            }
+            else {
+              appendSkippedCaseComment(content, buildState, contextPair, operation, loadState, association);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private static void appendTestMethod(
+      StringBuilder content,
+      BuildState buildState,
+      ContextPair contextPair,
+      Operation operation,
+      LoadState loadState,
+      Association association) {
+    content.append("  @Test\n");
+    content.append("  default void test")
+        .append(buildState.namePart)
+        .append(contextPair.namePart)
+        .append(operation.namePart)
+        .append(loadState.namePart)
+        .append("() {\n");
+    appendActivation(content, sourceContext(contextPair));
+    content.append("    SyncProtocolTestScenario scenario = ")
+        .append(createInitialMethod(buildState))
+        .append("(")
+        .append(initialRelationCount(operation, association.rhsCardinality()))
+        .append(");\n");
+    appendPreloadExpectedContext(content, contextPair, loadState);
+    appendActivation(content, sourceContext(contextPair));
+    content.append("    applyOperation(Operation.").append(operation.name()).append(", scenario);\n\n");
+    appendActivation(content, expectedContext(contextPair));
+    appendExpectedAssertion(content, operation);
+    appendDatabaseAssertion(content, operation);
+    content.append("  }\n\n");
+  }
+
+  private static String sourceContext(ContextPair contextPair) {
+    return switch (contextPair) {
+      case SERVER_TO_SERVER, SERVER_TO_CLIENT -> "getBackend()";
+      case CLIENT_TO_SERVER, CLIENT_TO_CLIENT -> "getClients(0)";
+    };
+  }
+
+  private static String expectedContext(ContextPair contextPair) {
+    return switch (contextPair) {
+      case SERVER_TO_SERVER, CLIENT_TO_SERVER -> "getBackend()";
+      case SERVER_TO_CLIENT, CLIENT_TO_CLIENT -> "getClients(1)";
+    };
+  }
+
+  private static void appendActivation(StringBuilder content, String contextExpression) {
+    content.append("    ").append(contextExpression).append(".activate();\n");
+  }
+
+  private static String createInitialMethod(BuildState buildState) {
+    return switch (buildState) {
+      case DONE_TO_DONE -> "createDoneToDoneInitial";
+      case BUILDER_TO_DONE -> "createBuilderToDoneInitial";
+      case BUILDER_TO_BUILDER -> "createBuilderToBuilderInitial";
+    };
+  }
+
+  private static int initialRelationCount(Operation operation, Cardinality targetCardinality) {
+    return switch (operation) {
+      case BUILD_OBJECT, REPLACE -> 1;
+      case ADD_AT_BEGINNING_OR_SET_OPTIONAL ->
+          targetCardinality.list ? (targetCardinality == Cardinality.SOME ? 1 : 0)
+              : (targetCardinality == Cardinality.OPT ? 0 : 1);
+      case ADD_AT_MIDDLE, ADD_AT_END -> 2;
+      case REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL ->
+          targetCardinality.list ? (targetCardinality == Cardinality.SOME ? 2 : 1) : 1;
+      case REMOVE_AT_MIDDLE, REMOVE_AT_END -> 3;
+      case DELETE_OBJECT -> targetCardinality.list ? (targetCardinality == Cardinality.SOME ? 2 : 1) : 1;
+    };
+  }
+
+  private static void appendPreloadExpectedContext(
+      StringBuilder content,
+      ContextPair contextPair,
+      LoadState loadState) {
+    if (loadState == LoadState.FULL_OBJECT_NOT_LOADED) {
+      content.append("    // Expected context intentionally remains unloaded.\n\n");
+      return;
+    }
+
+    appendActivation(content, expectedContext(contextPair));
+    content.append("    preloadLhs(scenario.lhsId);\n");
+    content.append("    preloadRhs(scenario.rhs0Id);\n");
+    content.append("    preloadRhs(scenario.rhs1Id);\n");
+    content.append("    preloadRhs(scenario.rhs2Id);\n\n");
+  }
+
+  private static void appendExpectedAssertion(StringBuilder content, Operation operation) {
+    switch (operation) {
+      case BUILD_OBJECT, ADD_AT_BEGINNING_OR_SET_OPTIONAL, ADD_AT_MIDDLE, ADD_AT_END ->
+          content.append("    assertRelationPresent(scenario.lhsId, scenario.targetRhsId);\n");
+      case REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL, REMOVE_AT_MIDDLE, REMOVE_AT_END ->
+          content.append("    assertRelationAbsent(scenario.lhsId, scenario.targetRhsId);\n");
+      case REPLACE -> {
+        content.append("    assertRelationPresent(scenario.lhsId, scenario.targetRhsId);\n");
+        content.append("    assertSpecificRelationAbsent(scenario.lhsId, scenario.oldRhsId);\n");
+      }
+      case DELETE_OBJECT -> content.append("    assertFalse(isRhsKnown(scenario.targetRhsId));\n");
+    }
+  }
+
+  private static void appendDatabaseAssertion(StringBuilder content, Operation operation) {
+    content.append("\n");
+    content.append("    if (hasDatabase()) {\n");
+    content.append("      getBackend().activate();\n");
+    switch (operation) {
+      case BUILD_OBJECT, ADD_AT_BEGINNING_OR_SET_OPTIONAL, ADD_AT_MIDDLE, ADD_AT_END ->
+          content.append("      assertPersistedRelationPresent(scenario.lhsId, scenario.targetRhsId);\n");
+      case REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL, REMOVE_AT_MIDDLE, REMOVE_AT_END ->
+          content.append("      assertPersistedRelationAbsent(scenario.lhsId, scenario.targetRhsId);\n");
+      case REPLACE -> {
+        content.append("      assertPersistedRelationPresent(scenario.lhsId, scenario.targetRhsId);\n");
+        content.append("      assertPersistedSpecificRelationAbsent(scenario.lhsId, scenario.oldRhsId);\n");
+      }
+      case DELETE_OBJECT -> {
+        content.append("      assertPersistedLhsDoesNotReferenceRhs(scenario.lhsId, scenario.targetRhsId);\n");
+        content.append("      assertPersistedRhsDeleted(scenario.targetRhsId);\n");
+      }
+    }
+    content.append("    }\n");
+  }
+
+  private static void appendSkippedCaseComment(
+      StringBuilder content,
+      BuildState buildState,
+      ContextPair contextPair,
+      Operation operation,
+      LoadState loadState,
+      Association association) {
+    content.append("  // Not generated: ")
+        .append(buildState.namePart)
+        .append(", ")
+        .append(contextPair.namePart)
+        .append(", ")
+        .append(operation.namePart)
+        .append(", ")
+        .append(loadState.namePart)
+        .append(" is not sensible for right-side cardinality [")
+        .append(association.rhsCardinality().umlp)
+        .append("].\n\n");
+  }
+
+  private static boolean isSensible(BuildState buildState, Operation operation, Association association, ContextPair contextPair) {
+    if (!operation.isSensibleFor(association.rhsCardinality())) {
+      return false;
+    }
+    if (buildState == BuildState.BUILDER_TO_BUILDER
+        && association.direction().bidirectional
+        && association.lhsCardinality().required) {
+      return false;
+    }
+    if (association.direction().bidirectional
+        && association.lhsCardinality().required
+        && detachesRightObject(operation)) {
+      return false;
+    }
+
+    // TODO: make more specific
+    if(buildState.hasBuilder
+        && contextPair != ContextPair.SERVER_TO_SERVER // No cross participant sync -> ok
+    ){
+      return false;
+    }
+
+    // TODO: needs cascading
+    if(operation == Operation.DELETE_OBJECT){
+      return false;
+    }
+
+    return true;
+  }
+
+  private static boolean detachesRightObject(Operation operation) {
+    return switch (operation) {
+      case REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL, REMOVE_AT_MIDDLE, REMOVE_AT_END, REPLACE, DELETE_OBJECT -> true;
+      case BUILD_OBJECT, ADD_AT_BEGINNING_OR_SET_OPTIONAL, ADD_AT_MIDDLE, ADD_AT_END -> false;
+    };
+  }
+
+  private static void appendScenarioSupport(StringBuilder content, Association association) {
+    String lhsType = association.lhsType();
+    String rhsType = association.rhsType();
+    String lhsBuilder = lhsType + "Builder";
+    String rhsBuilder = rhsType + "Builder";
+    String lhsToRhs = rhsType;
+    String rhsToLhs = lhsType;
+    String lhsToRhsLower = lowerFirst(lhsToRhs);
+    String rhsToLhsLower = lowerFirst(rhsToLhs);
+
+    appendCardinalityHooks(content, association);
+    appendCreateInitial(content, association, lhsType, rhsType, lhsBuilder, rhsBuilder, lhsToRhsLower);
+    appendOperation(content, association, lhsType, rhsType, lhsToRhs, lhsToRhsLower);
+    appendPreloadAndAssertions(content, association, lhsType, rhsType, lhsToRhs, rhsToLhs);
+    appendObjectFactories(content, association, lhsType, rhsType, lhsBuilder, rhsBuilder, rhsToLhsLower);
+  }
+
+  private static void appendCardinalityHooks(StringBuilder content, Association association) {
+    content.append("  default boolean targetIsList() {\n");
+    content.append("    return ").append(association.rhsCardinality().list).append(";\n");
+    content.append("  }\n\n");
+
+    content.append("  default boolean targetIsOptional() {\n");
+    content.append("    return ").append(association.rhsCardinality() == Cardinality.OPT).append(";\n");
+    content.append("  }\n\n");
+
+    content.append("  default boolean targetIsSome() {\n");
+    content.append("    return ").append(association.rhsCardinality() == Cardinality.SOME).append(";\n");
+    content.append("  }\n\n");
+  }
+
+  private static void appendCreateInitial(
+      StringBuilder content,
+      Association association,
+      String lhsType,
+      String rhsType,
+      String lhsBuilder,
+      String rhsBuilder,
+      String lhsToRhsLower) {
+    content.append("  default SyncProtocolTestScenario createDoneToDoneInitial(int rhsCount) {\n");
+    content.append("    if (rhsCount > 0 && requiresBuilderForInitialLhs()) {\n");
+    content.append("      return createBuilderToDoneInitial(rhsCount);\n");
+    content.append("    }\n");
+    content.append("    SyncProtocolTestScenario scenario = new SyncProtocolTestScenario();\n");
+    content.append("    ").append(lhsType).append(" lhs = newBareLhs();\n");
+    content.append("    scenario.lhsId = lhs.getGemId();\n");
+    appendCreateDoneRhsAndLink(content, association, "0", "rhs0Id", lhsType, rhsType, lhsToRhsLower);
+    appendCreateDoneRhsAndLink(content, association, "1", "rhs1Id", lhsType, rhsType, lhsToRhsLower);
+    appendCreateDoneRhsAndLink(content, association, "2", "rhs2Id", lhsType, rhsType, lhsToRhsLower);
+    content.append("    return scenario;\n");
+    content.append("  }\n\n");
+
+    content.append("  default SyncProtocolTestScenario createBuilderToDoneInitial(int rhsCount) {\n");
+    content.append("    SyncProtocolTestScenario scenario = new SyncProtocolTestScenario();\n");
+    content.append("    ").append(lhsBuilder).append(" lhsBuilder = AssociationsManager.")
+        .append(lowerFirst(lhsType)).append("Builder();\n");
+    appendCreateDoneRhsAndAddToBuilder(content, association, "0", "rhs0Id", rhsType, lhsToRhsLower);
+    appendCreateDoneRhsAndAddToBuilder(content, association, "1", "rhs1Id", rhsType, lhsToRhsLower);
+    appendCreateDoneRhsAndAddToBuilder(content, association, "2", "rhs2Id", rhsType, lhsToRhsLower);
+    content.append("    ").append(lhsType).append(" lhs = lhsBuilder.build().orElseThrow();\n");
+    content.append("    scenario.lhsId = lhs.getGemId();\n");
+    content.append("    return scenario;\n");
+    content.append("  }\n\n");
+
+    content.append("  default SyncProtocolTestScenario createBuilderToBuilderInitial(int rhsCount) {\n");
+    content.append("    SyncProtocolTestScenario scenario = new SyncProtocolTestScenario();\n");
+    content.append("    ").append(lhsBuilder).append(" lhsBuilder = AssociationsManager.")
+        .append(lowerFirst(lhsType)).append("Builder();\n");
+    appendCreateRhsBuilderAndAddToBuilder(content, association, "0", "rhs0Id", rhsBuilder, lhsToRhsLower);
+    appendCreateRhsBuilderAndAddToBuilder(content, association, "1", "rhs1Id", rhsBuilder, lhsToRhsLower);
+    appendCreateRhsBuilderAndAddToBuilder(content, association, "2", "rhs2Id", rhsBuilder, lhsToRhsLower);
+    content.append("    ").append(lhsType).append(" lhs = lhsBuilder.build().orElseThrow();\n");
+    content.append("    scenario.lhsId = lhs.getGemId();\n");
+    content.append("    if (rhs0Builder != null) {\n");
+    content.append("      scenario.rhs0Id = rhs0Builder.build().orElseThrow().getGemId();\n");
+    content.append("    }\n");
+    content.append("    if (rhs1Builder != null) {\n");
+    content.append("      scenario.rhs1Id = rhs1Builder.build().orElseThrow().getGemId();\n");
+    content.append("    }\n");
+    content.append("    if (rhs2Builder != null) {\n");
+    content.append("      scenario.rhs2Id = rhs2Builder.build().orElseThrow().getGemId();\n");
+    content.append("    }\n");
+    content.append("    return scenario;\n");
+    content.append("  }\n\n");
+
+    content.append("  default boolean requiresBuilderForInitialLhs() {\n");
+    content.append("    return ").append(association.rhsCardinality().required).append(";\n");
+    content.append("  }\n\n");
+  }
+
+  private static void appendCreateDoneRhsAndLink(
+      StringBuilder content,
+      Association association,
+      String index,
+      String field,
+      String lhsType,
+      String rhsType,
+      String lhsToRhsLower) {
+    content.append("    if (rhsCount > ").append(index).append(") {\n");
+    content.append("      ").append(rhsType).append(" rhs").append(index).append(" = newRhsForLink();\n");
+    content.append("      scenario.").append(field).append(" = rhs").append(index).append(".getGemId();\n");
+    appendLinkStatement(content, association, "lhs", "rhs" + index, lhsToRhsLower, "      ");
+    content.append("    }\n");
+  }
+
+  private static void appendCreateDoneRhsAndAddToBuilder(
+      StringBuilder content,
+      Association association,
+      String index,
+      String field,
+      String rhsType,
+      String lhsToRhsLower) {
+    content.append("    if (rhsCount > ").append(index).append(") {\n");
+    content.append("      ").append(rhsType).append(" rhs").append(index).append(" = newRhsForLink();\n");
+    content.append("      scenario.").append(field).append(" = rhs").append(index).append(".getGemId();\n");
+    appendBuilderLinkStatement(content, association, "lhsBuilder", "rhs" + index, lhsToRhsLower, "      ");
+    content.append("    }\n");
+  }
+
+  private static void appendCreateRhsBuilderAndAddToBuilder(
+      StringBuilder content,
+      Association association,
+      String index,
+      String field,
+      String rhsBuilder,
+      String lhsToRhsLower) {
+    content.append("    ").append(rhsBuilder).append(" rhs").append(index).append("Builder = null;\n");
+    content.append("    if (rhsCount > ").append(index).append(") {\n");
+    content.append("      rhs").append(index).append("Builder = AssociationsManager.")
+        .append(lowerFirst(association.rhsType())).append("Builder();\n");
+    content.append("      scenario.").append(field).append(" = rhs").append(index).append("Builder.getGemId();\n");
+    appendBuilderLinkStatement(content, association, "lhsBuilder", "rhs" + index + "Builder", lhsToRhsLower, "      ");
+    content.append("    }\n");
+  }
+
+  private static void appendOperation(
+      StringBuilder content,
+      Association association,
+      String lhsType,
+      String rhsType,
+      String lhsToRhs,
+      String lhsToRhsLower) {
+    content.append("  default void applyOperation(Operation operation, SyncProtocolTestScenario scenario) {\n");
+    content.append("    ").append(lhsType).append(" lhs = AssociationsManager.get").append(lhsType)
+        .append("Sure(scenario.lhsId);\n");
+    content.append("    switch (operation) {\n");
+    content.append("      case BUILD_OBJECT -> scenario.targetRhsId = scenario.rhs0Id;\n");
+
+    content.append("      case ADD_AT_BEGINNING_OR_SET_OPTIONAL -> {\n");
+    content.append("        ").append(rhsType).append(" rhs = newRhsForLink();\n");
+    content.append("        scenario.targetRhsId = rhs.getGemId();\n");
+    if (association.rhsCardinality().list) {
+      content.append("        lhs.add").append(lhsToRhs).append("(0, rhs);\n");
+    }
+    else {
+      content.append("        lhs.set").append(lhsToRhs).append("(rhs);\n");
+    }
+    content.append("      }\n");
+
+    if (association.rhsCardinality().list) {
+      content.append("      case ADD_AT_MIDDLE -> {\n");
+      content.append("        ").append(rhsType).append(" rhs = newRhsForLink();\n");
+      content.append("        scenario.targetRhsId = rhs.getGemId();\n");
+      content.append("        lhs.add").append(lhsToRhs).append("(1, rhs);\n");
+      content.append("      }\n");
+      content.append("      case ADD_AT_END -> {\n");
+      content.append("        ").append(rhsType).append(" rhs = newRhsForLink();\n");
+      content.append("        scenario.targetRhsId = rhs.getGemId();\n");
+      content.append("        lhs.add").append(lhsToRhs).append("(rhs);\n");
+      content.append("      }\n");
+    }
+    else {
+      content.append("      case ADD_AT_MIDDLE, ADD_AT_END -> throw new IllegalArgumentException(\"Unsupported operation for single-valued association: \" + operation);\n");
+    }
+
+    content.append("      case REMOVE_AT_BEGINNING_OR_CLEAR_OPTIONAL -> {\n");
+    content.append("        scenario.targetRhsId = scenario.rhs0Id;\n");
+    if (association.rhsCardinality().list) {
+      content.append("        lhs.remove").append(lhsToRhs).append("(0);\n");
+    }
+    else if (association.rhsCardinality() == Cardinality.OPT) {
+      content.append("        lhs.set").append(lhsToRhs).append("Absent();\n");
+    }
+    else {
+      content.append("        throw new IllegalArgumentException(\"Unsupported remove operation for required association: \" + operation);\n");
+    }
+    content.append("      }\n");
+
+    if (association.rhsCardinality().list) {
+      content.append("      case REMOVE_AT_MIDDLE -> {\n");
+      content.append("        scenario.targetRhsId = scenario.rhs1Id;\n");
+      content.append("        lhs.remove").append(lhsToRhs).append("(1);\n");
+      content.append("      }\n");
+      content.append("      case REMOVE_AT_END -> {\n");
+      content.append("        scenario.targetRhsId = scenario.rhs2Id;\n");
+      content.append("        lhs.remove").append(lhsToRhs).append("(2);\n");
+      content.append("      }\n");
+    }
+    else {
+      content.append("      case REMOVE_AT_MIDDLE, REMOVE_AT_END -> throw new IllegalArgumentException(\"Unsupported operation for single-valued association: \" + operation);\n");
+    }
+
+    content.append("      case REPLACE -> {\n");
+    content.append("        ").append(rhsType).append(" rhs = newRhsForLink();\n");
+    content.append("        scenario.oldRhsId = scenario.rhs0Id;\n");
+    content.append("        scenario.targetRhsId = rhs.getGemId();\n");
+    if (association.rhsCardinality().list) {
+      content.append("        lhs.remove").append(lhsToRhs).append("(0);\n");
+      content.append("        lhs.add").append(lhsToRhs).append("(0, rhs);\n");
+    }
+    else {
+      content.append("        lhs.set").append(lhsToRhs).append("(rhs);\n");
+    }
+    content.append("      }\n");
+
+    content.append("      case DELETE_OBJECT -> {\n");
+    content.append("        scenario.targetRhsId = scenario.rhs0Id;\n");
+    content.append("        assertTrue(AssociationsManager.delete").append(rhsType).append("(scenario.targetRhsId));\n");
+    content.append("      }\n");
+    content.append("    }\n");
+    content.append("  }\n\n");
+  }
+
+  private static void appendPreloadAndAssertions(
+      StringBuilder content,
+      Association association,
+      String lhsType,
+      String rhsType,
+      String lhsToRhs,
+      String rhsToLhs) {
+    content.append("  default void preloadLhs(long lhsId) {\n");
+    content.append("    if (lhsId >= 0) {\n");
+    content.append("      AssociationsManager.get").append(lhsType).append("Sure(lhsId);\n");
+    content.append("    }\n");
+    content.append("  }\n\n");
+
+    content.append("  default void preloadRhs(long rhsId) {\n");
+    content.append("    if (rhsId >= 0) {\n");
+    content.append("      AssociationsManager.get").append(rhsType).append("Sure(rhsId);\n");
+    content.append("    }\n");
+    content.append("  }\n\n");
+
+    appendDatabaseAssertions(content, association, lhsType, rhsType, lhsToRhs, rhsToLhs);
+    appendRelationAssertions(content, association, lhsType, rhsType, lhsToRhs, rhsToLhs);
+  }
+
+  private static void appendDatabaseAssertions(
+      StringBuilder content,
+      Association association,
+      String lhsType,
+      String rhsType,
+      String lhsToRhs,
+      String rhsToLhs) {
+    content.append("  default void assertPersistedRhsDeleted(long rhsId) {\n");
+    content.append("    assertFalse(AssociationsDAOFactory.get").append(rhsType).append("DAO().select")
+        .append(rhsType).append("(rhsId).isPresent());\n");
+    content.append("  }\n\n");
+
+    content.append("  default void assertPersistedRelationPresent(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = selectPersistedLhs(lhsId);\n");
+    content.append("    ").append(rhsType).append(" rhs = selectPersistedRhs(rhsId);\n");
+    appendLhsReferenceAssertion(content, association, lhsToRhs, "lhs", "rhs", "rhsId", true);
+    appendReverseReferenceAssertion(content, association, rhsToLhs, "rhs", "lhs", "lhsId", true);
+    content.append("  }\n\n");
+
+    content.append("  default void assertPersistedRelationAbsent(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = selectPersistedLhs(lhsId);\n");
+    content.append("    ").append(rhsType).append(" rhs = selectPersistedRhs(rhsId);\n");
+    appendLhsReferenceAssertion(content, association, lhsToRhs, "lhs", "rhs", "rhsId", false);
+    appendReverseReferenceAssertion(content, association, rhsToLhs, "rhs", "lhs", "lhsId", false);
+    content.append("  }\n\n");
+
+    content.append("  default void assertPersistedSpecificRelationAbsent(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = selectPersistedLhs(lhsId);\n");
+    content.append("    ").append(rhsType).append(" rhs = selectPersistedRhs(rhsId);\n");
+    appendLhsSpecificAbsenceAssertion(content, association, lhsToRhs, "lhs", "rhs", "rhsId");
+    appendReverseSpecificAbsence(content, association, "lhsId", "rhs", rhsToLhs);
+    content.append("  }\n\n");
+
+    content.append("  default void assertPersistedLhsDoesNotReferenceRhs(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = selectPersistedLhs(lhsId);\n");
+    appendLhsSpecificAbsenceAssertion(content, association, lhsToRhs, "lhs", "null", "rhsId");
+    content.append("  }\n\n");
+
+    content.append("  private ").append(lhsType).append(" selectPersistedLhs(long lhsId) {\n");
+    content.append("    return AssociationsDAOFactory.get").append(lhsType).append("DAO().select")
+        .append(lhsType).append("(lhsId).orElseThrow();\n");
+    content.append("  }\n\n");
+
+    content.append("  private ").append(rhsType).append(" selectPersistedRhs(long rhsId) {\n");
+    content.append("    return AssociationsDAOFactory.get").append(rhsType).append("DAO().select")
+        .append(rhsType).append("(rhsId).orElseThrow();\n");
+    content.append("  }\n\n");
+  }
+
+  private static void appendLhsReferenceAssertion(
+      StringBuilder content,
+      Association association,
+      String lhsToRhs,
+      String lhsExpression,
+      String rhsExpression,
+      String rhsIdExpression,
+      boolean present) {
+    if (association.rhsCardinality().list) {
+      content.append("    assert").append(present ? "True" : "False").append("(")
+          .append(lhsExpression).append(".contains").append(lhsToRhs).append("(")
+          .append(rhsExpression).append("));\n");
+    }
+    else if (present) {
+      content.append("    assertEquals(").append(rhsIdExpression).append(", ")
+          .append(lhsExpression).append(".get").append(lhsToRhs).append("Gem().getGemId());\n");
+    }
+    else if (association.rhsCardinality() == Cardinality.OPT) {
+      content.append("    assertFalse(").append(lhsExpression).append(".isPresent").append(lhsToRhs).append("());\n");
+    }
+    else {
+      content.append("    assertNotEquals(").append(rhsIdExpression).append(", ")
+          .append(lhsExpression).append(".get").append(lhsToRhs).append("Gem().getGemId());\n");
+    }
+  }
+
+  private static void appendLhsSpecificAbsenceAssertion(
+      StringBuilder content,
+      Association association,
+      String lhsToRhs,
+      String lhsExpression,
+      String rhsExpression,
+      String rhsIdExpression) {
+    if (association.rhsCardinality().list) {
+      if ("null".equals(rhsExpression)) {
+        content.append("    for (").append(association.rhsType()).append(" rhs : ")
+            .append(lhsExpression).append(".get").append(lhsToRhs).append("List()) {\n");
+        content.append("      assertNotEquals(").append(rhsIdExpression).append(", rhs.getGemId());\n");
+        content.append("    }\n");
+      }
+      else {
+        content.append("    assertFalse(").append(lhsExpression).append(".contains").append(lhsToRhs)
+            .append("(").append(rhsExpression).append("));\n");
+      }
+    }
+    else if (association.rhsCardinality() == Cardinality.OPT) {
+      content.append("    if (").append(lhsExpression).append(".isPresent").append(lhsToRhs).append("()) {\n");
+      content.append("      assertNotEquals(").append(rhsIdExpression).append(", ")
+          .append(lhsExpression).append(".get").append(lhsToRhs).append("Gem().getGemId());\n");
+      content.append("    }\n");
+    }
+    else {
+      content.append("    assertNotEquals(").append(rhsIdExpression).append(", ")
+          .append(lhsExpression).append(".get").append(lhsToRhs).append("Gem().getGemId());\n");
+    }
+  }
+
+  private static void appendReverseReferenceAssertion(
+      StringBuilder content,
+      Association association,
+      String rhsToLhs,
+      String rhsExpression,
+      String lhsExpression,
+      String lhsIdExpression,
+      boolean present) {
+    if (!association.direction().bidirectional) {
+      return;
+    }
+    if (association.lhsCardinality().list) {
+      content.append("    assert").append(present ? "True" : "False").append("(")
+          .append(rhsExpression).append(".contains").append(rhsToLhs).append("(")
+          .append(lhsExpression).append("));\n");
+    }
+    else if (present) {
+      content.append("    assertEquals(").append(lhsIdExpression).append(", ")
+          .append(rhsExpression).append(".get").append(rhsToLhs).append("Gem().getGemId());\n");
+    }
+    else if (association.lhsCardinality() == Cardinality.OPT) {
+      content.append("    assertFalse(").append(rhsExpression).append(".isPresent").append(rhsToLhs).append("());\n");
+    }
+    else {
+      content.append("    assertNotEquals(").append(lhsIdExpression).append(", ")
+          .append(rhsExpression).append(".get").append(rhsToLhs).append("Gem().getGemId());\n");
+    }
+  }
+
+  private static void appendRelationAssertions(
+      StringBuilder content,
+      Association association,
+      String lhsType,
+      String rhsType,
+      String lhsToRhs,
+      String rhsToLhs) {
+    content.append("  default void assertRelationPresent(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = AssociationsManager.get").append(lhsType).append("Sure(lhsId);\n");
+    content.append("    ").append(rhsType).append(" rhs = AssociationsManager.get").append(rhsType).append("Sure(rhsId);\n");
+    if (association.rhsCardinality().list) {
+      content.append("    assertTrue(lhs.contains").append(lhsToRhs).append("(rhs));\n");
+    }
+    else {
+      content.append("    assertEquals(rhsId, lhs.get").append(lhsToRhs).append("Gem().getGemId());\n");
+    }
+    if (association.direction().bidirectional) {
+      if (association.lhsCardinality().list) {
+        content.append("    assertTrue(rhs.contains").append(rhsToLhs).append("(lhs));\n");
+      }
+      else {
+        content.append("    assertEquals(lhsId, rhs.get").append(rhsToLhs).append("Gem().getGemId());\n");
+      }
+    }
+    content.append("  }\n\n");
+
+    content.append("  default void assertRelationAbsent(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = AssociationsManager.get").append(lhsType).append("Sure(lhsId);\n");
+    content.append("    ").append(rhsType).append(" rhs = AssociationsManager.get").append(rhsType).append("Sure(rhsId);\n");
+    if (association.rhsCardinality().list) {
+      content.append("    assertFalse(lhs.contains").append(lhsToRhs).append("(rhs));\n");
+    }
+    else if (association.rhsCardinality() == Cardinality.OPT) {
+      content.append("    assertFalse(lhs.isPresent").append(lhsToRhs).append("());\n");
+    }
+    else {
+      content.append("    assertNotEquals(rhsId, lhs.get").append(lhsToRhs).append("Gem().getGemId());\n");
+    }
+    appendReverseSpecificAbsence(content, association, "lhsId", "rhs", rhsToLhs);
+    content.append("  }\n\n");
+
+    content.append("  default void assertSpecificRelationAbsent(long lhsId, long rhsId) {\n");
+    content.append("    ").append(lhsType).append(" lhs = AssociationsManager.get").append(lhsType).append("Sure(lhsId);\n");
+    content.append("    ").append(rhsType).append(" rhs = AssociationsManager.get").append(rhsType).append("Sure(rhsId);\n");
+    if (association.rhsCardinality().list) {
+      content.append("    assertFalse(lhs.contains").append(lhsToRhs).append("(rhs));\n");
+    }
+    else if (association.rhsCardinality() == Cardinality.OPT) {
+      content.append("    if (lhs.isPresent").append(lhsToRhs).append("()) {\n");
+      content.append("      assertNotEquals(rhsId, lhs.get").append(lhsToRhs).append("Gem().getGemId());\n");
+      content.append("    }\n");
+    }
+    else {
+      content.append("    assertNotEquals(rhsId, lhs.get").append(lhsToRhs).append("Gem().getGemId());\n");
+    }
+    appendReverseSpecificAbsence(content, association, "lhsId", "rhs", rhsToLhs);
+    content.append("  }\n\n");
+
+    content.append("  default boolean isRhsKnown(long rhsId) {\n");
+    content.append("    for (").append(rhsType).append(" rhs : AssociationsManager.get").append(rhsType).append("List()) {\n");
+    content.append("      if (rhs.getGemId() == rhsId) {\n");
+    content.append("        return true;\n");
+    content.append("      }\n");
+    content.append("    }\n");
+    content.append("    return false;\n");
+    content.append("  }\n\n");
+  }
+
+  private static void appendReverseSpecificAbsence(
+      StringBuilder content,
+      Association association,
+      String lhsIdExpression,
+      String rhsExpression,
+      String rhsToLhs) {
+    if (!association.direction().bidirectional) {
+      return;
+    }
+    if (association.lhsCardinality().list) {
+      content.append("    assertFalse(").append(rhsExpression).append(".contains").append(rhsToLhs)
+          .append("(AssociationsManager.get").append(association.lhsType()).append("Sure(")
+          .append(lhsIdExpression).append(")));\n");
+    }
+    else if (association.lhsCardinality() == Cardinality.OPT) {
+      content.append("    if (").append(rhsExpression).append(".isPresent").append(rhsToLhs).append("()) {\n");
+      content.append("      assertNotEquals(").append(lhsIdExpression).append(", ").append(rhsExpression)
+          .append(".get").append(rhsToLhs).append("Gem().getGemId());\n");
+      content.append("    }\n");
+    }
+    else {
+      content.append("    assertNotEquals(").append(lhsIdExpression).append(", ").append(rhsExpression)
+          .append(".get").append(rhsToLhs).append("Gem().getGemId());\n");
+    }
+  }
+
+  private static void appendObjectFactories(
+      StringBuilder content,
+      Association association,
+      String lhsType,
+      String rhsType,
+      String lhsBuilder,
+      String rhsBuilder,
+      String rhsToLhsLower) {
+    content.append("  private ").append(lhsType).append(" newBareLhs() {\n");
+    content.append("    return AssociationsManager.").append(lowerFirst(lhsType)).append("Builder().build().orElseThrow();\n");
+    content.append("  }\n\n");
+
+    content.append("  private ").append(rhsType).append(" newRhsForLink() {\n");
+    if (association.direction().bidirectional && association.lhsCardinality().required) {
+      content.append("    ").append(lhsType).append(" supportLhs = newBareLhs();\n");
+      content.append("    ").append(rhsBuilder).append(" rhsBuilder = AssociationsManager.")
+          .append(lowerFirst(rhsType)).append("Builder();\n");
+      if (association.lhsCardinality().list) {
+        content.append("    rhsBuilder.").append(rhsToLhsLower).append("Add(supportLhs);\n");
+      }
+      else {
+        content.append("    rhsBuilder.").append(rhsToLhsLower).append("(supportLhs);\n");
+      }
+      content.append("    return rhsBuilder.build().orElseThrow();\n");
+    }
+    else {
+      content.append("    return AssociationsManager.").append(lowerFirst(rhsType)).append("Builder().build().orElseThrow();\n");
+    }
+    content.append("  }\n");
+  }
+
+  private static void appendLinkStatement(
+      StringBuilder content,
+      Association association,
+      String lhsVariable,
+      String rhsVariable,
+      String lhsToRhsLower,
+      String indent) {
+    if (association.rhsCardinality().list) {
+      content.append(indent).append(lhsVariable).append(".add")
+          .append(association.rhsType()).append("(").append(rhsVariable).append(");\n");
+    }
+    else {
+      content.append(indent).append(lhsVariable).append(".set")
+          .append(association.rhsType()).append("(").append(rhsVariable).append(");\n");
+    }
+  }
+
+  private static void appendBuilderLinkStatement(
+      StringBuilder content,
+      Association association,
+      String lhsBuilderVariable,
+      String rhsVariable,
+      String lhsToRhsLower,
+      String indent) {
+    if (association.rhsCardinality().list) {
+      content.append(indent).append(lhsBuilderVariable).append(".").append(lhsToRhsLower)
+          .append("Add(").append(rhsVariable).append(");\n");
+    }
+    else {
+      content.append(indent).append(lhsBuilderVariable).append(".").append(lhsToRhsLower)
+          .append("(").append(rhsVariable).append(");\n");
+    }
+  }
+
+  private static boolean isAllowedAssociation(Cardinality lhs, Cardinality rhs) {
+    return !lhs.required || !rhs.required;
+  }
+
+  private static String namePart(Cardinality cardinality) {
+    return switch (cardinality) {
+      case OPT -> "Opt";
+      case ONE -> "One";
+      case MANY -> "Many";
+      case SOME -> "Some";
+    };
+  }
+
+  private static String lowerFirst(String value) {
+    if (value.isEmpty()) {
+      return value;
+    }
+    return value.substring(0, 1).toLowerCase(Locale.ROOT) + value.substring(1);
+  }
+
+  private static void recreateDirectory(Path directory) throws IOException {
+    if (Files.exists(directory)) {
+      try (Stream<Path> stream = Files.walk(directory)) {
+        List<Path> paths = stream.sorted(Comparator.reverseOrder()).toList();
+        for (Path path : paths) {
+          Files.delete(path);
+        }
+      }
+    }
+    Files.createDirectories(directory);
+  }
+}

@@ -4,6 +4,7 @@ import de.monticore.cdassociation._symboltable.CDRoleSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
+import umlp.generator.domain.decorator.GenService;
 
 public class CDRoleSymbol2VariableSymbolAdapter extends VariableSymbol {
 
@@ -20,7 +21,7 @@ public class CDRoleSymbol2VariableSymbolAdapter extends VariableSymbol {
 
   @Override
   public SymTypeExpression getType() {
-    if(original.isPresentCardinality() && original.getCardinality().isMult()) {
+    if(original.isPresentCardinality() && GenService.isList(original.getCardinality())) {
       return MCCollectionSymTypeFactory.createList(original.getType());
     } else if (original.getCardinality().isOpt()) {
       return MCCollectionSymTypeFactory.createOptional(original.getType());

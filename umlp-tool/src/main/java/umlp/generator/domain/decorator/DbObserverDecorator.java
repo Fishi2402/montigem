@@ -100,7 +100,7 @@ public class DbObserverDecorator extends AbstractDecorator {
         ASTCDMethodSignature remove = null;
 
         String cdDefinitionOfAssoc = UMLPSymbolTables.getDiagramFor(e.getValue()).getCDDefinition().getName();
-        if (e.getKey().getCDCardinality().isMult()) {
+        if (GenService.isList(e.getKey())) {
           add = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.AddNotify",
               cdDefinitionOfAssoc , className, e.getValue().getName(), e.getKey(), otherTypeName);
           remove = getCD4C().addMethod(observerClass, "umlp.dbobserver.assocs.RemoveNotify",

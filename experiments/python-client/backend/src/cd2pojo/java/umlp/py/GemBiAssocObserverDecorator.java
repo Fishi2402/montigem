@@ -18,6 +18,7 @@ import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.logging.Log;
+import umlp.py.utily.PyGenService;
 import umlp.py.utily.Pyutils;
 
 import java.util.LinkedHashMap;
@@ -122,7 +123,7 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
               managerPath,
               otherSideClassName,
               side.getName(),
-              side.isPresentCDCardinality() && side.getCDCardinality().isMult()
+              PyGenService.isList(side)
           )));
       addToClass(biObserverClass, notify);
     } else { // mult
@@ -145,7 +146,7 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
                 managerPath,
                 otherSideClassName,
                 side.getName(),
-                side.isPresentCDCardinality() && side.getCDCardinality().isMult()
+                PyGenService.isList(side)
             )));
         addToClass(biObserverClass, notify);
       }
@@ -168,7 +169,7 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
                 managerPath,
                 otherSideClassName,
                 side.getName(),
-                side.isPresentCDCardinality() && side.getCDCardinality().isMult()
+                PyGenService.isList(side)
             )));
         addToClass(biObserverClass, notify);
       }

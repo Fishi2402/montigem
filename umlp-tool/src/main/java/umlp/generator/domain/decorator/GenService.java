@@ -6,6 +6,7 @@ import de.monticore.cd4code.typescalculator.FullSynthesizeFromCD4Code;
 import de.monticore.cd4codebasis._ast.ASTCDMethodSignature;
 import de.monticore.cdassociation._ast.ASTCDAssocSide;
 import de.monticore.cdassociation._ast.ASTCDAssociation;
+import de.monticore.cdassociation._ast.ASTCDCardinality;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -330,6 +331,10 @@ public class GenService {
   public static boolean isList(ASTCDAssocSide assoc) {
     return assoc.isPresentCDCardinality()
         && (assoc.getCDCardinality().isMult() || assoc.getCDCardinality().isAtLeastOne());
+  }
+
+  public static boolean isList(ASTCDCardinality cardinality){
+    return cardinality.isMult() || cardinality.isAtLeastOne();
   }
 
   public static boolean isAStLeastOne(ASTCDAssocSide assoc) {

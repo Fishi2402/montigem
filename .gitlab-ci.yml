@@ -166,6 +166,22 @@ build_with_deploy:
     refs:
       - dev
 
+check_forbidden_methods:
+  stage: check
+  script:
+    - |
+      if grep -R --line-number \
+        --include='*.java' \
+        --exclude='*GenService.java' \
+        '\.isMult[[:space:]]*(' \
+        umlp-tool/src/main/java/umlp/generator
+      then
+        echo "Usage of ASTCDCardinality#isMult found. Use GenService.isList instead."
+        exit 1
+      else
+        echo "No usage of ASTCDCardinality#isMult found."
+      fi
+
 slowtest:
   stage: check
   tags:

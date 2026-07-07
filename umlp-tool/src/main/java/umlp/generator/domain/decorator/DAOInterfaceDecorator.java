@@ -185,7 +185,7 @@ public class DAOInterfaceDecorator extends AbstractDecorator {
     }
     if (association.getCDAssocDir().isDefinitiveNavigableLeft()) {
       selectMethodForAssocDAO(daoInterface, association, association.getRight(), association.getLeft());
-      removeAllMethodForAssocDAO(daoInterface,association, association.getRight(), association.getRight());
+      removeAllMethodForAssocDAO(daoInterface,association, association.getRight(), association.getLeft());
       updateMethodForAssocDAO(daoInterface, association, association.getRight(), association.getLeft());
     }
   }

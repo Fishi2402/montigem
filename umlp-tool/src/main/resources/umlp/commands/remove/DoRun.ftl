@@ -9,7 +9,7 @@ if(${classname?uncap_first}Opt.isEmpty()){
   return StatusResult.error(getId());
 }
 <#if isGem>
-  ${classname?uncap_first}Opt.get().remove${targetname?cap_first}ByIdSure(${targetname}GemId);
+  ${classname?uncap_first}Opt.get().remove${targetname?cap_first}ByIdSure(${targetname}GemId, NotificationScope.LOCAL);
 <#else>
   ${classname?uncap_first}Opt.get().remove${attributename?cap_first}(indexInList, NotificationScope.LOCAL);
 </#if>

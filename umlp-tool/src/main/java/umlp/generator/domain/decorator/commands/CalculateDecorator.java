@@ -66,7 +66,7 @@ public class CalculateDecorator extends AbstractDeSerDecorator {
                                                                        a.getName(),
                                                                        a.getSymbol().getType(),
                                                                        c,
-                                                                       true, a.getSymbol().getCardinality().isMult())));
+                                                                       true, GenService.isList(a.getSymbol().getCardinality()))));
                       astcdPackage.addCDElement(withOrigin(createDeSer(origCD, a.getName(), getSymType("long"), c)));
                     });
     });

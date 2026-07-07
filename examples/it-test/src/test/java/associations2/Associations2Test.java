@@ -1,39 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package associations2;
 
-import associations.AssociationsManager;
-import associations.AssociationsMock;
-import associations.ManyToManyLhs;
-import associations.ManyToManyRhs;
-import associations.ManyToOneLhs;
-import associations.ManyToOneRhs;
-import associations.ManyToOptLhs;
-import associations.ManyToOptRhs;
-import associations.ManyToSomeLhs;
-import associations.ManyToSomeRhs;
-import associations.OneToManyLhs;
-import associations.OneToManyRhs;
-import associations.OneToOptLhs;
-import associations.OneToOptRhs;
-import associations.OptToManyLhs;
-import associations.OptToManyRhs;
-import associations.OptToOneLhs;
-import associations.OptToOneRhs;
-import associations.OptToOptLhs;
-import associations.OptToOptRhs;
-import associations.OptToSomeLhs;
-import associations.OptToSomeRhs;
-import associations.SomeToManyLhs;
-import associations.SomeToManyRhs;
-import associations.SomeToOptLhs;
-import associations.SomeToOptRhs;
 import associations2.test_infrastructure.Associations2MockTestSetup;
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

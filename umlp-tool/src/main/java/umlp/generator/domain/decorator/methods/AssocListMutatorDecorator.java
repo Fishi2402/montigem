@@ -66,6 +66,7 @@ public class AssocListMutatorDecorator extends UMLPMandatoryMutatorDecorator {
 
     methodList.addAll(notifyMethods);
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.RemoveByIdSure", service.getNativeAttributeName(ast.getName())).get());
+    methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.RemoveByIdSureNoScope", service.getNativeAttributeName(ast.getName())).get());
 
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.Clear", service.getNativeAttributeName(ast.getName()), targetName).get());
     methodList.add((ASTCDMethod) cd4c.createMethod(this.ast, "umlp.methods.assocs.RetainAll", service.getNativeAttributeName(ast.getName()), targetName).get());

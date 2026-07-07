@@ -19,6 +19,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+import umlp.py.utily.PyGenService;
 import umlp.py.utily.Pyutils;
 
 import java.util.ArrayList;
@@ -128,8 +129,8 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
                   role.getAssoc().getLeft().getEnclosingScope().getName(),
                   role.getAssoc().getLeft().getName(),
                   domainName,
-                  role.getAssoc().getRight().isPresentCardinality() && role.getAssoc().getRight().getCardinality().isMult(),
-                  role.getAssoc().getLeft().isPresentCardinality() && role.getAssoc().getLeft().getCardinality().isMult()
+                  PyGenService.isList(role.getAssoc().getRight().getAssocSide()),
+                  PyGenService.isList(role.getAssoc().getLeft().getAssocSide())
                   );
               addCommand(domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_add", "cd2python.commandconsumer.handleAddGemBi", data );
               addCommand(domainName.toLowerCase() + ".commands.associations." + StringTransformations.capitalize(assocName) + "_remove", "cd2python.commandconsumer.handleRemGemBi", data);
@@ -171,9 +172,9 @@ public class GemCommandHandlerDecorator extends AbstractDecorator<AbstractDecora
                   role.getAssoc().getLeft().getEnclosingScope().getName(),
                   role.getAssoc().getLeft().getName(),
                   domainName,
-                  role.getAssoc().getRight().isPresentCardinality() && role.getAssoc().getRight().getCardinality().isMult(),
-                  role.getAssoc().getLeft().isPresentCardinality() && role.getAssoc().getLeft().getCardinality().isMult()
-                                                                                           ));
+                  PyGenService.isList(role.getAssoc().getRight().getAssocSide()),
+                  PyGenService.isList(role.getAssoc().getLeft().getAssocSide())
+              ));
             } else {
               addCommand(cmdName, "cd2python.commandconsumer.handleSetGem", node.getName());
             }

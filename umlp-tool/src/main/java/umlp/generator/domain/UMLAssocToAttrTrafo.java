@@ -69,7 +69,7 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
       ASTMCType attrType;
       if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isOpt()) {
         attrType = MCTypeFacade.getInstance().createOptionalTypeOf(enumType.print());
-      } else if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isMult()) {
+      } else if (assocSide.isPresentCDCardinality() && GenService.isList(assocSide.getCDCardinality())) {
         attrType = MCTypeFacade.getInstance().createListTypeOf(enumType.print());
       } else {
         attrType = MCTypeFacade.getInstance().createQualifiedType(enumType.print());
@@ -92,7 +92,7 @@ public class UMLAssocToAttrTrafo implements CDBasisVisitor2, CDAssociationVisito
       ASTMCType attrType;
       if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isOpt()) {
         attrType = MCTypeFacade.getInstance().createOptionalTypeOf(enumType.print());
-      } else if (assocSide.isPresentCDCardinality() && assocSide.getCDCardinality().isMult()) {
+      } else if (assocSide.isPresentCDCardinality() && GenService.isList(assocSide.getCDCardinality())) {
         attrType = MCTypeFacade.getInstance().createListTypeOf(enumType.print());
       } else {
         attrType = MCTypeFacade.getInstance().createQualifiedType(enumType.print());
