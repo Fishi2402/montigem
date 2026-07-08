@@ -9,11 +9,37 @@ import org.gradle.api.tasks.TaskAction;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public abstract class CreateSymlinkTask extends DefaultTask {
 
+  // shadows org.gradle.api.Task.TASK_NAME ("name"), which would otherwise end up as log tag
+  public static final String TASK_NAME = "createSymlink";
+
   @Input
   public abstract MapProperty<File, File> getLinks();
+
+  public CreateSymlinkTask() {
+    // no regular file outputs, so Gradle needs this spec for its up-to-date check
+    getOutputs().upToDateWhen(task ->
+        getLinks().get().entrySet().stream()
+            .allMatch(entry -> linkPointsToTarget(entry.getKey(), entry.getValue())));
+  }
+
+  protected static boolean linkPointsToTarget(File linkDir, File targetDir) {
+    if (!targetDir.exists() || !targetDir.isDirectory()) {
+      // createSymLink skips such entries, so there is nothing this task could change
+      return true;
+    }
+    try {
+      return Files.isDirectory(linkDir.toPath())
+          && linkDir.toPath().toRealPath().equals(targetDir.toPath().toRealPath());
+    } catch (IOException e) {
+      return false;
+    }
+  }
 
   @TaskAction
   protected void createLinks() {
@@ -26,7 +52,8 @@ public abstract class CreateSymlinkTask extends DefaultTask {
 
   protected static void createSymLink(File linkDir, File targetDir, boolean retry) {
     try {
-      String linkPath = linkDir.getCanonicalPath();
+      // no getCanonicalPath() here, it would resolve an existing link to its target
+      String linkPath = linkDir.toPath().toAbsolutePath().normalize().toString();
       String targetPath = targetDir.getCanonicalPath();
 
       if (!targetDir.exists() || !targetDir.isDirectory()) {
@@ -43,14 +70,16 @@ public abstract class CreateSymlinkTask extends DefaultTask {
           }
         }
 
-        if (isWindows()) {
-          createJunction(linkPath, targetPath);
-        } else {
-          Files.createSymbolicLink(linkDir.toPath(), targetDir.toPath());
-          Log.info("✅ Symlink created: " + linkPath + " → " + targetPath, CreateSymlinkTask.TASK_NAME);
-        }
-      } else {
+        createLink(linkDir, targetDir, linkPath, targetPath);
+      } else if (linkPointsToTarget(linkDir, targetDir)) {
         Log.info("ℹ️ Symlink already exists: " + linkPath, CreateSymlinkTask.TASK_NAME);
+      } else if (isLink(linkDir.toPath())) {
+        Log.info("♻️ Replacing link that points to the wrong target: " + linkPath, CreateSymlinkTask.TASK_NAME);
+        Files.delete(linkDir.toPath());
+        createLink(linkDir, targetDir, linkPath, targetPath);
+      } else {
+        // a real directory occupies the link path; never delete it, it may contain user data
+        Log.warn("⚠️ Cannot create symlink, a real directory occupies the link path: " + linkPath);
       }
     } catch (InterruptedException | IOException e) {
       if (retry) {
@@ -66,13 +95,31 @@ public abstract class CreateSymlinkTask extends DefaultTask {
     }
   }
 
+  private static void createLink(File linkDir, File targetDir, String linkPath, String targetPath)
+      throws IOException, InterruptedException {
+    if (isWindows()) {
+      createJunction(linkPath, targetPath);
+    } else {
+      Files.createSymbolicLink(linkDir.toPath(), targetDir.toPath());
+      Log.info("✅ Symlink created: " + linkPath + " → " + targetPath, CreateSymlinkTask.TASK_NAME);
+    }
+  }
+
+  // Windows junctions are not symbolic links to NIO, they only show up as "other"
+  private static boolean isLink(Path path) throws IOException {
+    if (Files.isSymbolicLink(path)) {
+      return true;
+    }
+    BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+    return attrs.isOther();
+  }
+
   private static void createJunction(String linkPath, String targetPath) throws IOException, InterruptedException {
-    String command = String.format("cmd /c mklink /J \"%s\" \"%s\"", linkPath, targetPath);
-    Process process = Runtime.getRuntime().exec(command);
+    Process process = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "mklink", "/J", linkPath, targetPath});
     int exitCode = process.waitFor();
 
     if (exitCode == 0) {
-      System.out.println("✅ Junction created: " + linkPath + " → " + targetPath);
+      Log.info("✅ Junction created: " + linkPath + " → " + targetPath, CreateSymlinkTask.TASK_NAME);
     } else {
       throw new IOException("Failed to create junction. Exit code: " + exitCode);
     }

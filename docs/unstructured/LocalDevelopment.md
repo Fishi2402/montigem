@@ -18,13 +18,21 @@ You also need to make the actual code available to the project via the `symlinkC
 Note that you need to use the same directory name as in the tsconfig.json changes.
 Here it is `networktest`.
 
+Use the lazy `tasks.named(...)` form — an eager `createSymlink { ... }` block forces task
+creation during configuration and can fail with cross-project ordering errors in multi-app
+builds (e.g. `Task with name 'gui2java2ts' not found in project ':base:frontend'`):
+
 ````gradle
-createSymlink {
+tasks.named("createSymlink") {
   def networkTest = file("$buildDir/frontendGen/networktest")
   def networkTestTarget = file("$PATH_TO_UMLP/umlp/umlp-rte/frontend/networkgraph")
   getLinks().put(networkTest, networkTestTarget)
 }
 ````
+
+Note on the link location: the tsconfig `paths` entries resolve relative to the app's
+`baseUrl`. In projects where the Angular app is assembled in `frontend/build/app/` (baseUrl
+`./`), place the link there instead, e.g. `file("$buildDir/app/networktest")`.
 
 ## Java RTE
 Use the property `useLocalRepo=true` in project/gradle.properties and `gradle publishToMavenLocal` in the `umlp` project.
