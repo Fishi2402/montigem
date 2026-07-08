@@ -164,11 +164,7 @@ public class UMLPSymbolTables {
   }
 
   public static void addCd4cSymbols() {
-    SymbolTableUtil.addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
-    SymbolTableUtil.addFunctionSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
-    SymbolTableUtil.addVariableSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
     addRoleSymbol("de.monticore.cdassociation._symboltable.CDRoleSymbol");
-    SymbolTableUtil.ignoreSymbolKind("de.monticore.cdassociation._symboltable.CDAssociationSymbol");
   }
 
   public static Map<DiagramSymbol, LinkedHashSet<DiagramSymbol>> getExtensionDiamond(DiagramSymbol currentDiagram){

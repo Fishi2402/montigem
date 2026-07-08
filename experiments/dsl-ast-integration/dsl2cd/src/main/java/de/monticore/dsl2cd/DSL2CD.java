@@ -243,7 +243,7 @@ public class DSL2CD {
     try {
       // In case the file is a jar, load it as a file system
       if (additional.getName().endsWith(".jar")) {
-        URI uri = new URI("jar", additional.toURI().toString(), null);
+        URI uri = URI.create("jar:" + additional.toURI().toASCIIString());
         fs = FileSystems.newFileSystem(uri, new HashMap<>());
         initialPath = fs.getPath("/");
       }
@@ -273,9 +273,8 @@ public class DSL2CD {
         }
       });
       return cds;
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    } finally {
+    }
+    finally {
       if (fs != null)
         fs.close();
     }
