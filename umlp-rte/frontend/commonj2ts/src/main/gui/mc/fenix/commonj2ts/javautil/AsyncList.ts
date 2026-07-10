@@ -122,6 +122,14 @@ export class AsyncList<E> implements IUMLPList<E> {
     return Promise.resolve(true);
   }
 
+  public async addFirst(element : E): Promise<boolean> {
+    return await this.add(0, element);
+  }
+
+  public async addLast(element : E): Promise<boolean> {
+    return await this.add(await this.size(), element);
+  }
+
   /**
    * java.util.List#addAll(Collection<? extends E>) → boolean
    * java.util.List#addAll(int, Collection<? extends E>) → boolean
@@ -460,12 +468,12 @@ export class AsyncList<E> implements IUMLPList<E> {
   }
 
   /** java.lang.Iterable#forEach(Consumer<E>) → void */
-  async forEach(action: (e: E) => void): Promise<void> {
+  async forEach(action: (e: E) => void | Promise<void>): Promise<void> {
     if (this._delegate) {
       return this._delegate.forEach(action);
     }
     for await (const item of this) {
-      action(item);
+      await action(item);
     }
   }
 

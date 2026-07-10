@@ -1,0 +1,27 @@
+package gui.test;
+
+import mc.fenix.input.GemTextInput;
+import mc.fenix.basic.GemButton;
+
+page ListAdapterTest() {
+  inputTestFiel@GemTextInput(
+    id = "listInputTestFieldId",
+    labelText = "Test Input Field"
+  );
+  add@GemButton(label = "Test add()", leftClick = testAdd());
+  get@GemButton(label = "Test get()", leftClick = testGet());
+  contains@GemButton(label = "Test contains()", leftClick = testContains());
+  indexOf@GemButton(label = "Test indexOf()", leftClick = testIndexOf());
+  lastIndexOf@GemButton(label = "Test lastIndexOf()", leftClick = testLastIndexOf());
+  set@GemButton(label = "Test set()", leftClick = testSet());
+  removeIdx@GemButton(label = "Test remove(int)", leftClick = testRemoveByIndex());
+  removeObj@GemButton(label = "Test remove(Object)", leftClick = testRemoveByObject());
+  addAtIndex@GemButton(label = "Test add(int, elem)", leftClick = testAddAtIndex());
+  isEmptyClear@GemButton(label = "Test isEmpty()/clear()", leftClick = testIsEmptyAndClear());
+  btnClear@GemButton(label = "Clear Fields", leftClick = testResetFields());
+
+  resultField@GemTextInput(
+    id = "listResultId",
+    labelText = "Test Result"
+  );
+}

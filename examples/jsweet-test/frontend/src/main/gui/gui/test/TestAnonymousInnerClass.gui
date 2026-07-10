@@ -1,0 +1,18 @@
+package gui.test;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextInput;
+
+page TestAnonymousInnerClass() {
+  anonymousOverride@GemButton(label = "Test anonymous class extends+override", leftClick = testAnonymousInnerClass());
+  anonymousCapture@GemButton(label = "Test anonymous class captures local", leftClick = testAnonymousCapturesLocal());
+  innerOuterField@GemButton(label = "Test inner class outer field access", leftClick = testInnerClassOuterFieldAccess());
+  innerCtorInt@GemButton(label = "Test inner class ctor(int)", leftClick = testInnerClassCtorInt());
+  innerCtorString@GemButton(label = "Test inner class ctor(String)", leftClick = testInnerClassCtorString());
+  btnClear@GemButton(label = "Clear Fields", leftClick = testResetField());
+
+  resultField@GemTextInput(
+    id = "innerClassResultId",
+    labelText = "Test Result"
+  );
+}

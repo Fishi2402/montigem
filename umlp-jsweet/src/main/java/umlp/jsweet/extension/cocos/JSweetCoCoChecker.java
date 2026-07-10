@@ -5,10 +5,10 @@ import jsweet.lang.Erased;
 import jsweet.lang.Replace;
 import org.jsweet.transpiler.JSweetContext;
 import org.jsweet.transpiler.TranspilationHandler;
-import org.jsweet.transpiler.model.support.NewClassElementSupport;
 import org.jsweet.transpiler.util.AbstractTreeScanner;
 import standalone.com.sun.source.tree.ClassTree;
 import standalone.com.sun.source.tree.CompilationUnitTree;
+import standalone.com.sun.source.tree.ExpressionTree;
 import standalone.com.sun.source.tree.MethodInvocationTree;
 import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.NewClassTree;
@@ -19,7 +19,8 @@ import standalone.com.sun.source.util.Trees;
 import standalone.com.sun.tools.javac.code.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
-import java.util.List;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 
 /**
  * This class does not adapt anything but throws warnings when finding Java Concepts that we cannot
@@ -80,6 +81,22 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
             .equals("umlp.jsweet.extension.annotation.BackendOnly")
             || a.getAnnotationType().toString()
             .equals(Erased.class.getCanonicalName()));
+
+
+    Element element = trees.getElement(getCurrentPath());
+
+    if (element != null && element.getKind() == ElementKind.FIELD) {
+      ExpressionTree initializer = variableTree.getInitializer();
+      // Determine if initializer is Async
+      if (initializer != null) {
+        if(element.getModifiers().contains(javax.lang.model.element.Modifier.STATIC)) {
+          //Log.error("0xEE010: Field initialization in Java Declaration assignment now allowed. "+ getStartSourcePosition(getCurrent()));
+        }
+      }
+    }
+
+
+
     super.visitVariable(variableTree, trees);
     return null;
   }
@@ -158,7 +175,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       Log.warn("0xEE005: " + ownerFqn + ".of(...) is not supported by our transpilation. "
               + "Use Collections.* helpers (e.g., Collections.emptyList/singletonList) "
               + "or Guava's Lists.newArrayList instead.",
-          getStartSourcePosition(tree));
+          getStartSourcePosition(getContext(),getCompilationUnit(),tree));
       return;
     }
 
@@ -166,7 +183,6 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       switch (methodName) {
         case "emptySet":
         case "emptyMap":
-        case "singleton":
         case "singletonMap":
         case "unmodifiableMap":
         case "unmodifiableSet":
@@ -193,7 +209,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         case "synchronizedSortedSet":
           Log.warn("0xEE006: java.util.Collections." + methodName + "(...) is not supported by our transpilation. "
                   + "Use simple list/map operations or custom helpers instead.",
-              getStartSourcePosition(tree));
+              getStartSourcePosition(getContext(),getCompilationUnit(),tree));
           return;
         default:
       }
@@ -211,7 +227,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
           Log.warn("0xEE008: java.util.Objects." + methodName + "(...) is not explicitly supported "
                   + "and may not behave as expected in transpiled code. "
                   + "Prefer requireNonNull/equals or implement comparison/hash logic explicitly.",
-              getStartSourcePosition(tree));
+              getStartSourcePosition(getContext(),getCompilationUnit(),tree));
           return;
         default:
       }
@@ -223,7 +239,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       Log.warn("0xEE009: Calls to " + ownerFqn + "." + methodName + "(...) are not explicitly supported. "
               + "Only java.time.LocalDateTime, java.time.LocalDate and java.util.Date "
               + "with their standard methods are supported in transpiled code.",
-          getStartSourcePosition(tree));
+          getStartSourcePosition(getContext(),getCompilationUnit(),tree));
       return;
     }
 
@@ -234,7 +250,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         || ownerFqn.startsWith("java.lang.reflect.")) {
       Log.warn("0xEE003: Calls to " + ownerFqn + "." + methodName + " are not supported in transpiled code. "
               + "Move this logic to backend-only code or mark it with @BackendOnly/@Erased.",
-          getStartSourcePosition(tree));
+          getStartSourcePosition(getContext(),getCompilationUnit(),tree));
       return;
     }
 
@@ -242,15 +258,14 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       if (!ownerFqn.equals("java.util.concurrent.atomic.AtomicReference")) {
         Log.warn("0xEE004: java.util.concurrent APIs are not supported in transpiled code. "
                 + "Use async/await and @Synchronized instead of Java threads or executors.",
-            getStartSourcePosition(tree));
+            getStartSourcePosition(getContext(),getCompilationUnit(),tree));
       }
     }
   }
 
-  public SourcePosition getStartSourcePosition(standalone.com.sun.source.tree.Tree tree) {
-    long startSP = getContext().trees.getSourcePositions()
-        .getStartPosition(getCurrentPath().getCompilationUnit(), tree);
-    CompilationUnitTree cu = getCurrentPath().getCompilationUnit();
+  public static SourcePosition getStartSourcePosition(JSweetContext context, CompilationUnitTree cu,
+                                                      standalone.com.sun.source.tree.Tree tree) {
+    long startSP = context.trees.getSourcePositions().getStartPosition(cu, tree);
 
     if(cu != null &&
         cu.getLineMap() != null &&

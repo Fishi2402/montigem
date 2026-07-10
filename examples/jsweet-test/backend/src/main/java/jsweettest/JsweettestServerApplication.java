@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package jsweettest;
 
+import de.se_rwth.commons.logging.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -27,7 +28,7 @@ public class JsweettestServerApplication extends JsweettestServerApplicationTOP 
     A a1 = JsweettestManager.aBuilder().value("Malte").build().get();
     A a2 = JsweettestManager.aBuilder().value("Alex").build().get();
     A a3 = JsweettestManager.aBuilder().value("Sebastian").build().get();
-    
+
     JsweettestManager.eBuilder().value("e1").a(a1).build();
     JsweettestManager.eBuilder().value("e2").a(a2).build();
     JsweettestManager.eBuilder().value("e3").a(a3).build();

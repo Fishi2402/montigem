@@ -58,4 +58,28 @@ public class JSweetCoCoCheckerTest {
     assertTrue(found0xEE009, "Should have found Time violation (0xEE009). Findings: " + findings);
     assertTrue(found0xEE004, "Should have found Concurrent violation (0xEE004). Findings: " + findings);
   }
+
+  @Test
+  public void testStaticFieldInit() throws IOException {
+    File input = Paths.get("src/test/resources/java/coco/StaticFieldInit.java").toFile();
+    assertTrue(input.exists(), "Input file must exist: " + input.getAbsolutePath());
+
+    // Use the transpiler that has the ModuleUMLPAdapter configured (which adds JSweetCoCoChecker)
+    JSweetTranspiler transpiler = Util.getGUITranspiler();
+
+    ErrorCountTranspilationHandler handler = new ErrorCountTranspilationHandler(
+        new ConsoleTranspilationHandler());
+
+    SourceFile[] sourceFiles = getSourceFiles(input);
+    transpiler.transpile(handler, sourceFiles);
+
+    // JSweetCoCoChecker logs warnings with Log.warn (0xEE...)
+    List<String> findings = Log.getFindings().stream()
+        .map(Finding::getMsg)
+        .collect(Collectors.toList());
+
+    boolean found0xEE010 = findings.stream().anyMatch(s -> s.contains("0xEE010"));
+
+    assertTrue(found0xEE010, "Should have found IO violation (0xEE010). Findings: " + findings);
+  }
 }

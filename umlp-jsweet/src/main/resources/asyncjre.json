@@ -13,6 +13,7 @@
       "java.util.List.indexOf(**)",
       "java.util.List.lastIndexOf(**)",
       "java.util.List.remove(**)",
+      "java.util.List.clear()",
       "java.util.List.removeAll(**)",
       "java.util.List.retainAll(**)",
       "java.util.List.set(**)",
@@ -66,9 +67,13 @@
       "java.util.stream.Stream.<*>collect(**)",
 
       "java.util.Map.keySet()",
+      "java.util.Map.entrySet()",
 
       "java.lang.String.join(**)",
-      "java.lang.Iterable.forEach(**)"
+      "java.lang.Iterable.forEach(**)",
+
+      "java.util.Arrays.asList(**)",
+      "java.util.Arrays.<*>asList(**)"
     ]
   }
 }

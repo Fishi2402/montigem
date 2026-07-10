@@ -5,6 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import java.net.ServerSocket;
 @UsePlaywright
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Timeout(120)
 // restart backend for every method
 public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
 

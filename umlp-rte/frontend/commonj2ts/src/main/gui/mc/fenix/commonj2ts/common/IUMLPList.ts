@@ -4,6 +4,10 @@ export interface IUMLPList<E> extends Collection<E> {
 
   add(indexOrElement: number | E, element?: E): Promise<boolean>;
 
+  addFirst(element : E) : Promise<boolean>;
+
+  addLast(element : E) : Promise<boolean>;
+
   addAll(idxOrElems: number | Collection<E> | Array<E>, elems?: Collection<E>): Promise<boolean>;
 
   get(index: number): Promise<E>;

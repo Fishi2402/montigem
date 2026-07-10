@@ -44,6 +44,7 @@ public class UpdatableBoundPageTest extends AbstractJsweettestE2ETest {
 
     String inputValue = "my val";
     malteInput.get().fill(inputValue);
+    waitRdy(page);
     assertEquals(inputValue, text.textContent().trim());
   }
 }

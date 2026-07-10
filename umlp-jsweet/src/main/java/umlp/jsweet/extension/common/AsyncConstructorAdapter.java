@@ -33,6 +33,7 @@ import javax.lang.model.util.ElementFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static umlp.jsweet.extension.cocos.JSweetCoCoChecker.getStartSourcePosition;
 import static umlp.jsweet.extension.util.GUIAdapterUtils.COMPONENT_ANNOTATION;
 import static umlp.jsweet.extension.util.GUIAdapterUtils.DIRECTIVE_ANNOTATION;
 
@@ -51,7 +52,7 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
     addAnnotationManager(getMarkComponentInitAsAsyncAnnotationManager());
   }
 
-  private AnnotationManager getMarkComponentInitAsAsyncAnnotationManager() {
+  protected AnnotationManager getMarkComponentInitAsAsyncAnnotationManager() {
     return new AnnotationManager() {
       @Override
       public Action manageAnnotation(Element element, String annotationType) {
@@ -70,7 +71,7 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
     };
   }
 
-  private AnnotationManager getEraseAndMarkAsnycConstructorsAnnotationManager() {
+  protected AnnotationManager getEraseAndMarkAsnycConstructorsAnnotationManager() {
     return new AnnotationManager() {
       @Override
       public Action manageAnnotation(Element element, String annotationType) {
@@ -103,35 +104,42 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
 
   protected boolean substituteAssignedExpressionInCollectionMode(TypeMirror type, ExtendedElement assignedExpression) {
 
-    if(assignedExpression instanceof NewClassElementSupport) {
-      Tree parentTree = getContext().trees.getPath(getCompilationUnitTree(), ((NewClassElementSupport) assignedExpression).getTree()).getParentPath().getLeaf();
-      if(parentTree instanceof JCTree.JCVariableDecl) {
-        if(((JCTree.JCVariableDecl) parentTree).sym.getKind() == ElementKind.FIELD) {
-          requiredFieldInitializations.add(((JCTree.JCVariableDecl) parentTree));
+    // Every Constructor is assumed to be async. Otherwise an incomplete set of async methods is
+    // contained in asyncjre.json and more methods are async by propagation.
+    if(assignedExpression instanceof NewClassElementSupport newClassAssignedExpression) {
+      Tree parentTree = getContext().trees.getPath(getCompilationUnitTree(), newClassAssignedExpression.getTree()).getParentPath().getLeaf();
+      if(parentTree instanceof JCTree.JCVariableDecl varDecl) {
+        if(varDecl.sym.getKind() == ElementKind.FIELD) {
+          if(varDecl.sym.isStatic()) {
+            Log.error("0xEE010: Static async field declaration initialization not allowed. " +
+                "Use dependency injection or static delegate instead."+
+                getStartSourcePosition(getContext(), getCompilationUnitTree(), getPrinter().getCurrent()));
+          }
+
+          requiredFieldInitializations.add(varDecl);
           requiredFieldInitializationsTypeMirrors.add(type);
           // Print undefined because we set it inside the async constructor
           getPrinter().print("undefined");
           return true;
         }
       }
-    } else if (assignedExpression instanceof MethodInvocationElementSupport) {
+    } else if (assignedExpression instanceof MethodInvocationElementSupport methodInvocationElementSupport) {
       JCTree.JCMethodInvocation invocation =
-          (JCTree.JCMethodInvocation) ((MethodInvocationElementSupport) assignedExpression).getTree();
+          (JCTree.JCMethodInvocation) methodInvocationElementSupport.getTree();
 
       Tree parentTree = getContext().trees
           .getPath(getCompilationUnitTree(), invocation)
           .getParentPath()
           .getLeaf();
 
-      if (parentTree instanceof JCTree.JCVariableDecl) {
-        JCTree.JCVariableDecl varDecl = (JCTree.JCVariableDecl) parentTree;
-
+      if (parentTree instanceof JCTree.JCVariableDecl varDecl) {
         if (varDecl.sym.getKind() == ElementKind.FIELD) {
-          String methodSelect = invocation.getMethodSelect().toString();
-
-          if ("Arrays.asList".equals(methodSelect)
-              || methodSelect.endsWith(".Arrays.asList")) {
-
+          if (getContext().hasAnnotationType(methodInvocationElementSupport.getMethod(),  JSweetConfig.ANNOTATION_ASYNC)) {
+            if(varDecl.sym.isStatic()) {
+              Log.error("0xEE010: Static async field declaration initialization not allowed. " +
+                  "Use dependency injection or static delegate instead."+
+                  getStartSourcePosition(getContext(), getCompilationUnitTree(), getPrinter().getCurrent()));
+            }
             requiredFieldInitializations.add(varDecl);
             requiredFieldInitializationsTypeMirrors.add(type);
 
@@ -160,9 +168,10 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
           UMLPAdapterUtils.isRTEIncluded(newClass.getConstructor().getReturnType().toString())) {
         getPrinter().print("(<any> await ");
       }
-      getPrinter().print(" new ")
-          .print(((NewClassElementSupport) newClass).getTree().getIdentifier())
-          .print("()"+".__"+className+"Constructor(");
+      // We need to invoke the default Behavior of the Java2TypeScriptTranslator to handle implicit constructor args of inner classes
+      // Explicit constructors args are handled by our method and suppress their printing at this point
+      super.substituteNewClass(newClass);
+      getPrinter().print(".__"+className+"Constructor(");
       // TODO: if (!typeApply.getTypeArguments().isEmpty()) {
       //                        print("<").printTypeArgList(typeApply.getTypeArguments()).print(">");
       //                    }
@@ -172,7 +181,6 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
           UMLPAdapterUtils.isRTEIncluded(newClass.getConstructor().getReturnType().toString())) {
         getPrinter().print(")");
       }
-
       return true;
     }
     return super.substituteNewClass(newClass);
@@ -214,15 +222,7 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
       }
       if (!constructors.isEmpty()) {
         printMergedAsyncConstructors(constructors);
-        // If there is no Init and we are inside a Component -> create an Async init()
-        if(!ElementFilter.methodsIn(type.getEnclosedElements()).stream().anyMatch(m -> m.getSimpleName().toString().equals("init"))
-            && getContext().hasAnnotationType(type, COMPONENT_ANNOTATION)) {
-          getPrinter().print("public async init() : Promise<void> {");
-          getPrinter().println();
-          getPrinter().print("await this.__").print(type.getSimpleName().toString()).print("Constructor();");
-          getPrinter().print("await super.init();");
-          getPrinter().print("}");
-        }
+        printDefaultAsyncInitInComponent(type);
       } else {
         throw new RuntimeException("No constructor: now it might get shit");
       }
@@ -230,15 +230,13 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
     super.afterTypeBody(type);
   }
 
-  private boolean shouldTransformConstructors(TypeElement type) {
+  protected boolean shouldTransformConstructors(TypeElement type) {
     return !getContext().isInterface(type)
         && type.getKind() != ElementKind.ENUM
-        && !UMLPAdapterUtils.isJdkType(type)
-        // Do not print Async Constructors for AnonymousClasses
-        && !type.getSimpleName().contentEquals("");
+        && !UMLPAdapterUtils.isJdkType(type);
   }
 
-  private boolean isExplicitConstructorInvocation(StatementTree stmt) {
+  protected boolean isExplicitConstructorInvocation(StatementTree stmt) {
     if (!(stmt instanceof JCTree.JCExpressionStatement)) {
       return false;
     }
@@ -250,7 +248,19 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
     return meth.equals("super") || meth.equals("this");
   }
 
-  private void printMergedAsyncConstructors(List<ExecutableElement> constructors) {
+  protected void printDefaultAsyncInitInComponent(TypeElement type) {
+    // If there is no Init and we are inside a Component -> create an Async init()
+    if(getContext().hasAnnotationType(type, COMPONENT_ANNOTATION) &&
+        !ElementFilter.methodsIn(type.getEnclosedElements()).stream().anyMatch(m -> m.getSimpleName().toString().equals("init"))) {
+      getPrinter().print("public async init() : Promise<void> {");
+      getPrinter().println();
+      getPrinter().print("await this.__").print(type.getSimpleName().toString()).print("Constructor();");
+      getPrinter().print("await super.init();");
+      getPrinter().print("}");
+    }
+  }
+
+  protected void printMergedAsyncConstructors(List<ExecutableElement> constructors) {
     TypeElement clazz = (TypeElement) constructors.get(0).getEnclosingElement();
     String className = clazz.getSimpleName().toString();
     String superClassName = ((DeclaredType) types().directSupertypes(clazz.asType()).get(0))
@@ -271,6 +281,9 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
     for (int i = 0; i < coreParams.size(); i++) {
       if (i > 0) print(", ");
       print(adapterUtils.getJSweetParameterName(coreParams.get(i)) + "?: any");
+    }
+    if(clazz.isUnnamed() || className.isBlank()) {
+      className = getAnonymousSuperType(clazz).getSimpleName().toString();
     }
     print("): Promise<"+className+"> {").println().startIndent();
 
@@ -351,8 +364,27 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
     endIndent().println().printIndent().print("}");
   }
 
+  protected TypeElement getAnonymousSuperType(TypeElement type) {
+    TypeMirror superType = null;
+    List<? extends TypeMirror> interfaces = type.getInterfaces();
+
+    if (!interfaces.isEmpty()) {
+      superType = interfaces.get(0);
+    }
+
+    TypeMirror superclass = type.getSuperclass();
+
+    if (superclass.getKind() != TypeKind.NONE) {
+      superType = superclass;
+    }
+    if(superType != null && superType.getKind() == TypeKind.DECLARED) {
+      return ((TypeElement) ((DeclaredType) superType).asElement());
+    }
+    return null;
+  }
+
   // Copied from Java2TypeScriptTranslator
-  private void printFieldInitialization(VariableTree field) {
+  protected void printFieldInitialization(VariableTree field) {
     VariableElement fieldElement = Util.getElement(field);
     if (context.hasAnnotationType(fieldElement, JSweetConfig.ANNOTATION_ERASED)) {
       return;
@@ -370,7 +402,7 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
 
   // Matches printMethodParamsTest: instanceof/typeof checks for present params,
   // === undefined for absent core params
-  private void printConstructorParamsTest(List<? extends VariableElement> overloadParams,
+  protected void printConstructorParamsTest(List<? extends VariableElement> overloadParams,
       List<? extends VariableElement> coreParams) {
     boolean hasCondition = false;
     for (int i = 0; i < overloadParams.size(); i++) {
@@ -388,7 +420,7 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
   }
 
   // Matches printInstanceOf + null check from printMethodParamsTest
-  private void printParamTypeTest(String coreParamName, TypeMirror paramType) {
+  protected void printParamTypeTest(String coreParamName, TypeMirror paramType) {
     String mappedType = getMappedType(paramType);
 
     TypeMirror unwrappedOptional = paramType;
@@ -433,6 +465,54 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
       }
     }
   }
+
+
+  /**
+   * JSweet's PrinterAdapter was specifically extended, so we could write this method which allows us
+   * to do the AsyncConstructor stuff also for inner classes. It is very ugly since it copies a lot
+   * of code from Java2JavaScriptTranslator, but until we find a better solution we have to live with it,
+   * I guess. - CBu
+   * @param args Arguments of the Constructor
+   * @return
+   */
+  @Override
+  public boolean substituteExplicitConstructorArgs(List<? extends Tree> args) {
+    // Do not print anything since we will handle explicit constructor in the __Constructor Method
+    return true;
+  }
+
+  @Override
+  public boolean substituteExplicitConstructorArgsDecl(List<? extends Tree> args) {
+    // Do not print anything since we will handle explicit constructor in the __Constructor Method
+    return true;
+  }
+
+
+  @Override
+  public Void beforeInnerNewClass(NewClassElement newClass) {
+    if (context.hasAnnotationType(newClass.getConstructor(), JSweetConfig.ANNOTATION_ASYNC)) {
+      getPrinter().print("(/* inner class constructor subst */ <any> await ");
+    }
+    return null;
+  }
+
+  @Override
+  public Void afterInnerNewClass(NewClassElement newClass) {
+    String className = newClass.getTypeAsElement().getSimpleName().toString();
+
+    // Class name is empty for anonymous classes
+    getPrinter().print(".__"+className+"Constructor(");
+
+    printArgList(newClass.getArguments());
+
+    getPrinter().print(")");
+
+    if(context.hasAnnotationType(newClass.getConstructor(), JSweetConfig.ANNOTATION_ASYNC)) {
+      getPrinter().print(")");
+    }
+    return null;
+  }
+
 
   @Override
   public Java2TypeScriptTranslator getPrinter() {

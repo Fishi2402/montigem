@@ -200,6 +200,14 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     this.updateIds();
   }
 
+  public async addFirst(element : E): Promise<boolean> {
+    return await this.add(0, element);
+  }
+
+  public async addLast(element : E): Promise<boolean> {
+    return await this.add(await this.size(), element);
+  }
+
   public async add(idxOrElem: number | E, elem?: E): Promise<boolean> {
     if ((elem === undefined || elem === null) && (<E>idxOrElem).getGemId) {
       await this._internal_addAndSync(await this.size(), await new AsyncList<number>().__AsyncListConstructor([(<E>idxOrElem).getGemId()]));
@@ -236,7 +244,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
     if (this.asArray != null) {
       if (await(gemIDs.size()) != 1) {
-        throw Error("Did not expect an internal_add with size of" + gemIDs.size() + gemIDs);
+        throw Error("Did not expect an internal_add with size of" + await gemIDs.size() + gemIDs);
       }
       const loadResult = await this.loadSingleObject(await gemIDs.get(0));
       if (loadResult.isPresent())
@@ -276,11 +284,12 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
+  /* toIndex is exclusive!! */
   public async removeRange(fromIndex: number, toIndex: number) {
-    if (toIndex < fromIndex) {
-      throw new Error("Invalid range: toIndex is less than fromIndex");
+    if (toIndex <= fromIndex) {
+      throw new Error("Invalid range: toIndex is less equal to fromIndex");
     }
-    const indicesToRemove: Array<number> = Array.from({length: toIndex - fromIndex + 1}, (_, i) => i + fromIndex);
+    const indicesToRemove: Array<number> = Array.from({length: toIndex - fromIndex}, (_, i) => i + fromIndex);
     await this._internal_removeAndSync(await new AsyncSet<number>().__AsyncSetConstructor(indicesToRemove));
   }
 
@@ -321,7 +330,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async isEmpty(): Promise<boolean> {
-    return (await this.size() )=== 0;
+    return (await this.size()) === 0;
   }
 
   /**
@@ -459,15 +468,30 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async indexOf(o: any): Promise<number> {
-    return Promise.resolve(undefined); // TODO
+    let i = 0;
+    for await (const e of this) {
+      if(e === o) {
+        return i;
+      }
+      i++;
+    }
+    return -1; // TODO
   }
 
   iterator(): AsyncIterator<E> {
     return this[Symbol.asyncIterator]();
   }
 
-  lastIndexOf(o: any): Promise<number> {
-    return Promise.resolve(undefined); // TODO
+  public async lastIndexOf(o: any): Promise<number> {
+    let i = 0;
+    let lastFind = -1;
+    for await (const e of this) {
+      if(e === o) {
+        lastFind = i;
+      }
+      i++;
+    }
+    return lastFind;
   }
 
   listIterator(from?: any): AsyncIterator<E> {
@@ -475,6 +499,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async retainAll(c: AsyncIterable<E>): Promise<boolean> {
+    throw Error("NoImplementedException for retainAll on GemLists");
     return false; // TODO
   }
 
@@ -546,7 +571,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   __internalArray() : Array<E> {
-    throw Error("Not allowed, since GemLists are always asynchronous.");
+    throw Error("__internalArray is not allowed, since GemLists are always asynchronous. " +
+      "Please use GemListUtil#toArraySync if you need a synchronus array.");
   }
 }
 

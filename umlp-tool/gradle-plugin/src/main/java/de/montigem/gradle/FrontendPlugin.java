@@ -171,7 +171,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
         return FileUtils.removeExtension(((MergeTask)t).getOutputFile().getAsFile().get().getName());
       }
     });
-    
+
     var oclFiles = models.dir("ocl").getAsFileTree().matching(pf -> pf.include("**/*.ocl"));
     TaskProvider<CD2GUITask> cd2gui = project.getTasks().register(CD2GUI_TASK, CD2GUITask.class);
     cd2gui.configure(task -> {
@@ -438,7 +438,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
     releaseRepo.mavenContent(filterContent);
 
     project.getDependencies().add("implementation", "org.jsweet:jsweet-core:6.3.0");
-    Dependency dep = project.getDependencies().create("de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.3-UMLP-SNAPSHOT", new Closure<Object>(this, this) {
+    Dependency dep = project.getDependencies().create("de.rwth.se.umlp.jsweet:jsweet-transpiler:3.2.4-UMLP-SNAPSHOT", new Closure<Object>(this, this) {
       @Override
       public Object call(Object arg) {
         var emd = (ExternalModuleDependency) arg;
