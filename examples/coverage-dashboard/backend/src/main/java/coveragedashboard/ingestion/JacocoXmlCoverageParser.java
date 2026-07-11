@@ -148,7 +148,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
             CoverageSourceFileBuilder sourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
                 .path(path)
                 .name(currentSourceFileName)
-                .physicalPath((basePath + path).toString())
+                .physicalPath((basePath.resolve(path)).toString())
                 .category(ArtifactCategory.GENERATED)
                 .metrics(fileMetrics);
 
