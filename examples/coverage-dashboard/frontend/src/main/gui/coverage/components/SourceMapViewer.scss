@@ -12,3 +12,131 @@
 :host ::ng-deep .range-covered {
   background-color: rgba(76, 175, 80, 0.25);
 }
+
+:host(.sourceMapViewer) {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+:host(.sourceMapViewer) ::ng-deep {
+  $border-color: #e1e4e8;
+  $header-bg: #f6f8fa;
+  $text-main: #24292e;
+  $text-muted: #586069;
+  $panel-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  // 1. MAIN GRID - Add spacing between the editors
+  .rootGrid {
+    padding: 0 16px 16px 16px; // Breathing room on the edges
+    background-color: #ffffff;
+    box-sizing: border-box;
+  }
+
+  // 2. PANELS
+  .sourceColumn,
+  .transpiledColumn {
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: $panel-shadow;
+    background-color: #ffffff;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  // 3. HEADERS - Style the top rows like an IDE Toolbar / Tab
+  .sourceHeader,
+  .transpiledHeader {
+    height: 44px !important;
+    min-height: 44px !important;
+    background-color: $header-bg;
+    border-bottom: 1px solid $border-color;
+    padding: 0 16px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  // 4. LABELS
+  .sourceLabel,
+  .transpiledLabel {
+    font-family: 'Segoe UI', -apple-system, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: $text-muted !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 12px;
+    white-space: nowrap !important;
+  }
+
+  // 5. STATIC TEXT
+  .transpiledText {
+    font-family: 'Fira Code', 'Consolas', monospace !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: $text-main !important;
+    background-color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid darken($header-bg, 4%);
+    white-space: nowrap !important;
+  }
+
+  // 6. DROPDOWN
+  .sourceDropdown {
+    width: auto !important;
+    min-width: 250px;
+
+    .gem-dropdown-container {
+      margin: 0;
+      padding: 0;
+    }
+
+    .gem-dropdown-input {
+      background-color: #ffffff;
+      border: 1px solid darken($header-bg, 8%);
+      border-radius: 4px;
+      height: 28px;
+      padding: 0 8px 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      color: $text-main;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+
+      &:hover {
+        border-color: #b3b3b3;
+      }
+
+      .gem-dropdown-icon {
+        visibility: visible !important;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: $text-muted;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  // 7. MONACO EDITOR FIXES
+  .sourceEditor,
+  .targetEditor {
+    flex: 1 1 auto !important; // Forces editor to fill remaining column space
+    height: auto !important; // Overrides the hardcoded 600px
+    min-height: 0; // Fixes flexbox scrolling issues
+
+    // Add a tiny bit of padding to the top of the code so it doesn't hug the header line
+    .monaco-editor {
+      padding-top: 8px;
+    }
+  }
+}

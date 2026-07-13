@@ -1,7 +1,31 @@
-// Make tree-view scrollable
-.moduleTreeView {
-  overflow-y: auto;
-  overflow-x: visible !important;
-  padding-right: 0.5rem;
-  height: 100%;
+::ng-deep {
+  body, html {
+    height: 100vh !important;
+    overflow: hidden !important; // Kills whole-page scrolling
+    margin: 0;
+  }
+
+  app-root {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    min-height: 0 !important;
+  }
+
+  .app-main {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0% !important; // Consume space rigidly, ignoring content blowout
+    min-height: 0 !important; // Stops flex blowout
+    height: 100%;
+  }
+
+  coverage-details {
+    flex: 1 1 0% !important; // Consume space rigidly
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100%;
+  }
 }
