@@ -1,17 +1,11 @@
 package coverage.components;
 
-import coveragedashboard.CoverageColumnRange;
-import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.commands.GetFileContent;
-import mc.fenix.editor.monacoeditortypes.InlineDecoration;
-import mc.fenix.editor.monacoeditortypes.Range;
-import mc.fenix.editor.monacoeditortypes.RangeBuilder;
 import umlp.backendrte.command.CommandManager;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -34,6 +28,6 @@ public class SourceViewer extends SourceViewerTOP{
     this.setContent(CommandManager.executeCommand(new GetFileContent(file.getGemId())).asSimpleResult().get());
 
     this.setDecoration(SourceViewerUtil.calculateDecoration(file));
-    this.setLanguage("Java");
+    this.setLanguage("java");
   }
 }
