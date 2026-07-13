@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
 
@@ -17,9 +17,9 @@ classdiagram CoverageDashboard{
   }
 
   enum ReportType{
-    E2E_BACKEND,
-    E2E_FRONTEND,
-    INTERNAL;
+    GENERATOR_UNIT_TEST,
+    GENERATOR_COMPILATION_TEST,
+    GENERATED_CODE_TEST;
   }
 
   class CoverageModule{

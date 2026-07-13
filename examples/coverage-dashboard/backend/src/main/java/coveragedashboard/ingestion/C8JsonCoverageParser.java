@@ -106,7 +106,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
     return CoverageDashboardManager.coverageReportBuilder()
         .name(reportName)
-        .type(ReportType.E2E_FRONTEND)
+        .type(ReportType.GENERATED_CODE_TEST)
         .module(rootModule)
         .build().get();
   }
