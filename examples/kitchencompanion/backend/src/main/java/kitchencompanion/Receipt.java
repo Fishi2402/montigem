@@ -1,0 +1,15 @@
+package kitchencompanion;
+
+import umlp.jsweet.extension.annotation.BackendOnly;
+import umlp.jsweet.extension.annotation.BackendOnlyModes;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
+public class Receipt extends ReceiptTOP {
+  public double getAmountToPay() {
+    return Math.max(0, getSum() + getDebt() - getPastBalance());
+  }
+}

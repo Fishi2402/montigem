@@ -1,0 +1,72 @@
+package gui.management;
+import KitchenCompanion.Receipt;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
+
+import mc.fenix.table.GemTable;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableHeaderCell;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.table.GemTableRowCell;
+
+import gui.navigation.NavContainer;
+
+import KitchenCompanion.Offer;
+import KitchenCompanion.User;
+import mc.fenix.input.GemCheckBoxInput;
+import KitchenCompanion.User;
+import gui.base.Header;
+
+page ReceiptPage(Receipt receipt,User user){
+  @GemColumn(hAlign = "center", rowGap = "1rem", components = [
+  @Header(headline = getName(user)),
+      @GemTable(
+        layout = "fixed",
+        headers = [
+          @GemTableHeader(cells = [
+            @GemTableHeaderCell(content = @GemText(value = "Offer")),
+            @GemTableHeaderCell(content = @GemText(value = "Price")),
+            @GemTableHeaderCell(content = @GemText(value = "Amount"))
+          ])],
+          body = [
+            @iterate(Offer o: getOfferList(receipt)){
+                @GemTableRow(cells = [
+                  @GemTableRowCell(content = @GemText(value = o.name)),
+                  @GemTableRowCell(content = @GemText(value = o.price + " €")),
+                  @GemTableRowCell(content = @GemText(value = getAmount(o, receipt)))
+                ]);
+            },
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "debt")),
+              @GemTableRowCell(content = @GemText(value = receipt.debt + " €")),
+              @GemTableRowCell(content = @GemText(value = ""))
+            ]),
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "Guthaben")),
+              @GemTableRowCell(content = @GemText(value = receipt.pastBalance + " €")),
+              @GemTableRowCell(content = @GemText(value = ""))
+            ]),
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "Gekauft")),
+              @GemTableRowCell(content = @GemText(value = priceOrdered(receipt))),
+              @GemTableRowCell(content = @GemText(value = sumOfTallies(receipt)))
+            ]),
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "Summe")),
+              @GemTableRowCell(content = @GemText(value = priceSum(receipt))),
+              @GemTableRowCell(content = @GemText(value = sumOfTallies(receipt)))
+            ]),
+            @GemTableRow(cells = [
+                @GemTableRowCell(content = @GemText(value = "Bezahlt")),
+                @GemTableRowCell(content = @GemText(value = pricePaid(receipt))),
+                @GemTableRowCell(content = @GemText(value = isPaid()))
+            ])
+      ])
+  ]);
+}

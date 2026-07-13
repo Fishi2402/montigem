@@ -1,0 +1,16 @@
+package gui.base;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+
+component PageLayout(List<GUIViewElement> topContent, List<GUIViewElement> scrollableContent, GUIViewElement footer){
+wholeColumn@GemColumn(hAlign = "center", rowGap="1rem",
+    components = [
+    topColumn@GemColumn(components =
+      topContent
+    ),
+    columnOverflow@GemColumn(rowGap = "1rem", components =
+      scrollableContent
+    )
+  ]);
+  footer;
+}

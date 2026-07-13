@@ -1,0 +1,36 @@
+@import "variables";
+
+:host ::ng-deep {
+  .gem-button, .clear, .alphabetButton {
+    align-items: center;
+    border-radius: .25rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: system-ui, -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.1;
+    min-height: 2.2rem;
+    min-width: 3rem;
+    justify-content: center;
+    margin: 0;
+    text-decoration: none;
+    transition: all 250ms;
+    user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+  }
+  .alphabetButton, .clear {
+    background-color: $rwth-blue;
+    color: white;
+    transform: translateY(0);
+  }
+  .clear > button:disabled,
+  .alphabetButton > button:disabled {
+    background-color: lightblue;
+    color: white;
+    transform: translateY(0);
+  }
+}

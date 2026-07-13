@@ -1,0 +1,30 @@
+package gui.admin;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import gui.admin.UserForm;
+import gui.kitchen.LeadUserPanel;
+import gui.kitchen.OrdinaryUserPanel;
+import gui.kitchen.ExtraUserPanel;
+import gui.navigation.NavContainer;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.basic.GemImage;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.navigation.GemNavItem;
+import KitchenCompanion.Search;
+import KitchenCompanion.User;
+import KitchenCompanion.Offer;
+import gui.management.OfferCard;
+
+component UserOfferAdmin(User user, List<Offer> offers){
+  row@GemRow(hAlign = "center",vAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+    @iterate(Offer offer : offers){
+      @guard(offer.inStock){
+        @OfferCard(offer = offer, user = user, count = getTallyCount(offer), adminRights = true);
+      }
+    }
+  ]);
+}

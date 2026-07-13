@@ -1,0 +1,14 @@
+package gui.base;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.navigation.GemNavItem;
+
+component Footer(String title, String target){
+  @GemRow(components = [
+    fixedNav@GemNavItem(
+      title = title,
+      target = target
+    )
+  ]);
+}
+

@@ -1,0 +1,22 @@
+package gui.admin.create;
+import KitchenCompanion.User;
+import gui.admin.UserForm;
+import mc.fenix.basic.GemButton;
+import gui.admin.Admin;
+
+page CreateUser(User user){
+  @UserForm(
+    u = user,
+    formName = "Create User",
+    confirm =
+      @GemButton(
+        label = "confirm",
+        leftClick = createAndNavigate(user)
+      ),
+    back =
+      @GemButton(
+        label = "back",
+        leftClick = navigate(@Admin())
+      )
+ );
+}

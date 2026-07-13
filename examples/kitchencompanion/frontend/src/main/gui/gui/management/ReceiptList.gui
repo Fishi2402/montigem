@@ -1,0 +1,28 @@
+package gui.management;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemCheckBoxInput;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
+import KitchenCompanion.User;
+import KitchenCompanion.Receipt;
+
+component ReceiptList(User user, boolean readMore){
+  @GemColumn(vAlign = "bottom",hAlign = "center", components = [
+    @GemCheckBoxInput(checked = readMore, labelText = "Read More"),
+      @guard(readMore){
+        @GemRow(wrap = "wrap", components = [
+          @iterate(Receipt r : user.receipts){
+            @GemButton(
+              label = getDate(r),
+              leftClick = navigate(@ReceiptPage(receipt = r, user = user))
+            );
+          }
+        ]);
+      }
+  ]);
+}

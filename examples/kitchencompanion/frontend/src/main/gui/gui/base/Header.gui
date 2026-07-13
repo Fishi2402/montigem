@@ -1,0 +1,67 @@
+package gui.base;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.basic.GemLoadingSpinner;
+
+component Header(String headline, float progress, boolean backBtnNeeded = true, boolean timerNeeded = true){
+ @GemColumn(components =[
+    row@GemRow(hAlign = "center", components = [
+      grid@GemGrid(
+        height = "10%",
+        hAlign = "center",
+        vAlign = "center",
+        x = ["auto", "1fr", "auto"],
+        y = ["auto"],
+        rowGap = "10px",
+        colGap = "20px",
+        rows = [
+          [
+            @GemColumn(vAlign = "center", hAlign = "stretch", components = [
+              @GemRow(hAlign = "space-between",components = [
+                img@GemImage(
+                  source = "assets/images/se-kaffeekasse-logo.png",
+                  alt = "SE KitchenCompanion logo",
+                  height = "70px",
+                  width = "70px"
+                ),
+                @guard(backBtnNeeded){
+                  backBtn@GemButton(
+                    content = [
+                      @GemIcon(
+                        name = "arrow_circle_left"
+                      )
+                    ],
+                    leftClick = navigateBack()
+                  );
+                }
+              ]
+              )
+            ]),
+            @GemColumn(vAlign = "center", components = [
+              mainText@GemText(
+               value = headline,
+               width = "auto",
+               size = "3rem",
+               weight = "bold"
+             )
+            ]),
+           @guard(timerNeeded){
+             @GemLoadingSpinner(
+                 color = "green",
+                 intermediate = false,
+                 progress = progress
+             );
+           }
+          ]
+        ]
+      )
+    ])
+  ]);
+}

@@ -28,10 +28,10 @@ dependencies {
   // Spring Boot Dependencies
   compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
-
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
 
   compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
@@ -40,6 +40,11 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
 
   implementation project(':umlp-rte')
+
+  // Mail
+  implementation group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.6_mail', version: '1.0.1'
+  implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+
 }
 
 def genTestData = tasks.register('genTestData', OD2DataTask) {

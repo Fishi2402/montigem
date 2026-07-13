@@ -1,0 +1,129 @@
+:host ::ng-deep {
+  .gem-button {
+    color: black;
+    height: 100%;
+    background-color: transparent;
+  }
+
+  .mainText {
+    color: black;
+    height: auto !important;
+    padding-bottom: 0px !important;
+    text-shadow:
+        1px 1px 0 white,
+        -1px 1px 0 white,
+        1px -1px 0 white,
+        -1px -1px 0 white;
+  }
+
+  .grid {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  gem-grid.grid,
+  .grid,
+  [class*="grid"] {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: 10% !important;
+
+    grid-template-columns: max-content max-content max-content !important;
+    column-gap: 20px !important;
+    width: max-content !important;
+    margin: 0 auto !important;
+
+    padding-top: 16px !important;
+    padding-bottom: 0px !important;
+
+    align-items: center !important;
+    align-content: center !important;
+  }
+
+  .grid > * {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: auto !important;
+  }
+
+  .grid > *:nth-child(2) {
+    display: flex !important;
+    align-items: center !important;
+    h1, div, span, .gem-text, p, [class*="mainText"] {
+      margin: 0 !important;
+      padding: 0 !important;
+      line-height: 0.85 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+  }
+
+  button:has(mat-icon),
+  .gem-button {
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    background-color: transparent !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s ease !important;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.08) !important;
+      cursor: pointer !important;
+    }
+
+    &:active {
+      background-color: rgba(0, 0, 0, 0.15) !important;
+    }
+
+    font-size: 40px !important;
+    line-height: 70px !important;
+    text-align: center !important;
+
+    mat-icon, i, svg, span, p {
+      width: 100% !important;
+      height: 100% !important;
+      font-size: 70px !important;
+      line-height: 70px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transform: none !important;
+    }
+  }
+
+
+  mat-progress-spinner,
+  .gem-spinner,
+  mat-loading-spinner {
+    width: 70px !important;
+    height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+
+    circle {
+      stroke-width: 12% !important;
+    }
+  }
+
+  div:has(> mat-progress-spinner) {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .img{
+    justify-self: left;
+    display: inline-flex;
+  }
+}
+

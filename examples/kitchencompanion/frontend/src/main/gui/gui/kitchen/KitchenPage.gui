@@ -2,24 +2,35 @@
 package gui.kitchen;
 
 import mc.fenix.basic.GemButton;
-import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
-
+import mc.fenix.input.GemTextInput;
 import gui.kitchen.LeadUserPanel;
 import gui.kitchen.OrdinaryUserPanel;
 import gui.kitchen.ExtraUserPanel;
 import gui.navigation.NavContainer;
-
+import mc.fenix.navigation.GemNavItem;
 import KitchenCompanion.User;
+import KitchenCompanion.Search;
+import gui.management.AlphabetSearch;
+import gui.base.Footer;
+import gui.base.PageLayout;
+import gui.base.Header;
 
-page KitchenPage(List<User> users) {
-  @GemColumn(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
-    components = [
-      @LeadUserPanel(allUsers = users),
-      @OrdinaryUserPanel(allUsers = users),
-      @ExtraUserPanel(allUsers = users)
-    ]
+page KitchenPage(List<User> users, Search searchState) {
+  @PageLayout(topContent = [
+      header@Header(headline = "Kitchen Companion", timerNeeded = false, backBtnNeeded = false),
+      @AlphabetSearch(searchState = searchState, userOrOffer = true),
+      @LeadUserPanel(allUsers = users, searchState = searchState, adminPage = false)
+    ],
+    scrollableContent = [
+      @OrdinaryUserPanel(allUsers = users, searchState = searchState, adminPage = false),
+      @ExtraUserPanel(allUsers = users, searchState = searchState, adminPage = false)
+    ],
+    footer = @Footer(
+      title = "ADMIN PAGE",
+      target = "/gui/admin/Admin"
+    )
   );
 }

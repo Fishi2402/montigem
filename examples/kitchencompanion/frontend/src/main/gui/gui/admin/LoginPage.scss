@@ -1,0 +1,95 @@
+:host ::ng-deep {
+
+
+  gem-column.gem-card,
+  .gem-card {
+    background: #ffffff !important;
+    border: 1px solid #00549F !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(0, 84, 159, 0.08) !important;
+    padding: 24px !important;
+    box-sizing: border-box !important;
+
+    width: 400px !important;
+    max-width: 400px !important;
+    height: auto !important;
+    margin: 50px auto 0 auto !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .gem-card-header {
+    color: #00549F !important;
+    font-weight: 700 !important;
+    font-size: 1.6rem !important;
+    margin-bottom: 12px !important;
+    text-align: left !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  hr.gem-card-line,
+  .gem-card-line {
+    display: none !important;
+  }
+
+  .gem-card-body {
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    align-items: flex-start !important;
+  }
+
+
+  .gem-card-body .password,
+  .gem-card-body .gem-text-input,
+  .gem-card-body div:has(> input[type="password"]) {
+    width: 100% !important;
+    max-width: 320px !important;
+
+    label, span {
+      font-size: 0.95rem !important;
+      font-weight: 600 !important;
+      color: #333333 !important;
+      margin-bottom: 6px !important;
+      display: block !important;
+    }
+
+    input {
+      width: 100% !important;
+      height: 42px !important;
+      padding: 0 12px !important;
+      font-size: 1rem !important;
+      border: 1px solid #CCCCCC !important;
+      border-radius: 6px !important;
+      background-color: #ffffff !important;
+      box-sizing: border-box !important;
+
+      &:focus {
+        outline: none !important;
+        border-color: #00549F !important;
+        box-shadow: 0 0 0 3px rgba(0, 84, 159, 0.1) !important;
+      }
+    }
+  }
+
+  .gem-card-body .gem-button,
+  .gem-card-body button {
+    width: 100% !important;
+    max-width: 120px !important;
+    height: 40px !important;
+    background-color: #00549F !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(0, 84, 159, 0.1) !important;
+    margin-top: 4px !important;
+  }
+}

@@ -1,0 +1,16 @@
+:host ::ng-deep .button:hover{
+  background-color: white;
+  color: green;
+}
+:host ::ng-deep .gem-card{
+  color: black;
+}
+
+:host ::ng-deep .gem-button{
+  background-color: white;
+  color: black;
+}
+:host ::ng-deep .gem-button:hover{
+  color: red;
+  background-color: black ;
+}

@@ -1,0 +1,28 @@
+package gui.admin;
+import KitchenCompanion.User;
+import KitchenCompanion.Receipt;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemCheckBoxInput;
+import gui.management.AlphabetSearch;
+
+page PaymentStatus(List<User> users){
+  @GemColumn( hAlign = "center", vAlign = "center", rowGap="1rem", components = [
+     @guard(hasAny1Receipt()){
+      @GemRow( components = [
+        @iterate(User u: users){
+          @guard(hasReceipt(u)){
+            @UserPaymentStatus(user = u, receipt = getReceipt(u));
+          }
+        }
+      ]);
+     }
+     else{
+        @GemRow(hAlign = "center", components = [@GemText(value = "Keine Rechnungen gefunden")]);
+     }
+  ]);
+}

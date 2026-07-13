@@ -1,0 +1,22 @@
+package gui.management;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemButton;
+import KitchenCompanion.Search;
+
+component AlphabetSearch(Search searchState, boolean userOrOffer){
+  @GemRow(hAlign = "center", wrap="wrap", components = [
+    clear@GemButton(
+      label = "Clear",
+      leftClick = clearLetterSelection(),
+      disabled = isDisabled()
+    ),
+    @iterate(String str: getAlphabet()){
+      alphabetButton@GemButton(
+        label = str,
+        leftClick = setLetterSelection(str),
+        disabled = getDisabled(str)
+      );
+    }
+  ]);
+}

@@ -11,10 +11,13 @@ configurations {
 }
 
 tasks.named("gui2java2ts", GUI2Java2TSTask) {
-  guiCreateModels = ["gui.login.UserCreate", "gui.project.ProjectCreate", "gui.project.ProjectsCreateByGroup"]
-
-  /*
-  debug = true
-  outputs.upToDateWhen { false }
-  /**/
+  guiCreateModels = [
+      "gui.login.UserCreate",
+      "gui.project.ProjectCreate",
+      "gui.project.ProjectsCreateByGroup",
+      "gui.admin.create.CreateUser",
+      "gui.kitchen.KitchenPage",
+      "gui.admin.UserPage",
+      "gui.admin.PaymentStatus"
+  ]
 }

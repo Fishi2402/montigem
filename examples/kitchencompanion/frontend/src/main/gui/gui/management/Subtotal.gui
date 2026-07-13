@@ -1,0 +1,65 @@
+package gui.management;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
+
+import mc.fenix.table.GemTable;
+import mc.fenix.table.GemTableHeader;
+import mc.fenix.table.GemTableHeaderCell;
+import mc.fenix.table.GemTableRow;
+import mc.fenix.table.GemTableRowCell;
+
+import gui.navigation.NavContainer;
+
+import KitchenCompanion.Offer;
+import KitchenCompanion.User;
+import KitchenCompanion.Tally;
+import gui.management.ReceiptList;
+import gui.base.*;
+
+page Subtotal(User user){
+  column@GemColumn(hAlign = "center", rowGap = "1rem", components = [
+  @Header(headline = getName(user)),
+      table@GemTable(
+        layout = "fixed",
+        headers = [
+          @GemTableHeader(cells = [
+            @GemTableHeaderCell(content = @GemText(value = "Offer")),
+            @GemTableHeaderCell(content = @GemText(value = "Price")),
+            @GemTableHeaderCell(content = @GemText(value = "Amount"))
+          ])],
+          body = [
+            @iterate(Offer o: getOfferList(user)){
+                @GemTableRow(cells = [
+                  @GemTableRowCell(content = @GemText(value = o.name)),
+                  @GemTableRowCell(content = @GemText(value = o.price+ " €")),
+                  @GemTableRowCell(content = @GemText(value = getAmount(o,user)))
+                ]);
+            },
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "Guthaben")),
+              @GemTableRowCell(content = @GemText(value = getUserBalance(user))),
+              @GemTableRowCell(content = @GemText(value = ""))
+            ]),
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "bestellte Summe")),
+              @GemTableRowCell(content = @GemText(value = priceOrdered(user))),
+              @GemTableRowCell(content = @GemText(value = sumOfTallies(user)))
+            ]),
+            @GemTableRow(cells = [
+              @GemTableRowCell(content = @GemText(value = "Summe")),
+              @GemTableRowCell(content = @GemText(value = priceSum(user))),
+              @GemTableRowCell(content = @GemText(value = sumOfTallies(user)))
+            ])
+      ])
+  ]);
+  @GemRow(vAlign = "bottom", components = [
+    @ReceiptList(user = user)
+  ]);
+}

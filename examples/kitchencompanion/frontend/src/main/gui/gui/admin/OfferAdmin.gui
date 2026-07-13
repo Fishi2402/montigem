@@ -1,0 +1,51 @@
+package gui.admin;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.management.OfferOverview;
+import gui.navigation.NavContainer;
+import gui.base.Footer;
+
+page OfferAdmin(List<Offer> offers){
+
+  @GemColumn(hAlign = "center", rowGap = "1rem", components = [
+      @GemText(
+        value = "Offer Page",
+        width = "auto",
+        size = "3rem",
+        weight = "bold"
+      ),
+      @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+        @iterate(Offer offer : offers) {
+          @GemColumn(width = "auto", hAlign = "center", rowGap = "0.5rem", components = [
+            button@GemButton(
+              content = [
+                @GemCard(
+                 title = offer.name + ": " + offer.price + "€",
+                 component =
+                  @GemColumn(hAlign = "center",
+                    components = [
+                      @GemImage(
+                        width = "500px",
+                        source = offer.imgSource
+                        )
+                    ])
+                  )
+              ],
+              leftClick = navigateToOffer(offer)
+            )
+          ]);
+        }
+      ])
+    ]);
+  @Footer(
+      title = "Home Page",
+      target = "/gui/kitchen/KitchenPage"
+  );
+}

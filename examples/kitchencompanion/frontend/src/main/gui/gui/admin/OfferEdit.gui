@@ -1,0 +1,54 @@
+package gui.admin;
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import gui.admin.UserForm;
+import gui.kitchen.LeadUserPanel;
+import gui.kitchen.OrdinaryUserPanel;
+import gui.kitchen.ExtraUserPanel;
+import gui.navigation.NavContainer;
+import mc.fenix.navigation.GemNavItem;
+import KitchenCompanion.User;
+import mc.fenix.navigation.GemNavItem;
+import KitchenCompanion.Offer;
+import mc.fenix.basic.GemImage;
+import mc.fenix.input.GemCheckBoxInput;
+import gui.base.Footer;
+
+page OfferEdit(Offer offer){
+  @GemCard(title = "Offer Edit", component =
+    @GemRow( components = [
+      @GemColumn(width = "40ch", rowGap = "5px",components = [
+        @GemTextInput(
+          labelText = "Offer Name",
+          entry = offer.name
+        ),
+        @GemTextInput(
+          inputType = "number",
+          labelText = "Offer Price",
+          entry = offer.price
+        ),
+        @GemCheckBoxInput(
+        labelText = offer.name + " is in Stock",
+        labelPosition = "left",
+        checked = offer.inStock
+        ),
+        @GemButton(
+          label = "Back",
+          leftClick = navigateBack()
+        )
+      ]),
+      @GemImage(
+          width = "500px",
+          source = offer.imgSource
+      )
+    ])
+  );
+  @Footer(
+      title = "Home Page",
+      target = "/gui/kitchen/KitchenPage"
+  );
+}

@@ -1,0 +1,23 @@
+package gui.admin;
+import mc.fenix.basic.GemButton;
+import gui.admin.UserForm;
+import gui.admin.UserOfferAdmin;
+import KitchenCompanion.User;
+
+page UserEdit(User user){
+  @UserForm(
+      u = user,
+      formName = "Edit User",
+      confirm =
+        @GemButton(
+         label = "confirm",
+         leftClick = confirm(user)
+         ),
+      back =
+        @GemButton(
+         label = "delete",
+         leftClick = deleteAndNavigate(user)
+         )
+   );
+  @UserOfferAdmin(user = user);
+}

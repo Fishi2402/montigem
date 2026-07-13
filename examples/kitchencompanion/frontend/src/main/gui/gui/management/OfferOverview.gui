@@ -1,39 +1,41 @@
 /* (c) https://github.com/MontiCore/monticore */
 package gui.management;
 
-import mc.fenix.arrange.GemCard;
-import mc.fenix.arrange.GemColumn;
-import mc.fenix.arrange.GemRow;
-import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemIcon;
-import mc.fenix.input.GemTextInput;
-import mc.fenix.input.GemTextareaInput;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
 
+import gui.management.OfferOverview;
+import gui.navigation.NavContainer;
+import gui.components.Divider;
+import KitchenCompanion.Offer;
 import KitchenCompanion.User;
+import gui.base.Header;
+import gui.base.Footer;
+import gui.base.PageLayout;
 
-component OfferOverview(List<Offer> offers, User user){
-  @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
-    @iterate(Offer offer : offers) {
-      @GemColumn(width = "auto", components = [
-        @GemButton(content = [
-          @GemCard(
-            title = offer.name,
-            component = @GemColumn(components = [
-              @GemText(value = offer.price)
-            ])
-          )
-        ]),
-        @GemRow(width = "auto", components = [
-          @GemButton(
-            content = [@GemIcon(name = "add_circle_outline")]
-          ),
-          @GemText(width = "auto", value = "Foo"),
-          @GemButton(
-            content = [@GemIcon(name = "remove_circle_outline")]
-          )
-        ])
-      ]);
-    }
-  ]);
+page OfferOverview(User user, List<Offer> offers) {
+  @PageLayout(
+    topContent = [
+      @Header(headline = getName(user)),
+      @AlphabetSearch(searchState = getSearchState(), userOrOffer = false)
+    ],
+    scrollableContent = [
+      row@GemRow(hAlign = "center",vAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
+        @iterate(Offer offer : getOfferList(user)){
+          @guard(search(offer)){
+            @OfferCard(offer = offer, user = user, count = getTallyCount(offer));
+          }
+        }
+      ])],
+      footer = @Footer(
+             title = "Subtotal",
+             target = getTargetAddress(user)
+      )
+  );
 }

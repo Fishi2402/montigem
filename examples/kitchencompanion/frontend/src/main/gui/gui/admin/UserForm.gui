@@ -1,0 +1,57 @@
+package gui.admin;
+import KitchenCompanion.User;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemDropdownInputTypes.Option;
+import mc.fenix.arrange.GemRow;
+
+component UserForm(User u, String formName, GUIViewElement confirm, GUIViewElement back){
+  @GemCard(title = formName, component =
+    @GemColumn(width = "40ch", rowGap = "5px", components = [
+
+      name@GemTextInput(
+        labelText = "Name: ",
+        placeholder = "Max",
+        entry = u.name,
+        validity = null
+      ),
+      lastName@GemTextInput(
+        labelText = "Nachname: ",
+        placeholder = "Mustermann",
+        entry = u.lastName,
+        validity = null
+      ),
+      nickname@GemTextInput(
+        labelText = "Kürzel: ",
+        placeholder = "Mam",
+        entry = u.nickname,
+        validity = null
+      ),
+      email@GemTextInput(
+        labelText = "email: ",
+        placeholder = "mustermann@se-rwth.de",
+        entry = u.email,
+        validity = null,
+        keyRelease = entryToLower(u)
+      ),
+      @GemTextInput(
+        inputType = "number",
+        labelText = "Balance",
+        placeholder = "0",
+        entry = u.balance,
+        validity = null
+      ),
+      roleDropDown@GemDropdownInput(
+        labelText = "User Role",
+        entry = u.role,
+        options = null
+      ),
+      @GemRow(components = [
+        confirm,
+        back
+      ])
+    ])
+  );
+}

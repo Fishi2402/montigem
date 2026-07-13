@@ -9,17 +9,29 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.input.GemTextInput;
 import mc.fenix.input.GemTextareaInput;
 import KitchenCompanion.User;
+import KitchenCompanion.Search;
 
-component ExtraUserPanel(List<User> allUsers){
+
+component ExtraUserPanel(List<User> allUsers, Search searchState, boolean adminPage){
   @GemRow(hAlign = "center", colGap="1rem", rowGap="1rem", wrap="wrap", components = [
     @iterate(User user : allUsers){
-      @guard(user.nickname == "Chair"){
+      @guard(search(searchState, user)){
         @GemButton(
-          label = user.username,
-          leftClick = navigateTo(user)
+          label = getName(user),
+          leftClick = navigateToUser(user, adminPage)
         );
       }
-    },
-    hiwiBut@GemButton(label = "Hiwis")
+    }
   ]);
+  @GemRow(width = "70rem", hAlign = "center", rowGap="1rem", wrap="wrap",
+     components = [
+     @iterate(User user : allUsers){
+       @guard(searchHiwi(searchState, user)){
+          @GemButton(
+            label = getName(user),
+            leftClick = navigateToUser(user, adminPage)
+          );
+       }
+     }
+ ]);
 }

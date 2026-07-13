@@ -1,0 +1,57 @@
+package gui.management;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemImage;
+import mc.fenix.navigation.GemNavItem;
+
+import gui.management.OfferOverview;
+import gui.navigation.NavContainer;
+import gui.components.Divider;
+import KitchenCompanion.Offer;
+import KitchenCompanion.User;
+import gui.base.Header;
+import gui.base.Footer;
+import gui.base.PageLayout;
+
+
+component OfferCard(Offer offer, User user, String count, boolean adminRights = false){
+  tallyColumn@GemColumn(width = "auto", hAlign = "center", rowGap = "0.5rem", components = [
+    offerBtn@GemButton(
+      content = [
+        @GemCard(
+         title = offer.name + ": " + offer.price + "€",
+         component =
+          @GemColumn(hAlign = "center",
+            components = [
+              offerImage@GemImage(
+                height = "auto",
+                source = offer.imgSource
+                )
+            ])
+          )
+      ],
+      leftClick = addTally(offer)
+    ),
+    minusBtn@GemButton(
+      content = [
+        @GemRow(width = "auto", vAlign = "center", colGap = "0.5rem",
+          components = [
+           tallyCount@GemText(
+             width = "auto",
+             size = "1rem",
+             value = count
+           ),
+           minusIcon@GemIcon(
+             name = "remove_circle_outline"
+           )
+        ])
+      ],
+      leftClick = removeTally(offer)
+      )
+  ]);
+}
