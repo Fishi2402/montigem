@@ -22,7 +22,7 @@ component SourceMapViewer(
   @GemGrid(
     width = "100%",
     height = "100%",
-    x = ["1fr", "1fr"],
+    x = ["minmax(0, 1fr)", "minmax(0, 1fr)"],
     cols = [
       [sourceEditor@MonacoEditor(
         width = "100%",
