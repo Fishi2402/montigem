@@ -103,6 +103,8 @@
         "umlp.backendrte.command.ListResult.<*>isSuccessful(**)",
         "umlp.backendrte.command.ListResult.of(**)",
         "umlp.backendrte.command.ListResult.<*>of(**)",
+        "umlp.backendrte.command.ListResult.error(**)",
+        "umlp.backendrte.command.ListResult.<*>error(**)",
         "umlp.backendrte.command.StatusResult.wasSuccessful(**)",
         "umlp.backendrte.command.StatusResult.<*>wasSuccessful(**)",
         "umlp.backendrte.command.StatusResult.isSuccessful(**)",

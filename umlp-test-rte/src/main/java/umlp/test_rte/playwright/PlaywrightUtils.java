@@ -4,6 +4,7 @@ import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
+import de.se_rwth.commons.logging.Log;
 
 public interface PlaywrightUtils {
   default void waitForAngular(Page page) {
@@ -55,7 +56,7 @@ public interface PlaywrightUtils {
         //@formatter:on
         , null, options);
 
-    System.out.println("Waiting for websocket took " + (System.currentTimeMillis() - start) + "ms");
+    Log.info("Waiting for websocket took " + (System.currentTimeMillis() - start) + "ms", PlaywrightUtils.class.getName());
   }
 
   default boolean waitInit(Page page, String pageName) {

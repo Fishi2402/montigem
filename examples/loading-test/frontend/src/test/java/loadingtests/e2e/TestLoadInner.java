@@ -107,55 +107,43 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
 
 
           BiConsumer<Function<Page, Locator>, Consumer<LocatorAssertions>> assertThat = (locator, locatorAssertionsConsumer) -> {
+            waitRdy(page);
+            waitRdy(playerStats);
             locatorAssertionsConsumer.accept(assertThat(locator.apply(playerStats)));
+            waitRdy(playerStatsWithComponent);
             locatorAssertionsConsumer.accept(assertThat(locator.apply(playerStatsWithComponent)));
+            waitRdy(playerStatsGlobal);
             locatorAssertionsConsumer.accept(assertThat(locator.apply(playerStatsGlobal)));
           };
 
           // Starts with a reset
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reset")).click();
-          waitRdy(page);
-          waitRdy(playerStats);
-          waitRdy(playerStatsWithComponent);
-          waitRdy(playerStatsGlobal);
+
+          // Wait for 400ms to let the backend execute the Reset Command and notify all clients
+          waitForBackend();
+          waitForBackend();
 
           // Is the initial player visible?
           assertThat.accept(p->p.getByText("Player: Initial"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add stat local")).click();
-          waitRdy(page);
-          waitRdy(playerStats);
-          waitRdy(playerStatsWithComponent);
-          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("> local stat of Initial"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add stat remote")).click();
-          waitRdy(page);
-          waitRdy(playerStats);
-          waitRdy(playerStatsWithComponent);
-          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("> remote stat of Initial"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add player local")).click();
-          waitRdy(page);
-          waitRdy(playerStats);
-          waitRdy(playerStatsWithComponent);
-          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("Player: From Local"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add player remote")).click();
-          waitRdy(page);
-          waitRdy(playerStats);
-          waitRdy(playerStatsWithComponent);
-          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("Player: From Remote"), LocatorAssertions::isVisible);
 
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reset")).click();
-          waitRdy(page);
-          waitRdy(playerStats);
-          waitRdy(playerStatsWithComponent);
-          waitRdy(playerStatsGlobal);
+          // Wait for 400ms to let the backend execute the Reset Command and notify all clients
+          waitForBackend();
+          waitForBackend();
+
           assertThat.accept(p->p.getByText("Player: From Remote"), l -> l.hasCount(0));
           assertThat.accept(p->p.getByText("Player: From Local"), l -> l.hasCount(0));
           assertThat.accept(p->p.getByText("> local stat of Initial"), l -> l.hasCount(0));
