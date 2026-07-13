@@ -10,7 +10,7 @@ export abstract class CommandDeSer<T extends Command<any>> {
   }
 
   public buildJson(command: T, printer: JsonPrinter): void {
-    printer.member("id", command.getId());
+    printer.member("commandId", command.getId());
     printer.member("commandType", command.getCommandType());
     printer.member("participantId", command.getParticipantId());
   }
@@ -32,7 +32,7 @@ export abstract class CommandDeSer<T extends Command<any>> {
       (v => {
         if (v == null) throw new Error('value is null');
         return v;
-      })(res).setId(jsonObject["id"]);
+      })(res).setId(jsonObject["commandId"]);
       /* get */
       (v => {
         if (v == null) throw new Error('value is null');

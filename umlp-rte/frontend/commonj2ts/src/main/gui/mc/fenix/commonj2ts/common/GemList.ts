@@ -445,7 +445,6 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
    * @param {number} gemId
    */
   public async removeIdSure(gemId: number) {
-    console.info(this.ids);
     const indexToBeRemoved = this.ids.indexOf(gemId);
     await this._internal_removeAndSync(await new AsyncSet<number>().__AsyncSetConstructor([indexToBeRemoved]));
   }

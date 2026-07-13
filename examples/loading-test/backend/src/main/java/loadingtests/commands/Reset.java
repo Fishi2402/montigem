@@ -25,12 +25,15 @@ public class Reset extends ResetTOP {
     Game g = LoadingTestsManager.getGameSure(this.getGGemId());
     Objects.nonNull(g);
     for (Player p : g.getPlayerList()) {
-      var stats = p.getPlayerStatList().stream().map(PlayerStat::getGemId).collect(Collectors.toList());
-      stats.forEach(LoadingTestsManager::deletePlayerStat);
+      var stats = p.getPlayerStatList().stream().toList();
+      p.clearPlayerStats();
+      stats.forEach(playerStat -> {
+        LoadingTestsManager.deletePlayerStat(playerStat.getGemId());
+      });
     }
-    var stats = g.getPlayerList().stream().map(Player::getGemId).collect(Collectors.toList());
+    var players = g.getPlayerList().stream().map(Player::getGemId).collect(Collectors.toList());
     g.clearPlayers();
-    stats.forEach(LoadingTestsManager::deletePlayer);
+    players.forEach(LoadingTestsManager::deletePlayer);
 
     g.addPlayer(LoadingTestsManager.playerBuilder().name("Initial").points(0).build().get());
 

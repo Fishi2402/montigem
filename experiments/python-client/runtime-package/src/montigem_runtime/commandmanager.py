@@ -81,7 +81,7 @@ class CommandManager:
 
   async def send(self, msg: 'Command'):
     used_cmd_id = self.commandId
-    msg.id = used_cmd_id
+    msg.commandId = used_cmd_id
     msg.participantId = self.participantId
     self.commandId = self.commandId + 1
     f = asyncio.get_running_loop().create_future()
@@ -91,6 +91,6 @@ class CommandManager:
 
 class Command(BaseModel):
   model_config = ConfigDict(extra="allow")  # Pydantic v2
-  id: typing.Optional[int] = Field(default=None)
+  commandId: typing.Optional[int] = Field(default=None)
   participantId: typing.Optional[int] = Field(default=None)
   commandType: str

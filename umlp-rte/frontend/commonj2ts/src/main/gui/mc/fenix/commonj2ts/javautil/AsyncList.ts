@@ -237,7 +237,7 @@ export class AsyncList<E> implements IUMLPList<E> {
           return item;
         }
       }
-      throw new RangeError(`Index out of bounds: ${idx}`);
+      throw new RangeError(`RemoveIndex: Index out of bounds: ${idx}`);
     })();
   }
 
@@ -406,7 +406,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     for await (const item of this) {
       if (i++ === index) return item;
     }
-    throw new RangeError(`Index out of bounds: ${index}`);
+    throw new RangeError(`Get: Index out of bounds: ${index}`);
   }
 
   /** java.util.List#set(int, E) → E */
@@ -421,7 +421,7 @@ export class AsyncList<E> implements IUMLPList<E> {
         return previous;
       }
     }
-    throw new RangeError(`Index out of bounds: ${index}`);
+    throw new RangeError(`Set: Index out of bounds: ${index}`);
   }
 
   /** java.util.List#replaceAll(UnaryOperator<E>) → void */

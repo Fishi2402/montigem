@@ -23,7 +23,7 @@
     "@umlp/arrange": "^8.0.0",
     "@umlp/basic": "^8.0.0",
     "@umlp/charts": "^8.0.0",
-    "@umlp/commonj2ts": "^8.0.0",
+    "@umlp/commonj2ts": "^8.0.1",
     "@umlp/input": "^8.0.0",
     "@umlp/navigation": "^8.0.0",
     "@umlp/table": "^8.0.0",

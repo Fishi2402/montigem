@@ -123,7 +123,7 @@ public class CommandManager {
       if (!participantId.equals(command.getParticipantId())) {
         boolean match = shouldSendCommand(command, participant);
         if(match) {
-          System.out.println("Sending command " + command.getId() + " " + command.getCommandType() + " to " + participantId);
+          Log.info("Sending command " + command.getId() + " " + command.getCommandType() + " to client " + participantId, this.getClass().getName());
           // If the command send because of the type filter, the id needs to be subscribed
           participant.subscribe(command.getEffectedGemIds());
           participant.sendCommand(command);

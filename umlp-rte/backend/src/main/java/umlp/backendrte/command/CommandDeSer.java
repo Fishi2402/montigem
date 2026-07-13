@@ -10,7 +10,7 @@ import java.util.Optional;
 public abstract class CommandDeSer<T extends Command<?>> {
 
   public void buildJson(T command, JsonPrinter printer){
-    printer.member("id", command.getId());
+    printer.member("commandId", command.getId());
     printer.member("commandType", command.getCommandType());
     printer.member("participantId", command.getParticipantId());
   }
@@ -28,7 +28,7 @@ public abstract class CommandDeSer<T extends Command<?>> {
   public Optional<T> fromJson(JsonObject jsonObject){
     Optional<T> res = fromJsonObject(jsonObject);
     if(res.isPresent()){
-      res.get().setId(jsonObject.getLongMember("id"));
+      res.get().setId(jsonObject.getLongMember("commandId"));
       res.get().setParticipantId(jsonObject.getLongMember("participantId"));
     }
     return res;

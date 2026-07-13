@@ -32,7 +32,6 @@ public class TestUpdateAfterDelete extends AbstractLoadingTestsE2ETest {
     page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
   }
 
-  @EnabledIfEnvironmentVariable(named = "WITH_JSWEET", matches = "TRUE")
   @Test
   void testUpdateOnOnePage(Page page) {
     navAndWait(page, "/test_update_after_delete/PersonsDeleteButton"); //go to page we want to test
@@ -48,11 +47,11 @@ public class TestUpdateAfterDelete extends AbstractLoadingTestsE2ETest {
     // Assert that all person names are displayed on page
     assertThat(page.locator(GemText.selector())).hasCount(personGemIds.size());
 
-    // Build person
+    // Delete person
     page.locator(GemButton.selector()).first().click();
 
     // Let frontend communicate with backend and wait for response
-    page.waitForLoadState(LoadState.NETWORKIDLE);
+    waitRdy(page);
 
     // Assert that one more person is displayed
     assertThat(page.locator(GemText.selector())).hasCount(personGemIds.size()-1);

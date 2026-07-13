@@ -66,7 +66,6 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
     // PlayerList.gui: y = ["1fr", "auto"],
     assertEquals("1fr auto", page.locator(".playerContainer gem-grid.outergrid")
         .evaluate("node => node.style.gridTemplateRows"));
-
   }
 
   @Test
@@ -85,7 +84,6 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
     // PlayerList.gui: y = ["1fr", "auto"],
     assertEquals("1fr auto", page.locator(".playerContainer gem-grid.outergrid")
         .evaluate("node => node.style.gridTemplateRows"));
-
   }
 
 
@@ -93,15 +91,17 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
   public void testPlayerStats(Page page) {
     navAndWait(page, "/test_load_inner/PlayerStatsIndex");
 
-
     // Open all 3 pages at the same time
     try (var playerStats = page.context().newPage()) {
+      playerStats.onConsoleMessage(cm -> System.out.println("[BROWSER playerStats] " + cm.text()));
       navAndWait(playerStats, "/test_load_inner/PlayerStatsIndex");
       playerStats.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PlayerStats").setExact(true)).click();
       try (var playerStatsWithComponent = page.context().newPage()) {
+        playerStatsWithComponent.onConsoleMessage(cm -> System.out.println("[BROWSER playerStatsWithComponent] " + cm.text()));
         navAndWait(playerStatsWithComponent, "/test_load_inner/PlayerStatsIndex");
         playerStatsWithComponent.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PlayerStatsWithComponent").setExact(true)).click();
         try (var playerStatsGlobal = page.context().newPage()) {
+          playerStatsGlobal.onConsoleMessage(cm -> System.out.println("[BROWSER playerStatsGlobal] " + cm.text()));
           navAndWait(playerStatsGlobal, "/test_load_inner/PlayerStatsIndex");
           playerStatsGlobal.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PlayerStatsGlobal").setExact(true)).click();
 
@@ -114,23 +114,48 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
 
           // Starts with a reset
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reset")).click();
+          waitRdy(page);
+          waitRdy(playerStats);
+          waitRdy(playerStatsWithComponent);
+          waitRdy(playerStatsGlobal);
+
           // Is the initial player visible?
           assertThat.accept(p->p.getByText("Player: Initial"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add stat local")).click();
+          waitRdy(page);
+          waitRdy(playerStats);
+          waitRdy(playerStatsWithComponent);
+          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("> local stat of Initial"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add stat remote")).click();
+          waitRdy(page);
+          waitRdy(playerStats);
+          waitRdy(playerStatsWithComponent);
+          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("> remote stat of Initial"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add player local")).click();
+          waitRdy(page);
+          waitRdy(playerStats);
+          waitRdy(playerStatsWithComponent);
+          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("Player: From Local"), LocatorAssertions::isVisible);
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("add player remote")).click();
+          waitRdy(page);
+          waitRdy(playerStats);
+          waitRdy(playerStatsWithComponent);
+          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("Player: From Remote"), LocatorAssertions::isVisible);
 
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reset")).click();
+          waitRdy(page);
+          waitRdy(playerStats);
+          waitRdy(playerStatsWithComponent);
+          waitRdy(playerStatsGlobal);
           assertThat.accept(p->p.getByText("Player: From Remote"), l -> l.hasCount(0));
           assertThat.accept(p->p.getByText("Player: From Local"), l -> l.hasCount(0));
           assertThat.accept(p->p.getByText("> local stat of Initial"), l -> l.hasCount(0));
