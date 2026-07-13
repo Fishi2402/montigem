@@ -2,6 +2,7 @@ package coverage.components;
 
 import java.util.Optional;
 
+import mc.fenix.arrange.GemRow;
 import mc.fenix.arrange.GemTreeNode;
 
 import mc.fenix.basic.GemText;
@@ -12,12 +13,18 @@ import CoverageDashboard.CoverageSourceFile;
 import coverage.components.FileItem;
 
 component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageSourceFile> fileSelect) {
-  @GemTreeNode(
-    content = @GemText(value = name),
+  rootNode@GemTreeNode(
+    content = title@GemRow(
+      width = "100%",
+      components = [
+        titleName@GemText(value = name),
+        titleCoverage@GemText(value = getCoveragePercent(rootModule.metrics))
+      ]
+    ),
     children = [
       // At first, show possible sub-modules
       @iterate(CoverageModule subModule : rootModule.subModules){
-        @GemTreeNode(
+        subNode@GemTreeNode(
           children = [
             @ModuleTreeView(
               rootModule = subModule,
@@ -28,8 +35,14 @@ component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageS
       },
       // Then the files
       @iterate(CoverageSourceFile file : rootModule.sourceFiles){
-       @GemTreeNode(
-         content = @GemText(value = file.name),
+       fileNode@GemTreeNode(
+         content = content@GemRow(
+           width = "100%",
+           components = [
+             fileName@GemText(value = file.name),
+             fileCoverage@GemText(value = getCoveragePercent(file.metrics))
+           ]
+         ),
          onClick = onFileNodeClick(file)
        );
      }
