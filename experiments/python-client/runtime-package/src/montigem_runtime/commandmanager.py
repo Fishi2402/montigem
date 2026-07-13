@@ -46,7 +46,11 @@ class CommandManager:
         print("receive " + str(message), file=sys.stderr)
         msg = json.loads(message)
         # complete future
-        if "commandId" in msg:
+        if  ("statusResult" in msg
+               and "simpleResult" in msg
+               and "listResult" in msg
+               and "validationResult" in msg
+           ):
           # command is a reply
           f = self.wait_for_command_map[msg["commandId"]]
           del self.wait_for_command_map[msg["commandId"]]
