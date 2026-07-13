@@ -9,6 +9,7 @@ import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 
 import coverage.components.SourceMapViewer;
+import coverage.components.SourceViewer;
 import coverage.components.ModuleTreeView;
 
 
@@ -52,9 +53,16 @@ page CoverageDetails(App app, CoverageReport report, Optional<CoverageSourceFile
                 rootModule = report.module,
                 name = report.name,
                 fileSelect = onFileSelect())],
-              [@SourceMapViewer(
-                targetFile=selectedFile,
-                jumpSourceFileLine=0)]
+              [
+                // Check if double-editor view is required
+                @guard(isSourceMapViewRequired(report, selectedFile)){
+                  @SourceMapViewer(
+                    targetFile=selectedFile);
+                }else{
+                  @SourceViewer(
+                    file = selectedFile);
+                }
+              ]
             ]
           )
         ]

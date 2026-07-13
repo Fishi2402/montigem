@@ -1,0 +1,32 @@
+package coverage.components;
+
+import java.util.Optional;
+
+import mc.fenix.arrange.GemGrid;
+
+import mc.fenix.editor.MonacoEditor;
+import mc.fenix.editor.MonacoEditorTypes.InlineDecoration;
+
+import CoverageDashboard.CoverageSourceFile;
+
+component SourceViewer(
+    Optional<CoverageSourceFile> file,
+    ?String content,
+    List<InlineDecoration> decoration,
+    String language) {
+  @GemGrid(
+    width = "100%",
+    height = "100%",
+    x = ["minmax(0, 1fr)"],
+    cols = [
+      [viewer@MonacoEditor(
+        width = "100%",
+        height = "600px",
+        entry = content,
+        disabled = true,
+        language = language,
+        highlighting = decoration)
+      ]
+    ]
+  );
+}
