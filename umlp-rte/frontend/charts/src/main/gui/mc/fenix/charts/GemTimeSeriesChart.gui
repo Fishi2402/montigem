@@ -43,6 +43,11 @@ component GemTimeSeriesChart(
   */
   String viewPort = "",
   /**
+    Rendering style of the series: "area" (line with a soft fill) or "line".
+    With many overlapping series, "line" is usually more readable.
+  */
+  String chartType = "area",
+  /**
     Callback triggered when an event annotation is clicked.
   */
   Event<TimeSeriesEvent> eventClick

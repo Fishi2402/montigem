@@ -27,7 +27,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   private userMinX: number | null = null;
   private userMaxX: number | null = null;
   private lastUpdateTimestamp: number = 0;
-  private isFirstLoad: boolean = true;
+  private lastRenderedFingerprint: string = '';
 
   constructor(private hostElement: ElementRef) {
     super();
@@ -48,20 +48,37 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   public async init() {
     await super.init();
 
+    // the generated component re-runs init() on every route paramMap
+    // emission; without disposing the previous instance its SVG stays in the
+    // DOM as a frozen duplicate of the live chart
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+      this.lastRenderedFingerprint = '';
+    }
+
+    // "area" (default) or "line"; with many overlapping series "line" stays readable
+    const chartType = ((this as any).getChartType && (this as any).getChartType()) || 'area';
+
     this.options = {
       noData: { text: "Loading..." },
       dataLabels: { enabled: false },
+      // thin stroke + low-opacity fill so several overlapping series remain
+      // distinguishable (a full-opacity area fill turns them into one blob)
+      stroke: { curve: 'smooth', width: 2 },
+      fill: chartType === 'area'
+        ? { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0.03 } }
+        : { type: 'solid', opacity: 1 },
       chart: {
         id: this.chartId,
-        type: 'area',
+        type: chartType,
         height: '100%',
         width: '100%',
+        // no animations: live series update faster than an animation can
+        // finish, and ApexCharts leaves ghost paths (a frozen copy of the
+        // line) behind when an update interrupts a running animation
         animations: {
-            enabled: true,
-            easing: 'linear',
-            dynamicAnimation: {
-                speed: 800
-            }
+            enabled: false
         },
         events: {
           click: (event, chartContext, config) => {
@@ -107,7 +124,10 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
         }
       },
       series: [],
-      xaxis: { type: 'datetime' },
+      // timestamps come from zone-less LocalDateTime values parsed as local
+      // time; rendering them in UTC (ApexCharts default) shifts all labels
+      // and tooltips by the timezone offset
+      xaxis: { type: 'datetime', labels: { datetimeUTC: false } },
       yaxis: {
         labels: {
           formatter: (val) => (val !== null && val !== undefined) ? val.toFixed(2) : val
@@ -163,6 +183,10 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     const seriesList = this.toListArray<TimeSeries>(data.getSeriesList());
 
     for (const series of seriesList) {
+      // series marked hidden (e.g. deselected channels) must not be plotted
+      if (typeof (series as any).isHidden === 'function' && (series as any).isHidden()) {
+        continue;
+      }
       let seriesData = [];
       const dpList = this.toListArray<any>(series.getDatapointsList());
 
@@ -203,6 +227,20 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
         });
       }
     }
+
+    // data is bound via a compute method, so Angular re-sets it on every
+    // change-detection cycle — many times per backend tick. Only touch the
+    // chart when the content actually changed.
+    const fingerprint = newSeries.map(s => {
+      const n = s.data.length;
+      const first = n > 0 ? s.data[0][0] : '';
+      const last = n > 0 ? s.data[n - 1][0] + ':' + s.data[n - 1][1] : '';
+      return s.name + '#' + n + '#' + first + '#' + last;
+    }).join('|') + '@' + annotationsX.length;
+    if (fingerprint === this.lastRenderedFingerprint) {
+      return;
+    }
+    this.lastRenderedFingerprint = fingerprint;
 
     this.options.series = newSeries;
     this.options.annotations = { xaxis: annotationsX };
@@ -270,11 +308,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       updateParams.xaxis = { min: minX, max: maxX };
     }
 
-    // Using updateOptions with redrawPaths=false for smoother appending animations
-    // in live scenarios
-    const shouldAnimate = !this.isFirstLoad;
-    this.chart.updateOptions(updateParams, false, shouldAnimate, false);
-    this.isFirstLoad = false;
+    this.chart.updateOptions(updateParams, false, false, false);
 
     // Hard override if we have user zoom or viewPort
     if (minX !== null && maxX !== null) {
