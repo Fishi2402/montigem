@@ -183,6 +183,19 @@ public class DomainGemListAdapterTest extends DomainGemListAdapterTestTOP {
     };
   }
 
+  public Consumer<Void> testSort() {
+    return (Void) -> {
+      List<C2> items = getDomainObjects();
+      C1 c1 = newC1();
+      for (C2 item : items) {
+        c1.addC2mult(item);
+      }
+      c1.getC2multList().sort((a, b) -> b.getString().compareTo(a.getString()));
+      List<C2> list = c1.getC2multList();
+      setResultFieldEntry("sort(desc): " + names(list));
+    };
+  }
+
   public Consumer<Void> testIsEmptyAndClear() {
     return (Void) -> {
       List<C2> items = getDomainObjects();

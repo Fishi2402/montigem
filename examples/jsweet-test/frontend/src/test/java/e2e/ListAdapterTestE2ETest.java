@@ -58,4 +58,9 @@ public class ListAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     checkActionExact(page, "addAtIndex", "add(1,inserted): alpha, inserted, beta, gamma, delta");
     checkActionExact(page, "isEmptyClear", "isEmptyClear: before=true, afterAdd=false, afterClear=true");
   }
+
+  @Test
+  void testListSort(Page page) {
+    checkActionExact(page, "sort", "sort(desc): gamma, delta, beta, alpha");
+  }
 }

@@ -134,6 +134,14 @@ public class ListAdapterTest extends ListAdapterTestTOP {
     };
   }
 
+  public Consumer<Void> testSort() {
+    return (Void) -> {
+      List<String> list = getInputStrings();
+      list.sort((a, b) -> b.compareTo(a));
+      setResultFieldEntry("sort(desc): " + String.join(", ", list));
+    };
+  }
+
   public Consumer<Void> testIsEmptyAndClear() {
     return (Void) -> {
       List<String> list = new ArrayList<>();

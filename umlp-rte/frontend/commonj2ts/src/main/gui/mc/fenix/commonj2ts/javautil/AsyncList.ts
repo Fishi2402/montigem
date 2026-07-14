@@ -440,7 +440,8 @@ export class AsyncList<E> implements IUMLPList<E> {
   }
 
   /** java.util.List#sort(Comparator<E>) → void */
-  async sort(comparator?: (a: E, b: E) => number): Promise<void> {
+  async sort(comparator?: any): Promise<void> {
+    // TODO inplace is a problem for delegate semantics
     if (this._delegate) {
       return this._delegate.sort(comparator);
     }

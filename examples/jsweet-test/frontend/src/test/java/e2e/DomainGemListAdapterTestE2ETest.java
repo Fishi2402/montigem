@@ -102,4 +102,9 @@ public class DomainGemListAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     checkActionExact(page, "addAtIndex", "add(1,beta): " + names("alpha", "beta", "gamma"));
     checkActionExact(page, "isEmptyClear", "isEmptyClear: before=true, afterAdd=false, afterClear=true");
   }
+
+  @Test
+  void testGemListSort(Page page) {
+    checkActionExact(page, "sort", "sort(desc): " + names("gamma", "delta", "beta", "alpha"));
+  }
 }

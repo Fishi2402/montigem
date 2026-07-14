@@ -26,7 +26,7 @@ export interface IUMLPList<E> extends Collection<E> {
 
   set(index: number, element: E): Promise<E>;
 
-  sort(param: any): void;
+  sort(param?: any): Promise<void>;
 
   subList(fromIndex: number, toIndex: number): Promise<IUMLPList<E>>;
 

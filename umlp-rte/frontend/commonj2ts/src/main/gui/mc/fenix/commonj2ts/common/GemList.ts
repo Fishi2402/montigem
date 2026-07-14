@@ -555,7 +555,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return Promise.resolve(await new AsyncList<T>().__AsyncListConstructor((await this.toArray()).map(consumer)));
   }
 
-  public async sort(param?: any): Promise<void> {
+  public async sort(comp?: any): Promise<void> {
+    const listAsArray = await this.toArraySync()
+    listAsArray.sort(comp)
+    // Inspired by java.util.Collection#sort
+    for (const [index, element] of listAsArray.entries()) {
+      await this.set(index, element)
+    }
   }
 
   join(delimiter: string): string {

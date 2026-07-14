@@ -46,7 +46,6 @@ export interface Collection<E> extends AsyncIterable<E> {
 
   toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>>;
 
-  // sort(c: java.util.Comparator<any>): any;
   [Symbol.asyncIterator](): AsyncIterator<E>;
 
   listIterator(from?: any): AsyncIterator<E>;

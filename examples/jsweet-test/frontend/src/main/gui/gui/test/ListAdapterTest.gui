@@ -17,6 +17,7 @@ page ListAdapterTest() {
   removeIdx@GemButton(label = "Test remove(int)", leftClick = testRemoveByIndex());
   removeObj@GemButton(label = "Test remove(Object)", leftClick = testRemoveByObject());
   addAtIndex@GemButton(label = "Test add(int, elem)", leftClick = testAddAtIndex());
+  sort@GemButton(label = "Test sort()", leftClick = testSort());
   isEmptyClear@GemButton(label = "Test isEmpty()/clear()", leftClick = testIsEmptyAndClear());
   btnClear@GemButton(label = "Clear Fields", leftClick = testResetFields());
 

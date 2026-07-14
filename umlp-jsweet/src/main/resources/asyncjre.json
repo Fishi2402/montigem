@@ -20,6 +20,7 @@
       "java.util.List.subList(**)",
       "java.util.List.<*>toArray(**)",
       "java.util.List.of(**)",
+      "java.util.List.sort(**)",
 
       "java.util.ArrayList.new(**)",
 
