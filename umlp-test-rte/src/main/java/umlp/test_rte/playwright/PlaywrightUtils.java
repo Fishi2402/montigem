@@ -83,13 +83,15 @@ public interface PlaywrightUtils {
 
   /**
    * Waits until the page is fully loaded. Has the same requirements as {@link #waitForWebsocket(Page)}
+   * Caution for some reason the ordering matters, waitForAngular at the end of this method leads in
+   * some cases to long waits that result in a timeout exception inside a playwright test.
    *
    * @param page The {@link Page}
    */
   default void waitRdy(Page page) {
+    waitForAngular(page);
     waitForWebsocket(page);
     page.waitForLoadState(LoadState.NETWORKIDLE);
-    waitForAngular(page);
   }
 
   /**
