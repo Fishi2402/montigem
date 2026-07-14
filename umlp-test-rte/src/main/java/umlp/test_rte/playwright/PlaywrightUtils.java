@@ -87,9 +87,9 @@ public interface PlaywrightUtils {
    * @param page The {@link Page}
    */
   default void waitRdy(Page page) {
-    waitForAngular(page);
     waitForWebsocket(page);
     page.waitForLoadState(LoadState.NETWORKIDLE);
+    waitForAngular(page);
   }
 
   /**

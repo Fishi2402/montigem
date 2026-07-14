@@ -123,7 +123,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
-  public async containsAll(o: AsyncIterable<E>): Promise<boolean> {
+  public async containsAll(o: Collection<E>): Promise<boolean> {
     if (await this.size() === 0) {
       return new Promise((resolve) => resolve(true));
     }
@@ -497,7 +497,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this[Symbol.asyncIterator]();
   }
 
-  public async retainAll(c: AsyncIterable<E>): Promise<boolean> {
+  public async retainAll(c: Collection<E>): Promise<boolean> {
     throw Error("NoImplementedException for retainAll on GemLists");
     return false; // TODO
   }

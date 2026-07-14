@@ -15,17 +15,17 @@ import umlp.backendrte.command.StatusResult;
 import umlp.backendrte.util.LogUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandWebSocketService extends TextWebSocketHandler implements WebSocketHandlerService {
 
-  protected Map<String, Long> clientIds = new HashMap<>();
-  protected Map<WebSocketSession, Participant> participants = new HashMap<>();
-  private final Map<WebSocketSession, StringBuilder> messageBuffers = new HashMap<>();
+  protected Map<String, Long> clientIds = new ConcurrentHashMap<>();
+  protected Map<WebSocketSession, Participant> participants = new ConcurrentHashMap<>();
+  private final Map<WebSocketSession, StringBuilder> messageBuffers = new ConcurrentHashMap<>();
 
   protected String getSessionPrincipalName(WebSocketSession session) {
     return session.getPrincipal().getName();
@@ -100,13 +100,21 @@ public class CommandWebSocketService extends TextWebSocketHandler implements Web
     Log.info("Responding: " + LogUtil.concealSensitives(returnResult), this.getClass().getName());
     TextMessage msg = new TextMessage(returnResult);
     synchronized (session) {
-      Log.info(session.toString(), this.getClass().getName());
+      Log.info("Session "+ session.toString()+ " client "+participants.get(session), this.getClass().getName());
       session.sendMessage(msg);
     }
   }
 
   @Override
+  public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    Log.warn("Encountered error in WebSocket Connection with client "+participants.get(session).getParticipantId(), exception);
+    super.handleTransportError(session, exception);
+  }
+
+  @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    Log.info("Closing websocket connection for client "+participants.get(session).getParticipantId()+
+        ". CloseStatus: "+status.toString(), this.getClass().getName());
     messageBuffers.remove(session);
     if (clientIds.containsKey(session.getId())) {
       CommandManager.deregister(clientIds.get(session.getId()));

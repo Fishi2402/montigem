@@ -10,7 +10,7 @@ import umlp.backendrte.command.ServerCommandCommunication;
 import java.io.IOException;
 
 public class WebSocketCommandCommunication implements ServerCommandCommunication {
-  protected WebSocketSession session;
+  protected final WebSocketSession session;
 
   public WebSocketCommandCommunication(WebSocketSession session) {
     this.session = session;

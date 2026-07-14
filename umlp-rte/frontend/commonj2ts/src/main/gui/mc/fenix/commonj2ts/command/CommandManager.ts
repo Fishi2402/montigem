@@ -52,7 +52,7 @@ export class CommandManager {
   }
 
   public static async executeCommand<T>(command: Command<T>): Promise<CommandResult<T>> {
-    Log.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from " + command.getParticipantId(), LogUtil.getLoggerName());
+    Log.trace("Exec command " + command.getId() + " " + command.getCommandType() + " from client " + command.getParticipantId(), LogUtil.getLoggerName());
     Log.trace((await CommandObjectMapper.serializeCommand(command)), LogUtil.getLoggerName());
     return await CommandManager.getInstance()._executeCommand<any>(command);
   }

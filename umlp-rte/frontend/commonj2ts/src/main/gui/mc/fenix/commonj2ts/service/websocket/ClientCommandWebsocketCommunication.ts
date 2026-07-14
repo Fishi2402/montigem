@@ -277,6 +277,7 @@ export class ClientCommandWebsocketCommunication implements ClientCommandCommuni
         commandOptional = await CommandObjectMapper.deserializeCommand(payload);
         if (commandOptional != null) {
           //Fall Antwort eines Erhalt eines weitergeleiteten Commands zur Datensynchronisierung
+          Log.trace("Received command "+commandOptional.getId(),"ClientCommandWebsocketCommunication")
           let finalCommandOptional: Command<Object> = commandOptional;
           // Mutex
           this.commandObserverChain = this.commandObserverChain.then(() => {

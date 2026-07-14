@@ -14,28 +14,22 @@ application { // Set Main-Class for "run" task
 }
 
 dependencies {
-  def withoutSpringLogging = {
-    exclude module: 'spring-boot-starter-logging'
-    exclude module: 'logback-classic'
-    exclude module: 'log4j-to-slf4j'
-  }
-
   implementation project(':umlp-rte')
 
   implementation 'com.h2database:h2:2.1.214'
 
   // Spring Boot Dependencies
-  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
   implementation group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version
   developmentOnly("org.springframework.boot:spring-boot-devtools:$spring_version")  // Used for Hot Reload!
 
-  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 
   //TODO only here for experimenting with the parser
   implementation group: 'de.monticore.lang', name: 'sd-language', version: mc_version

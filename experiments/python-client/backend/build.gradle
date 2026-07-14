@@ -59,15 +59,10 @@ dependencies {
 
 
 dependencies {
-  def withoutSpringLogging = {
-    exclude module: 'spring-boot-starter-logging'
-    exclude module: 'logback-classic'
-    exclude module: 'log4j-to-slf4j'
-  }
-  api project(':umlp-rte'), withoutSpringLogging
-  api project(':umlp-test-rte'), withoutSpringLogging
+  api project(':umlp-rte')
+  api project(':umlp-test-rte')
   api 'com.h2database:h2:2.1.214'
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
 }
 
 test {

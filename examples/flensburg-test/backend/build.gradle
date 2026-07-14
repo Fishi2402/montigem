@@ -11,29 +11,23 @@ application {
 }
 
 dependencies {
-  def withoutSpringLogging = {
-    exclude module: 'spring-boot-starter-logging'
-    exclude module: 'logback-classic'
-    exclude module: 'log4j-to-slf4j'
-  }
-
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation 'com.h2database:h2:2.1.214'
 
   // Spring Boot Dependencies
-  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version
 
-  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
   implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: "$neo4j_java_driver_version"
   testImplementation "org.neo4j.test:neo4j-harness:$neo4j_embedded_test" exclude module: "commons-text"
 
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 
   implementation project(':umlp-rte')
   testImplementation project(':umlp-test-rte')

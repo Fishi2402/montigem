@@ -30,7 +30,7 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
     this.gameGemIds = new ArrayList<>();
     this.playerGemIds = new ArrayList<>();
     createDummyData(this.gameGemIds, this.playerGemIds);
-    page.onConsoleMessage(cm -> System.out.println("[BROWSER] " + cm.text()));
+    attachLoggersToPage(page, "[BROWSER]");
   }
 
 
@@ -86,6 +86,12 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
         .evaluate("node => node.style.gridTemplateRows"));
   }
 
+  protected void attachLoggersToPage(Page page, final String loggerName) {
+    page.onConsoleMessage(cm -> System.out.println(loggerName+" " + cm.text()));
+    page.onClose(p -> System.out.println(loggerName+" closed."));
+    page.onCrash(p -> System.out.println(loggerName+" crashed."));
+  }
+
 
   @Test
   public void testPlayerStats(Page page) {
@@ -93,21 +99,25 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
 
     // Open all 3 pages at the same time
     try (var playerStats = page.context().newPage()) {
-      playerStats.onConsoleMessage(cm -> System.out.println("[BROWSER playerStats] " + cm.text()));
+      attachLoggersToPage(playerStats, "[BROWSER playerStats]");
       navAndWait(playerStats, "/test_load_inner/PlayerStatsIndex");
       playerStats.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PlayerStats").setExact(true)).click();
       try (var playerStatsWithComponent = page.context().newPage()) {
-        playerStatsWithComponent.onConsoleMessage(cm -> System.out.println("[BROWSER playerStatsWithComponent] " + cm.text()));
+        attachLoggersToPage(playerStatsWithComponent, "[BROWSER playerStatsWithComponent]");
         navAndWait(playerStatsWithComponent, "/test_load_inner/PlayerStatsIndex");
         playerStatsWithComponent.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PlayerStatsWithComponent").setExact(true)).click();
         try (var playerStatsGlobal = page.context().newPage()) {
-          playerStatsGlobal.onConsoleMessage(cm -> System.out.println("[BROWSER playerStatsGlobal] " + cm.text()));
+          attachLoggersToPage(playerStatsGlobal, "[BROWSER playerStatsGlobal]");
           navAndWait(playerStatsGlobal, "/test_load_inner/PlayerStatsIndex");
           playerStatsGlobal.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PlayerStatsGlobal").setExact(true)).click();
 
 
           BiConsumer<Function<Page, Locator>, Consumer<LocatorAssertions>> assertThat = (locator, locatorAssertionsConsumer) -> {
             waitRdy(page);
+            // Wait for 400ms to let the backend execute any Commands and notify all clients
+            waitForBackend();
+            waitForBackend();
+
             waitRdy(playerStats);
             locatorAssertionsConsumer.accept(assertThat(locator.apply(playerStats)));
             waitRdy(playerStatsWithComponent);
@@ -118,10 +128,6 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
 
           // Starts with a reset
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reset")).click();
-
-          // Wait for 400ms to let the backend execute the Reset Command and notify all clients
-          waitForBackend();
-          waitForBackend();
 
           // Is the initial player visible?
           assertThat.accept(p->p.getByText("Player: Initial"), LocatorAssertions::isVisible);
@@ -140,9 +146,6 @@ public class TestLoadInner extends AbstractLoadingTestsE2ETest {
 
 
           page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reset")).click();
-          // Wait for 400ms to let the backend execute the Reset Command and notify all clients
-          waitForBackend();
-          waitForBackend();
 
           assertThat.accept(p->p.getByText("Player: From Remote"), l -> l.hasCount(0));
           assertThat.accept(p->p.getByText("Player: From Local"), l -> l.hasCount(0));

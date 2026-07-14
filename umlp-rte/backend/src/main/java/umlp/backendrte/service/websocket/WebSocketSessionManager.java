@@ -52,16 +52,17 @@ public class WebSocketSessionManager {
   public static boolean sendMessage(WebSocketSession session, String message) {
     Exception lastException = null;
     int tries = 0;
-    Optional<ConcurrentWebSocketSessionDecorator> synchronizedSession = findSession(session);
-    if (!synchronizedSession.isPresent()) {
+    Optional<ConcurrentWebSocketSessionDecorator> synchronizedSessionOpt = findSession(session);
+    if (synchronizedSessionOpt.isEmpty()) {
       Log.error("0xWS003 An error occured on sending a websocket message", lastException);
       return false;
     }
+    ConcurrentWebSocketSessionDecorator synchronizedSession = synchronizedSessionOpt.get();
 
     while (tries < MAX_TRIES) {
       try {
         synchronized (synchronizedSession) {
-          synchronizedSession.get().sendMessage(new TextMessage(message));
+          synchronizedSession.sendMessage(new TextMessage(message));
         }
         return true;
       } catch (IllegalStateException e) {

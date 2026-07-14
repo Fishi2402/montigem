@@ -8,12 +8,6 @@ tasks.withType(Jar).configureEach {
   archiveBaseName.set("umlp-rte-backend")
 }
 
-def withoutSpringLogging = {
-  exclude module: 'spring-boot-starter-logging'
-  exclude module: 'logback-classic'
-  exclude module: 'log4j-to-slf4j'
-}
-
 dependencies {
   api group: 'de.monticore', name: 'monticore-runtime', version: mc_version
 
@@ -34,7 +28,7 @@ dependencies {
   compileOnly "org.junit.jupiter:junit-jupiter:$junit_version" // depend on not only the api, as otherwise spring-boot-starter-test destroys everything
   // Used for AbstractPlaywrightE2ETest
   compileOnly 'com.microsoft.playwright:playwright:1.44.0'
-  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version
 
   implementation group: 'com.zaxxer', name: 'HikariCP', version: "7.0.2"
 
