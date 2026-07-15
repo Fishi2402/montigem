@@ -178,6 +178,12 @@ public class RTEDeSerDecorator extends AbstractDecorator {
       useDeSer = supportedDesers.contains(innerTypeFull);
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
+      type = GenService.getCorrectJavaFQN(attr.getSymbol().getType().printFullName());
+      if(attr.getSymbol().getType().isGenericType()) {
+        innerTypeFull = GenService.getCorrectJavaFQN(
+            ((SymTypeOfGenerics) attr.getSymbol().getType()).getArgument(0).printFullName());
+        type = GenService.createType(attr.getSymbol().getType()).printType();
+      }
       if(type.contains(".")) {
         useDeSer = supportedDesers.contains(type);
       } else {
@@ -224,6 +230,7 @@ public class RTEDeSerDecorator extends AbstractDecorator {
     } else {
       jsonStr = GenService.calculateJSon(attr.getSymbol().getType());
       useDeSer = supportedDesers.contains(attr.getSymbol().getPackageName().toLowerCase()+"."+type);
+      type = GenService.getCorrectJavaFQN(attr.getSymbol().getType().printFullName());
     }
 
     boolean makeAbstract = jsonStr.isEmpty() && !useDeSer;
