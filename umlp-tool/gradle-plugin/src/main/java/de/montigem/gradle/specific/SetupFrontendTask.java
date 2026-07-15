@@ -1,12 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.montigem.gradle.specific;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
@@ -14,13 +18,17 @@ import org.gradle.work.ChangeType;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,12 +87,20 @@ public abstract class SetupFrontendTask extends DefaultTask {
       FileUtils.writeStringToFile(getOutput().get().file(".npmrc").getAsFile(), data, StandardCharsets.UTF_8);
     }
 
+    // Avoid duplicate copy operations
+    Set<String> usedHandwrittenFiles = new HashSet<>();
+
     // copy common config from resources of UMLP-Tool
     for (String filename : getResourceListing(this.getClass(), FRONTEND_CONFIG_COMMON)) {
       InputStream file = this.getClass().getClassLoader().getResourceAsStream(FRONTEND_CONFIG_COMMON + filename);
       if (filename.startsWith("/") || filename.startsWith("\\")) {
         filename = filename.substring(1);
       }
+      usedHandwrittenFiles.add(filename);
+
+      // if a handwritten file exists, use that instead
+      if (doOverrideWithHWC(filename, file)) continue;
+
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
@@ -95,16 +111,53 @@ public abstract class SetupFrontendTask extends DefaultTask {
       if (filename.startsWith("/") || filename.startsWith("\\")) {
         filename = filename.substring(1);
       }
+      usedHandwrittenFiles.add(filename);
+
+      // if a handwritten file exists, use that instead
+      if (doOverrideWithHWC(filename, file)) continue;
+
       FileUtils.copyInputStreamToFile(file, getOutput().file(filename).get().getAsFile());
     }
 
     if (getInput().isPresent()) {
-      // Then Copy User-Defined Files
+      // Then Copy User-Defined Files (which were not handled previously)
       for (File f : getInput().getAsFileTree()) {
         String filename = getInput().getAsFile().get().toPath().relativize(f.toPath()).toString();
-        FileUtils.copyFile(f, getOutput().file(filename).get().getAsFile());
+        if (!usedHandwrittenFiles.contains(filename))
+          FileUtils.copyFile(f, getOutput().file(filename).get().getAsFile());
       }
     }
+  }
+
+  boolean doOverrideWithHWC(String filename, InputStream file) throws IOException {
+    if (getInput().isPresent()) {
+      // Check if a file "file.override.ext" exists (e.g., angular.override.json)
+      int dot = filename.lastIndexOf('.');
+      Path hwcOverride = dot >= 0 ? getInput().getAsFile().get().toPath().resolve(filename.substring(0, dot) + ".override" + filename.substring(dot)) : null;
+
+      if (dot >= 0 && hwcOverride.toFile().exists()) {
+        if (!filename.endsWith(".json")) {
+          getLogger().error("Failed to merge config file {}, as its file endinging is not supported )(.json)", filename);
+          return false;
+        }
+        getLogger().info("Merging JSON-based file with hand-written overrides one{}", filename);
+
+        JsonElement base = JsonParser.parseReader(new BufferedReader(new InputStreamReader(file)));
+        try (BufferedReader reader = new BufferedReader(new FileReader(hwcOverride.toFile()))) {
+          JsonElement override = JsonParser.parseReader(reader);
+          JsonElement merged = merge(base, override);
+          FileUtils.writeStringToFile(getOutput().file(filename).get().getAsFile(), merged.toString(), StandardCharsets.UTF_8);
+        }
+        return true;
+      }
+      Path hwc = getInput().getAsFile().get().toPath().resolve(filename);
+      if (hwc.toFile().exists()) {
+        getLogger().info("Overriding config file {} with hand-written one", filename);
+        FileUtils.copyFile(hwc.toFile(), getOutput().file(filename).get().getAsFile());
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -156,4 +209,26 @@ public abstract class SetupFrontendTask extends DefaultTask {
 
     throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
   }
+
+  protected static JsonElement merge(JsonElement base, JsonElement override) {
+    if (!base.isJsonObject() || !override.isJsonObject()) {
+      return override;
+    }
+
+    JsonObject merged = base.getAsJsonObject().deepCopy();
+    for (String field : override.getAsJsonObject().keySet()) {
+      JsonElement baseValue = base.getAsJsonObject().get(field);
+      JsonElement overrideValue = override.getAsJsonObject().get(field);
+
+      if (baseValue != null && baseValue.isJsonObject() && overrideValue.isJsonObject()) {
+        merged.add(field, merge(baseValue, overrideValue));
+      } else if (baseValue != null && !baseValue.isJsonNull() && overrideValue.isJsonNull()) {
+        // do not add
+      } else {
+        merged.add(field, overrideValue);
+      }
+    }
+    return merged;
+  }
+
 }

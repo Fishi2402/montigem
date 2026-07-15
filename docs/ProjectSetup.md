@@ -41,7 +41,7 @@ A full standard MontiGem app folder structure:
     - ...
   - config // copied to frontend/build/app
     - tsconfig.json
-    - package.json
+    - package.overrides.json // overrides the default package.json
     - ...
   - src // hwc, extends generated sources from frontend/build
     - main
@@ -291,6 +291,25 @@ with following content:
 ```
 This file provides a hint for IDEs to look for the root TypeScript configuration
 file in the build folder.
+
+Instead of copying the entire JSON file from the `config` directory,
+we also support overriding JSON files.
+E.g., all key-values of `config/package.override.json` will be merged into the `package.json`.
+Null-values will result in the removal of the original element.
+For example, the following JSON overrides the name of the app,
+ adds the editor dependency, and removes the cad dependency.
+````json
+// package.override.json
+{
+  "name": "my_fancy_app",
+  "dependencies": {
+    "@umlp/editor": "^8.0.0",
+    "@umlp/cad": null
+  }
+}
+
+````
+
 
 ### 4.1 Playwright E2E-Tests
 Additional playwright e2e test infrastructure can be generated.
