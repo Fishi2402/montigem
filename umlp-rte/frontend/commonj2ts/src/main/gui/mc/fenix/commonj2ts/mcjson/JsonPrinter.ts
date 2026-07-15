@@ -105,11 +105,11 @@ export class JsonPrinter {
   }
 
   internalStringValue(value : string) : void {
-    if (!(this.currElements.length === 0) && this.currElements[0] instanceof Array) {
-      const parent = this.currElements[0];
+    if (!(this.currElements.length === 0) && this.getCurrentElement() instanceof Array) {
+      const parent = this.getCurrentElement();
       parent.push(JSON.stringify(value))
     }
-    else if (!(this.currElements.length === 0) && this.currElements[0].isJsonObject()) {
+    else if (!(this.currElements.length === 0) && this.getCurrentElement().isJsonObject()) {
       Log.error("0xA0603 JsonPrinter detected an invalid nesting of Json. "
         + "Cannot add a String value `" + value + "` to the JSON object: `"
         + toString() + "`");
