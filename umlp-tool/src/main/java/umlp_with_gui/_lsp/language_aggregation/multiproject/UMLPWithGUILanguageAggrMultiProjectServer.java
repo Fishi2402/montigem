@@ -16,11 +16,19 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILanguageAggrMultiProjectServerTOP {
+  protected final ProjectLocalJarImportManager projectLocalJarImportManager = new ProjectLocalJarImportManager(this::refreshAfterTrackedJarUpdate);
+  protected final AtomicBoolean jarTriggeredRefreshRunning = new AtomicBoolean(false);
+  protected MultiProjectLayout latestGradleLayout;
+
   public UMLPWithGUILanguageAggrMultiProjectServer(MCPath modelPath) {
     super(modelPath);
-    getWorkspaceService().registerCommand("umlpwithgui.multiproject.getProjectLayout", executeCommandParams -> multiProjectLayout);
+    getWorkspaceService().registerCommand(
+        "umlpwithgui.multiproject.getProjectLayout",
+        executeCommandParams -> multiProjectLayout == null ? "{}" : multiProjectLayout.toJson()
+    );
   }
 
   protected void initResolver() {
@@ -64,5 +72,40 @@ public class UMLPWithGUILanguageAggrMultiProjectServer extends UMLPWithGUILangua
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void updateBasedOnConfig(MultiProjectLayout projects) {
+    latestGradleLayout = projects;
+    applyProjectLayoutWithTempJarCopies(projects);
+  }
+
+  protected void refreshAfterTrackedJarUpdate() {
+    if (latestGradleLayout == null || !jarTriggeredRefreshRunning.compareAndSet(false, true)) {
+      return;
+    }
+
+    try {
+      applyProjectLayoutWithTempJarCopies(latestGradleLayout);
+    }
+    finally {
+      jarTriggeredRefreshRunning.set(false);
+    }
+  }
+
+  protected void applyProjectLayoutWithTempJarCopies(MultiProjectLayout projects) {
+    super.updateBasedOnConfig(projectLocalJarImportManager.useTempCopiesForProjectLocalJars(projects, Path.of(rootUri)));
+  }
+
+  @Override
+  public CompletableFuture<Object> shutdown() {
+    projectLocalJarImportManager.close();
+    return super.shutdown();
+  }
+
+  @Override
+  public void exit() {
+    projectLocalJarImportManager.close();
+    super.exit();
   }
 }
