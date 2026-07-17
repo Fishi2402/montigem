@@ -256,7 +256,10 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   }
 
   public async clear(): Promise<void> {
-    await this.removeRange(0, await this.size());
+    const size = await this.size();
+    if(size > 0) {
+      await this.removeRange(0, await this.size());
+    }
   }
 
   /**
