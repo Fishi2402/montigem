@@ -21,9 +21,11 @@ import umlp.jsweet.extension.AbstractAdapter;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This adapter is responsible to enable the usage of some additional {@link java.util} classes.
@@ -163,9 +165,21 @@ public class JavaBasicsAdapter extends AbstractAdapter {
     switch (invocation.getMethodName()) {
       case "requireNonNull":
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
+        if(types().isSameType(
+            types().erasure(invocation.getArgument(0).getType()),
+            types().erasure(getContext().elements.getTypeElement(Optional.class.getName()).asType()))) {
+          // TODO Optional Case is wonky
+          this.print("/* requireNonNull with Opt as arg*/")
+              .print(String.format(
+                  "(obj => {if (obj === undefined) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (",
+                  msg))
+              .print(invocation.getArgument(0))
+              .print(")");
+          return true;
+        }
         this.print("/* requireNonNull */")
             .print(String.format(
-                "(obj => {if (obj == undefined || obj == null) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (",
+                "(obj => {if (obj === undefined || obj === null) { throw Object.defineProperty(new Error(%s), '__classes', { configurable: true, value: ['java.lang.Throwable','java.lang.Object','java.lang.RuntimeException','java.lang.NullPointerException','java.lang.Exception'] }) } else { return obj}}) (",
                 msg))
             .print(invocation.getArgument(0))
             .print(")");

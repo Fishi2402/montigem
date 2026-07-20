@@ -63,10 +63,12 @@ public class OptionalAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     checkActionExact(page, "testIfPresentOrElse", "ifPresentOrElse: else empty");
     checkActionExact(page, "testOr", "or: or fallback");
     checkActionExact(page, "testStream", "stream: 0");
-    
+
     setInput(page, "abc"); // length 3
     checkActionExact(page, "testFilter", "filter: empty");
 
     checkActionExact(page, "testOfNull", "ofNull: error NullPointerException");
+
+    checkActionExact(page, "testObjectsRequireNonNull", "requireNonNull: no error");
   }
 }

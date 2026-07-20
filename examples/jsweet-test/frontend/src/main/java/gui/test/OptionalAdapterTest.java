@@ -3,6 +3,7 @@ package gui.test;
 import def.dom.HTMLInputElement;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -181,6 +182,16 @@ public class OptionalAdapterTest extends OptionalAdapterTestTOP {
       } catch (Exception e) {
         setResultFieldEntry("ofNull: error " + e.getMessage());
       }
+    };
+  }
+
+  @Override
+  public Consumer<Void> testObjectsRequireNonNull() {
+    return (Void) -> {
+      Optional<String> opt = Optional.ofNullable(null);
+      Objects.requireNonNull(opt);
+
+      setResultFieldEntry("requireNonNull: no error");
     };
   }
 }

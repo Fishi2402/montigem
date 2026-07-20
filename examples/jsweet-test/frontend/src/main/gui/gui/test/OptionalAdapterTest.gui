@@ -25,6 +25,7 @@ page OptionalAdapterTest() {
   testOr@GemButton(label = "Test or()", leftClick = testOr());
   testStream@GemButton(label = "Test stream()", leftClick = testStream());
   testOfNull@GemButton(label = "Test Optional.of(null)", leftClick = testOfNull());
+  testObjectsRequireNonNull@GemButton(label = "Test Objects.requireNonNull(Optional.of(..))", leftClick = testObjectsRequireNonNull());
 
   resultField@GemTextInput(
       id = "resultId",
