@@ -20,8 +20,7 @@ style.
 The central input is a domain model expressed as a [UML class 
 diagram}(https://www.se-rwth.de/research/Unified-Modeling-Language/). 
 
-### [The *class diagrams* used for this application can be viewed 
-here.](${TODO: Link auf entsprechende Seite}) 
+### [The *class diagrams* used for this application can be viewed here.](${TODO: Link auf entsprechende Seite}) 
 
 Additional models can describe application-specific views and 
 graphical interfaces. 
