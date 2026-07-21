@@ -39,6 +39,15 @@ allprojects {
       languageVersion = JavaLanguageVersion.of(21)
     }
   }
+
+  // Force compatible Neo4j Java driver version to prevent NoSuchMethodErrors with Spring Boot 3.5.x
+  configurations.all {
+    resolutionStrategy.eachDependency { details ->
+      if (details.requested.group == 'org.neo4j.driver' && details.requested.name == 'neo4j-java-driver') {
+        details.useVersion(neo4j_java_driver_version)
+      }
+    }
+  }
 }
 
 subprojects {
@@ -144,6 +153,13 @@ subprojects {
       exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
       exclude group: 'ch.qos.logback', module: 'logback-classic'
       exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+
+      resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.neo4j.driver' && details.requested.name == 'neo4j-java-driver') {
+          details.useVersion(neo4j_java_driver_version)
+          details.because('Ensure compatibility with Spring Boot 3.5.x')
+        }
+      }
     }
   }
 
