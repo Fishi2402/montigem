@@ -20,8 +20,10 @@ component MonacoEditor(
   boolean showLightbulbIconMode = true,
   boolean automaticLayout = true,
   boolean semanticHighlightingEnabled = true,
+  boolean showMinimap = true,
 
   int initialScrollToLine,
+  int jumpToLine,
   List<InlineDecoration> highlighting,
 
   List<HoverContent> hoverContents,
@@ -30,5 +32,7 @@ component MonacoEditor(
   String height = "100%",
 
   boolean autoHeight = false,
-  int maxLines = 30
+  int maxLines = 30,
+
+  Event<Object> lineClick
 )

@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import { config, MonacoEditorComponent } from '../../../../../../build/gui2java2ts/mc/fenix/editor/MonacoEditorComponent';
-import {EventEmitter, Output, Provider, ElementRef, AfterViewInit, OnDestroy, HostBinding} from '@angular/core';
+import {Component, EventEmitter, Output, Provider, ElementRef, AfterViewInit, OnDestroy, HostBinding, NgZone} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 import * as monacoTypes from "monaco-editor";
@@ -15,11 +15,10 @@ export function provideMonacoEditor(config: NgxMonacoEditorConfig = {}): Provide
   ];
 }
 
-import {
-  Component,
-} from '@angular/core';
 import {InlineDecoration} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/InlineDecoration";
 import {HoverContent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/HoverContent";
+import {LineClickEvent} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/LineClickEvent";
+import {LineClickEventBuilder} from "../../../../../../build/gui2java2ts/mc/fenix/editor/monacoeditortypes/LineClickEventBuilder";
 
 @Component({
   standalone:true,
@@ -51,6 +50,7 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
   protected highlightingCache;
   private resizeObserver: ResizeObserver;
   private contentSizeListener: monacoTypes.IDisposable;
+  private decorationsCollection: monacoTypes.editor.IEditorDecorationsCollection | null = null;
 
   /**
    * Adapt the component here if you want to add any options
@@ -66,10 +66,13 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       enabled: true,
       sticky: true,
       above: false
+    },
+    minimap: {
+      enabled: this._showMinimap
     }
   };
 
-  public constructor(private elementRef: ElementRef) {
+  public constructor(private elementRef: ElementRef, private ngZone: NgZone) {
     setTimeout(() => {
       monaco.languages.registerHoverProvider("*", {
         provideHover: async (model, position, token) => {
@@ -135,7 +138,15 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
     }
   }
 
+  @Output() public override lineClick = new EventEmitter<LineClickEvent>();
+
   public saveEditor(editorInstance: monacoTypes.editor.IStandaloneCodeEditor) : void {
+
+    if(this.editor != editorInstance){
+      // new instance, force redraw on new instance
+      this.decorationsCollection = null;
+      this.highlightingCache = "";
+    }
     this.editor = editorInstance;
     if(this.getHighlighting()) {
       this.highlightInitialization(editorInstance)
@@ -148,6 +159,20 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
             this.updateHeight();
         });
     }
+
+    this.editor.onMouseDown((e: monacoTypes.editor.IEditorMouseEvent)=>{
+      if(e.target && e.target.position){
+        if(this.lineClick.observed) {
+          const clickEventBuilder = new LineClickEventBuilder();
+          clickEventBuilder.lineNumber(e.target.position.lineNumber);
+          clickEventBuilder.column(e.target.position.column);
+          const clickEvent = clickEventBuilder.build();
+          // Force event execution in Angular Zone for proper change detection of any changes triggered in a user
+          // callback
+          this.ngZone.run(() => this.lineClick.emit(clickEvent));
+        }
+      }
+    });
 
     // Initial layout
     setTimeout(() => this.editor.layout(), 0);
@@ -189,11 +214,18 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
 
     if(cache === this.highlightingCache) {
       return;
-    } {
-      this.cacheCheck = cache;
-      this.highlightingCache = highlighting;
-      editor.createDecorationsCollection(this.highlightingCache);
     }
+    this.highlightingCache = cache;
+
+    if (!this.decorationsCollection) {
+      // First set of decorations on this editor instance
+      this.decorationsCollection = editor.createDecorationsCollection(highlighting);
+    } else {
+      // Update existing collection without stacking on previous
+      this.decorationsCollection.set(highlighting);
+    }
+
+
   }
 
   public scrollToLine(editor: monacoTypes.editor.ICodeEditor): void {
@@ -246,6 +278,19 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
       }
   }
 
+  public override setJumpToLine(val: number) {
+    super.setJumpToLine(val);
+    if (this.editor && val > 0) {
+      this.editor.revealLineInCenter(val);
+      this.editor.setPosition({ lineNumber: val, column: 1 });
+    }
+  }
+
+  public override setShowMinimap(val: boolean) {
+    super.setShowMinimap(val);
+    this.updateOptions();
+  }
+
   public updateOptions() : void {
     this._options = {
       value: this._entry,
@@ -259,6 +304,9 @@ export class MonacoEditor extends MonacoEditorComponent implements AfterViewInit
         enabled: true,
         sticky: true,
         above: false
+      },
+      minimap: {
+        enabled: this._showMinimap
       }
     };
   }

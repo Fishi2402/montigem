@@ -23,4 +23,9 @@ classdiagram MonacoEditorTypes {
     int endLin;
     int endCol;
   }
+
+  public class LineClickEvent {
+    int lineNumber;
+    int column;
+  }
 }

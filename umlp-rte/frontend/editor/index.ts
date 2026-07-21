@@ -12,4 +12,8 @@ export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/Range";
 export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/RangeBuilder";
 export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/RangeDeSer";
 
+export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/LineClickEvent";
+export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/LineClickEventBuilder";
+export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/LineClickEventDeSer";
+
 export * from "./build/gui2java2ts/mc/fenix/editor/monacoeditortypes/MonacoEditorTypesDeSer";
