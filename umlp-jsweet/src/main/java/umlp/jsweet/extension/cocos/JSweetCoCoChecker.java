@@ -38,19 +38,20 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
     super(logHandler, context, compilationUnit);
   }
 
-  protected boolean classIsBackendOnlyOrErased = false;
-  protected boolean methodOrAttrIsBackendOnlyOrErased = false;
-
   @Override
   public Void visitClass(ClassTree classTree, Trees trees) {
     Symbol.ClassSymbol classSymbol = (Symbol.ClassSymbol) trees.getElement(
         trees.getPath(getCurrentPath().getCompilationUnit(), classTree));
 
-    classIsBackendOnlyOrErased = classSymbol.getAnnotationMirrors().stream()
+    boolean classIsBackendOnlyOrErased = classSymbol.getAnnotationMirrors().stream()
         .anyMatch(a -> a.getAnnotationType().toString()
             .equals("umlp.jsweet.extension.annotation.BackendOnly")
             || a.getAnnotationType().toString()
             .equals(Erased.class.getCanonicalName()));
+    if(classIsBackendOnlyOrErased) {
+      // Stop visitation here
+      return null;
+    }
     super.visitClass(classTree, trees);
     return null;
   }
@@ -60,12 +61,16 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
     Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) trees.getElement(
         trees.getPath(getCurrentPath().getCompilationUnit(), methodTree));
 
-    methodOrAttrIsBackendOnlyOrErased = methodSymbol.getAnnotationMirrors().stream()
+    boolean methodOrAttrIsBackendOnlyOrErased = methodSymbol.getAnnotationMirrors().stream()
         .anyMatch(a -> a.getAnnotationType().toString()
             .equals("umlp.jsweet.extension.annotation.BackendOnly")
             || a.getAnnotationType().toString()
             .equals(Erased.class.getCanonicalName())
             || a.getAnnotationType().toString().equals(Replace.class.getCanonicalName()));
+    if(methodOrAttrIsBackendOnlyOrErased) {
+      // Stop visitation here
+      return null;
+    }
     super.visitMethod(methodTree, trees);
     return null;
   }
@@ -78,12 +83,15 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       super.visitVariable(variableTree, trees);
       return null;
     }
-    methodOrAttrIsBackendOnlyOrErased = varSymbol.getAnnotationMirrors().stream()
+    boolean methodOrAttrIsBackendOnlyOrErased = varSymbol.getAnnotationMirrors().stream()
         .anyMatch(a -> a.getAnnotationType().toString()
             .equals("umlp.jsweet.extension.annotation.BackendOnly")
             || a.getAnnotationType().toString()
             .equals(Erased.class.getCanonicalName()));
-
+    if(methodOrAttrIsBackendOnlyOrErased) {
+      // Stop visitation here
+      return null;
+    }
 
     Element element = trees.getElement(getCurrentPath());
 
@@ -96,8 +104,6 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         }
       }
     }
-
-
 
     super.visitVariable(variableTree, trees);
     return null;
@@ -112,18 +118,15 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
    */
   @Override
   public Void visitMethodInvocation(MethodInvocationTree invocation, Trees trees) {
-    if (!surroundingExcludedFromTranspilation()) {
-      Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) trees.getElement(
-          trees.getPath(getCurrentPath().getCompilationUnit(), invocation.getMethodSelect()));
-      checkUnsupportedApis(invocation, methodSymbol);
-    }
+    Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) trees.getElement(
+        trees.getPath(getCurrentPath().getCompilationUnit(), invocation.getMethodSelect()));
+    checkUnsupportedApis(invocation, methodSymbol);
     super.visitMethodInvocation(invocation, trees);
     return null;
   }
 
   @Override
   public Void visitNewClass(NewClassTree newClassTree, Trees trees) {
-    if (!surroundingExcludedFromTranspilation()) {
       TreePath path = getCurrentPath();
       Symbol.MethodSymbol methodSymbol = null;
 
@@ -149,7 +152,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       }
 
       checkUnsupportedApis(newClassTree, methodSymbol);
-    }
+
     super.visitNewClass(newClassTree, trees);
     return null;
   }
@@ -288,8 +291,5 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
     return SourcePosition.getDefaultSourcePosition();
   }
 
-  public boolean surroundingExcludedFromTranspilation() {
-    return classIsBackendOnlyOrErased || methodOrAttrIsBackendOnlyOrErased;
-  }
 
 }

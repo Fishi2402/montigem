@@ -1,7 +1,6 @@
 package testutil;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import de.se_rwth.commons.logging.Finding;
 import org.jsweet.transpiler.JSweetTranspiler;
 import org.jsweet.transpiler.SourceFile;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.jsweet.transpiler.SourceFile.getSourceFiles;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JSweetCoCoCheckerTest {
@@ -81,5 +81,28 @@ public class JSweetCoCoCheckerTest {
     boolean found0xEE010 = findings.stream().anyMatch(s -> s.contains("0xEE010"));
 
     assertTrue(found0xEE010, "Should have found IO violation (0xEE010). Findings: " + findings);
+  }
+
+
+  @Test
+  public void testErasedDoesNotThrowError() throws IOException {
+    File input = Paths.get("src/test/resources/java/coco/ErasedCoco.java").toFile();
+    assertTrue(input.exists(), "Input file must exist: " + input.getAbsolutePath());
+
+    // Use the transpiler that has the ModuleUMLPAdapter configured (which adds JSweetCoCoChecker)
+    JSweetTranspiler transpiler = Util.transpilerModuleUMLPAdapter();
+
+    ErrorCountTranspilationHandler handler = new ErrorCountTranspilationHandler(
+        new ConsoleTranspilationHandler());
+
+    SourceFile[] sourceFiles = getSourceFiles(input);
+    transpiler.transpile(handler, sourceFiles);
+
+    // JSweetCoCoChecker logs warnings with Log.warn (0xEE...)
+    List<String> findings = Log.getFindings().stream()
+        .map(Finding::getMsg)
+        .collect(Collectors.toList());
+
+    assertEquals(0, Log.getErrorCount());
   }
 }
