@@ -41,7 +41,9 @@ export class FunctionDisplay extends FunctionDisplayComponent {
   /** Maps CD functions to their rendered SVG elements. */
   private functionSvgMap = new Map<Function4Display, Element>();
   /** Maps logical channel IDs to their SVG element sets and the original channel. */
-  private channelSvgMap = new Map<string, {elements: Set<Element>, groups: Set<Element>, channel: Channel4Display}>();
+  private channelSvgMap = new Map<string, {elements: Set<Element>, channel: Channel4Display}>();
+  /** Logical channel IDs that are currently hovered. */
+  private hoveredChannelIds = new Set<string>();
   /** Maps CD ports to their rendered SVG elements. */
   private portSvgMap = new Map<Port4Display, Element>();
 
@@ -120,7 +122,8 @@ export class FunctionDisplay extends FunctionDisplayComponent {
     this.channelIdMap = new Map<string, Channel4Display>();
     this.portElkMap = new Map<Port4Display, Port4Elk[]>();
     this.functionSvgMap = new Map<Function4Display, Element>();
-    this.channelSvgMap = new Map<string, {elements: Set<Element>, groups: Set<Element>, channel: Channel4Display}>();
+    this.channelSvgMap = new Map<string, {elements: Set<Element>, channel: Channel4Display}>();
+    this.hoveredChannelIds = new Set<string>();
     this.portSvgMap = new Map<Port4Display, Element>();
     this._data = data;
 
@@ -360,9 +363,9 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         }
       }
       this.channelSvgMap.forEach((data, id) => {
-        let isSelected = selectedIds.has(id);
+        let isHighlighted = selectedIds.has(id) || this.hoveredChannelIds.has(id);
         data.elements.forEach(el => {
-          if (isSelected) {
+          if (isHighlighted) {
             this.markElement(el, data.channel.getLineColorHover());
           } else {
             this.unmarkElement(el, data.channel.getLineColor());
@@ -371,6 +374,31 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       });
       super.setSelectedChannels(c);
     })();
+  }
+
+  /**
+   * Reconciles temporary hover highlighting with persistent channel selection.
+   */
+  private async refreshChannelHighlight(channelId: string) {
+    let isSelected = false;
+    if (!this.hoveredChannelIds.has(channelId)) {
+      for (const channel of (this.getSelectedChannels() || [])) {
+        if (await this.getLogicalChannelId(channel) === channelId) {
+          isSelected = true;
+          break;
+        }
+      }
+    }
+
+    const data = this.channelSvgMap.get(channelId);
+    const isHighlighted = this.hoveredChannelIds.has(channelId) || isSelected;
+    data?.elements.forEach(element => {
+      if (isHighlighted) {
+        this.markElement(element, data.channel.getLineColorHover());
+      } else {
+        this.unmarkElement(element, data.channel.getLineColor());
+      }
+    });
   }
 
   /**
@@ -921,50 +949,46 @@ export class FunctionDisplay extends FunctionDisplayComponent {
       if (!edge.channel4Display.isVisible()) continue;
       let channelId = await this.getLogicalChannelId(edge.channel4Display);
       if (!this.channelSvgMap.has(channelId)) {
-        this.channelSvgMap.set(channelId, { elements: new Set<Element>(), groups: new Set<Element>(), channel: edge.channel4Display });
+        this.channelSvgMap.set(channelId, { elements: new Set<Element>(), channel: edge.channel4Display });
       }
       for (let section of edge.sections) {
         let edgeGroup = document.createElementNS(svgNS, "g");
-        this.channelSvgMap.get(channelId)?.groups.add(edgeGroup);
 
         // Visible line
         let polyline = document.createElementNS(svgNS, "polyline");
+        polyline.setAttribute("class", "channel-line");
         polyline.setAttribute("id", edge.id);
         polyline.setAttribute("points", `${section.startPoint.x},${section.startPoint.y} ${(section.bendPoints ?? []).map(p => `${p.x},${p.y}`).join(" ")} ${section.endPoint.x},${section.endPoint.y}`);
         polyline.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
         polyline.setAttribute("stroke-width", "1");
         polyline.setAttribute("fill", "none");
+        polyline.setAttribute("pointer-events", "none");
         this.channelSvgMap.get(channelId)?.elements.add(polyline);
 
         // Transparent thick hit area for easier clicking
         let hiddenPolyline = document.createElementNS(svgNS, "polyline");
+        hiddenPolyline.setAttribute("class", "channel-hit-area");
         hiddenPolyline.setAttribute("points", `${section.startPoint.x},${section.startPoint.y} ${(section.bendPoints ?? []).map(p => `${p.x},${p.y}`).join(" ")} ${section.endPoint.x},${section.endPoint.y}`);
         hiddenPolyline.setAttribute("stroke", "transparent");
         hiddenPolyline.setAttribute("stroke-width", "15");
         hiddenPolyline.setAttribute("fill", "none");
+        hiddenPolyline.setAttribute("pointer-events", "stroke");
+        hiddenPolyline.setAttribute("style", "cursor: pointer;");
 
-        const markAll = () => {
-          let mapEntry = this.channelSvgMap.get(channelId);
-          mapEntry?.elements.forEach(el => this.markElement(el, edge.channel4Display.getLineColorHover()));
-          // Move group to the end of parent to bring it to front
-          mapEntry?.groups.forEach(grp => { if (grp.parentNode) grp.parentNode.appendChild(grp); });
-        };
-        const unmarkAll = async () => {
-          let selectedIds = [];
-          for (const c of (this.getSelectedChannels() || [])) {
-            selectedIds.push(await this.getLogicalChannelId(c));
-          }
-          if (!selectedIds.includes(channelId)) {
-            this.channelSvgMap.get(channelId)?.elements.forEach(el => this.unmarkElement(el, edge.channel4Display.getLineColor()));
-          }
-        };
-
-        polyline.addEventListener('click', () => this.channelClicked(edge.channel4Display));
-        polyline.addEventListener('mouseover', () => { markAll(); this.channelHovered(edge.channel4Display); });
-        polyline.addEventListener('mouseout', () => { unmarkAll(); this.channelMouseouted(edge.channel4Display); });
-        hiddenPolyline.addEventListener('click', () => this.channelClicked(edge.channel4Display));
-        hiddenPolyline.addEventListener('mouseover', () => { markAll(); this.channelHovered(edge.channel4Display); });
-        hiddenPolyline.addEventListener('mouseout', () => { unmarkAll(); this.channelMouseouted(edge.channel4Display); });
+        hiddenPolyline.addEventListener('click', (event) => {
+          event.stopPropagation();
+          this.channelClicked(edge.channel4Display);
+        });
+        hiddenPolyline.addEventListener('mouseover', () => {
+          this.hoveredChannelIds.add(channelId);
+          void this.refreshChannelHighlight(channelId);
+          this.channelHovered(edge.channel4Display);
+        });
+        hiddenPolyline.addEventListener('mouseout', () => {
+          this.hoveredChannelIds.delete(channelId);
+          void this.refreshChannelHighlight(channelId);
+          this.channelMouseouted(edge.channel4Display);
+        });
 
         edgeGroup.appendChild(polyline);
         edgeGroup.appendChild(hiddenPolyline);
@@ -975,6 +999,7 @@ export class FunctionDisplay extends FunctionDisplayComponent {
         path.setAttribute("transform", `translate(${section.endPoint.x - 1},${section.endPoint.y})`);
         path.setAttribute("fill", `${edge.channel4Display.getLineColor()}`);
         path.setAttribute("stroke", `${edge.channel4Display.getLineColor()}`);
+        path.setAttribute("pointer-events", "none");
         edgeGroup.appendChild(path);
 
         g.appendChild(edgeGroup);
