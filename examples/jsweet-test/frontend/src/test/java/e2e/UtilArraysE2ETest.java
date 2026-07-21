@@ -1,12 +1,21 @@
 package e2e;
 
+import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
 import jsweettest.test_infrastructure.AbstractJsweettestE2ETest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static def.dom.Globals.console;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UtilArraysE2ETest extends AbstractJsweettestE2ETest {
 
@@ -39,5 +48,22 @@ public class UtilArraysE2ETest extends AbstractJsweettestE2ETest {
   void buttonTest(String buttonClass, String expectedExactValue, Page page) {
     page.locator("." + buttonClass).click();
     assertThat(page.locator(RESULT_INPUT_SELECTOR)).hasValue(expectedExactValue);
+  }
+
+  @Test
+  public void testStreamToArrayThrowsError(Page page) {
+    List<String> consoleErrorLog = new ArrayList<>();
+    page.onConsoleMessage(cm -> {
+      if(cm.type().equals("error")) {
+        consoleErrorLog.add(cm.text());
+      }
+    });
+    page.waitForConsoleMessage(new Page.WaitForConsoleMessageOptions()
+            .setPredicate((ConsoleMessage msg) -> msg.type().equals("error")),
+        () -> page.locator(".streamRange").click());
+
+    assertTrue(consoleErrorLog.stream().anyMatch(e -> e.contains(
+        "toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays."
+    )));
   }
 }

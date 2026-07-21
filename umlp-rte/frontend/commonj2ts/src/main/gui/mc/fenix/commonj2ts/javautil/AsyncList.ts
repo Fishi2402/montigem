@@ -43,35 +43,24 @@ export class AsyncList<E> implements IUMLPList<E> {
     return new AsyncList<E>().__AsyncListConstructor(iterable);
   }
 
-  // TODO REMOVE?!
-  async map<T>(consumer: (element: E) => T): Promise<IUMLPList<T>> {
+  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
     if (this._delegate) {
-      return this._delegate.map(consumer);
-    }
-    // TODO this seems wrong?
-    return Promise.resolve(<IUMLPList<T>>await new AsyncList<T>().__AsyncListConstructor(this._data.map(consumer)));
-  }
-
-  toArrayDeep(startIndex?: number, endIndex?: number): any {
-    if (this._delegate) {
-      return this._delegate.toArrayDeep(startIndex, endIndex);
+      return this._delegate.toArrayDeepSync(startIndex, endIndex);
     }
     if (this._data.length == 0) {
       return this._data; // TODO copied from UMLPArrayList
     } else if (this._data[0] instanceof GemList || this._data[0] instanceof AsyncList) {
-      return this._data.map(
-        (v: E) => (v as unknown as IUMLPList<any>).toArrayDeep());
+      const result: any[] = [];
+
+      for (const v of this._data) {
+        result.push(await (v as unknown as IUMLPList<any>).toArrayDeepSync());
+      }
+
+      return result;
     } else {
       // TODO copied from UMLPArrayList
       return this._data;
     }
-  }
-
-  toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
-    if (this._delegate) {
-      return this._delegate.toArrayDeepSync(startIndex, endIndex);
-    }
-    return Promise.resolve(this.toArrayDeep(startIndex, endIndex));
   }
 
   // ─── Static factory methods ───────────────────────────────────────────────
@@ -505,8 +494,8 @@ export class AsyncList<E> implements IUMLPList<E> {
   }
 
   /** @throws — returns Object[], not supported */
-  toArray(..._args: any[]): E[] {
-    throw new Error('toArray() returns Object[]. Not supported.');
+  toArray<T>(args?: any): never {
+    throw new Error('toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays.');
   }
 
   // ─── Private helpers ──────────────────────────────────────────────────────

@@ -23,7 +23,7 @@ public class JSweetCoCoCheckerTest {
 
   @BeforeEach
   public void setup() {
-    LogStub.init();
+    Log.init();
     Log.enableFailQuick(false);
   }
 

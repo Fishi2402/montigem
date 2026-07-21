@@ -325,25 +325,23 @@ export class AsyncSet<E> implements Collection<E> {
     return AsyncStream.of(this);
   }
 
-  toArrayDeep(startIndex?: number, endIndex?: number): any {
+  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
     if (this._delegate) {
-      return this._delegate.toArrayDeep(startIndex, endIndex);
+      return this._delegate.toArrayDeepSync(startIndex, endIndex);
     }
     if (this._data.length == 0) {
       return this._data;
     } else if (this._data[0] instanceof GemList || this._data[0] instanceof AsyncSet) {
-      return this._data.map(
-        (v: E) => (v as unknown as Collection<any>).toArrayDeep());
+      const result: any[] = [];
+
+      for (const v of this._data) {
+        result.push(await (v as unknown as Collection<any>).toArrayDeepSync());
+      }
+
+      return result;
     } else {
       return this._data;
     }
-  }
-
-  toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
-    if (this._delegate) {
-      return this._delegate.toArrayDeepSync(startIndex, endIndex);
-    }
-    return Promise.resolve(this.toArrayDeep(startIndex, endIndex));
   }
 
   // ─── Still unsupported ────────────────────────────────────────────────────
@@ -356,6 +354,21 @@ export class AsyncSet<E> implements Collection<E> {
   /** @throws — java.util.Set has no listIterator */
   listIterator(_index?: number): AsyncIterator<E> {
     throw new Error('listIterator() is not supported by Set. Use [Symbol.asyncIterator]() instead.');
+  }
+
+  /** @throws — returns Spliterator<E>, not supported */
+  spliterator(): never {
+    throw new Error('spliterator() returns Spliterator<E>. Not supported.');
+  }
+
+  /** @throws — returns Stream<E>, not supported */
+  parallelStream(): never {
+    throw new Error('parallelStream() returns Stream<E>. Not supported.');
+  }
+
+  /** @throws — returns Object[], not supported */
+  toArray<T>(args?: any): never {
+    throw new Error('toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays.');
   }
 
   // ─── Private helpers ──────────────────────────────────────────────────────

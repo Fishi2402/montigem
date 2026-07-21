@@ -21,11 +21,12 @@ import umlp.jsweet.extension.AbstractAdapter;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
 
 /**
  * This adapter is responsible to enable the usage of some additional {@link java.util} classes.
@@ -38,6 +39,9 @@ public class JavaBasicsAdapter extends AbstractAdapter {
   }
 
   private void initTypeMappings() {
+    LinkedHashMap<String,String> defaultTypeMappings = new LinkedHashMap<>();
+    defaultTypeMappings.put(Spliterator.class.getName(), "any");
+    addTypeMappings(defaultTypeMappings);
   }
 
   /**
@@ -166,8 +170,8 @@ public class JavaBasicsAdapter extends AbstractAdapter {
       case "requireNonNull":
         String msg = invocation.getArgumentCount() > 1 ? invocation.getArgument(1).toString() : "";
         if(types().isSameType(
-            types().erasure(invocation.getArgument(0).getType()),
-            types().erasure(getContext().elements.getTypeElement(Optional.class.getName()).asType()))) {
+          types().erasure(invocation.getArgument(0).getType()),
+          types().erasure(getContext().elements.getTypeElement(Optional.class.getName()).asType()))) {
           // TODO Optional Case is wonky
           this.print("/* requireNonNull with Opt as arg*/")
               .print(String.format(

@@ -21,20 +21,6 @@ repositories {
     credentials.password mavenPassword
     url repo
   }
-  // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
-  // since they throw 409 errors for dependencies in other groups
-  maven {
-    url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
-    mavenContent {
-      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-    }
-  }
-  maven {
-    url "https://repository.jsweet.org/artifactory/libs-release-local"
-    mavenContent {
-      includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
-    }
-  }
 }
 
 dependencies {
@@ -45,11 +31,6 @@ dependencies {
     exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21
   }
 
-  testImplementation(group: "org.jsweet", name: 'j4ts', version: "2.0.0") {
-    exclude group: "org.jsweet", module: "jsweet-transpiler"
-    exclude(group: "com.kohlschutter.jdk", module: "standalone-home")
-    exclude(group: "com.kohlschutter.jdk", module: "standalone-jdk11") // replaced with standalone-jdk21
-  }
   api(group: "com.kohlschutter.jdk.compiler", name:"standalone-jdk21", version: "1.1.3")
 
 

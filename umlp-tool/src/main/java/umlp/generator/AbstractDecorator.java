@@ -546,6 +546,14 @@ public abstract class AbstractDecorator {
 
   protected void addJavaImport(ASTCDType domainType, SymTypeExpression type) {
     if (type.isGenericType()) {
+      if(!(type.printFullName().contains("List")
+          || type.printFullName().contains("Set")
+          || type.printFullName().contains("Map")
+          || type.printFullName().contains("Optional")
+      )) {
+        getCD4C().addImport(domainType, type.asGenericType().getTypeConstructorFullName());
+      }
+
       if (GenService.isNotADomainType(type.asGenericType().getArgument(0))) {
         String imp = GenService.getCorrectJavaFQN(type.asGenericType().getArgument(0).printFullName());
         getCD4C().addImport(domainType, imp);

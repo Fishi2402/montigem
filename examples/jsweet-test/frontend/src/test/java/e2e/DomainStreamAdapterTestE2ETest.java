@@ -1,5 +1,6 @@
 package e2e;
 
+import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import jsweettest.JsweettestManager;
@@ -7,7 +8,11 @@ import jsweettest.test_infrastructure.AbstractJsweettestE2ETest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DomainStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
 
@@ -110,12 +115,27 @@ public class DomainStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     checkActionExact(page, "max", "max(): " + name("delta"));
     checkActionExact(page, "collectJoining",
         "collect(joining): " + name("alpha") + " - " + name("beta") + " - " + name("gamma") + " - " + name("delta"));
-    // TODO toArray?
-    //checkActionExact(page, "btnToArray", "toArray(): " + names("alpha", "beta", "gamma", "delta"));
     checkActionExact(page, "btnFindAny", "findAny(): " + name("delta"));
     checkActionExact(page, "forEach",
         "forEach(): " + name("alpha") + "!" + name("beta") + "!" + name("gamma") + "!" + name("delta") + "!");
     checkActionExact(page, "noneMatch", "noneMatch(>100): true");
+  }
+
+  @Test
+  public void testToArrayThrowsError(Page page) {
+    List<String> consoleErrorLog = new ArrayList<>();
+    page.onConsoleMessage(cm -> {
+      if(cm.type().equals("error")) {
+        consoleErrorLog.add(cm.text());
+      }
+    });
+    page.waitForConsoleMessage(new Page.WaitForConsoleMessageOptions()
+            .setPredicate((ConsoleMessage msg) -> msg.type().equals("error")),
+        () -> page.locator(".btnToArray").click());
+
+    assertTrue(consoleErrorLog.stream().anyMatch(e -> e.contains(
+        "toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays."
+    )));
   }
 
   @Test

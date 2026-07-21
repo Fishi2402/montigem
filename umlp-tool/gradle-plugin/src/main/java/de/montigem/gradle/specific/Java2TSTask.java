@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO is this used anywhere??
+@Deprecated
 public abstract class Java2TSTask extends DefaultTask {
 
 

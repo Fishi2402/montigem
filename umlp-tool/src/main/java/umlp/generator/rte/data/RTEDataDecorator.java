@@ -2,6 +2,7 @@ package umlp.generator.rte.data;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import umlp.generator.AbstractDecorator;
@@ -34,5 +35,7 @@ public class RTEDataDecorator extends AbstractDecorator {
     RTEDeSerDecorator = new RTEDeSerDecorator(glex, BEDecorator.getStandardSupportedDeSers());
     RTEDeSerDecorator.transform(origCD, decoratedCD);
     Log.debug("After decorator: RTEDeSerDecorator", RTEDataDecorator.class.getName());
+
+    glex.replaceTemplate("cd2java.Imports", new TemplateHookPoint("umlp.Imports"));
   }
 }

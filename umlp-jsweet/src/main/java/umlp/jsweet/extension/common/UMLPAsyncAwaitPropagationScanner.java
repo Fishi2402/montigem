@@ -137,23 +137,6 @@ public class UMLPAsyncAwaitPropagationScanner extends AbstractTreeScanner {
             break;
           }
         }
-
-        // TODO After refactoring the Async Detection this is needed to print .stream() on Lists as Async
-        // in the Future when Sets are also async it will not be necessary anymore
-        if(types().isSubtype(types().erasure(receiverType.asType()), types().erasure(util().getType(List.class)))) {
-          if(methodElement.getSimpleName().toString().startsWith("stream")) {
-            ExecutableElement setMethod = ((DeclaredType)util().getType(List.class)).asElement().getEnclosedElements().stream()
-                .filter(e -> e.getKind() == ElementKind.METHOD)
-                .map(ExecutableElement.class::cast)
-                .filter(m -> m.getSimpleName().contentEquals("set"))
-                .filter(m -> m.getParameters().size() == 2)
-                .findFirst()
-                .orElseThrow();
-            if(context.hasAnnotationType(setMethod, JSweetConfig.ANNOTATION_ASYNC)) {
-              isAsyncFromSuper = true;
-            }
-          }
-        }
       }
 
       boolean isAsync = false;

@@ -11,18 +11,26 @@ import org.jsweet.transpiler.ModuleImportDescriptor;
 import org.jsweet.transpiler.OverloadScanner;
 import org.jsweet.transpiler.extension.PrinterAdapter;
 import org.jsweet.transpiler.util.Util;
+import standalone.com.sun.tools.javac.code.Symbol;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -289,17 +297,149 @@ public class UMLPAdapterUtils {
 
   public static void addAsyncAnnotationsForJREToContext(JSweetContext context) {
     try (
-        InputStream is = UMLPAdapterUtils.class.getResourceAsStream("/asyncjre.json")) {
+      InputStream is = UMLPAdapterUtils.class.getResourceAsStream("/asyncjre.json")) {
       Map<String, Object> config = new Gson().fromJson(
           new String(is.readAllBytes(), StandardCharsets.UTF_8)
           , Map.class);
       if (config != null) {
         Log.info("The current transpilation will assume an asynchronous JavaRTE annotated by >asyncjre.json<.", UMLPAdapterUtils.class.getName());
-        context.applyExtraConfiguration(config);
+
+        Map<String,Object> asyncConfig = (Map<String,Object>) config.get("@Async");
+        Object allOverloadsByName = asyncConfig.get("allOverloadsByName");
+        Map<String, Set<String>> asyncMethods = new HashMap<>();
+        if (allOverloadsByName != null) {
+          Collection<?> names = allOverloadsByName instanceof Collection ? (Collection<?>) allOverloadsByName
+              : Collections.singletonList(allOverloadsByName);
+          for (Object o : names) {
+            String qualifiedMethodName = o.toString();
+            int lastDot = qualifiedMethodName.lastIndexOf('.');
+            if (lastDot < 0) {
+              Log.warn("invalid entry '" + qualifiedMethodName + "' for allOverloadsByName"
+                  + ".allOverloadsByName (expected '<className>.<methodName>')");
+              continue;
+            }
+            String className = qualifiedMethodName.substring(0, lastDot);
+            String methodName = qualifiedMethodName.substring(lastDot + 1);
+            if(asyncMethods.containsKey(className)) {
+              asyncMethods.get(className).add(methodName);
+            } else {
+              asyncMethods.put(className, new HashSet<>(List.of(methodName)));
+            }
+          }
+        }
+        Elements elements = context.elements;
+        for (var entry : asyncMethods.entrySet()) {
+          String className = entry.getKey();
+
+          TypeElement typeElement = elements.getTypeElement(className);
+          if (typeElement == null) {
+            continue;
+          }
+
+          for (Element e : elements.getAllMembers(typeElement)) {
+            if(e.getKind() == ElementKind.METHOD && asyncMethods.get(className).contains(e.getSimpleName().toString())) {
+              context.addExtraAnnotationType(e, JSweetConfig.ANNOTATION_ASYNC);
+            }
+          }
+        }
       }
     } catch (
         IOException e) {
       throw new RuntimeException(e);
     }
   }
+/*
+  private static final Map<String, Set<String>> ASYNC_METHODS = Map.ofEntries(
+     // ------------------ Java RTE ----------------------
+
+      Map.entry("java.util.List", Set.of(
+          "size",
+          "isEmpty",
+          "add",
+          "addAll",
+          "contains",
+          "containsAll",
+          "equals",
+          "get",
+          "hashCode",
+          "indexOf",
+          "lastIndexOf",
+          "remove",
+          "clear",
+          "removeAll",
+          "retainAll",
+          "set",
+          "subList",
+          "toArray",
+          "of",
+          "sort"
+      )),
+
+      Map.entry("java.util.ArrayList", Set.of(
+          "new"
+      )),
+
+      Map.entry("java.util.Set", Set.of(
+          "size",
+          "isEmpty",
+          "add",
+          "addAll",
+          "contains",
+          "containsAll",
+          "equals",
+          "hashCode",
+          "remove",
+          "removeAll",
+          "retainAll",
+          "toArray"
+      )),
+
+      Map.entry("java.util.HashSet", Set.of(
+          "new"
+      )),
+
+      Map.entry("com.google.common.collect.Sets", Set.of(
+          "newHashSet"
+      )),
+
+      Map.entry("java.util.Collections", Set.of(
+          "singleton",
+          "singletonList",
+          "unmodifiableList"
+      )),
+
+      Map.entry("java.util.stream.Stream", Set.of(
+          "toList",
+          "toArray",
+          "forEach",
+          "forEachOrdered",
+          "count",
+          "anyMatch",
+          "allMatch",
+          "noneMatch",
+          "min",
+          "max",
+          "findFirst",
+          "findAny",
+          "reduce",
+          "collect"
+      )),
+
+      Map.entry("java.util.Map", Set.of(
+          "keySet",
+          "entrySet"
+      )),
+
+      Map.entry("java.lang.String", Set.of(
+          "join"
+      )),
+
+      Map.entry("java.lang.Iterable", Set.of(
+          "forEach"
+      )),
+
+      Map.entry("java.util.Arrays", Set.of(
+          "asList"
+      ))
+  );*/
 }

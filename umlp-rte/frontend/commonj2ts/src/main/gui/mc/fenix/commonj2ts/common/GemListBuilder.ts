@@ -279,16 +279,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     }
   }
 
-  override toArrayDeep(startIndex?: number, endIndex?: number): Array<E> {
-    return this.toArray(startIndex, endIndex);
-  }
-
   override async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
-    return this.toArraySync(startIndex, endIndex);
-  }
-
-  // protected asArrayMap: any<Array<E>> = {};
-  override toArray(startIndex?: number, endIndex?: number): Array<E> {
     // TODO Beachtung von startIndex und endIndex
     // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
     //   if (asArrayMap[{startIndex, endIndex} == null]) {
@@ -297,34 +288,7 @@ export abstract class GemListBuilder<E extends GemIdentifiable & GemBuildable> e
     //   return asArrayMap[{startIndex, endIndex}];
     // }
     if (this.buildFinished) {
-      return super.toArray(startIndex, endIndex);
-    }
-
-    if (this.asArray == null) {
-      this.asArray = [];
-      this.loadAll().then(async _ => {
-        for (const builderElemStorageElement of this.builderElemStorage) {
-          if (builderElemStorageElement.isPresentBuilder()) {
-            this.asArray.push(builderElemStorageElement.getBuilder());
-          } else {
-            this.asArray.push(await super.get(builderElemStorageElement.getID()));
-          }
-        }
-        });
-    }
-    return this.asArray;
-  }
-
-  override async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
-    // TODO Beachtung von startIndex und endIndex
-    // if (startIndex !== undefined && startIndex !== unll && endIndex !== undefined && endIndex !== null) {
-    //   if (asArrayMap[{startIndex, endIndex} == null]) {
-    //
-    //   }
-    //   return asArrayMap[{startIndex, endIndex}];
-    // }
-    if (this.buildFinished) {
-      return super.toArraySync(startIndex, endIndex);
+      return await super.toArrayDeepSync(startIndex, endIndex);
     }
 
     if (this.asArray == null) {

@@ -42,26 +42,27 @@ export class UserCreate extends UserCreateComponent {
 
   public override createUser(): (arg: void) => void {
     return $ => SehubManager.getBingoEntryList().then(entryList => {
-      entryList.toArraySync().then(e => {
+      entryList.toArrayDeepSync().then(e => {
         this.entries = e;
         this.error = "";
         if (!this.getNewUser().getUsername() || !this.getNewUser().getPassword() || !this.getNewUser().getEmail()) {
           return;
         }
-        let errorMessage = this.validateUser();
-        if (!errorMessage) {
-          this.permutation = this.getBoardPermutation();
-          this.buildMapping().then(mapping => {
-            //this.user.activated(ActivationStatus.AKTIVIERT);
-            this.getNewUser().setRegistrationDate(new Date());
-            this.getNewUser().setRole(SehubRole.DEVELOPER);
-            // this.getNewUser().setGridEntry1(mapping);
-            this.getNewUser().build();
-            this._router.navigate(['/Login']);
-          });
-        } else {
-          this.error = errorMessage;
-        }
+        this.validateUser().then(errorMessage => {
+          if (!errorMessage) {
+            this.permutation = this.getBoardPermutation();
+            this.buildMapping().then(mapping => {
+              //this.user.activated(ActivationStatus.AKTIVIERT);
+              this.getNewUser().setRegistrationDate(new Date());
+              this.getNewUser().setRole(SehubRole.DEVELOPER);
+              // this.getNewUser().setGridEntry1(mapping);
+              this.getNewUser().build();
+              this._router.navigate(['/Login']);
+            });
+          } else {
+            this.error = errorMessage;
+          }
+        });
       });
     });
   }
@@ -94,7 +95,7 @@ export class UserCreate extends UserCreateComponent {
     return this.error;
   }
 
-  private validateUser(): string {
+  private async validateUser(): Promise<string> {
     let res: string = '';
     // Check Email format
     if (!UserCreate.email.test(this.getNewUser().getEmail())) {
@@ -102,7 +103,7 @@ export class UserCreate extends UserCreateComponent {
     }
 
     // Check if user is unique
-    this.users.toArray().filter(user => {
+    this.users.stream().forEach((user : User) => {
       if (this.getNewUser().getUsername() === user.getUsername()) {
         res += ' Account "' + this.getNewUser().getUsername() + '"';
       }

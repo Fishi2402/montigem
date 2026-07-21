@@ -22,6 +22,8 @@ import de.se_rwth.commons.SourcePosition;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 
+import static umlp.jsweet.extension.common.FutureAdapter.isFutureAdaptedTypes;
+
 /**
  * This class does not adapt anything but throws warnings when finding Java Concepts that we cannot
  * transpile.
@@ -175,7 +177,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       Log.warn("0xEE005: " + ownerFqn + ".of(...) is not supported by our transpilation. "
               + "Use Collections.* helpers (e.g., Collections.emptyList/singletonList) "
               + "or Guava's Lists.newArrayList instead.",
-          getStartSourcePosition(getContext(),getCompilationUnit(),tree));
+          getStartSourcePosition(getContext(),getCurrentPath().getCompilationUnit(),tree));
       return;
     }
 
@@ -209,7 +211,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         case "synchronizedSortedSet":
           Log.warn("0xEE006: java.util.Collections." + methodName + "(...) is not supported by our transpilation. "
                   + "Use simple list/map operations or custom helpers instead.",
-              getStartSourcePosition(getContext(),getCompilationUnit(),tree));
+              getStartSourcePosition(getContext(),getCurrentPath().getCompilationUnit(),tree));
           return;
         default:
       }
@@ -227,7 +229,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
           Log.warn("0xEE008: java.util.Objects." + methodName + "(...) is not explicitly supported "
                   + "and may not behave as expected in transpiled code. "
                   + "Prefer requireNonNull/equals or implement comparison/hash logic explicitly.",
-              getStartSourcePosition(getContext(),getCompilationUnit(),tree));
+              getStartSourcePosition(getContext(),getCurrentPath().getCompilationUnit(),tree));
           return;
         default:
       }
@@ -239,7 +241,7 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
       Log.warn("0xEE009: Calls to " + ownerFqn + "." + methodName + "(...) are not explicitly supported. "
               + "Only java.time.LocalDateTime, java.time.LocalDate and java.util.Date "
               + "with their standard methods are supported in transpiled code.",
-          getStartSourcePosition(getContext(),getCompilationUnit(),tree));
+          getStartSourcePosition(getContext(),getCurrentPath().getCompilationUnit(),tree));
       return;
     }
 
@@ -248,17 +250,21 @@ public class JSweetCoCoChecker extends AbstractTreeScanner {
         || ownerFqn.startsWith("java.sql.")
         || ownerFqn.startsWith("java.security.")
         || ownerFqn.startsWith("java.lang.reflect.")) {
+      if(ownerFqn.endsWith("PrintStream")) {
+        // System.out and System.err are transpiled correctly no need to throw a Warning
+        return;
+      }
       Log.warn("0xEE003: Calls to " + ownerFqn + "." + methodName + " are not supported in transpiled code. "
               + "Move this logic to backend-only code or mark it with @BackendOnly/@Erased.",
-          getStartSourcePosition(getContext(),getCompilationUnit(),tree));
+          getStartSourcePosition(getContext(),getCurrentPath().getCompilationUnit(),tree));
       return;
     }
 
     if (ownerFqn.startsWith("java.util.concurrent.")) {
-      if (!ownerFqn.equals("java.util.concurrent.atomic.AtomicReference")) {
+      if (! (ownerFqn.equals("java.util.concurrent.atomic.AtomicReference") || isFutureAdaptedTypes(ownerFqn)) ) {
         Log.warn("0xEE004: java.util.concurrent APIs are not supported in transpiled code. "
                 + "Use async/await and @Synchronized instead of Java threads or executors.",
-            getStartSourcePosition(getContext(),getCompilationUnit(),tree));
+            getStartSourcePosition(getContext(), getCurrentPath().getCompilationUnit(),tree));
       }
     }
   }

@@ -208,13 +208,8 @@ public class ArrayStreamAdapterTest extends ArrayStreamAdapterTestTOP {
   public Consumer<Void> testToArray() {
     return (Void) -> {
       List<String> items = getInputStrings(Arrays.asList("one", "two", "three"));
-      Object[] arr = items.stream().toArray();
-      List<String> list = new ArrayList<>();
-      for (Object o : arr) {
-        list.add(String.valueOf(o));
-      }
-      String joined = String.join(", ", list);
-      setResultFieldEntry("toArray(): [" + joined + "]");
+      // TODO ensure that toArray throws an Error
+      items.stream().toArray();
     };
   }
 

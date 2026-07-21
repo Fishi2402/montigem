@@ -26,7 +26,7 @@ export class AddToFavorite extends AddToFavoriteComponent {
     }
 
     WeatherManager.getCityList().then(async val => {
-      this.cities = await val.toArraySync();
+      this.cities = await val.toArrayDeepSync();
       for await (const city of this.cities) {
         let value = city.getName();
         this.options.add(await new Option().__OptionConstructor(value));

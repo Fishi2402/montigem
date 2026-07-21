@@ -16,8 +16,6 @@ export interface IUMLPList<E> extends Collection<E> {
 
   lastIndexOf(o: any): Promise<number>;
 
-  map<T>(consumer: (element: E) => T): Promise<IUMLPList<T>>;
-
   // These two methods reprenset java.util.List#remove because if we have a List<Number> we cannot differentiate
   // between removing a specific element or removing an element at its index
   removeElement(element: E): Promise<boolean>;

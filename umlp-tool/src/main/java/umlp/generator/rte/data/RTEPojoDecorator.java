@@ -154,6 +154,7 @@ public class RTEPojoDecorator extends DomainTypeDecorator {
     createCheckMethods(domainClass, clazz);
 
     // Imports
+    addImports(domainClass, clazz);
     addExtendedImport(origCD, clazz);
     return clazz;
   }

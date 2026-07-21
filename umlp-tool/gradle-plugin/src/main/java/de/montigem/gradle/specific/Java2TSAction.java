@@ -82,6 +82,9 @@ public abstract class Java2TSAction implements WorkAction<Java2TSAction.Params> 
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    if(transpilationHandler.getErrorCount()>0) {
+      throw new RuntimeException("JSweet Transpile failed with errors.");
+    }
   }
 
   public interface Params extends WorkParameters {

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static def.dom.Globals.console;
 import static def.dom.Globals.document;
 
 @Component
@@ -127,10 +128,6 @@ public class TestUtilArrays extends TestUtilArraysTOP {
     return (Void) -> {
       int[] array = new int[] { 6, 5, 4, 3, 2, 1 };
       int[] squared = Arrays.stream(array).map(v -> v * v).toArray();
-
-      setResultFieldEntry("{ " +
-          "array: " + intArrayAsString(array) + ", " +
-          "squared: " + intArrayAsString(squared) + " }");
     };
   }
 
@@ -138,10 +135,6 @@ public class TestUtilArrays extends TestUtilArraysTOP {
     return (Void) -> {
       int[] array = new int[] { 6, 5, 4, 3, 2, 1 };
       int[] squared = Arrays.stream(array, 1, 3).map(v -> v * v).toArray();
-
-      setResultFieldEntry("{ " +
-          "array: " + intArrayAsString(array) + ", " +
-          "squared: " + intArrayAsString(squared) + " }");
     };
   }
 

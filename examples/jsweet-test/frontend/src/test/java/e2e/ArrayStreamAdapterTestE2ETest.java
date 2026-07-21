@@ -1,12 +1,17 @@
 package e2e;
 
+import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
 import jsweettest.test_infrastructure.AbstractJsweettestE2ETest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArrayStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
 
@@ -94,10 +99,6 @@ public class ArrayStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
     setInput(page, "Apple, Banana, Cherry");
     checkActionExact(page, "collectJoining", "collect(joining): Apple - Banana - Cherry");
 
-    // toArray is marked with >@Erased< by default jsweet config
-    //setInput(page, "one, two, three");
-    //checkActionExact(page, "btnToArray", "toArray(): [one,two,three]");
-
     setInput(page, "1, 2, 10");
     checkActionExact(page, "btnFindAny", "findAny(): 10");
 
@@ -106,6 +107,23 @@ public class ArrayStreamAdapterTestE2ETest extends AbstractJsweettestE2ETest {
 
     setInput(page, "1, 2, 3");
     checkActionExact(page, "noneMatch", "noneMatch(>10): true");
+  }
+
+  @Test
+  public void testToArrayThrowsError(Page page) {
+    List<String> consoleErrorLog = new ArrayList<>();
+    page.onConsoleMessage(cm -> {
+      if(cm.type().equals("error")) {
+        consoleErrorLog.add(cm.text());
+      }
+    });
+    page.waitForConsoleMessage(new Page.WaitForConsoleMessageOptions()
+            .setPredicate((ConsoleMessage msg) -> msg.type().equals("error")),
+        () -> page.locator(".btnToArray").click());
+
+    assertTrue(consoleErrorLog.stream().anyMatch(e -> e.contains(
+        "toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays."
+    )));
   }
 
   @Test

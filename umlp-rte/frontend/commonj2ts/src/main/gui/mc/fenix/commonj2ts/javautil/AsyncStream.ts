@@ -215,8 +215,8 @@ export class AsyncStream<T> implements AsyncIterable<T> {
   }
 
   // terminal
-  public async toArray(): Promise<AsyncList<T>> {
-    return this.toList();
+  public toArray(): never {
+    throw new Error("toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays.")
   }
 
   // terminal

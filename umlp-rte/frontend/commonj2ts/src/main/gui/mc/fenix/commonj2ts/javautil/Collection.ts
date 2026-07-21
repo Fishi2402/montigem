@@ -2,6 +2,8 @@ import {AsyncStream} from "./AsyncStream";
 
 export interface Collection<E> extends AsyncIterable<E> {
 
+  hashCode(): Promise<number>;
+
   // TODO actually different from IUMLPList#add since List#add has an overload with index
   add(indexOrElement: number | E, element?: E): Promise<boolean>;
 
@@ -32,8 +34,6 @@ export interface Collection<E> extends AsyncIterable<E> {
 
   size(): Promise<number>;
 
-  // TODO spliterator, stream, toArray
-
   // java.util.Iterator Interface
   iterator(): AsyncIterator<E>;
 
@@ -42,12 +42,15 @@ export interface Collection<E> extends AsyncIterable<E> {
   stream() : AsyncStream<E>;
 
   // TypeScript specifics
-  toArrayDeep(startIndex?: number, endIndex?: number): Array<any>;
-
   toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>>;
 
   [Symbol.asyncIterator](): AsyncIterator<E>;
 
   listIterator(from?: any): AsyncIterator<E>;
+
+  // TODO spliterator, stream, toArray
+  spliterator() : never;
+  parallelStream() : never;
+  toArray<T>(x?:any) : never;
 
 }

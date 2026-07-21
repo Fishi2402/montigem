@@ -109,22 +109,22 @@ afterEvaluate {
         if (adapterDir.isPresent()) {
           def file = new File(adapterDir.get().asFile, "jsweet-async-methods.json")
           if (file.exists()) {
-            def include = slurper.parse(file)["@Async"]?.get("include")
-            if (include) mergedList.addAll(include)
+            def exact = slurper.parse(file)["@Async"]?.get("exact")
+            if (exact) mergedList.addAll(exact)
           }
         }
         def cdAdapterDir = task.getCD2JavaJSweetAdapterDir()
         if (cdAdapterDir.isPresent()) {
           def file = new File(cdAdapterDir.get().asFile, "jsweet-async-methods.json")
           if (file.exists()) {
-            def include = slurper.parse(file)["@Async"]?.get("include")
-            if (include) mergedList.addAll(include)
+            def exact = slurper.parse(file)["@Async"]?.get("exact")
+            if (exact) mergedList.addAll(exact)
           }
         }
       }
       def out = outputFile.get().asFile
       out.parentFile.mkdirs()
-      out.text = JsonOutput.prettyPrint(JsonOutput.toJson(["@Async": ["include": mergedList]]))
+      out.text = JsonOutput.prettyPrint(JsonOutput.toJson(["@Async": ["exact": mergedList]]))
     }
   }
 

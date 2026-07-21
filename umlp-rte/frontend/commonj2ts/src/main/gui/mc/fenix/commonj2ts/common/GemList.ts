@@ -219,10 +219,10 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   public async addAll(idxOrElems: number | Collection<E>, elems?: Collection<E>): Promise<boolean> {
     if (elems === undefined || elems === null && Symbol.asyncIterator in Object(idxOrElems)) {
-      var gemIds = await (await new AsyncList().__AsyncListConstructor(<Collection<E>>idxOrElems)).map((elem: E) => elem.getGemId());
+      var gemIds = await (await new AsyncList().__AsyncListConstructor(<Collection<E>>idxOrElems)).stream().map((elem: E) => elem.getGemId()).toList();
       await this._internal_addAndSync(0, await new AsyncList<number>().__AsyncListConstructor(gemIds));
     } else {
-      await this._internal_addAndSync(<number>idxOrElems, await (await new AsyncList().__AsyncListConstructor(<Collection<E>>elems)).map((elem: E) => elem.getGemId()));
+      await this._internal_addAndSync(<number>idxOrElems, await (await new AsyncList().__AsyncListConstructor(<Collection<E>>elems)).stream().map((elem: E) => elem.getGemId()).toList());
     }
     return true;
   }
@@ -505,16 +505,9 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return false; // TODO
   }
 
-  // protected asArrayMap: any<Array<E>> = {};
-  toArray(startIndex?: number, endIndex?: number): Array<E> {
-    // TODO Beachtung von startIndex und endIndex
-    this.toArraySync(startIndex, endIndex);
-    return this.asArray == null ? [] : [...this.asArray];
-  }
-
   asArrayPromise: Promise<Array<E>> = null;
 
-  async toArraySync(startIndex?: number, endIndex?: number): Promise<Array<E>> {
+  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
     if (this.asArrayPromise == null) {
       this.asArrayPromise = new Promise(async resolve => {
         // TODO Beachtung von startIndex und endIndex
@@ -536,14 +529,6 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this.asArrayPromise;
   }
 
-  toArrayDeep(startIndex?: number, endIndex?: number): Array<E> {
-    return this.toArray(startIndex, endIndex);
-  }
-
-  async toArrayDeepSync(startIndex?: number, endIndex?: number): Promise<Array<any>> {
-    return this.toArraySync(startIndex, endIndex);
-  }
-
   async forEach(consumer: (element: E) => void): Promise<void> {
     for await (const e of this) {
       consumer(e);
@@ -554,21 +539,13 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return AsyncStream.of(this);
   }
 
-  async map<T>(consumer: (element: E) => T): Promise<AsyncList<T>> {
-    return Promise.resolve(await new AsyncList<T>().__AsyncListConstructor((await this.toArray()).map(consumer)));
-  }
-
   public async sort(comp?: any): Promise<void> {
-    const listAsArray = await this.toArraySync()
+    const listAsArray = await this.toArrayDeepSync()
     listAsArray.sort(comp)
     // Inspired by java.util.Collection#sort
     for (const [index, element] of listAsArray.entries()) {
       await this.set(index, element)
     }
-  }
-
-  join(delimiter: string): string {
-    return [this.toArray()].join(delimiter);
   }
 
   // TODO remove
@@ -581,6 +558,21 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
   __internalArray() : Array<E> {
     throw Error("__internalArray is not allowed, since GemLists are always asynchronous. " +
       "Please use GemListUtil#toArraySync if you need a synchronus array.");
+  }
+
+  /** @throws — returns Spliterator<E>, not supported */
+  spliterator(): never {
+    throw new Error('spliterator() returns Spliterator<E>. Not supported.');
+  }
+
+  /** @throws — returns Stream<E>, not supported */
+  parallelStream(): never {
+    throw new Error('parallelStream() returns Stream<E>. Not supported.');
+  }
+
+  /** @throws — returns Object[], not supported */
+  toArray<T>(args?: any): never {
+    throw new Error('toArray() not supported use GemListUtil#toArraySync if you need JavaScript arrays.');
   }
 }
 

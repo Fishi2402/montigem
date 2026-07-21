@@ -51,6 +51,10 @@ public class FutureAdapter extends AbstractAdapter {
       return false;
     }
     String fqn = types().erasure(type).toString();
+    return isFutureAdaptedTypes(fqn);
+  }
+
+  public static boolean isFutureAdaptedTypes(String fqn){
     return fqn.startsWith("java.util.concurrent.CompletableFuture") || fqn.startsWith("java.util.concurrent.Future") || fqn.startsWith("java.util.concurrent.CompletionStage");
   }
 

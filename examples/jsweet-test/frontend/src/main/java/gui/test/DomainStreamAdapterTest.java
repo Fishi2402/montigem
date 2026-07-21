@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static def.dom.Globals.console;
 import static def.dom.Globals.document;
 
 @Component
@@ -186,12 +187,8 @@ public class DomainStreamAdapterTest extends DomainStreamAdapterTestTOP {
 
   public Consumer<Void> testToArray() {
     return (Void) -> {
-      Object[] arr = getDomainObjects().stream().toArray();
-      List<C2> list = new ArrayList<>();
-      for (Object o : arr) {
-        list.add((C2) o);
-      }
-      setResultFieldEntry("toArray(): " + names(list));
+      console.log("Fuck you");
+      getDomainObjects().stream().toArray();
     };
   }
 
