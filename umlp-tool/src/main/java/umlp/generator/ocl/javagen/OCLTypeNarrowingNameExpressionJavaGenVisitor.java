@@ -5,23 +5,18 @@ import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.SymTypeRelations;
-import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
 import static de.monticore.types3.SymTypeRelations.normalize;
-import static de.monticore.types3.TypeCheck3.typeOf;
 
 public class OCLTypeNarrowingNameExpressionJavaGenVisitor extends ExpressionsBasisJavaGenVisitor {
   protected final OCLTypeNarrowingContext typeNarrowingContext;
@@ -33,22 +28,28 @@ public class OCLTypeNarrowingNameExpressionJavaGenVisitor extends ExpressionsBas
 
   @Override
   public void traverse(ASTNameExpression node) {
-    SymTypeExpression exprType = normalize(typeOf(node));
+    Optional<SymTypeExpression> exprType = resolveExpressionType(node);
+    Optional<ISymbol> sourceSymbol =
+        exprType.flatMap(type -> type.getSourceInfo().getSourceSymbol());
 
     // static field
-    if (exprType.getSourceInfo().getSourceSymbol().isPresent()
-        && OOSymbolsMill.typeDispatcher().isOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get())
-        && OOSymbolsMill.typeDispatcher().asOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get()).isIsStatic()) {
-      getPrinter().print(OOSymbolsMill.typeDispatcher().asOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get()).getFullName());
+    if (sourceSymbol.isPresent()
+        && OOSymbolsMill.typeDispatcher().isOOSymbolsField(sourceSymbol.get())
+        && OOSymbolsMill.typeDispatcher().asOOSymbolsField(sourceSymbol.get()).isIsStatic()) {
+      getPrinter().print(
+          OOSymbolsMill.typeDispatcher().asOOSymbolsField(sourceSymbol.get()).getFullName());
     }
 
     // function references
-    else if (exprType.isFunctionType() && exprType.asFunctionType().hasSymbol()) {
-      SymTypeOfFunction funcType = exprType.asFunctionType();
+    else if (exprType.isPresent()
+        && exprType.get().isFunctionType()
+        && exprType.get().asFunctionType().hasSymbol()) {
+      SymTypeExpression resolvedExprType = exprType.get();
+      SymTypeOfFunction funcType = resolvedExprType.asFunctionType();
       String funcName = funcType.getSymbol().getName();
 
       getPrinter().print("((");
-      getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(exprType));
+      getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(resolvedExprType));
       getPrinter().print(") ");
       if (funcType.getSymbol() instanceof MethodSymbol) {
         MethodSymbol methodSym = (MethodSymbol) funcType.getSymbol();
@@ -107,5 +108,13 @@ public class OCLTypeNarrowingNameExpressionJavaGenVisitor extends ExpressionsBas
         getPrinter().print(")");
       }
     }
+  }
+
+  protected Optional<SymTypeExpression> resolveExpressionType(ASTNameExpression node) {
+    if (!(node.getEnclosingScope() instanceof IBasicSymbolsScope enclosingScope)) {
+      return Optional.empty();
+    }
+    return WithinScopeBasicSymbolsResolver.resolveNameAsExpr(enclosingScope, node.getName())
+        .map(type -> normalize(type));
   }
 }

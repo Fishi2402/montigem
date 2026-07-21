@@ -2,7 +2,6 @@ package umlp.generator.ocl.javagen.field_access;
 
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types3.TypeCheck3;
 import umlp.generator.ocl.TypeUtil;
 
 public class FieldAccessInfo {
@@ -20,8 +19,12 @@ public class FieldAccessInfo {
   public FieldAccessKind getKind() { return kind; }
   public SymTypeExpression getFieldType() { return fieldType; }
 
-  public static FieldAccessInfo from(ASTFieldAccessExpression node) {
-    SymTypeExpression ownerType = resolveOwnerType(node);
+  public static FieldAccessInfo from(
+      ASTFieldAccessExpression node,
+      SymTypeExpression qualifierType,
+      SymTypeExpression expressionType
+  ) {
+    SymTypeExpression ownerType = resolveOwnerType(node, qualifierType, expressionType);
     SymTypeExpression fieldType = null;
 
     boolean isCollection =
@@ -63,11 +66,13 @@ public class FieldAccessInfo {
     );
   }
 
-  private static SymTypeExpression resolveOwnerType(ASTFieldAccessExpression node) {
-    SymTypeExpression exprType = TypeCheck3.typeOf(node.getExpression());
-
-    if (exprType.isIntersectionType()) {
-      var parts = exprType.asIntersectionType().getIntersectedTypeSet();
+  private static SymTypeExpression resolveOwnerType(
+      ASTFieldAccessExpression node,
+      SymTypeExpression qualifierType,
+      SymTypeExpression expressionType
+  ) {
+    if (qualifierType.isIntersectionType()) {
+      var parts = qualifierType.asIntersectionType().getIntersectedTypeSet();
       if (!parts.isEmpty()
           && parts.stream()
           .map(SymTypeExpression::printFullName)
@@ -88,7 +93,7 @@ public class FieldAccessInfo {
       }
     }
 
-    return TypeCheck3.typeOf(node);
+    return expressionType;
   }
 
 }

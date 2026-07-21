@@ -250,8 +250,22 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
 
   @Override
   public void handle(ASTFieldAccessExpression node) {
+    SymTypeExpression nodeType = TypeCheck3.typeOf(node);
+    // Qualifiers of static members can be package or type names without an expression type.
+    // The outermost field access is an expression, so its source symbol or qualifier provides
+    // the static owner without type-checking the qualifier as an expression.
+    Optional<SymTypeExpression> staticMemberOwner =
+        OCLStaticMemberJavaGenHelper.getOwnerType(node, nodeType);
+    if (staticMemberOwner.isPresent()) {
+      getPrinter().print(
+          SymTypeExpression2JavaConverter.getJavaTypePrint(staticMemberOwner.get()));
+      getPrinter().print(".");
+      getPrinter().print(node.getName());
+      return;
+    }
+
     // functions should not be replaced by getter name conversion
-    if (TypeCheck3.typeOf(node).isFunctionType()) {
+    if (nodeType.isFunctionType()) {
       node.getExpression().accept(getTraverser());
       getPrinter().print(".");
       getPrinter().print(node.getName());
@@ -261,10 +275,9 @@ public class CommonExpressionsOCLJavaGenVisitor extends CommonExpressionsJavaGen
     // UMLP specific field access
     node.getExpression().accept(getTraverser());
 
-    FieldAccessInfo info = FieldAccessInfo.from(node);
-
     SymTypeExpression lhsType = TypeCheck3.typeOf(node.getExpression());
-    SymTypeExpression fullType = TypeCheck3.typeOf(node);
+    SymTypeExpression fullType = nodeType;
+    FieldAccessInfo info = FieldAccessInfo.from(node, lhsType, fullType);
     if (OCLCollectionSymTypeRelations.isOCLCollection(lhsType) && OCLCollectionSymTypeRelations.isOCLCollection(fullType)) {
       // flattening
 
