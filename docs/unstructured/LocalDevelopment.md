@@ -34,6 +34,23 @@ Note on the link location: the tsconfig `paths` entries resolve relative to the 
 `baseUrl`. In projects where the Angular app is assembled in `frontend/build/app/` (baseUrl
 `./`), place the link there instead, e.g. `file("$buildDir/app/networktest")`.
 
+**Warning (Windows):** `createSymlink` creates a directory *junction*. Junctions forward
+recursive deletes into the target — a `gradle clean` (or any task that wipes `build/`)
+in the consuming project can then **delete files inside your umlp checkout**. Prefer a
+`Sync` copy task instead of the link when working on Windows:
+
+````gradle
+def copyLocalCommonj2ts = tasks.register("copyLocalCommonj2ts", Sync) {
+  from("$PATH_TO_UMLP/umlp/umlp-rte/frontend/commonj2ts") {
+    exclude("build/**", "node_modules/**")
+  }
+  into(layout.buildDirectory.dir("app/commonj2ts-local"))
+}
+tasks.named("createSymlink") {
+  dependsOn(copyLocalCommonj2ts)
+}
+````
+
 ## Java RTE
 Use the property `useLocalRepo=true` in project/gradle.properties and `gradle publishToMavenLocal` in the `umlp` project.
 Alternative: add `includeBuild(".../umlp")` in project/settings.gradle.

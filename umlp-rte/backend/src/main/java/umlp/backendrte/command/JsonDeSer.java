@@ -14,6 +14,16 @@ public interface JsonDeSer<T> extends DeSer<T> {
   }
 
   void buildJson(T obj, JsonPrinter printer);
+
+  /**
+   * Wire identifier of the type this DeSer handles, e.g. "cdbase.ConcreteBaseClass".
+   * Must match the typeParameter keys used by the CommandResultDeSers. Generated
+   * domain DeSers override this; null means the DeSer has no wire identity.
+   */
+  default String getTypeIdentifier() {
+    return null;
+  }
+
   default String serialize(T obj){
     JsonPrinter printer = new JsonPrinter(true);
     buildJson(obj, printer);

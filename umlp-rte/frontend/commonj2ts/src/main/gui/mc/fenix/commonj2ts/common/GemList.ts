@@ -298,7 +298,7 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
 
   // TODO this looks very wrong to me -> removeAll gemIds?
   // Old version: await this._internal_removeAndSync(await gemIDs.map(e => e.getGemId()));
-  public async removeAll(elems: AsyncList<E>): Promise<boolean> {
+  public async removeAll(elems: Collection<E>): Promise<boolean> {
     for await(const element of elems) {
       await this.removeElement(element)
     }

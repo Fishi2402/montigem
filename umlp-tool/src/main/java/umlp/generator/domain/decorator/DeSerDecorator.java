@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.se_rwth.commons.Joiners;
 import umlp.UMLPMill;
 import umlp.generator.util.PathUtil;
 
@@ -76,6 +77,10 @@ public class DeSerDecorator extends DomainClassDecorator {
 
     getCD4C().addMethod(deSer, getFromJsonTemplate(), originalClassName);
 
+    // Same key format as the CommandResultDeSer switches, e.g. "cdbase.ConcreteBaseClass"
+    getCD4C().addMethod(deSer, getGetTypeIdentifierTemplate(),
+        Joiners.DOT.join(getPackageName(origCD, DEFAULT_PACKAGE), originalClassName));
+
     addDeSerAddons(deSer, cdClass);
 
     addImports(cdClass, deSer);
@@ -106,6 +111,10 @@ public class DeSerDecorator extends DomainClassDecorator {
 
   protected String getFromJsonTemplate() {
     return "umlp.deser.FromJson";
+  }
+
+  protected String getGetTypeIdentifierTemplate() {
+    return "umlp.deser.GetTypeIdentifier";
   }
 
   protected void addSerAndDeserMethod(String cdName, String originalClassName, ASTCDClass deSer, ASTCDAttribute attr) {

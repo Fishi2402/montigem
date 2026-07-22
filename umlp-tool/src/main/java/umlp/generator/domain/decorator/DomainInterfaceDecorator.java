@@ -2,6 +2,7 @@
 
 package umlp.generator.domain.decorator;
 
+import de.monticore.cd.methodtemplates.CD4CTemplateHelper;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
@@ -59,6 +60,18 @@ public class DomainInterfaceDecorator extends DomainTypeDecorator {
     // Add method signatures for all Methods in Interface
     addMethodSignatures(domainInterface, cdInterface);
     addDeepEqualsMethod(domainInterface, cdInterface);
+
+    // Self-registration with the manager owning the concrete type (monticore#5062);
+    // implemented (covariantly) by every concrete domain class
+    CD4CTemplateHelper registerMe = new CD4CTemplateHelper();
+    registerMe.method("public abstract " + name + " _registerMe()");
+    cdInterface.addCDMember(registerMe.getMethod().get());
+
+    // Every domain object knows its DeSer (monticore#5062)
+    CD4CTemplateHelper getDeSer = new CD4CTemplateHelper();
+    getDeSer.method("public abstract JsonDeSer<? extends GemIdentifiable> getDeSer()");
+    cdInterface.addCDMember(getDeSer.getMethod().get());
+    getCD4C().addImport(cdInterface, umlp.generator.util.PathUtil.getBackendRTECommandPath("JsonDeSer"));
 
     // Imports
     addImports(domainInterface, cdInterface);

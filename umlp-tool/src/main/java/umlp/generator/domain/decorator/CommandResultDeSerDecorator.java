@@ -110,6 +110,7 @@ public class CommandResultDeSerDecorator extends AbstractDecorator {
     getCD4C().addImport(clazz, "de.monticore.symboltable.serialization.json.JsonElement");
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommonPath("BaseClassObjectMapper"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResultDeSer"));
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("CommandResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("SimpleResult"));
     getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("ListResult"));

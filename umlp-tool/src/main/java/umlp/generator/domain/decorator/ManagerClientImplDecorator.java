@@ -143,6 +143,11 @@ public class ManagerClientImplDecorator extends AbstractDecorator {
     } else {
       getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoOpt", name, concreteSubclassesOrderedByDistance);
       getCD4C().addMethod(managerClass, "umlp.managerimpl.IsLoaded", name, concreteSubclassesOrderedByDistance);
+      if (!domainClass.getModifier().isAbstract()) {
+        // Implements the abstract _doRegister<X> manager operation; objects
+        // dispatch themselves here via _registerMe() (monticore#5062)
+        getCD4C().addMethod(managerClass, "umlp.managerclientimpl.DoRegister", name);
+      }
     }
     getCD4C().addMethod(managerClass, "umlp.managerclientimpl.LoadAllWithIDs", name, getPackageName(origCD, DEFAULT_PACKAGE), isSingleton, domainClass.getModifier().isAbstract());
 

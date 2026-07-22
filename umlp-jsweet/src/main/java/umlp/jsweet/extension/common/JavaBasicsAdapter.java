@@ -17,6 +17,7 @@ import standalone.com.sun.source.tree.MethodTree;
 import standalone.com.sun.source.tree.ParenthesizedTree;
 import standalone.com.sun.source.tree.Tree;
 import standalone.com.sun.source.tree.TypeCastTree;
+import standalone.com.sun.source.util.TreeScanner;
 import umlp.jsweet.extension.AbstractAdapter;
 
 import javax.lang.model.element.Element;
@@ -62,6 +63,12 @@ public class JavaBasicsAdapter extends AbstractAdapter {
       case "java.util.Arrays":
         if (substituteMethodInvocation_JavaUtilArrays(invocation)) {
           getPrinter().useModule(new ModuleImportDescriptor("Arrays", getLibraryLocation()));
+          return true;
+        }
+        break;
+      case "java.lang.StringBuilder":
+      case "java.lang.StringBuffer":
+        if (substituteAsyncStringBuilderAppend(invocation)) {
           return true;
         }
         break;
@@ -324,6 +331,55 @@ public class JavaBasicsAdapter extends AbstractAdapter {
       }
     }
     return false;
+  }
+
+  // An awaited append argument must not land in the core adapter's synchronous append lambda.
+  private boolean substituteAsyncStringBuilderAppend(MethodInvocationElement invocation) {
+    if (!invocation.getMethodName().equals("append") || invocation.getArgumentCount() != 1) {
+      return false;
+    }
+    if (!printsAwait(ExtendedElementFactory.toTree(invocation.getArgument(0)))) {
+      return false;
+    }
+    print("(/* async append */ await (async sb => { sb.str += <any>")
+        .print(invocation.getArgument(0)).print("; return sb; })(")
+        .print(invocation.getTargetExpression()).print("))");
+    return true;
+  }
+
+  // True if printing this expression emits a top-level await (not inside a nested lambda).
+  private boolean printsAwait(Tree tree) {
+    if (tree == null) {
+      return false;
+    }
+    Boolean found = tree.accept(new TreeScanner<Boolean, Void>() {
+      @Override
+      public Boolean visitMethodInvocation(MethodInvocationTree inv, Void unused) {
+        if (context.isAwaitInvocation(inv) || isStringJoin(inv)) {
+          return true;
+        }
+        return super.visitMethodInvocation(inv, unused);
+      }
+
+      @Override
+      public Boolean visitLambdaExpression(LambdaExpressionTree lambda, Void unused) {
+        // awaits inside a nested lambda stay inside that lambda
+        return false;
+      }
+
+      @Override
+      public Boolean reduce(Boolean r1, Boolean r2) {
+        return Boolean.TRUE.equals(r1) || Boolean.TRUE.equals(r2);
+      }
+    }, null);
+    return Boolean.TRUE.equals(found);
+  }
+
+  private boolean isStringJoin(MethodInvocationTree invocation) {
+    Element method = Util.getElement(invocation.getMethodSelect());
+    return method != null && method.getSimpleName().contentEquals("join")
+        && method.getEnclosingElement() != null
+        && method.getEnclosingElement().toString().equals("java.lang.String");
   }
 
   private boolean isAsyncFunctionalInterface(String targetType) {

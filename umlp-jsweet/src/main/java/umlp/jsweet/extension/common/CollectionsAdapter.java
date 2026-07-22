@@ -458,7 +458,8 @@ public class CollectionsAdapter extends AbstractAdapter {
 
   protected void printAwaitForEachLoop(EnhancedForLoopTree loop, String indexVarName) {
     print("for await(" + Java2TypeScriptTranslator.VAR_DECL_KEYWORD + " ")
-        .print(loop.getVariable().getName().toString() + " of ");
+        // Rename JS keywords (e.g. a variable named "function") like the body does
+        .print(adapterUtils.getJSweetVariableName(loop.getVariable().getName().toString()) + " of ");
     print(loop.getExpression()).print(" ?? (async function* () {})()");
     getPrinter().print(") {").println().startIndent().printIndent()
         .printIndent().print(loop.getStatement())

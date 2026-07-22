@@ -26,6 +26,18 @@ export class NotImplementedException extends Error {
   }
 
   /**
+   * Async-constructor convention used by the JSweet transpilation
+   * (AsyncConstructorAdapter): transpiled Java `new NotImplementedException(msg)`
+   * becomes `await new NotImplementedException().__NotImplementedExceptionConstructor(msg)`.
+   */
+  public async __NotImplementedExceptionConstructor(message?: any, cause?: any, enableSuppression?: any, writableStackTrace?: any): Promise<NotImplementedException> {
+    if (message !== undefined && message !== null) {
+      this.message = message;
+    }
+    return this;
+  }
+
+  /**
    *
    * @return {string}
    */

@@ -144,6 +144,8 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     getCD4C().addMethod(clazz, getBuildTemplate(), domainClass.getName());
     createIsBuildFinishedMethod(clazz);
     createIsBuildableMethod(clazz);
+    createGetDeSerMethod(domainClass, clazz);
+    createRegisterMeMethod(domainClass, clazz);
 
     // Methods for class attributes
     createGetterSetterForAttrs(domainClass, clazz, getNonDerivedAttributes(attributes.attrFields), false);
@@ -399,6 +401,30 @@ public class DomainClassDecorator extends DomainTypeDecorator implements OwnComm
     String asType = returnType.contains("<")? returnType.substring(0, returnType.indexOf("<")): returnType;
     getCD4C().addMethod(clazz, getExecuteCommandTemplate(), StringTransformations.capitalize(command.getName()),
         params, returnType, call, asType);
+  }
+
+  protected void createGetDeSerMethod(ASTCDClass domainClass, ASTCDClass clazz) {
+    // Abstract classes have no DeSer; they declare getDeSer() abstract so the
+    // method is statically callable on any domain type (also after JSweet)
+    getCD4C().addMethod(clazz, getGetDeSerTemplate(), domainClass.getName(),
+        domainClass.getModifier().isAbstract());
+    getCD4C().addImport(clazz, PathUtil.getBackendRTECommandPath("JsonDeSer"));
+  }
+
+  protected String getGetDeSerTemplate() {
+    return "umlp.domain.GetDeSer";
+  }
+
+  protected void createRegisterMeMethod(ASTCDClass domainClass, ASTCDClass clazz) {
+    getCD4C().addMethod(clazz, getRegisterMeTemplate(),
+        domainClass.getName(),
+        getCorrectManager(domainClass),
+        domainClass.getModifier().isAbstract(),
+        TagLookUp.isSingleton(domainClass));
+  }
+
+  protected String getRegisterMeTemplate() {
+    return "umlp.domain.RegisterMe";
   }
 
   protected void addImportsForCommands(ASTCDClass domainType, ASTCDClass cdType) {

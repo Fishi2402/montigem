@@ -130,6 +130,7 @@ public class ManagerMockDecorator extends AbstractDecorator {
       } else {
         getCD4C().addMethod(managerClass, "umlp.managermock.DoGetList", name, concreteSubclassesInclSelf);
         getCD4C().addMethod(managerClass, "umlp.managermock.DoGetFilteredList", name, concreteSubclassesInclSelf);
+        getCD4C().addMethod(managerClass, "umlp.managermock.DoRegister", name);
       }
       
       if (isSingleton) {

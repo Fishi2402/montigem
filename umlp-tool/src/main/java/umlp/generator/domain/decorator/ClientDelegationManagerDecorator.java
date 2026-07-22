@@ -167,7 +167,7 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
   }
 
   protected String getDelegatedOptTemplate() {
-    return "umlp.delegationmanager.DelegatedOpt";
+    return "umlp.delegationmanager.ClientDelegatedOpt";
   }
 
   protected String getDelegatedGetListTemplate() {

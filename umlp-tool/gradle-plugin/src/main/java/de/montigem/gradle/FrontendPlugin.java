@@ -55,7 +55,7 @@ import static de.montigem.gradle.FrontendBasePlugin.getProjectProperty;
 import static de.montigem.gradle.FrontendBasePlugin.inRTE;
 import static de.montigem.gradle.FrontendBasePlugin.inUMLP;
 import static de.montigem.gradle.FrontendBasePlugin.useLocalDependencies;
-import static de.montigem.gradle.FrontendBasePlugin.mcVersion;
+import static de.montigem.gradle.FrontendBasePlugin.umlpVersion;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_GUI_SYMBOLS_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_IMPORT_MAP_CONFIG;
 import static de.montigem.gradle.MGBasePlugin.MONTIGEM_MODULE_UMLP_MODELS_CONFIG;
@@ -418,7 +418,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
       project.getDependencies().add("runtimeOnly", project.project(":umlp-jsweet"));
     }
     else {
-      project.getDependencies().add(JSWEET_CONFIG, "umlp:umlp-jsweet:" + mcVersion(project));
+      project.getDependencies().add(JSWEET_CONFIG, "umlp:umlp-jsweet:" + umlpVersion(project));
     }
   }
 
@@ -460,7 +460,7 @@ public abstract class FrontendPlugin implements Plugin<Project> {
       project.getDependencies().add(JSWEET_CONFIG, project.project(":umlp-jsweet"));
     }
     else {
-      project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + mcVersion(project));
+      project.getDependencies().add("implementation", "umlp:umlp-jsweet:" + umlpVersion(project));
     }
 
     // Add dependency to jsweet-core, to import the annotations (such as @Erased)

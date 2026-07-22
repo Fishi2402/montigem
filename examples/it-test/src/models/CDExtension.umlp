@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-import Enums.*;
+import CDBase.*;
 
-<<extends="Enums">>
+<<extends="CDBase">>
 umlp CDExtension {
-  class Extension extends Foo;
-
+  class Extension extends BaseClass {
+    int bar;
+  }
 }
-

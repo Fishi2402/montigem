@@ -46,7 +46,12 @@ export abstract class AggregatedCommandDeSer {
     }
     const commandType: string = jsonObject["commandType"];
     if (!this.deSerMap.has(commandType)) {
-      Log.error("Can not find deSer for commandType " + commandType);
+      // Not an error: aggregated DeSers are chained by the generated
+      // CommandObjectMapper (app DeSer first, imported-domain DeSers as
+      // fallback). A miss here is expected for every broadcast of an imported
+      // domain and used to flood the console with errors on live updates.
+      // The mapper logs when ALL DeSers in the chain fail.
+      Log.debug("No deSer for commandType " + commandType + ", trying next in chain", "AggregatedCommandDeSer");
       return null;
     }
     return await this.deSerMap.get(commandType).fromJson(jsonObject);

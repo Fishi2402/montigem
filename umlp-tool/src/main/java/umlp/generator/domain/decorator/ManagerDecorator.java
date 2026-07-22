@@ -130,6 +130,12 @@ public class ManagerDecorator extends AbstractDecorator {
         getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, true);
         getCD4C().addMethod(managerClass, "umlp.manager.IsLoaded", name, false);
       }
+      if (!isSingleton && !domainClass.getModifier().isAbstract()) {
+        // Registration as a first-class manager operation; the object dispatches
+        // itself here via _registerMe() (monticore#5062)
+        getCD4C().addMethod(managerClass, "umlp.manager.Register", name, true);
+        getCD4C().addMethod(managerClass, "umlp.manager.Register", name, false);
+      }
       getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, true);
       getCD4C().addMethod(managerClass, "umlp.manager.Opt", name, false);
 

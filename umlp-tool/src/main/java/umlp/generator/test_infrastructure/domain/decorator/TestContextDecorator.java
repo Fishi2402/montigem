@@ -13,6 +13,7 @@ import umlp.generator.domain.decorator.ManagerDecorator;
 import umlp.generator.util.PathUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
@@ -47,6 +48,15 @@ public class TestContextDecorator extends AbstractDecorator {
 
     // Attributes
     getCD4C().addAttribute(testContextClass, true, true,"protected " + name + ManagerDecorator.SUFFIX + " manager");
+    List<ASTCDCompilationUnit> extendedDefinitions = getExtendedDefinitions(origCD);
+    List<String> extendedCDNames = extendedDefinitions.stream()
+        .map(cd -> cd.getCDDefinition().getName())
+        .collect(Collectors.toList());
+    extendedCDNames.forEach(extendedCDName -> {
+      getCD4C().addAttribute(testContextClass, true, true,
+          "protected " + extendedCDName + ManagerDecorator.SUFFIX + " "
+              + StringTransformations.uncapitalize(extendedCDName + ManagerDecorator.SUFFIX));
+    });
     getCD4C().addAttribute(testContextClass, true, true, "protected CommandManager commandManager");
     getCD4C().addAttribute(testContextClass, true, true, "protected GeneralErrorCollector generalErrorCollector");
 
@@ -60,11 +70,14 @@ public class TestContextDecorator extends AbstractDecorator {
     getCD4C().addConstructor(testContextClass, "umlp.common.BasicConstructor", testContextClass.getName(), testContextClass.getCDAttributeList());
 
     // Methods
-    getCD4C().addMethod(testContextClass, "umlp.testcontext.FromCurrentContext", name, relevantClasses);
-    getCD4C().addMethod(testContextClass, "umlp.testcontext.Activate", name, relevantClasses);
-    getCD4C().addMethod(testContextClass, "umlp.testcontext.Clear", name, relevantClasses);
+    getCD4C().addMethod(testContextClass, "umlp.testcontext.FromCurrentContext", name, relevantClasses, extendedCDNames);
+    getCD4C().addMethod(testContextClass, "umlp.testcontext.Activate", name, relevantClasses, extendedCDNames);
+    getCD4C().addMethod(testContextClass, "umlp.testcontext.Clear", name, relevantClasses, extendedCDNames);
 
     // Imports
+    extendedDefinitions.forEach(extendedDefinition -> getCD4C().addImport(testContextClass,
+        getPackageName(extendedDefinition, DEFAULT_PACKAGE) + "."
+            + extendedDefinition.getCDDefinition().getName() + ManagerDecorator.SUFFIX));
     getCD4C().addImport(testContextClass, PathUtil.getBackendRTECommandPath("CommandManager"));
     getCD4C().addImport(testContextClass, PathUtil.getBackendRTECommonPath("GeneralErrorCollector"));
     getCD4C().addImport(testContextClass, PathUtil.getBackendRTEUtilPath("TestContext"));
