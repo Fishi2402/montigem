@@ -282,7 +282,7 @@ public class AsyncConstructorAdapter extends AbstractAdapter {
       if (i > 0) print(", ");
       print(adapterUtils.getJSweetParameterName(coreParams.get(i)) + "?: any");
     }
-    if(clazz.isUnnamed() || className.isBlank()) {
+    if(clazz.getSimpleName().isEmpty() || className.isBlank()) {
       className = getAnonymousSuperType(clazz).getSimpleName().toString();
     }
     print("): Promise<"+className+"> {").println().startIndent();
