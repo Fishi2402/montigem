@@ -63,6 +63,7 @@ build_no_containers:
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
     - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log) >&2"
+    - "mv build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-*.vsix build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp.vsix"
     - echo "packageUMLPWithGUIVscodePlugin finished"
     - "cd .."
     # >(tee -a ...) starts tee background process, wait to ensure everything is written to
@@ -110,6 +111,7 @@ build_intellij_plugin:
     - mkdir "${CI_PROJECT_DIR}/tmpdir"
     - "export _JAVA_OPTIONS=-Djava.io.tmpdir=${CI_PROJECT_DIR}/tmpdir"
     - "gradle :umlp-intellij-plugin:build -P buildIntelliJPlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 | tee -a $CI_PROJECT_DIR/build.log"
+    - "mv umlp-intellij-plugin/build/distributions/umlp-intellij-plugin-*.zip umlp-intellij-plugin/build/distributions/umlp-intellij-plugin.zip"
   artifacts:
     when: always
     paths:
@@ -134,6 +136,7 @@ build_with_deploy:
     - export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
     - "cd umlp-tool"
     - "gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $CI_PROJECT_DIR/build.log 2> >(tee -a $CI_PROJECT_DIR/build.log >&2)"
+    - "mv build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp-*.vsix build/generated-sources/UMLPWithGUI/plugins/umlpwithgui-vscode-plugin/umlpwithgui-lsp.vsix"
     - echo "packageUMLPWithGUIVscodePlugin finished"
     - "cd .."
     # >(tee -a ...) starts tee background process, wait to ensure everything is written to
