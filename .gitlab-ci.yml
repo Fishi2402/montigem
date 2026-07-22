@@ -125,6 +125,9 @@ build_intellij_plugin:
 
 build_with_deploy:
   stage: build
+  before_script:
+    # Double the Gradle daemon heap for this job only; the checked-in value stays at 4g.
+    - sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8/' gradle.properties
   script:
     # Build project + examples + publish RTE, publish generator
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"
