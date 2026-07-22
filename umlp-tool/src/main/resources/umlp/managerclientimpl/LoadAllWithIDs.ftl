@@ -2,37 +2,37 @@
 ${tc.signature("classname", "domainPackage", "isSingleton", "isAbstract")}
 ${cd4c.method("public List<${classname}> _doLoadAll${classname}WithIDs(List<Long> gemIDs)")}
 <#if isSingleton || isAbstract>
-  java.util.Set<Long> idSet = new java.util.HashSet<>();
-  for(Long id : gemIDs) {
-    idSet.add(id);
-  }
   List<${classname}> result = new java.util.ArrayList<>();
-  for (${classname} item : this._doGet${classname}List()) {
-    if (idSet.contains(item.getGemId())) {
-      result.add(item);
+  for (Long gemID : gemIDs) {
+    java.util.Optional<${classname}> opt = this._do${classname}Opt(gemID);
+    if (opt.isPresent()) {
+      result.add(opt.get());
     }
   }
   return result;
 <#else>
+  java.util.Map<Long, ${classname}> loadedByID = new java.util.HashMap<>();
   List<Long> newGemIDs = new ArrayList<>();
-  Set<Long> longs = this.known${classname}s.keySet();
   for (Long gemID : gemIDs) {
-    if (!longs.contains(gemID)) {
+    if (!_isLoaded${classname}(gemID)) {
       newGemIDs.add(gemID);
     }
   }
 
-  if (!newGemIDs.isEmpty()) {
-    CommandResult<${classname}> commandResult = CommandManager.executeCommand(new LoadAll${classname}WithIDs(newGemIDs));
+  // load in batches of at most CommandManager.loadBatchSize gemIDs
+  for (int start = 0; start < newGemIDs.size(); start += CommandManager.loadBatchSize) {
+    int end = Math.min(start + CommandManager.loadBatchSize, newGemIDs.size());
+    List<Long> batch = new ArrayList<>();
+    for (int i = start; i < end; i++) {
+      batch.add(newGemIDs.get(i));
+    }
+    CommandResult<${classname}> commandResult = CommandManager.executeCommand(new LoadAll${classname}WithIDs(batch));
 
     if (commandResult.isListResult()) {
       List<${classname}> items = commandResult.asListResult().get();
       for (${classname} item : items) {
-        if (!item.containsObserver(the${classname}CommandObserver)) {
-          item.addObserver(the${classname}CommandObserver);
-        }
-        Log.trace("Adding known ${classname} " + item.getGemId(), LogUtil.getLoggerName());
-        known${classname}s.put(item.getGemId(), item);
+        // register with the manager owning the concrete type (monticore#5062)
+        loadedByID.put(item.getGemId(), item._registerMe());
       }
     } else {
       Log.error("0xCL001 Could not load ${classname} batch. Expected ListResult.");
@@ -41,8 +41,14 @@ ${cd4c.method("public List<${classname}> _doLoadAll${classname}WithIDs(List<Long
 
   List<${classname}> result = new ArrayList<>();
   for (Long gemID : gemIDs) {
-    if (known${classname}s.containsKey(gemID)) {
-      result.add(known${classname}s.get(gemID));
+    if (loadedByID.containsKey(gemID)) {
+      result.add(loadedByID.get(gemID));
+    } else if (_isLoaded${classname}(gemID)) {
+      // already cached before this call; _isLoaded guards against firing a single load command
+      java.util.Optional<${classname}> opt = this._do${classname}Opt(gemID);
+      if (opt.isPresent()) {
+        result.add(opt.get());
+      }
     }
   }
 

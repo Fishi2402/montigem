@@ -35,6 +35,9 @@ public class CommandManager {
 
   protected static CommandManager instance;
 
+  // Maximale Anzahl an gemIDs pro LoadAll<X>WithIDs-Command
+  public static int loadBatchSize = 5000;
+
   public static long register(Participant participant){
     return getInstance()._register(participant);
   }

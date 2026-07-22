@@ -2,9 +2,8 @@
 ${tc.signature("cmdName")}
 ${cd4c.method("public void buildJson(${cmdName} command, JsonPrinter printer)")}
   super.buildJson(command, printer);
-  List<String> collect = new ArrayList<>();
-  for (Long l : command.getGemIDsList()) {
-    String s = String.valueOf(l);
-    collect.add(s);
+  printer.beginArray("gemIDs");
+  for (long gemID : command.getGemIDsList()) {
+    printer.value(gemID);
   }
-  printer.member("gemIDs", collect);
+  printer.endArray();

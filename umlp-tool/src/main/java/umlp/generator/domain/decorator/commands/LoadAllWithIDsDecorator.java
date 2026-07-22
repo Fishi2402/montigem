@@ -54,6 +54,7 @@ public class LoadAllWithIDsDecorator extends AbstractDeSerDecorator {
     
     getCD4C().addMethod(ast, "umlp.commands.GeneralCheckAccessPolicy", classname, "Read");
     getCD4C().addMethod(ast, "umlp.commands.loadallwithids.DoRun", classname, domainPackage, getCorrectManager(domainType));
+    getCD4C().addMethod(ast, "umlp.commands.loadallwithids.GetNewlySubscribedGemIds");
 
     AccessorDecorator accessor = new AccessorDecorator(glex);
     ast.addAllCDMembers(accessor.decorate(attr));

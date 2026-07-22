@@ -9,6 +9,8 @@ import {DomainTypeFilter} from "./DomainTypeFilter";
 
 export class CommandManager {
   protected static instance: CommandManager = null;
+  // maximum number of gemIDs per LoadAll<X>WithIDs command
+  public static loadBatchSize: number = 5000;
   protected participantId: number = null;
   protected particpants: any;
   protected runningClientId: number;
