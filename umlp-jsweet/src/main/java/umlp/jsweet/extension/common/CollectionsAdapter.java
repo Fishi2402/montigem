@@ -304,7 +304,7 @@ public class CollectionsAdapter extends AbstractAdapter {
         printMacroName(targetMethodName);
         print("(await new " + CollectionsAdapter.CustomAsyncSetImplementationConstructor + "([")
             .print(invocation.getArgument(0)).print("]))");
-        getPrinter().useModule(new ModuleImportDescriptor(CollectionsAdapter.CustomAsyncListImplementationName, getLibraryLocation()));
+        getPrinter().useModule(new ModuleImportDescriptor(CollectionsAdapter.CustomAsyncSetImplementationName, getLibraryLocation()));
         return true;
       case "singletonList":
         printMacroName(targetMethodName);
