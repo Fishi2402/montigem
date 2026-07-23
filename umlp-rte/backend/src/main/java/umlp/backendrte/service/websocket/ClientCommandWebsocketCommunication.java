@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 
 public class ClientCommandWebsocketCommunication extends TextWebSocketHandler implements
     ClientCommandCommunication {
-  private long maxWaitingTime = 60000; // 6 seconds
+  private long maxWaitingTime = 60000; // 60 seconds
   private Optional<Long> participantId = Optional.empty();
   private WebSocketSession session;
   private final String uri;
@@ -71,7 +71,15 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
         return new SimpleResult<>(command.getId(), LoadingState.FAILED_TO_LOAD, command.getCommandType());
       }
       synchronized (this) {
-        this.wait(maxWaitingTime);
+        // guard against the response arriving before wait() (lost notify)
+        long deadline = System.currentTimeMillis() + maxWaitingTime;
+        while (!messages.containsKey(command.getId())) {
+          long remaining = deadline - System.currentTimeMillis();
+          if (remaining <= 0) {
+            break;
+          }
+          this.wait(remaining);
+        }
       }
 
       if (messages.containsKey(command.getId())) {
@@ -170,7 +178,7 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
           observer.accept(commandResult);
         }
         synchronized (this) {
-          notify();
+          notifyAll();
         }
       } else {
         Optional<Command<Object>> commandOptional
@@ -185,7 +193,7 @@ public class ClientCommandWebsocketCommunication extends TextWebSocketHandler im
           });
         } else {
           synchronized (this) {
-            notify();
+            notifyAll();
           }
         }
       }

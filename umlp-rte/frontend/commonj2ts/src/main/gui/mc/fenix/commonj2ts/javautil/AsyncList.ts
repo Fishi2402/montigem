@@ -20,6 +20,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     } else if (Array.isArray(first) && rest.length === 0) {
       this._data = first;
     } else if (first && typeof (first as any)[Symbol.asyncIterator] === "function" && rest.length === 0) {
+      this._data = [];
       if(typeof (first as any).indexOf === "function") { // AsyncList or GemList Case
         this._delegate = first as IUMLPList<E>;
       } else { // Collection
@@ -27,7 +28,6 @@ export class AsyncList<E> implements IUMLPList<E> {
           this._data.push(e);
         }
       }
-      this._data = [];
     } else {
       this._data = [first as E, ...rest];
     }
@@ -158,10 +158,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.contains(element);
     }
-    for await (const item of this) {
-      if (item === element) return true;
-    }
-    return false;
+    return this._data.includes(element);
   }
 
   /** java.util.List#containsAll(Collection<?>) → boolean */
@@ -170,14 +167,7 @@ export class AsyncList<E> implements IUMLPList<E> {
       return this._delegate.containsAll(c);
     }
     for await (const target of c) {
-      let found = false;
-      for await (const item of this) {
-        if (item === target) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) return false;
+      if (!this._data.includes(target)) return false;
     }
     return true;
   }
@@ -190,9 +180,8 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this === o) return true;
     if (!(o instanceof AsyncList)) return false;
     if (this._data.length !== o._data.length) return false;
-    let i = 0;
-    for await (const item of this) {
-      if (item !== o._data[i++]) return false;
+    for (let i = 0; i < this._data.length; i++) {
+      if (this._data[i] !== o._data[i]) return false;
     }
     return true;
   }
@@ -202,10 +191,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.isEmpty();
     }
-    for await (const _ of this) {
-      return false;
-    }
-    return true;
+    return this._data.length === 0;
   }
 
   /**
@@ -218,34 +204,22 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.removeIndex(idx);
     }
-    return (async () => {
-      let i = 0;
-      for await (const item of this) {
-        if (i++ === idx) {
-          this._data.splice(idx, 1);
-          return item;
-        }
-      }
-      throw new RangeError(`RemoveIndex: Index out of bounds: ${idx}`);
-    })();
+    if (idx < 0 || idx >= this._data.length) {
+      return Promise.reject(new RangeError(`RemoveIndex: Index out of bounds: ${idx}`));
+    }
+    return Promise.resolve(this._data.splice(idx, 1)[0]);
   }
 
   removeElement(elem: E): Promise<boolean> {
     if (this._delegate) {
       return this._delegate.removeElement(elem);
     }
-    const target = elem;
-    return (async () => {
-      let i = 0;
-      for await (const item of this) {
-        if (item === target) {
-          this._data.splice(i, 1);
-          return true;
-        }
-        i++;
-      }
-      return false;
-    })();
+    const i = this._data.indexOf(elem);
+    if (i === -1) {
+      return Promise.resolve(false);
+    }
+    this._data.splice(i, 1);
+    return Promise.resolve(true);
   }
 
   /** java.util.List#removeAll(Collection<?>) → boolean */
@@ -259,7 +233,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     }
     let changed = false;
     const kept: E[] = [];
-    for await (const item of this) {
+    for (const item of this._data) {
       if (toRemove.includes(item)) {
         changed = true;
       } else {
@@ -288,7 +262,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     }
     let changed = false;
     const kept: E[] = [];
-    for await (const item of this) {
+    for (const item of this._data) {
       if (predicate(item)) {
         changed = true;
       } else {
@@ -311,7 +285,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     }
     let changed = false;
     const kept: E[] = [];
-    for await (const item of this) {
+    for (const item of this._data) {
       if (toKeep.includes(item)) {
         kept.push(item);
       } else {
@@ -331,7 +305,13 @@ export class AsyncList<E> implements IUMLPList<E> {
    */
   async hashCode(): Promise<number> {
     let hash = 1;
-    for await (const item of this) {
+    if (this._delegate) {
+      for await (const item of this._delegate) {
+        hash = (Math.imul(31, hash) + this._elementHash(item)) | 0;
+      }
+      return hash;
+    }
+    for (const item of this._data) {
       hash = (Math.imul(31, hash) + this._elementHash(item)) | 0;
     }
     return hash;
@@ -342,12 +322,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.indexOf(element);
     }
-    let i = 0;
-    for await (const item of this) {
-      if (item === element) return i;
-      i++;
-    }
-    return -1;
+    return this._data.indexOf(element);
   }
 
   /** java.util.List#lastIndexOf(Object) → int — returns -1 if not present */
@@ -355,13 +330,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.lastIndexOf(element);
     }
-    let last = -1;
-    let i = 0;
-    for await (const item of this) {
-      if (item === element) last = i;
-      i++;
-    }
-    return last;
+    return this._data.lastIndexOf(element);
   }
 
   /** java.util.List#size() → int */
@@ -369,11 +338,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.size();
     }
-    let n = 0;
-    for await (const _ of this) {
-      n++;
-    }
-    return n;
+    return this._data.length;
   }
 
   // ─── Methods returning void, E, or List<E> ───────────────────────────────
@@ -391,11 +356,10 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.get(index);
     }
-    let i = 0;
-    for await (const item of this) {
-      if (i++ === index) return item;
+    if (index < 0 || index >= this._data.length) {
+      throw new RangeError(`Get: Index out of bounds: ${index}`);
     }
-    throw new RangeError(`Get: Index out of bounds: ${index}`);
+    return this._data[index];
   }
 
   /** java.util.List#set(int, E) → E */
@@ -403,14 +367,12 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.set(index, element);
     }
-    let i = 0;
-    for await (const previous of this) {
-      if (i++ === index) {
-        this._data[index] = element;
-        return previous;
-      }
+    if (index < 0 || index >= this._data.length) {
+      throw new RangeError(`Set: Index out of bounds: ${index}`);
     }
-    throw new RangeError(`Set: Index out of bounds: ${index}`);
+    const previous = this._data[index];
+    this._data[index] = element;
+    return previous;
   }
 
   /** java.util.List#replaceAll(UnaryOperator<E>) → void */
@@ -422,9 +384,8 @@ export class AsyncList<E> implements IUMLPList<E> {
       }
       return;
     }
-    let i = 0;
-    for await (const item of this) {
-      this._data[i++] = operator(item);
+    for (let i = 0; i < this._data.length; i++) {
+      this._data[i] = operator(this._data[i]);
     }
   }
 
@@ -434,13 +395,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.sort(comparator);
     }
-    const items: E[] = [];
-    for await (const item of this) {
-      items.push(item);
-    }
-    items.sort(comparator);
-    this._data.length = 0;
-    this._data.push(...items);
+    this._data.sort(comparator);
   }
 
   /** java.util.List#subList(int, int) → List<E> */
@@ -448,12 +403,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.subList(fromIndex, toIndex);
     }
-    const result: E[] = [];
-    let i = 0;
-    for await (const item of this) {
-      if (i >= fromIndex && i < toIndex) result.push(item);
-      i++;
-    }
+    const result: E[] = this._data.slice(fromIndex, toIndex);
     return <IUMLPList<E>> await new AsyncList<E>().__AsyncListConstructor(result);
   }
 
@@ -462,7 +412,7 @@ export class AsyncList<E> implements IUMLPList<E> {
     if (this._delegate) {
       return this._delegate.forEach(action);
     }
-    for await (const item of this) {
+    for (const item of this._data) {
       await action(item);
     }
   }

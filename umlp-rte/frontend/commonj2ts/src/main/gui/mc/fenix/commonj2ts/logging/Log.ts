@@ -14,10 +14,12 @@ export class Log {
   }
 
   public static debug(msg: string, logName: string) {
+    if (!Log.checkForDebugLevel()) return;
     console.debug(DEFAULT_LOG_MSG,logName + " : " + msg,Log.getFirstStackTraceFrameOpt())
   }
 
   public static trace(msg: string, logger: string): void {
+    if (!Log.checkForDebugLevel()) return;
     console.debug(DEFAULT_LOG_MSG, "[TRACE]",logger + " : " + msg,Log.getFirstStackTraceFrameOpt());
   }
 
@@ -38,5 +40,10 @@ export class Log {
 
   public static checkForFirstTraceLevel(): boolean {
     return (window as any).printStackTrace;
+  }
+
+  // debug/trace output is opt-in: set window.printDebugLog = true to enable
+  public static checkForDebugLevel(): boolean {
+    return (window as any).printDebugLog;
   }
 }

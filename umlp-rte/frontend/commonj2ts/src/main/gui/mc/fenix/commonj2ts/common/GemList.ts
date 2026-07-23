@@ -460,9 +460,17 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     return this.ids.lastIndexOf(gemId);
   }
 
+  /* toIndex is exclusive; batch-loads the range and returns a snapshot */
   public async subList(fromIndex: number, toIndex: number): Promise<IUMLPList<E>> {
     await this.subListRangeCheck(fromIndex, toIndex);
-    return null; // TODO
+    const result: E[] = [];
+    if (toIndex > fromIndex) {
+      await this.loadObjects(await this.getIDs(fromIndex, toIndex));
+      for (let i = fromIndex; i < toIndex; i++) {
+        result.push(await this.get(i));
+      }
+    }
+    return <IUMLPList<E>> await new AsyncList<E>().__AsyncListConstructor(result);
   }
 
   [Symbol.asyncIterator](): AsyncIterator<E> {
@@ -548,9 +556,8 @@ export abstract class GemList<E extends GemIdentifiable> implements GemBuildable
     }
   }
 
-  // TODO remove
   private async subListRangeCheck(fromIndex: number, toIndex: number): Promise<void> {
-    if (fromIndex > 0 || toIndex > await this.size() || fromIndex > toIndex) {
+    if (fromIndex < 0 || toIndex > await this.size() || fromIndex > toIndex) {
       throw new Error("Invalid range");
     }
   }

@@ -132,10 +132,7 @@ export class AsyncSet<E> implements Collection<E> {
     if (this._delegate) {
       return this._delegate.contains(element);
     }
-    for await (const item of this) {
-      if (item === element) return true;
-    }
-    return false;
+    return this._data.includes(element);
   }
 
   /** java.util.Set#containsAll(Collection<?>) → boolean */
@@ -144,14 +141,7 @@ export class AsyncSet<E> implements Collection<E> {
       return this._delegate.containsAll(c);
     }
     for await (const target of c) {
-      let found = false;
-      for await (const item of this) {
-        if (item === target) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) return false;
+      if (!this._data.includes(target)) return false;
     }
     return true;
   }
@@ -164,7 +154,7 @@ export class AsyncSet<E> implements Collection<E> {
     if (this === o) return true;
     if (!(o instanceof AsyncSet)) return false;
     if (this._data.length !== o._data.length) return false;
-    for await (const item of this) {
+    for (const item of this._data) {
       if (!o._data.includes(item)) return false;
     }
     return true;
@@ -175,10 +165,7 @@ export class AsyncSet<E> implements Collection<E> {
     if (this._delegate) {
       return this._delegate.isEmpty();
     }
-    for await (const _ of this) {
-      return false;
-    }
-    return true;
+    return this._data.length === 0;
   }
 
   /** @throws — java.util.Set has no index-based remove */
@@ -211,7 +198,7 @@ export class AsyncSet<E> implements Collection<E> {
     }
     let changed = false;
     const kept: E[] = [];
-    for await (const item of this) {
+    for (const item of this._data) {
       if (toRemove.includes(item)) {
         changed = true;
       } else {
@@ -240,7 +227,7 @@ export class AsyncSet<E> implements Collection<E> {
     }
     let changed = false;
     const kept: E[] = [];
-    for await (const item of this) {
+    for (const item of this._data) {
       if (predicate(item)) {
         changed = true;
       } else {
@@ -263,7 +250,7 @@ export class AsyncSet<E> implements Collection<E> {
     }
     let changed = false;
     const kept: E[] = [];
-    for await (const item of this) {
+    for (const item of this._data) {
       if (toKeep.includes(item)) {
         kept.push(item);
       } else {
@@ -283,7 +270,13 @@ export class AsyncSet<E> implements Collection<E> {
    */
   async hashCode(): Promise<number> {
     let hash = 0;
-    for await (const item of this) {
+    if (this._delegate) {
+      for await (const item of this._delegate) {
+        hash = (hash + this._elementHash(item)) | 0;
+      }
+      return hash;
+    }
+    for (const item of this._data) {
       hash = (hash + this._elementHash(item)) | 0;
     }
     return hash;
@@ -294,11 +287,7 @@ export class AsyncSet<E> implements Collection<E> {
     if (this._delegate) {
       return this._delegate.size();
     }
-    let n = 0;
-    for await (const _ of this) {
-      n++;
-    }
-    return n;
+    return this._data.length;
   }
 
   // ─── Methods returning void ───────────────────────────────────────────────
@@ -316,7 +305,7 @@ export class AsyncSet<E> implements Collection<E> {
     if (this._delegate) {
       return this._delegate.forEach(action);
     }
-    for await (const item of this) {
+    for (const item of this._data) {
       action(item);
     }
   }
