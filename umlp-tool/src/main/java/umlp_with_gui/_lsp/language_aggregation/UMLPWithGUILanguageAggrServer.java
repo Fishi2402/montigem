@@ -5,10 +5,17 @@ import de.mclsg.lsp.LazySymbolUsageResolutionProvider;
 import de.mclsg.lsp.modelpath.multiproject.ProjectLayout;
 import de.mclsg.lsp.util.LazyLanguageServerContext;
 import de.monticore.guidsl._lsp.GUIDSLLanguageServer;
+import de.monticore.guidsl._lsp.GUIDSLTextDocumentService;
 import de.monticore.guidsl._lsp.language_access.GUIDSLLanguageAccess;
 import de.monticore.guidsl._lsp.language_access.GUIDSLLspCoCoRunner;
+import org.eclipse.lsp4j.ExecuteCommandOptions;
+import org.eclipse.lsp4j.ServerCapabilities;
+import umlp._lsp.features.code_lens.EmptyFileCodeLensSupport;
+import umlp_with_gui._lsp.features.code_lens.GUIDSLEmptyFileCodeLensProvider;
 import umlp_with_gui._lsp.language_aggregation.language_access.UMLPWithGUILanguageAggrScopeManager4GUIDSL;
 import de.mclsg.lsp.MultiLangWorkspaceService;
+
+import java.util.ArrayList;
 
 
 public class UMLPWithGUILanguageAggrServer extends UMLPWithGUILanguageAggrServerTOP {
@@ -18,7 +25,7 @@ public class UMLPWithGUILanguageAggrServer extends UMLPWithGUILanguageAggrServer
 
   @Override
   protected MultiLangWorkspaceService initWorkspaceService(){
-    MultiLangWorkspaceService res = new UMLPWithGUILanguageAggrWorkspaceService(this, indexingManager, layout);
+    MultiLangWorkspaceService res = new UMLPWithGUILanguageAggrWorkspaceService(this, indexingManager, layout, documentManager);
 
     res.add(uMLPLanguageServer.getWorkspaceService());
     res.add(gUIDSLLanguageServer.getWorkspaceService());
@@ -45,7 +52,37 @@ public class UMLPWithGUILanguageAggrServer extends UMLPWithGUILanguageAggrServer
           }
         };
       }
+
+      @Override
+      protected GUIDSLTextDocumentService initTextDocumentService() {
+        return new GUIDSLTextDocumentService(
+            this,
+            documentManager,
+            languageClient,
+            languageAccess,
+            symbolUsageResolutionProvider
+        ) {
+          @Override
+          protected void registerDefaultCodeLensProvider() {
+            register(new GUIDSLEmptyFileCodeLensProvider(documentManager));
+          }
+        };
+      }
     };
     return server;
+  }
+
+  @Override
+  public ServerCapabilities getCapabilities() {
+    ServerCapabilities capabilities = super.getCapabilities();
+    ExecuteCommandOptions executeCommandProvider = capabilities.getExecuteCommandProvider();
+    ArrayList<String> commands = executeCommandProvider == null || executeCommandProvider.getCommands() == null
+        ? new ArrayList<>()
+        : new ArrayList<>(executeCommandProvider.getCommands());
+    if (!commands.contains(EmptyFileCodeLensSupport.FILL_EMPTY_FILE_COMMAND)) {
+      commands.add(EmptyFileCodeLensSupport.FILL_EMPTY_FILE_COMMAND);
+    }
+    capabilities.setExecuteCommandProvider(new ExecuteCommandOptions(commands));
+    return capabilities;
   }
 }

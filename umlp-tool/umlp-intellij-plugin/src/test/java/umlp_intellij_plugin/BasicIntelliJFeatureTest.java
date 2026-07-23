@@ -3,9 +3,16 @@ package umlp_intellij_plugin;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.codeVision.CodeVisionEntry;
+import com.intellij.codeInsight.codeVision.CodeVisionHost;
+import com.intellij.codeInsight.codeVision.CodeVisionInitializer;
+import com.intellij.codeInsight.codeVision.EditorCodeVisionContextKt;
+import com.intellij.codeInsight.codeVision.ui.model.TextCodeVisionEntry;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -15,6 +22,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -273,7 +281,7 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
   }
 
   @Test
-  public void testGUICreateFileAutofill() throws IOException {
+  public void testGUICreateFileCodeLens() throws Exception {
     openFile("frontend/src/main/gui/gui/Start.gui");
     waitForLspIndexing();
 
@@ -290,25 +298,27 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
       PsiDocumentManager.getInstance(codeInsightFixture.getProject()).commitAllDocuments();
     });
 
+    String emptyContent = getDocumentText(newFile);
+    assertTrue(emptyContent.isEmpty(), "A newly created GUI file must stay empty before the code lens is clicked");
+
+    CodeVisionLens codeLens = getOnlyCodeVisionLens("Add basic GUI content");
+    clickCodeVisionLens(codeLens);
+
     EdtTestUtil.runInEdtAndWait(() -> {
       PlatformTestUtil.waitWithEventsDispatching("Content not filled", () -> {
-        return ReadAction.compute(() -> {
-          Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
-          return doc != null && doc.getText().contains("package gui;");
-        });
+        return getDocumentText(newFile).contains("package gui;");
       }, 30);
     });
 
-    String content = ReadAction.compute(() -> {
-      Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
-      return doc.getText();
-    });
+    String content = getDocumentText(newFile);
     assertTrue(content.contains("package gui;"), "Package statement missing. Content: " + content);
     assertTrue(content.contains("page NewComponent"), "Component name missing. Content: " + content);
+    assertTrue(getCodeVisionLenses("Add basic GUI content").isEmpty(),
+        "The GUI initialization code lens must disappear after it was executed");
   }
 
   @Test
-  public void testUMLPCreateFileAutofill() throws IOException {
+  public void testUMLPCreateFileCodeLens() throws Exception {
     openFile("models/Mydomain.umlp");
     waitForLspIndexing();
 
@@ -325,21 +335,77 @@ public class BasicIntelliJFeatureTest extends AbstractIntelliJPluginTest {
       PsiDocumentManager.getInstance(codeInsightFixture.getProject()).commitAllDocuments();
     });
 
+    String emptyContent = getDocumentText(newFile);
+    assertTrue(emptyContent.isEmpty(), "A newly created UML/P file must stay empty before the code lens is clicked");
+
+    CodeVisionLens codeLens = getOnlyCodeVisionLens("Add basic classdiagram");
+    clickCodeVisionLens(codeLens);
+
     EdtTestUtil.runInEdtAndWait(() -> {
       PlatformTestUtil.waitWithEventsDispatching("Content not filled", () -> {
-        return ReadAction.compute(() -> {
-          Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
-          return doc != null && doc.getText().contains("package newpackage;");
-        });
+        return getDocumentText(newFile).contains("package newpackage;");
       }, 30);
     });
 
-    String content = ReadAction.compute(() -> {
-      Document doc = FileDocumentManager.getInstance().getDocument(newFile.getVirtualFile());
-      return doc.getText();
-    });
+    String content = getDocumentText(newFile);
     assertTrue(content.contains("package newpackage;"), "Package statement missing. Content: " + content);
     assertTrue(content.contains("classdiagram NewModel {"), "Umlp model name missing. Content: " + content);
+    assertTrue(getCodeVisionLenses("Add basic classdiagram").isEmpty(),
+        "The UML/P initialization code lens must disappear after it was executed");
+  }
+
+  protected CodeVisionLens getOnlyCodeVisionLens(String title) {
+    List<CodeVisionLens> codeLenses = getCodeVisionLenses(title);
+    assertEquals(1, codeLenses.size(), "Expected exactly one initialization code lens");
+    return codeLenses.getFirst();
+  }
+
+  protected List<CodeVisionLens> getCodeVisionLenses(String title) {
+    List<CodeVisionLens> result = new ArrayList<>();
+    EdtTestUtil.runInEdtAndWait(() -> {
+      CodeVisionHost host = CodeVisionInitializer.Companion
+          .getInstance(codeInsightFixture.getProject())
+          .getCodeVisionHost();
+      host.calculateCodeVisionSync(
+          codeInsightFixture.getEditor(),
+          codeInsightFixture.getProjectDisposable()
+      );
+
+      var rangeMarkers = EditorCodeVisionContextKt
+          .getLensContext(codeInsightFixture.getEditor())
+          .getValidResult()
+          .iterator();
+      while (rangeMarkers.hasNext()) {
+        RangeMarker rangeMarker = rangeMarkers.next();
+        CodeVisionEntry entry = EditorCodeVisionContextKt.getCodeVisionEntryOrThrow(rangeMarker);
+        if (entry instanceof TextCodeVisionEntry textEntry && title.equals(textEntry.getText())) {
+          result.add(new CodeVisionLens(
+              host,
+              new TextRange(rangeMarker.getStartOffset(), rangeMarker.getEndOffset()),
+              entry
+          ));
+        }
+      }
+    });
+    return result;
+  }
+
+  protected void clickCodeVisionLens(CodeVisionLens codeLens) {
+    EdtTestUtil.runInEdtAndWait(() -> codeLens.host.handleLensClick(
+        codeInsightFixture.getEditor(),
+        codeLens.range,
+        codeLens.entry
+    ));
+  }
+
+  protected String getDocumentText(PsiFile file) {
+    return ReadAction.compute(() -> {
+      Document document = FileDocumentManager.getInstance().getDocument(file.getVirtualFile());
+      assertNotNull(document);
+      return document.getText();
+    });
+  }
+
+  protected record CodeVisionLens(CodeVisionHost host, TextRange range, CodeVisionEntry entry) {
   }
 }
-

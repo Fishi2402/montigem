@@ -1,9 +1,12 @@
 package umlp_with_gui._lsp.language_aggregation;
 
+import com.google.gson.JsonPrimitive;
 import de.mclsg.lsp.CommonLanguageServer;
 import de.mclsg.lsp.IIndexingManager;
+import de.mclsg.lsp.document_management.DocumentManager;
 import de.mclsg.lsp.modelpath.multiproject.ProjectLayout;
 import org.eclipse.lsp4j.*;
+import umlp._lsp.features.code_lens.EmptyFileCodeLensSupport;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -13,6 +16,7 @@ import java.util.*;
 public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguageAggrWorkspaceServiceTOP {
 
   protected ProjectLayout layout;
+  protected DocumentManager documentManager;
 
   public UMLPWithGUILanguageAggrWorkspaceService(CommonLanguageServer languageServer, IIndexingManager indexingManager) {
     super(languageServer, indexingManager);
@@ -20,9 +24,16 @@ public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguage
     registerFileOperationsServerCapabilities();
   }
 
-  public UMLPWithGUILanguageAggrWorkspaceService(CommonLanguageServer languageServer, IIndexingManager indexingManager, ProjectLayout layout) {
+  public UMLPWithGUILanguageAggrWorkspaceService(
+      CommonLanguageServer languageServer,
+      IIndexingManager indexingManager,
+      ProjectLayout layout,
+      DocumentManager documentManager
+  ) {
     this(languageServer, indexingManager);
     this.layout = layout;
+    this.documentManager = documentManager;
+    registerCommand(EmptyFileCodeLensSupport.FILL_EMPTY_FILE_COMMAND, this::fillEmptyFile);
   }
 
   protected WorkspaceServerCapabilities capabilities = new WorkspaceServerCapabilities();
@@ -45,42 +56,53 @@ public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguage
     return capabilities;
   }
 
-  @Override
-  public void didCreateFiles(CreateFilesParams params) {
-    if (languageServer == null || languageServer.getLanguageClient() == null) {
-        return;
+  protected Object fillEmptyFile(ExecuteCommandParams params) {
+    String uri = getUriArgument(params);
+    if (uri == null
+        || documentManager == null
+        || languageServer == null
+        || languageServer.getLanguageClient() == null) {
+      return null;
     }
 
-    Map<String, List<TextEdit>> changes = new HashMap<>();
-
-    for (FileCreate fileCreate : params.getFiles()) {
-      String uriStr = fileCreate.getUri();
-      if (uriStr.endsWith(".gui")) {
-        String content = generateMinimalGuiModel(uriStr);
-        if (content != null) {
-          TextEdit edit = new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), content);
-          changes.put(uriStr, List.of(edit));
-        }
-      } else if (uriStr.endsWith(".umlp")) {
-        String content = generateMinimalUmlpModel(uriStr);
-        if (content != null) {
-          TextEdit edit = new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), content);
-          changes.put(uriStr, List.of(edit));
-        }
-      }
+    TextDocumentIdentifier identifier = new TextDocumentIdentifier(uri);
+    if (!documentManager.hasDocument(identifier)) {
+      return null;
     }
 
-    if (!changes.isEmpty()) {
-      languageServer.getLanguageClient().applyEdit(new ApplyWorkspaceEditParams(new WorkspaceEdit(changes)));
+    TextDocumentItem document = documentManager.getDocument(identifier);
+    if (document == null || document.getText() == null || !document.getText().isEmpty()) {
+      return null;
     }
 
-    try {
-        if (this.indexingManager != null) {
-            super.didCreateFiles(params);
-        }
-    } catch (Exception e) {
-        // Log or handle error in super delegation
+    String content;
+    if (uri.endsWith(".gui")) {
+      content = generateMinimalGuiModel(uri);
+    } else if (uri.endsWith(".umlp")) {
+      content = generateMinimalUmlpModel(uri);
+    } else {
+      return null;
     }
+
+    if (content != null) {
+      TextEdit edit = new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), content);
+      languageServer.getLanguageClient().applyEdit(
+          new ApplyWorkspaceEditParams(new WorkspaceEdit(Map.of(uri, List.of(edit))))
+      );
+    }
+    return null;
+  }
+
+  protected String getUriArgument(ExecuteCommandParams params) {
+    if (params == null || params.getArguments() == null || params.getArguments().isEmpty()) {
+      return null;
+    }
+
+    Object argument = params.getArguments().get(0);
+    if (argument instanceof JsonPrimitive) {
+      return ((JsonPrimitive) argument).getAsString();
+    }
+    return argument instanceof String ? (String) argument : null;
   }
 
   protected String generateMinimalGuiModel(String uriStr) {
