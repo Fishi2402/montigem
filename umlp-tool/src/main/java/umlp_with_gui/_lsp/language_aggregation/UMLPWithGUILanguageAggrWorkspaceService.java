@@ -75,6 +75,14 @@ public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguage
       return null;
     }
 
+    // The document snapshot can be stale, e.g. when the file was created empty and filled
+    // afterwards by a generator, git, or another tool outside the editor's change feed.
+    // The edit below inserts at (0,0), so applying it to a non-empty file would prepend a
+    // duplicate stub into hand-written content. Only proceed if the file on disk is empty too.
+    if (!isFileEmptyOnDisk(uri)) {
+      return null;
+    }
+
     String content;
     if (uri.endsWith(".gui")) {
       content = generateMinimalGuiModel(uri);
@@ -91,6 +99,15 @@ public class UMLPWithGUILanguageAggrWorkspaceService extends UMLPWithGUILanguage
       );
     }
     return null;
+  }
+
+  protected boolean isFileEmptyOnDisk(String uriStr) {
+    try {
+      Path path = Paths.get(new URI(uriStr)).toAbsolutePath().normalize();
+      return !java.nio.file.Files.exists(path) || java.nio.file.Files.size(path) == 0;
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   protected String getUriArgument(ExecuteCommandParams params) {

@@ -25,7 +25,6 @@ export class StringHelper {
       for await(const elem of strs) {
         res+=elem;
         it++;
-        console.warn("it", it, "size", size )
         if(it < size) {
           res+=delimiter;
         }

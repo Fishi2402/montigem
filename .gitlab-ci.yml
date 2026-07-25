@@ -55,6 +55,13 @@ pages:
 
 build_no_containers:
   stage: build
+  before_script:
+    # Double the Gradle daemon heap for this job only; the checked-in value stays at 4g.
+    - sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8/' gradle.properties
+    # The gradle launcher script defaults to -Xmx64m; it buffers all console output and
+    # dies with "Java heap space" near the end of the build. JAVA_OPTS only affects the
+    # launcher JVM (GRADLE_OPTS is also expanded into the CLI args, so no -Xmx there).
+    - export JAVA_OPTS="-Xmx2g"
   script:
     - export CHROME_BIN=/usr/bin/google-chrome-stable
     - "gradle --version 2>&1 | tee $CI_PROJECT_DIR/build.log"

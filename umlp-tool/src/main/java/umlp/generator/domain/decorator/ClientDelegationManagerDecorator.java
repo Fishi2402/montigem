@@ -122,6 +122,10 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
           superTypeToExtensions.getKey().getName(),
           superTypeToExtensions.getValue().stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()),
           cdTypeToCorrectManager);
+      getCD4C().addMethod(delegationManagerClass, getDelegatedIsLoadedTemplate(),
+          superTypeToExtensions.getKey().getName(),
+          superTypeToExtensions.getValue().stream().map(ASTCDTypeTOP::getName).collect(Collectors.toList()),
+          cdTypeToCorrectManager);
     }
   }
 
@@ -172,6 +176,10 @@ public class ClientDelegationManagerDecorator extends ManagerDecorator {
 
   protected String getDelegatedGetListTemplate() {
     return "umlp.delegationmanager.DelegatedGetList";
+  }
+
+  protected String getDelegatedIsLoadedTemplate() {
+    return "umlp.delegationmanager.ClientDelegatedIsLoaded";
   }
 
 }

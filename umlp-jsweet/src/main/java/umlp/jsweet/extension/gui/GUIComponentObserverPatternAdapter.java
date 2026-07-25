@@ -35,6 +35,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -351,10 +352,29 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     printArguments(executable);
     print("))").println().endIndent().printIndent();
 
-    print(")).then(__v => this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
+    String failuresField = methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Failures";
+    print(")).then(__v => {").println().startIndent().printIndent()
+        .print("this." + failuresField + " = 0;").println().printIndent()
+        .print("this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     String arg = "__v === undefined ? null : __v";
     printResultCacheSetter(executable, arg);
-    print(");").println().endIndent().printIndent().print("}").println().println().printIndent();
+    // Without a catch a single rejection (e.g. an accessor that is still null while
+    // its async load runs) would leave the cache at null forever. Resetting to
+    // undefined lets the next change-detection tick retry — but only a few times,
+    // or a persistent failure turns into an endless retry storm.
+    print(";").println().endIndent().printIndent()
+        .print("}).catch(__e => {").println().startIndent().printIndent()
+        .print("if (++this." + failuresField + " > 3) {").println().startIndent().printIndent()
+        .print("if (this." + failuresField + " === 4) {").println().startIndent().printIndent()
+        .print("console.warn('" + updateName + " keeps failing, giving up until inputs change', __e);")
+        .println().endIndent().printIndent().print("}").println().printIndent()
+        .print("return;").println().endIndent().printIndent().print("}").println().printIndent()
+        .print("console.debug('" + updateName + " failed, will retry on next change detection', __e);")
+        .println().printIndent()
+        .print("this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
+    printResultCacheSetter(executable, "undefined");
+    print(";").println().endIndent().printIndent().print("});")
+        .println().endIndent().printIndent().print("}").println().println().printIndent();
   }
 
   private void printSynchronizerMethod(ExecutableElement executable, boolean overloadMethod, String methodName,
@@ -365,8 +385,9 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     printType(returnType, overloadMethod)
         .print(" {").println().startIndent().printIndent()
         .print("if (!this.allVarsInited) {").println().startIndent().printIndent()
-        .print("return undefined;").println().endIndent().printIndent().print("}").println().printIndent()
-        .print("if (this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
+        .print("return undefined;").println().endIndent().printIndent().print("}").println().printIndent();
+    printPendingArgumentGuard(executable);
+    print("if (this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     printResultCacheAccessor(executable);
     print(" === undefined) {").println().startIndent().printIndent()
         .print("this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
@@ -378,6 +399,29 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
         .print("return this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     printResultCacheAccessor(executable);
     print(";").println().endIndent().printIndent().print("}").println().println().printIndent();
+  }
+
+  /**
+   * Domain-object arguments coming from other async bindings are null until their
+   * update promise resolves. Invoking the handwritten method (or getGemId() for the
+   * cache key) with such a transient null crashes; skip this change-detection tick
+   * instead — the template re-evaluates once the upstream binding resolves.
+   */
+  private void printPendingArgumentGuard(ExecutableElement executable) {
+    List<String> gemParams = new ArrayList<>();
+    for (VariableElement parameter : executable.getParameters()) {
+      Element paramType = types().asElement(parameter.asType());
+      if (paramType instanceof TypeElement && adapterUtils.isSubTypeOf((TypeElement) paramType,
+          RTEPathUtil.getBackendRTECommonPath("GemIdentifiable"))) {
+        gemParams.add(adapterUtils.getJSweetParameterName(parameter));
+      }
+    }
+    if (gemParams.isEmpty()) {
+      return;
+    }
+    print("if (" + String.join(" == null || ", gemParams) + " == null) {")
+        .println().startIndent().printIndent()
+        .print("return null;").println().endIndent().printIndent().print("}").println().printIndent();
   }
 
   private GUIComponentObserverPatternAdapter printArguments(ExecutableElement executable) {
@@ -447,6 +491,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
       print(">");
       print(" = new ManyKeysMap()");
     }
+    println().printIndent();
+    print("private " + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Failures: number = 0;");
     println().printIndent();
   }
 

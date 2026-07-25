@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TemplateContentTest {
@@ -49,7 +50,7 @@ public class TemplateContentTest {
   public void testUmlpCodeLensFillsEmptyFile()
       throws FileExtensionAlreadyRegisteredException, ExecutionException, InterruptedException {
     TestServer testServer = createServer();
-    String uri = testServer.resources.resolve("Domain.umlp").toUri().toString();
+    String uri = testServer.resources.resolve("NewDomain.umlp").toUri().toString();
     openDocument(testServer.server, uri, "umlp", "");
 
     CodeLens codeLens = getOnlyCodeLens(testServer.server, uri);
@@ -60,7 +61,21 @@ public class TemplateContentTest {
 
     assertNotNull(testServer.client.applyWorkspaceEditParams);
     String content = testServer.client.applyWorkspaceEditParams.getEdit().getChanges().get(uri).get(0).getNewText();
-    assertEquals("classdiagram Domain {\n\n}\n", content);
+    assertEquals("classdiagram NewDomain {\n\n}\n", content);
+  }
+
+  @Test
+  public void testUmlpCodeLensDoesNotFillFileWithOnDiskContent()
+      throws FileExtensionAlreadyRegisteredException, ExecutionException, InterruptedException {
+    TestServer testServer = createServer();
+    // Domain.umlp exists non-empty on disk; a stale empty snapshot must not trigger the stub.
+    String uri = testServer.resources.resolve("Domain.umlp").toUri().toString();
+    openDocument(testServer.server, uri, "umlp", "");
+
+    CodeLens codeLens = getOnlyCodeLens(testServer.server, uri);
+    execute(testServer.server, codeLens.getCommand());
+
+    assertNull(testServer.client.applyWorkspaceEditParams);
   }
 
   @Test

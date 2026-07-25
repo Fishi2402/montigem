@@ -11,6 +11,7 @@ ${cd4c.method("protected Optional<${superType}> _do${superType}Opt(long gemId)")
   }
 </#list>
   else {
+    Log.warn("0x12002: Could not load ${superType} with gemId "+gemId+" as ${superType} or any of its subtypes");
     return Optional.empty();
   }
 

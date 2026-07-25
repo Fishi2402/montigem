@@ -17,5 +17,8 @@ ${cd4c.method("protected Optional<${name}> _do${name}Opt(long gemId)")}
     }
   }
 </#list>
-Log.warn("0x12002: Could not load ${name} with gemId "+gemId);
+// debug, not warn: delegation managers probe this method for each subtype while
+// resolving polymorphic associations; a miss here is expected. The delegating
+// _do<Type>Opt warns once if the object is found nowhere.
+Log.debug("0x12002: Could not load ${name} with gemId "+gemId, "${name}Manager");
 return Optional.empty();
