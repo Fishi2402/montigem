@@ -137,7 +137,7 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
 
     if (this.targetElement) {
       this.chart = new ApexCharts(this.targetElement.nativeElement, this.options);
-      this.chart.render();
+      await this.chart.render();
       if (this.getData()) {
         this.processNewData(this.getData());
       }
@@ -166,7 +166,12 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   ngOnDestroy() {
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
     if (this.resizeObserver) this.resizeObserver.disconnect();
-    if (this.chart) this.chart.destroy();
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+    // run the generated cleanup (route subscription, component destroy)
+    super.ngOnDestroy();
   }
 
   public setData(val: TimeSeriesData) {
@@ -179,7 +184,10 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   private async processNewData(data: TimeSeriesData): Promise<void> {
     if (!this.chart || !data) return;
 
-    const newSeries = [];
+    // keyed by name (the series identity for ApexCharts): duplicate entries
+    // in the bound data are merged instead of rendered as extra series, so
+    // the number of SVG paths stays bounded by the number of distinct series
+    const seriesByName = new Map<string, any>();
     const seriesList = this.toListArray<TimeSeries>(data.getSeriesList());
 
     for (const series of seriesList) {
@@ -198,11 +206,28 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
           }
       }
 
-      newSeries.push({
-        name: series.getName(),
-        data: seriesData,
-        color: series.getColor() || undefined
-      });
+      const name = series.getName();
+      const existing = seriesByName.get(name);
+      if (existing) {
+        for (const p of seriesData) existing.data.push(p);
+        existing.merged = true;
+        existing.color = existing.color || series.getColor() || undefined;
+      } else {
+        seriesByName.set(name, {
+          name: name,
+          data: seriesData,
+          color: series.getColor() || undefined
+        });
+      }
+    }
+
+    const newSeries = [];
+    for (const s of seriesByName.values()) {
+      if (s.merged) {
+        s.data.sort((a, b) => a[0] - b[0]);
+        delete s.merged;
+      }
+      newSeries.push(s);
     }
 
     // Process Events

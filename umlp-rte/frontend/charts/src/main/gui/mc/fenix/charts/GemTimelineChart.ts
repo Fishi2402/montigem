@@ -194,6 +194,15 @@ export class GemTimelineChart extends GemTimelineChartComponent implements OnDes
     }
 
 
+    ngOnDestroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+        // run the generated cleanup (route subscription, component destroy)
+        super.ngOnDestroy();
+    }
+
   constructor() {
         super();
     }
