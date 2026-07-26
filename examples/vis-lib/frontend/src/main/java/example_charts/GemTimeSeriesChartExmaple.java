@@ -4,6 +4,7 @@ import domain.Person;
 import jsweet.lang.Replace;
 import umlp.guiutil.GUIUtils;
 import umlp.jsweet.extension.annotation.Component;
+import umlp.jsweet.extension.annotation.Serialized;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -88,6 +89,7 @@ public class GemTimeSeriesChartExmaple extends GemTimeSeriesChartExmapleTOP {
     }
 
     @Override
+    @Serialized
     public TimeSeriesData computeData1(List<Person> val_$_$0) {
         TimeSeriesData data = new TimeSeriesData();
         
