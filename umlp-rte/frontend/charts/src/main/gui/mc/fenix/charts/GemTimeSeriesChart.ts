@@ -29,6 +29,15 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   private lastUpdateTimestamp: number = 0;
   private lastRenderedFingerprint: string = '';
 
+  // min. Abstand zwischen zwei ApexCharts-Updates; im Test überschreibbar
+  public static renderMinIntervalMs: number = 500;
+  private static warnedPointCap: boolean = false;
+  // Fallback-Cap pro Serie, wenn kein viewPort gesetzt ist
+  private static readonly MAX_POINTS_PER_SERIES = 10000;
+  private lastRenderTime: number = 0;
+  private renderTimer: any = null;
+  private pendingRender: boolean = false;
+
   constructor(private hostElement: ElementRef) {
     super();
   }
@@ -55,6 +64,11 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       this.chart.destroy();
       this.chart = null;
       this.lastRenderedFingerprint = '';
+      if (this.renderTimer) {
+        clearTimeout(this.renderTimer);
+        this.renderTimer = null;
+      }
+      this.pendingRender = false;
     }
 
     // "area" (default) or "line"; with many overlapping series "line" stays readable
@@ -164,6 +178,10 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
   }
 
   ngOnDestroy() {
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = null;
+    }
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
     if (this.resizeObserver) this.resizeObserver.disconnect();
     if (this.chart) {
@@ -230,6 +248,8 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
       newSeries.push(s);
     }
 
+    this.sliceToViewPort(newSeries);
+
     // Process Events
     const annotationsX = [];
     const eventsList = this.toListArray<any>(data.getEventsList());
@@ -270,13 +290,110 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     this.options.series = newSeries;
     this.options.annotations = { xaxis: annotationsX };
 
-    await this.refreshChart();
+    this.refreshChart();
   }
 
-  private async refreshChart() {
-    if (!this.chart) return;
+  // "30s" | "5m" | "2h" (Zeitfenster) | "500p" (letzte N Punkte), sonst null
+  private parseViewPort(vp: string): { value: number, unit: string, millis: number } | null {
+    if (!vp) return null;
+    const match = vp.match(/^(\d+)([shmp])$/);
+    if (!match) return null;
+    const value = parseInt(match[1]);
+    const unit = match[2];
+    let millis = value * 1000;
+    if (unit === 'm') millis *= 60;
+    if (unit === 'h') millis *= 3600;
+    return { value, unit, millis };
+  }
 
-    this.lastUpdateTimestamp = Date.now();
+  private latestTimestamp(series: any[]): number {
+    let latestX = -1;
+    for (const s of series) {
+      if (s.data && s.data.length > 0) {
+        const lastPoint = s.data[s.data.length - 1];
+        const lx = Array.isArray(lastPoint) ? lastPoint[0] : lastPoint.x;
+        if (lx > latestX) latestX = lx;
+      }
+    }
+    return latestX;
+  }
+
+  // Schneidet die Daten jeder Serie auf das viewPort-Fenster zu (plus 1
+  // Punkt Vorlauf, damit die Linie am linken Rand nicht abreißt). Ohne
+  // viewPort: großzügiges Punkte-Cap, damit ApexCharts nie die volle
+  // Historie rendern muss.
+  private sliceToViewPort(series: any[]): void {
+    const win = this.parseViewPort(this.getViewPort());
+    if (!win) {
+      const cap = GemTimeSeriesChart.MAX_POINTS_PER_SERIES;
+      let capped = false;
+      for (const s of series) {
+        if (s.data.length > cap) {
+          s.data = s.data.slice(s.data.length - cap);
+          capped = true;
+        }
+      }
+      if (capped && !GemTimeSeriesChart.warnedPointCap) {
+        GemTimeSeriesChart.warnedPointCap = true;
+        console.warn('GemTimeSeriesChart: no viewPort configured, capping series to the last '
+          + cap + ' points; set viewPort (e.g. "5m") to control the window.');
+      }
+      return;
+    }
+
+    if (win.unit === 'p') {
+      const keep = win.value + 1; // +1 Vorlaufpunkt
+      for (const s of series) {
+        if (s.data.length > keep) s.data = s.data.slice(s.data.length - keep);
+      }
+      return;
+    }
+
+    const latestX = this.latestTimestamp(series);
+    if (latestX === -1) return;
+    const minX = latestX - win.millis;
+    for (const s of series) {
+      const data = s.data;
+      // von hinten scannen: kostet nur O(behaltene Punkte)
+      let start = data.length;
+      while (start > 0) {
+        const p = data[start - 1];
+        const px = Array.isArray(p) ? p[0] : p.x;
+        if (px < minX) break;
+        start--;
+      }
+      if (start > 0) start--; // 1 Punkt Vorlauf vor der Fenstergrenze
+      if (start > 0) s.data = data.slice(start);
+    }
+  }
+
+  // Throttle: max. ~2 Updates/s an ApexCharts; trailing edge garantiert,
+  // dass der letzte Stand nach Ablauf des Intervalls immer gerendert wird
+  private refreshChart(): void {
+    if (!this.chart) return;
+    this.pendingRender = true;
+    this.scheduleRender();
+  }
+
+  private scheduleRender(): void {
+    if (this.renderTimer) return; // laufender Timer rendert den letzten Stand
+    const wait = this.lastRenderTime + GemTimeSeriesChart.renderMinIntervalMs - Date.now();
+    if (wait <= 0) {
+      this.renderNow();
+    } else {
+      this.renderTimer = setTimeout(() => {
+        this.renderTimer = null;
+        if (this.pendingRender) this.renderNow();
+      }, wait);
+    }
+  }
+
+  private renderNow(): void {
+    if (!this.chart) return;
+    this.pendingRender = false;
+    this.lastRenderTime = Date.now();
+    this.lastUpdateTimestamp = this.lastRenderTime;
+
     const updateParams: any = {
       series: this.options.series,
       annotations: this.options.annotations
@@ -286,48 +403,30 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     let minX = this.userMinX;
     let maxX = this.userMaxX;
 
-    const vp = this.getViewPort();
-    if (minX === null && vp && vp.length > 0) {
-      const match = vp.match(/^(\d+)([shmp])$/);
-      if (match) {
-        const value = parseInt(match[1]);
-        const unit = match[2];
-
-        let latestX = -1;
-        for (const s of this.options.series) {
-          if (s.data && s.data.length > 0) {
-            const lastPoint = s.data[s.data.length - 1];
-            const lx = Array.isArray(lastPoint) ? lastPoint[0] : lastPoint.x;
-            if (lx > latestX) latestX = lx;
-          }
-        }
-
-        if (latestX !== -1) {
-          if (unit === 'p') {
-            // Points-based window: Find earliest timestamp of the last N points across all series
-            let targetMinX = latestX;
-            for (const s of this.options.series) {
-              if (s.data && s.data.length > 0) {
-                const idx = Math.max(0, s.data.length - value);
-                const p = s.data[idx];
-                const px = Array.isArray(p) ? p[0] : p.x;
-                if (px < targetMinX) targetMinX = px;
-              }
+    const win = this.parseViewPort(this.getViewPort());
+    if (minX === null && win) {
+      const latestX = this.latestTimestamp(this.options.series);
+      if (latestX !== -1) {
+        if (win.unit === 'p') {
+          // Points-based window: Find earliest timestamp of the last N points across all series
+          let targetMinX = latestX;
+          for (const s of this.options.series) {
+            if (s.data && s.data.length > 0) {
+              const idx = Math.max(0, s.data.length - win.value);
+              const p = s.data[idx];
+              const px = Array.isArray(p) ? p[0] : p.x;
+              if (px < targetMinX) targetMinX = px;
             }
-            minX = targetMinX;
-            maxX = latestX;
-          } else {
-            // Time-based window
-            let millis = value * 1000;
-            if (unit === 'm') millis *= 60;
-            if (unit === 'h') millis *= 3600;
-
-            maxX = latestX;
-            minX = maxX - millis;
           }
-
-          updateParams.xaxis = { min: minX, max: maxX };
+          minX = targetMinX;
+          maxX = latestX;
+        } else {
+          // Time-based window
+          maxX = latestX;
+          minX = maxX - win.millis;
         }
+
+        updateParams.xaxis = { min: minX, max: maxX };
       }
     } else if (minX !== null && maxX !== null) {
       updateParams.xaxis = { min: minX, max: maxX };
@@ -338,7 +437,8 @@ export class GemTimeSeriesChart extends GemTimeSeriesChartComponent implements O
     // Hard override if we have user zoom or viewPort
     if (minX !== null && maxX !== null) {
       this.chart.zoomX(minX, maxX);
-    }  }
+    }
+  }
 
   public toggleLiveData(event: any) {
     this.liveData = !this.liveData;
