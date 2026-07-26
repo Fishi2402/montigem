@@ -6,6 +6,7 @@ import mc.fenix.charts.gembarcharttypes.GemBarChartData;
 import mc.fenix.charts.gembarcharttypes.GemBarChartEntry;
 import mc.fenix.charts.gembarcharttypes.GemBarChartEntryBuilder;
 import umlp.jsweet.extension.annotation.Component;
+import umlp.jsweet.extension.annotation.Serialized;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Component
 public class GemBarChartExample extends GemBarChartExampleTOP {
   @Override
+  @Serialized
   public GemBarChartData getBarchartData() {
     List<String> labels = Arrays.asList("People born before 1993", "People born between 1993 and 1998", "People born after 1998");
 

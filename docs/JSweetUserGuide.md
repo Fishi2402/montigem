@@ -164,6 +164,12 @@ This is extremely useful when sharing classes (like Singletons) between backend 
 
 Applies in both UMLP and GUI profiles.
 
+#### `@Serialized`
+
+*Annotation: `umlp.jsweet.extension.annotation.Serialized`*
+
+Opt-in for handwritten binding methods of GUI components (methods with a generated `<method>ForAngular__update` pendant). By default, update runs triggered by observer events and cache misses fire in parallel; methods that mutate state can race. With `@Serialized` on the handwritten method, the generated update runs are chained: while one run is executing and one is waiting, further triggers coalesce into the waiting run. A rejected run does not break the chain (the retry cap of failing updates is kept). For parameterized bindings there is one chain per method, not per cache key.
+
 ---
 
 ### 2.5 Enums

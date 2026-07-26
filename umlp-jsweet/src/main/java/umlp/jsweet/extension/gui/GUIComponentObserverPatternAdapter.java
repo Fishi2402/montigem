@@ -70,6 +70,8 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   public void onTranspilationStarted() {
     new GUIObserverRegistrationParamsPropagationScanner(context)
         .process(getContext().compilationUnits, getContext().trees);
+    new GUISerializedBindingPropagationScanner(context)
+        .process(getContext().compilationUnits, getContext().trees);
     super.onTranspilationStarted();
   }
 
@@ -315,20 +317,36 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
 
     Tree returnType = trees().getTree(executable).getReturnType();
 
-    printResultCache(executable, overloadMethod, methodName, returnType);
+    boolean serialized = context.hasAnnotationType(executable, GUIAdapterUtils.SERIALIZED_ANNOTATION);
+
+    printResultCache(executable, overloadMethod, methodName, returnType, serialized);
 
     printSynchronizerMethod(executable, overloadMethod, methodName, returnType);
 
-    printUpdateMethod(executable, overloadMethod, methodName);
+    printUpdateMethod(executable, overloadMethod, methodName, serialized);
   }
 
-  private void printUpdateMethod(ExecutableElement executable, boolean overloadMethod, String methodName) {
+  private void printUpdateMethod(ExecutableElement executable, boolean overloadMethod, String methodName,
+      boolean serialized) {
     print("public " + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "(");
     printMethodParameters(executable, overloadMethod, GUIAdapterUtils.UPDATE_SUFFIX);
     print("): void {").println().startIndent().printIndent()
 //        .print("console.log(\"" + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "\");")
-        .println().printIndent()
-        .print("Promise.resolve(this." + methodName + "(");
+        .println().printIndent();
+    if (serialized) {
+      String chainField = methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Chain";
+      String pendingField = methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Pending";
+      print("if (this." + pendingField + ") {").println().startIndent().printIndent()
+          .print("return;").println().endIndent().printIndent().print("}").println().printIndent()
+          .print("this." + pendingField + " = true;").println().printIndent()
+          .print("this." + chainField + " = this." + chainField + ".then(() => {")
+          .println().startIndent().printIndent()
+          .print("this." + pendingField + " = false;").println().printIndent()
+          .print("return Promise.resolve(this." + methodName + "(");
+    }
+    else {
+      print("Promise.resolve(this." + methodName + "(");
+    }
     printArguments(executable);
     if (executable.getParameters().size() > 0) {
       print(",");
@@ -353,7 +371,14 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     print("))").println().endIndent().printIndent();
 
     String failuresField = methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Failures";
-    print(")).then(__v => {").println().startIndent().printIndent()
+    if (serialized) {
+      // The final .catch below resolves the chain, so a rejected run cannot break it.
+      print("));").println().endIndent().printIndent().print("})");
+    }
+    else {
+      print("))");
+    }
+    print(".then(__v => {").println().startIndent().printIndent()
         .print("this." + failuresField + " = 0;").println().printIndent()
         .print("this." + methodName + adapterUtils.RESULT_CACHE_SUFFIX);
     String arg = "__v === undefined ? null : __v";
@@ -476,7 +501,7 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
   }
 
   private void printResultCache(ExecutableElement executable, boolean overloadMethod, String methodName,
-      Tree returnType) {
+      Tree returnType, boolean serialized) {
     // Print result cache
     print("private ");
     print(methodName + adapterUtils.RESULT_CACHE_SUFFIX + ": ");
@@ -494,6 +519,13 @@ public class GUIComponentObserverPatternAdapter extends PrinterAdapter {
     println().printIndent();
     print("private " + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Failures: number = 0;");
     println().printIndent();
+    if (serialized) {
+      // deliberately conservative: one chain per method, also for parameterized (ManyKeysMap) bindings
+      print("private " + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Chain: Promise<any> = Promise.resolve();");
+      println().printIndent();
+      print("private " + methodName + GUIAdapterUtils.UPDATE_SUFFIX + "Pending: boolean = false;");
+      println().printIndent();
+    }
   }
 
   @Override

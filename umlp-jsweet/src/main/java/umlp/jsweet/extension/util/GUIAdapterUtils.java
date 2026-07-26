@@ -35,6 +35,10 @@ public class GUIAdapterUtils extends UMLPAdapterUtils {
   * trigger updates of the Angular stored variables in the FrontEnd */
   public static final String NEEDS_OBSERVER_REGISTRATION_PARAMS_ANNOTATION = "umlp.jsweet.extension.annotation.ObserverRegistrationParams";
 
+  /* This annotation marks binding methods whose ForAngular update runs must not fire in parallel;
+  * they are chained and additional triggers coalesce */
+  public static final String SERIALIZED_ANNOTATION = "umlp.jsweet.extension.annotation.Serialized";
+
   /* This annotation marks methods that trigger update for the angular change tracking, i.e. setters
   * for GUI Params */
   public static final String NOTIFY_ABOUT_FIELD_UPDATE_ANNOTATION = "umlp.jsweet.extension.annotation.NotifyAboutFieldUpdate";
