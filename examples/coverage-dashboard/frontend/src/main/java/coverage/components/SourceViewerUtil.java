@@ -1,5 +1,6 @@
 package coverage.components;
 
+import coveragedashboard.ColumnRangeType;
 import coveragedashboard.CoverageColumnRange;
 import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageSourceFile;
@@ -20,7 +21,14 @@ public final class SourceViewerUtil {
       if(!line.getColumnRangesList().isEmpty()){
         // We have range data for the line
         for(CoverageColumnRange lineRange : line.getColumnRangesList()){
-          String css = lineRange.getHits() > 0 ? "range-covered" : "range-missed";
+          String css;
+          if(lineRange.getType() == ColumnRangeType.BRANCH){
+            css = lineRange.getHits() > 0 ? "range-covered-light" : "range-missed-light";
+          } else if (lineRange.getType() == ColumnRangeType.PARTIAL) {
+            css = "range-partial";
+          } else {
+            css = lineRange.getHits() > 0 ? "range-covered" : "range-missed";
+          }
           Range range = new Range(line.getLineNumber(), lineRange.getFromColumn(), line.getLineNumber(), lineRange.getToColumn());
           decorations.add(new InlineDecoration(range, css));
         }
@@ -36,7 +44,7 @@ public final class SourceViewerUtil {
 
   private static String determineCoarseCss(CoverageLine line){
     if (line.getMissedInstructions() > 0 || line.getMissedBranches() > 0) {
-      return (line.getCoveredInstructions() > 0 || line.getMissedBranches() > 0)
+      return (line.getCoveredInstructions() > 0 || line.getCoveredBranches() > 0)
           ? "range-partial"
           : "range-missed";
     }
