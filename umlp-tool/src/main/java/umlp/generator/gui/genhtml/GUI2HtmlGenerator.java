@@ -25,6 +25,7 @@ public class GUI2HtmlGenerator {
   }
 
   public void generate(ASTGUICompilationUnit ast, String configTemplate) {
+    System.setProperty("CONFIG_TEMPLATE", configTemplate);
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
 
