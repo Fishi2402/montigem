@@ -97,6 +97,7 @@ if(project.hasProperty('coverage')){
   }
 
   tasks.register('jacocoUmlpJava2ts', JacocoReport){
+    dependsOn test
     executionData.setFrom(file("$destFileUmlpJava2ts"))
     reports {
       xml.required = true
@@ -113,6 +114,7 @@ if(project.hasProperty('coverage')){
   }
 
   tasks.register('jacocoGui2java2ts', JacocoReport){
+    dependsOn test
     executionData.setFrom(file("$destFileGui2java2ts"))
     reports {
       xml.required = true
@@ -129,6 +131,10 @@ if(project.hasProperty('coverage')){
   }
 
   tasks.register('jacocoAggregated', JacocoReport){
+    dependsOn(
+        'jacocoUmlpJava2ts',
+        'jacocoGui2java2ts'
+    )
     executionData.setFrom(files(
         "$destFileUmlpJava2ts",
         "$destFileGui2java2ts"))

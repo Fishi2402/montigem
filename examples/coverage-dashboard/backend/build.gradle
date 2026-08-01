@@ -50,3 +50,53 @@ umlp2java{
   }
 }
 
+// Use rootDir.absolutePath to ensure absolute paths in XML/JSON reports resolve correctly
+def containerWorkspaceRoot = "/" + rootProject.rootDir.absolutePath
+    .replace("\\", "/")
+    .replace(":", "")
+    .replaceAll("^/+", "")
+jib{
+  from.image =  'eclipse-temurin:21-jre-alpine'//"$container_from_image"
+  to.image = "${container_target_image_base}coverage-dashboard-backend:latest"
+
+  container{
+    mainClass = application.mainClass.get()
+    workingDirectory = "${containerWorkspaceRoot}/examples/coverage-dashboard/backend"
+  }
+
+  extraDirectories{
+    paths{
+      path{
+        setFrom(rootProject.file("examples/jsweet-test/frontend/build/app/coverage"))
+        includes = ['coverage-final.json']
+        into = "${containerWorkspaceRoot}/examples/jsweet-test/frontend/build/app/coverage"
+      }
+
+      path {
+        setFrom(rootProject.file("umlp-jsweet/build/reports/jacoco/test"))
+        includes = ['jacocoTestReport.xml']
+        into = "${containerWorkspaceRoot}/umlp-jsweet/build/reports/jacoco/test"
+      }
+
+      path {
+        setFrom(rootProject.file("examples/jsweet-test/frontend/build/reports/jacoco/jacocoAggregated"))
+        includes = ['jacocoAggregated.xml']
+        into = "${containerWorkspaceRoot}/examples/jsweet-test/frontend/build/reports/jacoco/jacocoAggregated"
+      }
+
+      path {
+        setFrom(rootProject.file("umlp-jsweet/src/main/java"))
+        into = "${containerWorkspaceRoot}/umlp-jsweet/src/main/java"
+      }
+    }
+  }
+}
+
+tasks.matching { it.name.startsWith('jib') }.configureEach {
+  // Depend on tasks from other modules in your root Gradle build
+  dependsOn(
+      ':umlp-jsweet:jacocoTestReport',
+      ':examples:jsweet-test:frontend:test',
+      ':examples:jsweet-test:frontend:generateC8Report'
+  )
+}
