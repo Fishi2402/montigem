@@ -200,6 +200,10 @@ public abstract class GUIJava2TSTask extends DefaultTask {
   @Inject
   protected abstract FileSystemOperations getFileSystemOperations();
 
+  @Input
+  @Optional
+  public abstract Property<String> getJacocoAgentArg();
+
   @TaskAction
   public void run(InputChanges inputChanges) {
     if (inputChanges.isIncremental() && !shouldRunAgain(inputChanges)) {
@@ -210,7 +214,7 @@ public abstract class GUIJava2TSTask extends DefaultTask {
     javaBeansCacheCleanup.get();
     translate();
   }
-
+	
   protected boolean shouldRunAgain(InputChanges inputChanges) {
     if (hasChange(inputChanges, getGeneratedSources())
         || (getGeneratedSymbols().isPresent() && hasChange(inputChanges, getGeneratedSymbols()))) {
@@ -246,9 +250,7 @@ public abstract class GUIJava2TSTask extends DefaultTask {
       });
     }
 
-    WorkQueue workQueue2 = getWorkerExecutor().classLoaderIsolation(spec ->
-        spec.getClasspath().from(getClassPath())
-    );
+    WorkQueue workQueue2 = createWorkQueue(getClassPath());
     ConfigurableFileCollection srcDirs = getProject().files();
     srcDirs.from(getHandWrittenCodeDir());
     srcDirs.from(getInput4RelativePathCalculation());
@@ -346,8 +348,8 @@ public abstract class GUIJava2TSTask extends DefaultTask {
     // also add all files (recursively) from getExcludeTranspileFiles
     walkAndCollectJavaFiles(getExcludeTranspileFiles().getFiles()).forEach(excludedFromTr::from);
 
-    // JSweet runs in a class loader that stays open between builds, see Java2TSAction
-    WorkQueue jsweetQueue = getWorkerExecutor().noIsolation();
+    // Get correct work queue
+    WorkQueue jsweetQueue = createWorkQueue(getJSweetClassPath());
 
     // First action: cd2java Java files (if any)
     if (!cd2javaPaths.isEmpty()) {
@@ -470,5 +472,72 @@ public abstract class GUIJava2TSTask extends DefaultTask {
     }
     return individualInputPaths;
   }
-  
+
+  @Override
+  protected void prepareWorkQueue(){
+    // Check if JaCoCo is requested for this build to get the coverage during invocation of the
+    // generator. In order to attach JaCoCo, spawn separate JVM just for this step and attach
+    // JaCoCo
+    if(getJacocoAgentArg().isPresent() && !getJacocoAgentArg().get().isEmpty()) {
+      getLogger().info("Spawning separate JVM with JaCoCo attached for internal coverage");
+      super.workQueue = getWorkerExecutor().processIsolation(spec ->{
+        // Set working directory of new JVM to project dir to match gradle behavior
+        spec.getForkOptions().setWorkingDir(getProject().getProjectDir());
+        // Inject the current environment to match behavior of Gradle-worker
+        spec.getForkOptions().environment(System.getenv());
+        // Bypass Java JPMS strong encapsulation (--add-opens) to allow JSweet
+        // to access internal JDK compiler packages (com.sun.tools.javac.*)
+        // and java.net via reflection, which are otherwise blocked in Java 21+.
+        // (see https://github.com/cincheo/jsweet/issues/710#issuecomment-1048061355)
+        spec.getForkOptions().jvmArgs(
+            getJacocoAgentArg().get(),
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+            "--add-opens", "java.base/java.net=ALL-UNNAMED"
+        );
+      });
+    }else{
+      // Default behavior
+      super.prepareWorkQueue();
+    }
+  }
+
+  private WorkQueue createWorkQueue(ConfigurableFileCollection targetClassPath){
+    // Check if JaCoCo is requested for this build to get the coverage during invocation of the
+    // generator. In order to attach JaCoCo, spawn separate JVM just for this step and attach
+    // JaCoCo
+    if(getJacocoAgentArg().isPresent() && !getJacocoAgentArg().get().isEmpty()) {
+      getLogger().info("Spawning separate JVM with JaCoCo attached for internal coverage");
+      return getWorkerExecutor().processIsolation(spec ->{
+        spec.getClasspath().from(targetClassPath);
+        // Set working directory of new JVM to project dir to match gradle behavior
+        spec.getForkOptions().setWorkingDir(getProject().getProjectDir());
+        // Inject the current environment to match behavior of Gradle-worker
+        spec.getForkOptions().environment(System.getenv());
+        // Bypass Java JPMS strong encapsulation (--add-opens) to allow JSweet
+        // to access internal JDK compiler packages (com.sun.tools.javac.*)
+        // and java.net via reflection, which are otherwise blocked in Java 21+.
+        // (see https://github.com/cincheo/jsweet/issues/710#issuecomment-1048061355)
+        spec.getForkOptions().jvmArgs(
+            getJacocoAgentArg().get(),
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+            "--add-opens", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+            "--add-opens", "java.base/java.net=ALL-UNNAMED"
+        );
+      });
+    }else{
+      // JSweet runs in a class loader that stays open between builds, see Java2TSAction
+      return getWorkerExecutor().noIsolation();
+    }
+  }
 }

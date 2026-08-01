@@ -2,6 +2,11 @@
 plugins {
   id 'java'
   id 'de.rwth.se.montigem-frontend'
+  id 'jacoco'
+}
+
+jacoco{
+  toolVersion = "0.8.12"
 }
 
 dependencies {
@@ -56,3 +61,68 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
+if(project.hasProperty('coverage')){
+  def agentPath = configurations.detachedConfiguration(
+      dependencies.create("org.jacoco:org.jacoco.agent:${jacoco.toolVersion}:runtime")
+  ).singleFile.absolutePath
+  def destFileUmlpJava2ts = "${layout.buildDirectory.get()}/jacoco/umlpJava2ts.exec"
+  def destFileGui2java2ts = "${layout.buildDirectory.get()}/jacoco/gui2java2ts.exec"
+
+  tasks.named('umlpJava2ts'){
+    jacocoAgentArg.set("-javaagent:${agentPath}=destfile=${destFileUmlpJava2ts},append=true,includes=umlp.jsweet.extension.*")
+  }
+
+  tasks.named('gui2java2ts'){
+    jacocoAgentArg.set("-javaagent:${agentPath}=destfile=${destFileGui2java2ts},append=true,includes=umlp.jsweet.extension.*")
+  }
+
+  tasks.register('jacocoUmlpJava2ts', JacocoReport){
+    executionData.setFrom(file("$destFileUmlpJava2ts"))
+    reports {
+      xml.required = true
+      xml.outputLocation = layout.buildDirectory.dir("reports/jacoco/umlpJava2ts")
+    }
+
+    classDirectories.setFrom(files(
+        project(':umlp-jsweet').sourceSets.main.output.classesDirs
+    ))
+
+    sourceDirectories.setFrom(files(
+        project(':umlp-jsweet').sourceSets.main.allSource.srcDirs
+    ))
+  }
+
+  tasks.register('jacocoGui2java2ts', JacocoReport){
+    executionData.setFrom(file("$destFileGui2java2ts"))
+    reports {
+      xml.required = true
+      xml.outputLocation = layout.buildDirectory.dir("reports/jacoco/gui2java2ts")
+    }
+
+    classDirectories.setFrom(files(
+        project(':umlp-jsweet').sourceSets.main.output.classesDirs
+    ))
+
+    sourceDirectories.setFrom(files(
+        project(':umlp-jsweet').sourceSets.main.allSource.srcDirs
+    ))
+  }
+
+  tasks.register('jacocoAggregated', JacocoReport){
+    executionData.setFrom(files(
+        "$destFileUmlpJava2ts",
+        "$destFileGui2java2ts"))
+    reports {
+      xml.required = true
+      html.required = true
+    }
+
+    classDirectories.setFrom(files(
+        project(':umlp-jsweet').sourceSets.main.output.classesDirs
+    ))
+
+    sourceDirectories.setFrom(files(
+        project(':umlp-jsweet').sourceSets.main.allSource.srcDirs
+    ))
+  }
+}
