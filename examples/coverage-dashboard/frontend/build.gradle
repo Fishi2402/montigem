@@ -12,7 +12,7 @@ configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
 
-
+/*
 umlpJava2ts{
   doFirst {
     System.setProperty("MC_REPORT_SOURCE_MAPPING", "true")
@@ -32,3 +32,4 @@ gui2java2ts{
     System.setProperty("MC_REPORT_SOURCE_MAPPING", "false")
   }
 }
+*/

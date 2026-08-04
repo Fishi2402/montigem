@@ -98,7 +98,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
     IncGenGradleReporter incGenGradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput,
         lowerCaseName);
     StatisticsReporter statisticsReporter = new StatisticsReporter(jsonElement, "UMLP_JAR_JSON", this.reportDirectory, modelName, repository, traverserNodeTree);
-    TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, modelName, "map");
+    //TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, modelName, "map");
 
     if (reportLevel == ReportLevel.INCGEN) {
       reports.addReportEventHandler(incGenGradleReporter);
@@ -106,7 +106,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
       return reports;
     }
 
-    reports.addReportEventHandler(templateSourceMappingReporter);
+    //reports.addReportEventHandler(templateSourceMappingReporter);
     reports.addReportEventHandler(summaryReporter);
     reports.addReportEventHandler(generatedFilesReporter);
     reports.addReportEventHandler(handWrittenCodeReporter);
