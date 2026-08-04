@@ -25,11 +25,11 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -174,10 +174,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
         if(decodedSource.ignored || decodedSource.url == null)
           continue;
 
+        Path decodedSourcePath = Path.of(URI.create(decodedSource.url.toString().replace('\\', '/'))).normalize();
         CoverageSourceFileBuilder sourceCoverageFile = CoverageDashboardManager.coverageSourceFileBuilder()
-            .path(extractRelativePath(Path.of(decodedSource.url.toURI()), basePath))
-            .name(extractFileName(Path.of(decodedSource.url.toURI())))
-            .physicalPath(Path.of(decodedSource.url.toURI()).toString())
+            .path(extractRelativePath(decodedSourcePath, basePath))
+            .name(extractFileName(decodedSourcePath))
+            .physicalPath(decodedSourcePath.toAbsolutePath().toString())
             // Check how we will decide this later on!
             .category(ArtifactCategory.GENERATED);
 

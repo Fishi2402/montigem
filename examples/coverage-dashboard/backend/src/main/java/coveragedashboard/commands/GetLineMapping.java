@@ -53,7 +53,8 @@ public class GetLineMapping extends  GetLineMappingTOP{
         if (mapping.originalSource == null || mapping.originalSource.url == null)
           continue;
 
-       String originalPath = java.nio.file.Path.of(mapping.originalSource.url.toURI()).toString();
+        String originalPath = java.nio.file.Path.of(java.net.URI.create(mapping.originalSource.url.toString().replace('\\', '/'))).normalize().toString();
+
        CoverageSourceFile originalFile = pathToFileMap.get(originalPath);
        if(originalFile != null){
          String entry = mapping.generatedLine + "::" + originalFile.getGemId() + "::" + mapping.originalLine;
@@ -61,7 +62,7 @@ public class GetLineMapping extends  GetLineMappingTOP{
        }
       }
       return Optional.of(mappingList);
-    }catch(IOException | URISyntaxException ex){
+    }catch(IOException ex){
       Log.warn("Error while calculating line mapping: " + ex.getMessage());
       return Optional.empty();
     }
