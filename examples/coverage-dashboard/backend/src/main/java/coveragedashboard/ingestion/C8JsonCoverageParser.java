@@ -41,13 +41,13 @@ import java.util.stream.Stream;
 
 class C8JsonCoverageParser implements CoverageReportParser {
 
-  private static final String BundlePath = File.separator + "dist" + File.separator + "client" + File.separator + "browser" + File.separator;
-  private static final String BundledUmlp2JavaPath = File.separator + "frontend" + File.separator + "build" + File.separator + "app" + File.separator + "umlpJava2ts" + File.separator;
-  private static final String Umlp2JavaPath = File.separator + "frontend" + File.separator + "build" + File.separator + "umlpJava2ts" + File.separator;
-  private static final String BundledGui2Java2TsPath = File.separator + "frontend" + File.separator + "build" + File.separator + "app" + File.separator + "gui2java2ts" + File.separator;
-  private static final String Gui2Java2TsPath = File.separator + "frontend" + File.separator + "build" + File.separator + "gui2java2ts" + File.separator;
+  private static final String BundlePath = "/dist/client/browser/";
+  private static final String BundledUmlp2JavaPath = "/frontend/build/app/umlpJava2ts/";
+  private static final String Umlp2JavaPath = "/frontend/build/umlpJava2ts/";
+  private static final String BundledGui2Java2TsPath = "/frontend/build/app/gui2java2ts/";
+  private static final String Gui2Java2TsPath = "/frontend/build/gui2java2ts/";
   private static final String ComponentObserverManagerRegex = "^.*/frontend/build/app/gui2java2ts/[^/]+ComponentObserverManager\\.ts";
-  private static final String ComponentObserverManagerPath = File.separator + "frontend" + File.separator + "build" + File.separator + "umlp2jsweetObserver" + File.separator;
+  private static final String ComponentObserverManagerPath = "/frontend/build/umlp2jsweetObserver/";
 
 
   private final JsonFactory jsonFactory;
@@ -59,7 +59,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
   }
 
   @Override
-  public CoverageReport parse(File jsonFile, String reportName, Path basePath) throws IOException {
+  public CoverageReport parse(File jsonFile, String reportName, Path basePath, Path rootPath) throws IOException {
     List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
     try (JsonParser parser = jsonFactory.createParser(jsonFile)) {
@@ -103,7 +103,10 @@ class C8JsonCoverageParser implements CoverageReportParser {
         }
 
         if(filePath != null){
-          parsedFiles.add(createSourceFile(filePath, basePath, statementMap, branchMap, statementHits, branchHits, fnMap, fnHits));
+          parsedFiles.add(createSourceFile(
+              filePath, basePath, rootPath,
+              statementMap, branchMap,
+              statementHits, branchHits, fnMap, fnHits));
         }
       }
     }
@@ -119,7 +122,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
   }
 
   private CoverageSourceFile createSourceFile(
-      String filePath, Path basePath, Map<String, Range> statementMap,
+      String filePath, Path basePath, Path rootPath, Map<String, Range> statementMap,
       Map<String, BranchData> branchMap, Map<String, Integer> statementHits,
       Map<String, List<Integer>> branchHits, Map<String, FnData> fnMap, Map<String, Integer> fnHits) throws IOException{
 
@@ -133,7 +136,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     CoverageSourceFileBuilder fileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
         .path(extractRelativePath(filePath, basePath))
         .name(extractFileName(filePath))
-        .physicalPath(extractPhysicalPath(filePath))
+        .physicalPath(extractPhysicalPath(filePath, rootPath))
         .category(ArtifactCategory.GENERATED)
         .scopes(context.scopes)
         .metrics(context.metrics.build());
@@ -261,26 +264,29 @@ class C8JsonCoverageParser implements CoverageReportParser {
     return fileName != null ? fileName.toString() : "unknown";
   }
 
-  private String extractRelativePath(String fullPath, Path basePath){
-    if(fullPath == null || fullPath.isBlank())
+  private String extractRelativePath(String filePath, Path basePath){
+    if(filePath == null || filePath.isBlank())
       return "unknown";
-    return extractRelativePath(Path.of(fullPath), basePath);
+    return extractRelativePath(Path.of(filePath), basePath);
   }
 
-  private String extractRelativePath(Path fullPath, Path basePath){
-    Path target = fullPath.normalize();
-    if(basePath == null || !target.startsWith(basePath))
-      return fullPath.toString();
-    return basePath.relativize(target).toString();
+  private String extractRelativePath(Path filePath, Path basePath){
+    if(basePath == null || !filePath.startsWith(basePath))
+      return filePath.toString();
+    return basePath.relativize(filePath).toString();
   }
 
-  private String extractPhysicalPath(String fullPath){
+  private String extractPhysicalPath(String filePath, Path rootPath){
+
+    // Resolve relative path to
+    String fullPath = rootPath.resolve(Path.of(filePath)).toAbsolutePath().normalize().toString().replace(File.separatorChar, '/');
+
     // Remove the 'dist/client/browser' from the path as this is done during bundling
-    String physicalPath = fullPath.replace(BundlePath, File.separator);
+    String physicalPath = fullPath.replace(BundlePath, "/");
 
     // Check if this is the 'xxComponentObserverManager.ts'
 
-    if(physicalPath.replace(File.separator, "/").matches(ComponentObserverManagerRegex)){
+    if(physicalPath.matches(ComponentObserverManagerRegex)){
       return physicalPath
           .replace(BundledGui2Java2TsPath, ComponentObserverManagerPath);
     }

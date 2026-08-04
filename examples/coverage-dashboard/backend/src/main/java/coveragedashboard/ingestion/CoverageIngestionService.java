@@ -15,10 +15,10 @@ public class CoverageIngestionService {
     this.parserFactory = new CoverageParserFactory();
   }
 
-  public CoverageReport ingestArtifact(File artifactFile, String reportName, Path basePath, ReportType type){
+  public CoverageReport ingestArtifact(File artifactFile, String reportName, Path basePath, Path rootPath, ReportType type){
     CoverageReportParser parser = parserFactory.getParser(type);
     try {
-      CoverageReport coverageReport = parser.parse(artifactFile, reportName, basePath);
+      CoverageReport coverageReport = parser.parse(artifactFile, reportName, basePath, rootPath);
 
       return coverageReport;
     }catch (UnsupportedOperationException e){

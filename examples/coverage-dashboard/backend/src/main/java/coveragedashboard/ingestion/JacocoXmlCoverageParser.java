@@ -43,7 +43,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
   }
 
   @Override
-  public CoverageReport parse(File artifactFile, String reportName, Path basePath) throws IOException {
+  public CoverageReport parse(File artifactFile, String reportName, Path basePath, Path rootPath) throws IOException {
     List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
 
