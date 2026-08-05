@@ -157,6 +157,7 @@ public class SourceMapViewer extends SourceMapViewerTOP{
     if(targetFile.getGeneratedByList().isEmpty()){
       this.setSourceContent("No source-file available.");
       this.resetSourceDropdown();
+      this.setViewSourcesDisabled(true);
     }else{
       this._currentSourceFileOptions.clear();
       this.setViewSourcesDisabled(false);
