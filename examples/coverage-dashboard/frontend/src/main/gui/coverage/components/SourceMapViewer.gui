@@ -7,6 +7,7 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 
 import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
 
 import mc.fenix.input.GemDropdownInput;
 import mc.fenix.input.GemDropdownInputTypes.Option;
@@ -26,7 +27,8 @@ component SourceMapViewer(
     List<InlineDecoration> sourceDecoration,
     String selectedSourceFile,
     List<Option> sourceFileOptions,
-    String targetFileName) {
+    String targetFileName,
+    boolean viewSourcesDisabled) {
   rootGrid@GemGrid(
     width = "100%",
     height = "100%",
@@ -50,6 +52,12 @@ component SourceMapViewer(
                 width = "100%",
                 entry = selectedSourceFile,
                 options = sourceFileOptions
+              ),
+              viewSources@GemButton(
+                width = "auto",
+                label = "sources",
+                disabled = viewSourcesDisabled,
+                leftClick = openViewSources()
               )
             ]
           ),
