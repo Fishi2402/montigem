@@ -1,0 +1,58 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build_no_containers:
+    name: build_no_containers
+    runs-on: ubuntu-latest
+
+    container:
+      image: registry.git.rwth-aachen.de/monticore/container-registry/gradle8.14.4-chrome-installed
+
+    env:
+      GRADLE_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2"
+      GRADLE_USER_HOME: "${{ github.workspace }}/.gradle"
+      GRADLE_COMMON_ARGS: "-P mavenPassword=${{ secrets.pass }} -P mavenUser=${{ secrets.user }}"
+      NPM_CONFIG_CACHE: "${{ github.workspace }}/.npm"
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      CHROME_BIN: "/usr/bin/google-chrome-stable"
+      PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
+
+    # GitLab:
+    # except:
+    #   refs:
+    #     - dev
+    if: github.ref != 'refs/heads/dev'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build
+        shell: bash
+        run: |
+          # Double the Gradle daemon heap for this job only
+          sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8/' gradle.properties
+
+          # Gradle launcher JVM memory
+          export JAVA_OPTS="-Xmx2g"
+          export CHROME_BIN=/usr/bin/google-chrome-stable
+
+          gradle --version 2>&1 | tee ${{ github.workspace }}/build.log
+
+          gradle build testCodeCoverageReport --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> ${{ github.workspace }}/build.log 2> >(tee -a ${{ github.workspace }}/build.log >&2)
+
+          # Add downloaded node distribution to PATH
+          export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
+
+          cd umlp-tool
+
+          gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> ${{ github.workspace }}/build.log 2> >(tee -a ${{ github.workspace }}/build.log) >&2
+
+          cd ..
+
+          # Parse CSV for coverage info
+          awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.csv
