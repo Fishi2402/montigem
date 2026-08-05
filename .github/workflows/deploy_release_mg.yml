@@ -11,6 +11,9 @@ jobs:
 
     container:
       image: registry.git.rwth-aachen.de/monticore/container-registry/gradle8.14.4-chrome-installed
+      credentials:
+        username: ${{ secrets.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
 
     env:
       GRADLE_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2"
