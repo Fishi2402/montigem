@@ -16,10 +16,10 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     env:
-      GRADLE_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2"
-      GRADLE_USER_HOME: "${{ github.workspace }}/.gradle"
+      GRADLE_OPTS: "-Dmaven.repo.local=$PWD/.m2"
+      GRADLE_USER_HOME: "$PWD/.gradle"
       GRADLE_COMMON_ARGS: "-P mavenPassword=${{ secrets.pass }} -P mavenUser=${{ secrets.user }}"
-      NPM_CONFIG_CACHE: "${{ github.workspace }}/.npm"
+      NPM_CONFIG_CACHE: "$PWD/.npm"
       PUPPETEER_SKIP_DOWNLOAD: "true"
       CHROME_BIN: "/usr/bin/google-chrome-stable"
       PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
@@ -44,16 +44,16 @@ jobs:
           export JAVA_OPTS="-Xmx2g"
           export CHROME_BIN=/usr/bin/google-chrome-stable
 
-          gradle --version 2>&1 | tee ${{ github.workspace }}/build.log
+          gradle --version 2>&1 | tee $PWD/build.log
 
-          gradle build testCodeCoverageReport --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> ${{ github.workspace }}/build.log 2> >(tee -a ${{ github.workspace }}/build.log >&2)
+          gradle build testCodeCoverageReport --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $PWD/build.log 2> >(tee -a $PWD/build.log >&2)
 
           # Add downloaded node distribution to PATH
           export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
 
           cd umlp-tool
 
-          gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> ${{ github.workspace }}/build.log 2> >(tee -a ${{ github.workspace }}/build.log) >&2
+          gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $PWD/build.log 2> >(tee -a $PWD/build.log) >&2
 
           cd ..
 
