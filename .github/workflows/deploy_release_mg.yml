@@ -16,6 +16,8 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     env:
+      CI_REGISTRY_USER: ${{ secrets.REGISTRY_USER }} # required for jib configuration
+      CI_REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }} # required for jib configuration
       GRADLE_OPTS: "-Dmaven.repo.local=$PWD/.m2"
       GRADLE_USER_HOME: "$PWD/.gradle"
       GRADLE_COMMON_ARGS: "-P mavenPassword=${{ secrets.mavenPassword }} -P mavenUser=${{ secrets.mavenUser }}"
