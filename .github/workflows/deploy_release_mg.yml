@@ -18,7 +18,7 @@ jobs:
     env:
       GRADLE_OPTS: "-Dmaven.repo.local=$PWD/.m2"
       GRADLE_USER_HOME: "$PWD/.gradle"
-      GRADLE_COMMON_ARGS: "-P mavenPassword=${{ secrets.pass }} -P mavenUser=${{ secrets.user }}"
+      GRADLE_COMMON_ARGS: "-P mavenPassword=${{ secrets.mavenPassword }} -P mavenUser=${{ secrets.mavenUser }}"
       NPM_CONFIG_CACHE: "$PWD/.npm"
       PUPPETEER_SKIP_DOWNLOAD: "true"
       CHROME_BIN: "/usr/bin/google-chrome-stable"
