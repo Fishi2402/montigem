@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.ocl.ocl._ast.ASTOCLCompilationUnit;
 import umlp.generator.db.sql.SQLSchemaGenerator;
@@ -44,7 +45,7 @@ public class UMLPGenerator {
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate,
                        List<ASTOCLCompilationUnit> oclCompilationUnits) {
-    System.setProperty("CONFIG_TEMPLATE", configTemplate);
+    Reporting.setConfigTemplate(configTemplate);
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
@@ -59,6 +60,7 @@ public class UMLPGenerator {
         cdGenerator,
         schemaGenerator,
         oclCompilationUnits));
+    Reporting.clearConfigTemplate();
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
