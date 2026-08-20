@@ -33,6 +33,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -185,8 +186,8 @@ class C8JsonCoverageParser implements CoverageReportParser {
       if (!Files.exists(sourceMapPath)) {
         return generatedBy;
       }
-    } catch (Exception e) {
-      Log.error("Not able to check for source maps: " + e.getMessage());
+    } catch (InvalidPathException e) {
+      // Not a valid path, nothing to check
       return generatedBy;
     }
 
@@ -195,7 +196,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     try {
       sourceMap = Decoding.parseSourceMapJson(
           sourceMapContent, sourceMapPath.getParent().toUri().toURL());
-    }catch (Exception e){
+    }catch (InvalidPathException e){
       Log.error("Error while parsing source-map for " + targetFileBuilder.getPath() + ": " + e.getMessage());
       return generatedBy;
     }
