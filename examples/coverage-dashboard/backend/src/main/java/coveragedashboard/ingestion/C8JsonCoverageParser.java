@@ -41,53 +41,55 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 class C8JsonCoverageParser implements CoverageReportParser {
 
-  private static final String BundlePath = "/dist/client/browser/";
-  private static final String BundledUmlp2JavaPath = "/frontend/build/app/umlpJava2ts/";
-  private static final String Umlp2JavaPath = "/frontend/build/umlpJava2ts/";
-  private static final String BundledGui2Java2TsPath = "/frontend/build/app/gui2java2ts/";
-  private static final String Gui2Java2TsPath = "/frontend/build/gui2java2ts/";
-  private static final String ComponentObserverManagerRegex = "^.*/frontend/build/app/gui2java2ts/[^/]+ComponentObserverManager\\.ts";
-  private static final String ComponentObserverManagerPath = "/frontend/build/umlp2jsweetObserver/";
+  private static final String BUNDLE_PATH = "/dist/client/browser/";
+  private static final String BUNDLED_UMLP_2_JAVA_PATH = "/frontend/build/app/umlpJava2ts/";
+  private static final String UMLP_2_JAVA_PATH = "/frontend/build/umlpJava2ts/";
+  private static final String BUNDLED_GUI_2_JAVA_2_TS_PATH = "/frontend/build/app/gui2java2ts/";
+  private static final String GUI_2_JAVA_2_TS_PATH = "/frontend/build/gui2java2ts/";
+  private static final String COMPONENT_OBSERVER_MANAGER_PATH = "/frontend/build/umlp2jsweetObserver/";
 
+  private static final Pattern COMPONENT_OBSERVER_MANAGER_PATTERN =
+      Pattern.compile("^.*/frontend/build/app/gui2java2ts/[^/]+ComponentObserverManager\\.ts");
 
   private final JsonFactory jsonFactory;
   private final CoverageModuleAggregator moduleAggregator;
-  private final List<ResourcePath> resourcePaths;
 
-  public C8JsonCoverageParser(){
-    this.jsonFactory = new JsonFactory();
-    this.moduleAggregator = new CoverageModuleAggregator();
-    this.resourcePaths = new ArrayList<>();
+  C8JsonCoverageParser() {
+    this(new JsonFactory(), new CoverageModuleAggregator());
+  }
+
+  C8JsonCoverageParser(JsonFactory jsonFactory, CoverageModuleAggregator moduleAggregator) {
+    this.jsonFactory = Objects.requireNonNull(jsonFactory, "jsonFactory must not be null");
+    this.moduleAggregator = Objects.requireNonNull(moduleAggregator, "moduleAggregator must not be null");
   }
 
   @Override
   public CoverageReport parse(File jsonFile, String reportName, Path basePath, Path rootPath) throws IOException {
-    for(ResourcePath resourcePath : resourcePaths){
-      resourcePath.close();
-    }
-    resourcePaths.clear();
+    Objects.requireNonNull(jsonFile, "jsonFile must not be null");
+    Objects.requireNonNull(reportName, "reportName must not be null");
 
-    List<CoverageSourceFile> parsedFiles = new ArrayList<>();
+    try (ParseSession session = new ParseSession();
+         JsonParser parser = jsonFactory.createParser(jsonFile)) {
 
-    try (JsonParser parser = jsonFactory.createParser(jsonFile)) {
-
-      // Root must be an obejct
-      if(parser.nextToken() != JsonToken.START_OBJECT){
+      if (parser.nextToken() != JsonToken.START_OBJECT) {
         throw new IOException("Expected JSON Object root");
       }
 
-      while(parser.nextToken() != JsonToken.END_OBJECT){
-        // Read current file path and move to inner object
-        String filePath = parser.currentName();
-        parser.nextToken();
+      List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
+      while (parser.nextToken() != JsonToken.END_OBJECT) {
+        String outerKeyFilePath = parser.currentName();
+        parser.nextToken(); // Move to file object
+
+        String internalPath = null;
         Map<String, Range> statementMap = new HashMap<>();
         Map<String, BranchData> branchMap = new HashMap<>();
         Map<String, Integer> statementHits = new HashMap<>();
@@ -95,11 +97,13 @@ class C8JsonCoverageParser implements CoverageReportParser {
         Map<String, FnData> fnMap = new HashMap<>();
         Map<String, Integer> fnHits = new HashMap<>();
 
-        while(parser.nextToken() != JsonToken.END_OBJECT){
+        while (parser.nextToken() != JsonToken.END_OBJECT) {
           String fieldName = parser.currentName();
           JsonToken token = parser.nextToken();
 
-          if ("statementMap".equals(fieldName) && token == JsonToken.START_OBJECT) {
+          if ("path".equals(fieldName) && token == JsonToken.VALUE_STRING) {
+            internalPath = parser.getText();
+          } else if ("statementMap".equals(fieldName) && token == JsonToken.START_OBJECT) {
             parseStatementMap(parser, statementMap);
           } else if ("branchMap".equals(fieldName) && token == JsonToken.START_OBJECT) {
             parseBranchMap(parser, branchMap);
@@ -107,49 +111,52 @@ class C8JsonCoverageParser implements CoverageReportParser {
             parseStatementHits(parser, statementHits);
           } else if ("b".equals(fieldName) && token == JsonToken.START_OBJECT) {
             parseBranchHits(parser, branchHits);
-          } else if("fnMap".equals(fieldName) && token == JsonToken.START_OBJECT) {
+          } else if ("fnMap".equals(fieldName) && token == JsonToken.START_OBJECT) {
             parseFnMap(parser, fnMap);
-          }else if("f".equals(fieldName) && token == JsonToken.START_OBJECT) {
+          } else if ("f".equals(fieldName) && token == JsonToken.START_OBJECT) {
             parseFnHits(parser, fnHits);
           } else {
-            parser.skipChildren(); // Skip unknown properties for now
+            parser.skipChildren();
           }
         }
 
-        if(filePath != null){
+        String effectiveFilePath = (internalPath != null && !internalPath.isBlank()) ? internalPath : outerKeyFilePath;
+
+        if (effectiveFilePath != null) {
           parsedFiles.add(createSourceFile(
-              filePath, basePath, rootPath,
-              statementMap, branchMap,
-              statementHits, branchHits, fnMap, fnHits));
+              session, effectiveFilePath, basePath, rootPath,
+              statementMap, branchMap, statementHits, branchHits, fnMap, fnHits
+          ));
         }
       }
+
+      CoverageModule rootModule = moduleAggregator.groupFilesInModules(parsedFiles);
+
+      return CoverageDashboardManager.coverageReportBuilder()
+          .name(reportName)
+          .type(ReportType.GENERATED_CODE_TEST)
+          .module(rootModule)
+          .build()
+          .get();
     }
-
-    for(ResourcePath resourcePath : resourcePaths){
-      resourcePath.close();
-    }
-    resourcePaths.clear();
-
-    // Aggregate into modules
-    CoverageModule rootModule = moduleAggregator.groupFilesInModules(parsedFiles);
-
-    return CoverageDashboardManager.coverageReportBuilder()
-        .name(reportName)
-        .type(ReportType.GENERATED_CODE_TEST)
-        .module(rootModule)
-        .build().get();
   }
 
   private CoverageSourceFile createSourceFile(
-      String filePath, Path basePath, Path rootPath, Map<String, Range> statementMap,
-      Map<String, BranchData> branchMap, Map<String, Integer> statementHits,
-      Map<String, List<Integer>> branchHits, Map<String, FnData> fnMap, Map<String, Integer> fnHits) throws IOException{
+      ParseSession session,
+      String filePath,
+      Path basePath,
+      Path rootPath,
+      Map<String, Range> statementMap,
+      Map<String, BranchData> branchMap,
+      Map<String, Integer> statementHits,
+      Map<String, List<Integer>> branchHits,
+      Map<String, FnData> fnMap,
+      Map<String, Integer> fnHits) throws IOException {
 
     FileCoverageContext context = new FileCoverageContext();
     extractFunctionScopes(fnMap, fnHits, context);
     processStatements(statementMap, statementHits, context);
     processBranches(branchMap, branchHits, context);
-
     finalizeLinesAndDeduplicate(context);
 
     CoverageSourceFileBuilder fileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
@@ -162,90 +169,83 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
     context.lines.values().forEach(line -> fileBuilder.linesAdd(line.build().get()));
 
-    try{
-      fileBuilder.addAllGeneratedBys(getGenerationFiles(fileBuilder, basePath));
-    }catch (URISyntaxException e){
-      Log.error("Not able to resolve source-map for " + fileBuilder.getPath() + ": " + e.getMessage());
+    try {
+      fileBuilder.addAllGeneratedBys(resolveGenerationSources(session, fileBuilder, basePath));
+    } catch (URISyntaxException e) {
+      Log.error("Unable to resolve source-map for " + fileBuilder.getPath() + ": " + e.getMessage());
     }
 
     return fileBuilder.build().get();
   }
 
+  private List<CoverageSourceFile> resolveGenerationSources(
+      ParseSession session,
+      CoverageSourceFileBuilder targetFileBuilder,
+      Path basePath) throws IOException, URISyntaxException {
 
-  private List<CoverageSourceFile> getGenerationFiles(CoverageSourceFileBuilder targetFileBuilder, Path basePath) throws IOException, URISyntaxException {
-    List<CoverageSourceFile> generatedBy = new ArrayList<>();
+    List<CoverageSourceFile> generatedSources = new ArrayList<>();
 
-    // Check if a source-map exists
-    Path sourceMapPath;
-    try {
-      sourceMapPath = Path.of(targetFileBuilder.getPhysicalPath() + ".map");
-      if (!Files.exists(sourceMapPath)) {
-        // Check if template-source maps exist
-        sourceMapPath = Path.of(FilenameUtils.removeExtension(targetFileBuilder.getPhysicalPath()) + "_TEMPL.map");
-      }
-      if (!Files.exists(sourceMapPath)) {
-        return generatedBy;
-      }
-    } catch (InvalidPathException e) {
-      // Not a valid path, nothing to check
-      return generatedBy;
+    Path sourceMapPath = resolveSourceMapPath(targetFileBuilder.getPhysicalPath());
+    if (sourceMapPath == null || !Files.exists(sourceMapPath)) {
+      return generatedSources;
     }
 
-    String sourceMapContent = Files.readString(sourceMapPath);
     DecodedSourceMap sourceMap;
     try {
+      String sourceMapContent = Files.readString(sourceMapPath);
       sourceMap = Decoding.parseSourceMapJson(
           sourceMapContent, sourceMapPath.getParent().toUri().toURL());
-    }catch (InvalidPathException e){
+    } catch (InvalidPathException e) {
       Log.error("Error while parsing source-map for " + targetFileBuilder.getPath() + ": " + e.getMessage());
-      return generatedBy;
+      return generatedSources;
     }
+
     List<DecodedMapping> decodedMappings = sourceMap.getMappings();
 
-    // Performance: Pre-map target lines for O(1) lookup
-    Map<Integer, CoverageLine> targetLineMap = targetFileBuilder.getLinesList().stream().collect(
-        Collectors.toMap(CoverageLine::getLineNumber, l -> l, (existing, replacement) -> existing)
-    );
+    Map<Integer, CoverageLine> targetLineMap = targetFileBuilder.getLinesList().stream()
+        .collect(Collectors.toMap(CoverageLine::getLineNumber, l -> l, (existing, replacement) -> existing));
 
-    for(DecodedSource decodedSource : sourceMap.sources){
-      // Skip if we can not find the source, or it is explicitly ignored
-      if(decodedSource.ignored || decodedSource.url == null)
+    for (DecodedSource decodedSource : sourceMap.sources) {
+      if (decodedSource.ignored || decodedSource.url == null) {
         continue;
+      }
+
       ResourcePath resourcePath = ResourcePath.of(URI.create(decodedSource.url.toString().replace('\\', '/')));
+      session.registerResource(resourcePath);
+
       Path decodedSourcePath = resourcePath.getPath().normalize();
-      this.resourcePaths.add(resourcePath);
 
       CoverageSourceFileBuilder sourceCoverageFile = CoverageDashboardManager.coverageSourceFileBuilder()
           .path(extractRelativePath(decodedSourcePath, basePath))
           .name(extractFileName(decodedSourcePath))
-          .physicalPath(resourcePath.representation)
-          // Check how we will decide this later on!
+          .physicalPath(resourcePath.getStringPath())
           .category(ArtifactCategory.GENERATED);
 
-      Map<Integer, CoverageLineBuilder> lineBuilders = new HashMap<Integer, CoverageLineBuilder>();
-      // Get all mappings for this source and build the lines based on the coverage data
-      decodedMappings.stream().filter(mapping -> mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url))
-          .forEach(mapping ->{
+      Map<Integer, CoverageLineBuilder> lineBuilders = new HashMap<>();
 
+      decodedMappings.stream()
+          .filter(mapping -> mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url))
+          .forEach(mapping -> {
             CoverageLine targetLine = targetLineMap.get(mapping.generatedLine);
-            if(targetLine == null)
+            if (targetLine == null) {
               return;
+            }
 
-            // Get the line-coverage for this line in the target file and based on this, we set the coverage for the source-file
-            CoverageLineBuilder line = lineBuilders.computeIfAbsent(mapping.originalLine,
-                  (lineNumber) -> CoverageDashboardManager.coverageLineBuilder()
-                      .lineNumber(lineNumber)
-                      .coveredInstructions(0)
-                      .missedInstructions(0)
-                      .coveredBranches(0)
-                      .missedBranches(0));
+            CoverageLineBuilder line = lineBuilders.computeIfAbsent(
+                mapping.originalLine,
+                lineNumber -> CoverageDashboardManager.coverageLineBuilder()
+                    .lineNumber(lineNumber)
+                    .coveredInstructions(0)
+                    .missedInstructions(0)
+                    .coveredBranches(0)
+                    .missedBranches(0)
+            );
 
-            // For now, only map the lines back
             line.missedInstructions(line.getMissedInstructions() + targetLine.getMissedInstructions());
             line.coveredInstructions(line.getCoveredInstructions() + targetLine.getCoveredInstructions());
             line.missedBranches(line.getMissedBranches() + targetLine.getMissedBranches());
             line.coveredBranches(line.getCoveredBranches() + targetLine.getCoveredBranches());
-      });
+          });
 
       int fileCoveredInstructions = 0;
       int fileMissedInstructions = 0;
@@ -254,25 +254,23 @@ class C8JsonCoverageParser implements CoverageReportParser {
       int fileCoveredLines = 0;
       int fileMissedLines = 0;
 
-      // Finish the builder and add to the source-file and build up the file-metrics on the fly
-      for(CoverageLineBuilder lineBuilder : lineBuilders.values()){
+      for (CoverageLineBuilder lineBuilder : lineBuilders.values()) {
         sourceCoverageFile.linesAdd(lineBuilder.build().get());
         fileCoveredBranches += lineBuilder.getCoveredBranches();
-        fileCoveredInstructions += lineBuilder.getCoveredInstructions();
         fileMissedBranches += lineBuilder.getMissedBranches();
+        fileCoveredInstructions += lineBuilder.getCoveredInstructions();
         fileMissedInstructions += lineBuilder.getMissedInstructions();
-        if(lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0){
+
+        if (lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0) {
           fileMissedLines++;
-        }else{
+        } else {
           fileCoveredLines++;
         }
       }
 
-      // Skip if no line was added, no need to have empty files stored
-      if(sourceCoverageFile.getLinesList().isEmpty()){
+      if (sourceCoverageFile.getLinesList().isEmpty()) {
         continue;
       }
-
 
       CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
           .coveredInstructions(fileCoveredInstructions)
@@ -281,84 +279,94 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .missedBranches(fileMissedBranches)
           .coveredLines(fileCoveredLines)
           .missedLines(fileMissedLines)
-          .build().get();
+          .build()
+          .get();
 
       sourceCoverageFile.metrics(fileMetrics);
 
-      // Check if this file is generated as well
-      try{
-        sourceCoverageFile.addAllGeneratedBys(this.getGenerationFiles(sourceCoverageFile, basePath));
-      }catch (URISyntaxException e) {
-        Log.error("Not able to resolve source-map for " + sourceCoverageFile.getPath() + ": " + e.getMessage());
+      try {
+        sourceCoverageFile.addAllGeneratedBys(this.resolveGenerationSources(session, sourceCoverageFile, basePath));
+      } catch (URISyntaxException e) {
+        Log.error("Unable to resolve nested source-map for " + sourceCoverageFile.getPath() + ": " + e.getMessage());
       }
 
-      generatedBy.add(sourceCoverageFile.build().get());
+      generatedSources.add(sourceCoverageFile.build().get());
     }
 
-
-    return generatedBy;
+    return generatedSources;
   }
 
-  private CoverageColumnRangeBuilder createColumnRange(Range range, int hits, ColumnRangeType type){
-    return CoverageDashboardManager.coverageColumnRangeBuilder()
-        .fromColumn(range.startColumn)
-        .toColumn(range.endColumn)
-        .hits(hits)
-        .type(type);
+  private Path resolveSourceMapPath(String physicalPath) {
+    if (physicalPath == null || physicalPath.isBlank()) {
+      return null;
+    }
+    try {
+      Path standardMap = Path.of(physicalPath + ".map");
+      if (Files.exists(standardMap)) {
+        return standardMap;
+      }
+      Path templateMap = Path.of(FilenameUtils.removeExtension(physicalPath) + "_TEMPL.map");
+      if (Files.exists(templateMap)) {
+        return templateMap;
+      }
+    } catch (InvalidPathException ignored) {
+      return null;
+    }
+    return null;
   }
 
-  private String extractFileName(String fullPath){
-    if(fullPath == null || fullPath.isBlank())
+  private String extractFileName(String fullPath) {
+    if (fullPath == null || fullPath.isBlank()) {
       return "unknown";
+    }
     return extractFileName(Path.of(fullPath));
   }
 
-  private String extractFileName(Path fullPath){
+  private String extractFileName(Path fullPath) {
     Path fileName = fullPath.normalize().getFileName();
     return fileName != null ? fileName.toString() : "unknown";
   }
 
-  private String extractRelativePath(String filePath, Path basePath){
-    if(filePath == null || filePath.isBlank())
+  private String extractRelativePath(String filePath, Path basePath) {
+    if (filePath == null || filePath.isBlank()) {
       return "unknown";
+    }
     return extractRelativePath(Path.of(filePath), basePath);
   }
 
-  private String extractRelativePath(Path filePath, Path basePath){
-    if(basePath == null || !filePath.startsWith(basePath))
+  private String extractRelativePath(Path filePath, Path basePath) {
+    if (basePath == null || !filePath.startsWith(basePath)) {
       return filePath.toString();
+    }
     return basePath.relativize(filePath).toString();
   }
 
-  private String extractPhysicalPath(String filePath, Path rootPath){
+  private String extractPhysicalPath(String filePath, Path rootPath) {
+    String normalizedFullPath = rootPath.resolve(Path.of(filePath))
+        .toAbsolutePath()
+        .normalize()
+        .toString()
+        .replace(File.separatorChar, '/');
 
-    // Resolve relative path to
-    String fullPath = rootPath.resolve(Path.of(filePath)).toAbsolutePath().normalize().toString().replace(File.separatorChar, '/');
+    String physicalPath = normalizedFullPath.replace(BUNDLE_PATH, "/");
 
-    // Remove the 'dist/client/browser' from the path as this is done during bundling
-    String physicalPath = fullPath.replace(BundlePath, "/");
-
-    // Check if this is the 'xxComponentObserverManager.ts'
-
-    if(physicalPath.matches(ComponentObserverManagerRegex)){
-      return physicalPath
-          .replace(BundledGui2Java2TsPath, ComponentObserverManagerPath);
+    if (COMPONENT_OBSERVER_MANAGER_PATTERN.matcher(physicalPath).matches()) {
+      return physicalPath.replace(BUNDLED_GUI_2_JAVA_2_TS_PATH, COMPONENT_OBSERVER_MANAGER_PATH);
     }
 
-    // If this is a file generated by 'umlpJava2ts' or 'gui2java2ts', use the respective
-    // build-output file as physical file and not the file copied to the frontend-app in order
-    // to preserve the relative paths for source-map files
     return physicalPath
-        .replace(BundledGui2Java2TsPath, Gui2Java2TsPath)
-        .replace(BundledUmlp2JavaPath, Umlp2JavaPath);
+        .replace(BUNDLED_GUI_2_JAVA_2_TS_PATH, GUI_2_JAVA_2_TS_PATH)
+        .replace(BUNDLED_UMLP_2_JAVA_PATH, UMLP_2_JAVA_PATH);
   }
 
-
-  private void parseStatementMap(JsonParser parser,Map<String, Range> map) throws IOException{
-    while(parser.nextToken() != JsonToken.END_OBJECT){
+  private void parseStatementMap(JsonParser parser, Map<String, Range> map) throws IOException {
+    while (parser.nextToken() != JsonToken.END_OBJECT) {
       String statement = parser.currentName();
       parser.nextToken();
-      map.put(statement, parseRange(parser));
+      Range range = parseRange(parser);
+      if (range.isValid()) {
+        map.put(statement, range);
+      }
     }
   }
 
@@ -367,21 +375,23 @@ class C8JsonCoverageParser implements CoverageReportParser {
       String branch = parser.currentName();
       parser.nextToken();
 
-      BranchData branchData = new BranchData();
+      Range loc = null;
+      List<Range> locations = new ArrayList<>();
+
       while (parser.nextToken() != JsonToken.END_OBJECT) {
         String name = parser.currentName();
         JsonToken token = parser.nextToken();
-        if("loc".equals(name))
-          branchData.loc = parseRange(parser);
-        else if ("locations".equals(name) && token == JsonToken.START_ARRAY) {
+        if ("loc".equals(name)) {
+          loc = parseRange(parser);
+        } else if ("locations".equals(name) && token == JsonToken.START_ARRAY) {
           while (parser.nextToken() != JsonToken.END_ARRAY) {
-            branchData.locations.add(parseRange(parser));
+            locations.add(parseRange(parser));
           }
         } else {
           parser.skipChildren();
         }
       }
-      map.put(branch, branchData);
+      map.put(branch, new BranchData(loc, locations));
     }
   }
 
@@ -396,7 +406,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private void parseBranchHits(JsonParser parser, Map<String, List<Integer>> map) throws IOException {
     while (parser.nextToken() != JsonToken.END_OBJECT) {
       String id = parser.currentName();
-      parser.nextToken(); // Move to START_ARRAY
+      parser.nextToken();
 
       List<Integer> hits = new ArrayList<>();
       while (parser.nextToken() != JsonToken.END_ARRAY) {
@@ -406,64 +416,67 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
   }
 
-  private Range parseRange(JsonParser parser) throws IOException{
-    Range range = new Range();
-    while(parser.nextToken() != JsonToken.END_OBJECT){
+  private Range parseRange(JsonParser parser) throws IOException {
+    int startLine = 0;
+    int startColumn = 0;
+    int endLine = 0;
+    int endColumn = 0;
+
+    while (parser.nextToken() != JsonToken.END_OBJECT) {
       String name = parser.currentName();
       JsonToken token = parser.nextToken();
+
       if ("start".equals(name) && token == JsonToken.START_OBJECT) {
-        parseLocationValues(parser, range, true);
+        while (parser.nextToken() != JsonToken.END_OBJECT) {
+          String subName = parser.currentName();
+          parser.nextToken();
+          if ("line".equals(subName)) startLine = parser.getIntValue();
+          else if ("column".equals(subName)) startColumn = parser.getIntValue();
+          else parser.skipChildren();
+        }
       } else if ("end".equals(name) && token == JsonToken.START_OBJECT) {
-        parseLocationValues(parser, range, false);
+        while (parser.nextToken() != JsonToken.END_OBJECT) {
+          String subName = parser.currentName();
+          parser.nextToken();
+          if ("line".equals(subName)) endLine = parser.getIntValue();
+          else if ("column".equals(subName)) endColumn = parser.getIntValue();
+          else parser.skipChildren();
+        }
       } else {
         parser.skipChildren();
       }
     }
-    return range;
+    return new Range(startLine, startColumn, endLine, endColumn);
   }
 
-  private void parseLocationValues(JsonParser parser, Range range, boolean isStart) throws IOException{
-    while(parser.nextToken() != JsonToken.END_OBJECT){
-      String name = parser.currentName();
-      parser.nextToken();
-      if("line".equals(name)){
-        if(isStart)
-          range.startLine = parser.getIntValue();
-        else
-          range.endLine = parser.getIntValue();
-      }else if("column".equals(name)){
-        if(isStart)
-          range.startColumn = parser.getIntValue();
-        else
-          range.endColumn = parser.getIntValue();
-      }else{
-        parser.skipChildren();
-      }
-    }
-  }
-
-  private void parseFnMap(JsonParser parser, Map<String, FnData> map) throws IOException{
-    while(parser.nextToken() != JsonToken.END_OBJECT){
+  private void parseFnMap(JsonParser parser, Map<String, FnData> map) throws IOException {
+    while (parser.nextToken() != JsonToken.END_OBJECT) {
       String id = parser.currentName();
       parser.nextToken();
-      FnData fnData = new FnData();
-      while(parser.nextToken() != JsonToken.END_OBJECT){
+
+      String name = null;
+      Range decl = null;
+      Range loc = null;
+
+      while (parser.nextToken() != JsonToken.END_OBJECT) {
         String fieldName = parser.currentName();
         JsonToken token = parser.nextToken();
-        if("name".equals(fieldName)){
-          fnData.name = parser.getText();
-        }else if("decl".equals(fieldName) && token == JsonToken.START_OBJECT){
-          fnData.decl = parseRange(parser);
-        }else{
+        if ("name".equals(fieldName)) {
+          name = parser.getText();
+        } else if ("decl".equals(fieldName) && token == JsonToken.START_OBJECT) {
+          decl = parseRange(parser);
+        } else if ("loc".equals(fieldName) && token == JsonToken.START_OBJECT) {
+          loc = parseRange(parser);
+        } else {
           parser.skipChildren();
         }
       }
-      map.put(id, fnData);
+      map.put(id, new FnData(name, decl, loc));
     }
   }
 
-  private void parseFnHits(JsonParser parser, Map<String, Integer> map) throws IOException{
-    while(parser.nextToken() != JsonToken.END_OBJECT){
+  private void parseFnHits(JsonParser parser, Map<String, Integer> map) throws IOException {
+    while (parser.nextToken() != JsonToken.END_OBJECT) {
       String id = parser.currentName();
       parser.nextToken();
       map.put(id, parser.getIntValue());
@@ -471,7 +484,9 @@ class C8JsonCoverageParser implements CoverageReportParser {
   }
 
   private void deduplicateRanges(CoverageLineBuilder lineBuilder, List<CoverageColumnRangeBuilder> rawRanges) {
-    if (rawRanges.isEmpty()) return;
+    if (rawRanges.isEmpty()) {
+      return;
+    }
 
     List<CoverageColumnRangeBuilder> baseRanges = new ArrayList<>();
     List<CoverageColumnRangeBuilder> overlayRanges = new ArrayList<>();
@@ -483,12 +498,13 @@ class C8JsonCoverageParser implements CoverageReportParser {
     for (CoverageColumnRangeBuilder r : rawRanges) {
       if (r.getType() == ColumnRangeType.BRANCH) {
         overlayRanges.add(r);
-      } else if(r.getType() == ColumnRangeType.STATEMENT) {
-        if(r.getHits() > 0){
-          boolean overlapsMissedBranch = missedBranches.stream().anyMatch(mb -> mb.getFromColumn() < r.getToColumn()
-              && mb.getToColumn() > r.getFromColumn());
-          if(overlapsMissedBranch)
+      } else if (r.getType() == ColumnRangeType.STATEMENT) {
+        if (r.getHits() > 0) {
+          boolean overlapsMissedBranch = missedBranches.stream().anyMatch(mb ->
+              mb.getFromColumn() < r.getToColumn() && mb.getToColumn() > r.getFromColumn());
+          if (overlapsMissedBranch) {
             r.type(ColumnRangeType.PARTIAL);
+          }
         }
         baseRanges.add(r);
       } else {
@@ -501,7 +517,9 @@ class C8JsonCoverageParser implements CoverageReportParser {
   }
 
   private void flattenLayer(CoverageLineBuilder lineBuilder, List<CoverageColumnRangeBuilder> ranges, boolean isBaseLayer) {
-    if (ranges.isEmpty()) return;
+    if (ranges.isEmpty()) {
+      return;
+    }
 
     List<Integer> endpoints = ranges.stream()
         .flatMap(r -> Stream.of(r.getFromColumn(), r.getToColumn()))
@@ -516,26 +534,36 @@ class C8JsonCoverageParser implements CoverageReportParser {
       int startCol = endpoints.get(i);
       int endCol = endpoints.get(i + 1);
 
-      SegmentState state = isBaseLayer ? evaluateBaseSegment(startCol, endCol, ranges)
+      SegmentState state = isBaseLayer
+          ? evaluateBaseSegment(startCol, endCol, ranges)
           : evaluateOverlaySegment(startCol, endCol, ranges);
 
-      if (!state.isActive) continue;
+      if (!state.isActive()) {
+        continue;
+      }
 
       if (currentSegment != null && state.equals(currentState)) {
-        currentSegment.toColumn(endCol); // Merge contiguous segments
+        currentSegment.toColumn(endCol);
       } else {
-        if (currentSegment != null) lineBuilder.columnRangesAdd(currentSegment.build().get());
+        if (currentSegment != null) {
+          lineBuilder.columnRangesAdd(currentSegment.build().get());
+        }
         currentSegment = CoverageDashboardManager.coverageColumnRangeBuilder()
-            .fromColumn(startCol).toColumn(endCol)
-            .hits(state.hits).type(state.type);
+            .fromColumn(startCol)
+            .toColumn(endCol)
+            .hits(state.hits())
+            .type(state.type());
         currentState = state;
       }
     }
-    if (currentSegment != null) lineBuilder.columnRangesAdd(currentSegment.build().get());
+    if (currentSegment != null) {
+      lineBuilder.columnRangesAdd(currentSegment.build().get());
+    }
   }
 
   private SegmentState evaluateBaseSegment(int startCol, int endCol, List<CoverageColumnRangeBuilder> ranges) {
-    boolean missedStatement = false, coveredStatement = false, isPartialBlock = false;
+    boolean missedStatement = false;
+    boolean isPartialBlock = false;
     boolean isActive = false;
 
     for (CoverageColumnRangeBuilder r : ranges) {
@@ -544,17 +572,22 @@ class C8JsonCoverageParser implements CoverageReportParser {
         if (r.getType() == ColumnRangeType.PARTIAL) {
           isPartialBlock = true;
         } else if (r.getType() == ColumnRangeType.STATEMENT) {
-          if (r.getHits() == 0) missedStatement = true;
-          else coveredStatement = true;
+          if (r.getHits() == 0) {
+            missedStatement = true;
+          }
         }
       }
     }
 
-    if (!isActive) return new SegmentState(false, 0, null);
-
-    // Partial block wins base layer hierarchy
-    if (isPartialBlock) return new SegmentState(true, 1, ColumnRangeType.PARTIAL);
-    if (missedStatement) return new SegmentState(true, 0, ColumnRangeType.STATEMENT);
+    if (!isActive) {
+      return new SegmentState(false, 0, null);
+    }
+    if (isPartialBlock) {
+      return new SegmentState(true, 1, ColumnRangeType.PARTIAL);
+    }
+    if (missedStatement) {
+      return new SegmentState(true, 0, ColumnRangeType.STATEMENT);
+    }
     return new SegmentState(true, 1, ColumnRangeType.STATEMENT);
   }
 
@@ -565,52 +598,64 @@ class C8JsonCoverageParser implements CoverageReportParser {
     for (CoverageColumnRangeBuilder r : ranges) {
       if (r.getFromColumn() <= startCol && r.getToColumn() >= endCol) {
         isActive = true;
-        if (r.getHits() == 0) missedBranch = true;
+        if (r.getHits() == 0) {
+          missedBranch = true;
+        }
       }
     }
 
-    if (!isActive) return new SegmentState(false, 0, null);
-    // If any overlapping branch condition is missed, highlight the segment as missed-light
-    if (missedBranch) return new SegmentState(true, 0, ColumnRangeType.BRANCH);
+    if (!isActive) {
+      return new SegmentState(false, 0, null);
+    }
+    if (missedBranch) {
+      return new SegmentState(true, 0, ColumnRangeType.BRANCH);
+    }
     return new SegmentState(true, 1, ColumnRangeType.BRANCH);
   }
 
- private void distributeRange(Range range, int hits, ColumnRangeType type, FileCoverageContext context){
-    if(range.startLine == range.endLine) {
-      applyToLine(range.startLine, range.startColumn, range.endColumn, hits, type, context);
+  private void distributeRange(Range range, int hits, ColumnRangeType type, FileCoverageContext context) {
+    if (!range.isValid()) {
       return;
     }
-    applyToLine(range.startLine, range.startColumn, Integer.MAX_VALUE, hits, type, context);
-    for(int line = range.startLine + 1; line < range.endLine; line++){
+    if (range.startLine() == range.endLine()) {
+      applyToLine(range.startLine(), range.startColumn(), range.endColumn(), hits, type, context);
+      return;
+    }
+    applyToLine(range.startLine(), range.startColumn(), Integer.MAX_VALUE, hits, type, context);
+    for (int line = range.startLine() + 1; line < range.endLine(); line++) {
       applyToLine(line, 0, Integer.MAX_VALUE, hits, type, context);
     }
-    applyToLine(range.endLine, 0, range.endColumn, hits, type, context);
- }
+    applyToLine(range.endLine(), 0, range.endColumn(), hits, type, context);
+  }
 
- private void applyToLine(
-     int lineNumber,
-     int startCol,
-     int endCol,
-     int hits,
-     ColumnRangeType type,
-     FileCoverageContext context){
+  private void applyToLine(
+      int lineNumber,
+      int startCol,
+      int endCol,
+      int hits,
+      ColumnRangeType type,
+      FileCoverageContext context) {
+
     CoverageLineBuilder lineBuilder = context.getLineBuilder(lineNumber);
     context.addRawRange(lineNumber, startCol, endCol, hits, type);
-    if(type == ColumnRangeType.STATEMENT){
-      if(hits > 0)
+
+    if (type == ColumnRangeType.STATEMENT) {
+      if (hits > 0) {
         lineBuilder.coveredInstructions(lineBuilder.getCoveredInstructions() + 1);
-      else
+      } else {
         lineBuilder.missedInstructions(lineBuilder.getMissedInstructions() + 1);
-    }else{
-      if(hits > 0)
+      }
+    } else {
+      if (hits > 0) {
         lineBuilder.coveredBranches(lineBuilder.getCoveredBranches() + 1);
-      else
+      } else {
         lineBuilder.missedBranches(lineBuilder.getMissedBranches() + 1);
+      }
     }
   }
 
-  private void finalizeLinesAndDeduplicate(FileCoverageContext context){
-    for(Map.Entry<Integer, CoverageLineBuilder> entry : context.lines.entrySet()){
+  private void finalizeLinesAndDeduplicate(FileCoverageContext context) {
+    for (Map.Entry<Integer, CoverageLineBuilder> entry : context.lines.entrySet()) {
       int lineNumber = entry.getKey();
       CoverageLineBuilder lineBuilder = entry.getValue();
       List<CoverageColumnRangeBuilder> rawRanges = context.rawRangesPerLine.getOrDefault(lineNumber, List.of());
@@ -619,15 +664,18 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
   }
 
-  private void extractFunctionScopes(Map<String, FnData> fnMap, Map<String, Integer> fnHits, FileCoverageContext context){
-    for(Map.Entry<String, FnData> entry : fnMap.entrySet()){
+  private void extractFunctionScopes(Map<String, FnData> fnMap, Map<String, Integer> fnHits, FileCoverageContext context) {
+    for (Map.Entry<String, FnData> entry : fnMap.entrySet()) {
       FnData fnData = entry.getValue();
-      if(fnData.decl == null)
+      Range effectiveScopeRange = fnData.getEffectiveRange();
+      if (effectiveScopeRange == null || !effectiveScopeRange.isValid()) {
         continue;
+      }
 
       int hits = fnHits.getOrDefault(entry.getKey(), 0);
-      if(hits == 0)
-        context.uncoveredDeclarations.add(fnData.decl);
+      if (hits == 0) {
+        context.uncoveredDeclarations.add(effectiveScopeRange);
+      }
 
       CoverageMetrics scopeMetrics = CoverageDashboardManager.coverageMetricsBuilder()
           .coveredInstructions(0)
@@ -636,92 +684,122 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .missedBranches(0)
           .coveredLines(0)
           .missedLines(0)
-          .build().get();
+          .build()
+          .get();
+
       context.scopes.add(CoverageDashboardManager.coverageScopeBuilder()
-          .name(fnData.name != null ? fnData.name : "anonymous")
-          .startLine(fnData.decl.startLine).startColumn(fnData.decl.startColumn)
-          .endLine(fnData.decl.endLine).endColumn(fnData.decl.endColumn)
+          .name(fnData.name() != null ? fnData.name() : "anonymous")
+          .startLine(effectiveScopeRange.startLine())
+          .startColumn(effectiveScopeRange.startColumn())
+          .endLine(effectiveScopeRange.endLine())
+          .endColumn(effectiveScopeRange.endColumn())
           .metrics(scopeMetrics)
-          .build().get()
-      );
+          .build()
+          .get());
     }
   }
 
-  private void processStatements(Map<String, Range> statementMap, Map<String, Integer> statementHits, FileCoverageContext context){
-    for(Map.Entry<String, Range> entry: statementMap.entrySet()){
+  private void processStatements(Map<String, Range> statementMap, Map<String, Integer> statementHits, FileCoverageContext context) {
+    for (Map.Entry<String, Range> entry : statementMap.entrySet()) {
       Range range = entry.getValue();
       int hits = statementHits.getOrDefault(entry.getKey(), 0);
-      if(hits > 0 && isInsideUncoveredDeclaration(range, context.uncoveredDeclarations))
-        hits = 0; // Dismiss hit if triggered only during class import signature
+
+      if (hits > 0 && isInsideUncoveredDeclaration(range, context.uncoveredDeclarations)) {
+        hits = 0; // Dismiss hit if triggered only during class import/signature evaluation
+      }
 
       context.metrics.addInstruction(hits);
       distributeRange(range, hits, ColumnRangeType.STATEMENT, context);
     }
   }
 
-  private void processBranches(Map<String, BranchData> branchMap, Map<String, List<Integer>> branchHits, FileCoverageContext context){
-    for(Map.Entry<String, BranchData> entry: branchMap.entrySet()){
-      String id = entry.getKey();
+  private void processBranches(Map<String, BranchData> branchMap, Map<String, List<Integer>> branchHits, FileCoverageContext context) {
+    for (Map.Entry<String, BranchData> entry : branchMap.entrySet()) {
       BranchData data = entry.getValue();
       List<Integer> hitsList = branchHits.getOrDefault(entry.getKey(), List.of(0));
 
       boolean hasHits = false;
       boolean hasMiss = false;
 
-      for(int i = 0; i < data.locations.size(); i++){
-        Range range = data.locations.get(i);
+      for (int i = 0; i < data.locations().size(); i++) {
+        Range range = data.locations().get(i);
         int hits = i < hitsList.size() ? hitsList.get(i) : 0;
 
-        if(hits > 0)
+        // Skip phantom/empty branch ranges produced by C8 for implicit-else or non-covered short-circuits
+        if (range == null || !range.isValid()) {
+          continue;
+        }
+
+        if (hits > 0) {
           hasHits = true;
-        else
+        } else {
           hasMiss = true;
+        }
 
         context.metrics.addBranch(hits);
         distributeRange(range, hits, ColumnRangeType.BRANCH, context);
       }
 
-      if(hasHits && hasMiss && data.loc != null){
-        distributeRange(data.loc, 0, ColumnRangeType.PARTIAL, context);
+      if (hasHits && hasMiss && data.loc() != null && data.loc().isValid()) {
+        distributeRange(data.loc(), 0, ColumnRangeType.PARTIAL, context);
       }
     }
   }
 
-  private boolean isInsideUncoveredDeclaration(Range range, List<Range> uncoveredDeclarations){
-    return uncoveredDeclarations.stream().anyMatch(decl -> range.startLine >= decl.startLine
-        && range.endLine <= decl.endLine);
+  private boolean isInsideUncoveredDeclaration(Range range, List<Range> uncoveredDeclarations) {
+    return uncoveredDeclarations.stream().anyMatch(range::isEnclosedIn);
   }
 
-  private static class Range{
-    int startLine;
-    int startColumn;
-    int endLine;
-    int endColumn;
+  // --- Supporting Domain & State Classes ---
+
+  private record Range(int startLine, int startColumn, int endLine, int endColumn) {
+    public boolean isValid() {
+      return startLine > 0 && endLine >= startLine;
+    }
+
+    public boolean isEnclosedIn(Range outer) {
+      return this.startLine >= outer.startLine && this.endLine <= outer.endLine;
+    }
   }
 
-  private static class FnData{
-    String name;
-    Range decl;
+  private record FnData(String name, Range decl, Range loc) {
+    /**
+     * Resolves the primary range for this function scope.
+     * Prefers declaration range, but falls back to execution body location (loc)
+     * if the declaration is null or degenerate (common in arrow functions and expressions).
+     */
+    public Range getEffectiveRange() {
+      if (decl != null && decl.isValid()) {
+        return decl;
+      }
+      if (loc != null && loc.isValid()) {
+        return loc;
+      }
+      return null;
+    }
   }
 
-  private static class FileCoverageContext{
+  private record BranchData(Range loc, List<Range> locations) {}
+
+  private record SegmentState(boolean isActive, int hits, ColumnRangeType type) {}
+
+  private static class FileCoverageContext {
     final Map<Integer, CoverageLineBuilder> lines = new HashMap<>();
     final Map<Integer, List<CoverageColumnRangeBuilder>> rawRangesPerLine = new HashMap<>();
     final List<Range> uncoveredDeclarations = new ArrayList<>();
     final Set<CoverageScope> scopes = new HashSet<>();
     final CoverageMetricsAccumulator metrics = new CoverageMetricsAccumulator();
 
-    CoverageLineBuilder getLineBuilder(int lineNumber){
+    CoverageLineBuilder getLineBuilder(int lineNumber) {
       return lines.computeIfAbsent(lineNumber, l -> CoverageDashboardManager.coverageLineBuilder()
           .lineNumber(l)
           .coveredInstructions(0)
           .missedInstructions(0)
           .coveredBranches(0)
-          .missedBranches(0)
-      );
+          .missedBranches(0));
     }
 
-    void addRawRange(int lineNumber, int startCol, int endCol, int hits, ColumnRangeType type){
+    void addRawRange(int lineNumber, int startCol, int endCol, int hits, ColumnRangeType type) {
       rawRangesPerLine.computeIfAbsent(lineNumber, l -> new ArrayList<>())
           .add(CoverageDashboardManager.coverageColumnRangeBuilder()
               .fromColumn(startCol)
@@ -731,36 +809,39 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
   }
 
-  private static class CoverageMetricsAccumulator{
-    int coveredInstructions;
-    int missedInstructions;
-    int coveredBranches;
-    int missedBranches;
-    int coveredLines;
-    int missedLines;
+  private static class CoverageMetricsAccumulator {
+    private int coveredInstructions;
+    private int missedInstructions;
+    private int coveredBranches;
+    private int missedBranches;
+    private int coveredLines;
+    private int missedLines;
 
-    void addInstruction(int hits){
-      if(hits > 0)
+    void addInstruction(int hits) {
+      if (hits > 0) {
         coveredInstructions++;
-      else
+      } else {
         missedInstructions++;
+      }
     }
 
-    void addBranch(int hits){
-      if(hits > 0)
+    void addBranch(int hits) {
+      if (hits > 0) {
         coveredBranches++;
-      else
+      } else {
         missedBranches++;
+      }
     }
 
-    void addLine(CoverageLineBuilder lineBuilder){
-      if(lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0)
+    void addLine(CoverageLineBuilder lineBuilder) {
+      if (lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0) {
         missedLines++;
-      else
+      } else {
         coveredLines++;
+      }
     }
 
-    CoverageMetrics build(){
+    CoverageMetrics build() {
       return CoverageDashboardManager.coverageMetricsBuilder()
           .coveredInstructions(coveredInstructions)
           .missedInstructions(missedInstructions)
@@ -768,62 +849,55 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .missedBranches(missedBranches)
           .coveredLines(coveredLines)
           .missedLines(missedLines)
-          .build().get();
+          .build()
+          .get();
     }
   }
 
-  private static class SegmentState{
-    final boolean isActive;
-    final int hits;
-    final ColumnRangeType type;
+  private static final class ParseSession implements AutoCloseable {
+    private final List<ResourcePath> openResources = new ArrayList<>();
 
-    SegmentState(boolean isActive, int hits, ColumnRangeType type) {
-      this.isActive = isActive;
-      this.hits = hits;
-      this.type = type;
+    void registerResource(ResourcePath resource) {
+      if (resource != null) {
+        openResources.add(resource);
+      }
     }
 
     @Override
-    public boolean equals(Object obj){
-      if(this == obj)
-        return true;
-      if(obj instanceof SegmentState other){
-        return this.isActive == other.isActive
-            && this.hits == other.hits
-            && this.type == other.type;
+    public void close() {
+      for (ResourcePath resource : openResources) {
+        try {
+          resource.close();
+        } catch (IOException e) {
+          Log.warn("Failed to close resource: " + resource.getStringPath(), e);
+        }
       }
-      return false;
+      openResources.clear();
     }
   }
 
-  private static class BranchData{
-    Range loc;
-    List<Range> locations = new ArrayList<>();
-  }
-
-  private static class ResourcePath implements Closeable{
-
+  private static final class ResourcePath implements Closeable {
     private final Path path;
     private final FileSystem fileSystem;
     private final String representation;
 
-    private ResourcePath(Path path, FileSystem fileSystem, String representation){
+    private ResourcePath(Path path, FileSystem fileSystem, String representation) {
       this.path = path;
       this.fileSystem = fileSystem;
       this.representation = representation;
     }
 
-    public static ResourcePath of(URI uri) throws IOException{
+    public static ResourcePath of(URI uri) throws IOException {
       String scheme = uri.getScheme();
-      if("file".equalsIgnoreCase(scheme)){
+      if ("file".equalsIgnoreCase(scheme)) {
         Path path = Path.of(uri).normalize();
         return new ResourcePath(path, null, path.toString());
       }
-      if("jar".equalsIgnoreCase(scheme)){
-        try{
+      if ("jar".equalsIgnoreCase(scheme)) {
+        try {
           Path path = Path.of(uri).normalize();
           return new ResourcePath(path, null, uri.toString());
-        }catch (FileSystemNotFoundException e){
+        } catch (FileSystemNotFoundException e) {
           FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
           return new ResourcePath(Path.of(uri), fs, uri.toString());
         }
@@ -831,11 +905,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
       throw new IOException("Unsupported URI scheme: " + scheme);
     }
 
-    public Path getPath(){
+    public Path getPath() {
       return path;
     }
 
-    public String getStringPath(){
+    public String getStringPath() {
       return representation;
     }
 
@@ -846,8 +920,4 @@ class C8JsonCoverageParser implements CoverageReportParser {
       }
     }
   }
-
 }
-
-
-
