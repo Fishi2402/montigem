@@ -56,7 +56,7 @@ public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
         String reportName = report.getName();
         processedReportsInRun.add(reportName);
 
-        CoverageMetrics metrics = report.getModule().getMetrics();
+        CoverageMetrics metrics = report.getDirectPerspective().getRootModule().getMetrics();
         double coverage = ((double)metrics.getCoveredInstructions()) / (metrics.getCoveredInstructions() + metrics.getMissedInstructions());
         if(Double.isNaN(coverage))
           coverage = 0d;

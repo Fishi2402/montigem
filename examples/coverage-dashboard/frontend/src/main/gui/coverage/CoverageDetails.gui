@@ -3,14 +3,13 @@ package coverage;
 import java.util.Optional;
 
 import mc.fenix.arrange.GemGrid;
-import mc.fenix.arrange.Gem;
 
 import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 
 import coverage.components.SourceMapViewer;
 import coverage.components.SourceViewer;
-import coverage.components.ModuleTreeView;
+import coverage.components.FileView;
 
 
 import CoverageDashboard.App;
@@ -44,9 +43,8 @@ page CoverageDetails(App app, CoverageReport report, Optional<CoverageSourceFile
             x = ["1fr", "4fr"],
             y = ["minmax(0, 1fr)"],
             cols = [
-              [moduleTreeView@ModuleTreeView(
-                rootModule = report.module,
-                name = report.name,
+              [fileView@FileView(
+                report = report,
                 fileSelect = onFileSelect())],
               [
                 // Check if double-editor view is required

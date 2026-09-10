@@ -5,9 +5,11 @@ import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
+import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
+import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
 
 import javax.xml.namespace.QName;
@@ -172,10 +174,17 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
     // Aggregate into modules
     CoverageModule rootModule = moduleAggregator.groupFilesInModules(parsedFiles);
 
+    CoveragePerspective directPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+        .name("JAVA")
+        .rootModule(rootModule)
+        .type(PerspectiveType.MEASURED_ROOT)
+        .build()
+        .get();
+
     return CoverageDashboardManager.coverageReportBuilder()
         .name(reportName)
         .type(this.type)
-        .module(rootModule)
+        .directPerspective(directPerspective)
         .build().get();
   }
 
