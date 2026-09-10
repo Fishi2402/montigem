@@ -113,6 +113,11 @@ $text-high: #1a7f37;
     background: none !important;
   }
 
+  // Add effect for selected node
+  .gem-tree-node:has(.fileName[ng-reflect-value^="▶ "]){
+    background-color: rgba(9, 105, 218, 0.15) !important;
+  }
+
   // Dynamically colors the entire row element based on child coverage values
   .gem-tree-node {
     @mixin text-color($color) {

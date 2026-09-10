@@ -12,7 +12,11 @@ import CoverageDashboard.CoverageSourceFile;
 
 import coverage.components.FileItem;
 
-component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageSourceFile> fileSelect) {
+component ModuleTreeView(
+    CoverageModule rootModule,
+    String name,
+    CoverageSourceFile selectedFile,
+    Event<CoverageSourceFile> fileSelect) {
   rootNode@GemTreeNode(
     content = title@GemRow(
       width = "100%",
@@ -29,6 +33,7 @@ component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageS
             @ModuleTreeView(
               rootModule = subModule,
               name = subModule.name,
+              selectedFile = selectedFile,
               fileSelect = fileSelect)
           ]
         );
@@ -39,7 +44,7 @@ component ModuleTreeView(CoverageModule rootModule, String name, Event<CoverageS
          content = content@GemRow(
            width = "100%",
            components = [
-             fileName@GemText(value = file.name),
+             fileName@GemText(value = getFileDisplayName(file, selectedFile)),
              fileCoverage@GemText(value = getCoveragePercent(file.metrics))
            ]
          ),
