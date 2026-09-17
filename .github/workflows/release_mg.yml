@@ -56,8 +56,3 @@ jobs:
           cd umlp-tool
 
           gradle packageUMLPWithGUIVscodePlugin -P buildVscodePlugin=true --info --refresh-dependencies $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $PWD/build.log 2> >(tee -a $PWD/build.log) >&2
-
-          cd ..
-
-          # Parse CSV for coverage info
-          awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.csv
