@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Build
         shell: bash
@@ -48,7 +48,7 @@ jobs:
 
           gradle --version 2>&1 | tee $PWD/build.log
 
-          gradle build testCodeCoverageReport --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $PWD/build.log 2> >(tee -a $PWD/build.log >&2)
+          gradle :umlp-tool:build :umlp-rte:build :umlp-jsweet:build --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS $GRADLE_OPTS $ARGS1 >> $PWD/build.log 2> >(tee -a $PWD/build.log >&2)
 
           # Add downloaded node distribution to PATH
           export PATH="$PATH:$(dirname $(find $(pwd) -type f -name "node" -print -quit))"
