@@ -1,0 +1,72 @@
+# (c) https://github.com/MontiCore/monticore
+name: Build MKDocs
+
+on:
+  push: # run this test pipeline on every push (if markdown and/or the docs directory was changed)
+    paths:
+      - "**.md"
+      - "docs/**"
+  pull_request: # and pull request (Note: We can skip pull request events IFF the PR is not done from a fork)
+    paths:
+      - "**.md"
+      - "docs/**"
+  workflow_run: # and when the javadocs have been updated
+    workflows: [ "Gradle Deploy Snapshot" ]
+    types:
+      - completed
+
+
+permissions:
+  contents: read # This action may run somewhat unsafe code
+
+jobs:
+  build_pages:
+    runs-on: self-hosted
+    container:
+      image: registry.git.rwth-aachen.de/monticore/container-registry/gradle8.14.4-chrome-installed
+      credentials:
+        username: ${{ secrets.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+      - name: Build the docs into a site directory
+        run: mkdocs build --verbose --clean --strict
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+        with:
+          path: site/
+
+  deploy:
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    container:
+      image: registry.git.rwth-aachen.de/monticore/container-registry/gradle8.14.4-chrome-installed
+      credentials:
+        username: ${{ secrets.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    if: github.ref == 'refs/heads/dev' # only for the dev branch!
+    needs: build_pages
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
