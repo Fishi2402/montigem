@@ -3,12 +3,12 @@ package coveragedashboard.commands;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FilenameUtils;
 import umlp.backendrte.command.ListResult;
 import umlp.jsweet.extension.annotation.BackendOnly;
 import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,10 @@ public class GetLineMapping extends  GetLineMappingTOP{
     CoverageSourceFile sourceFile = sourceFileOpt.get();
     try {
       java.nio.file.Path sourceMapPath = java.nio.file.Path.of(sourceFile.getPhysicalPath() + ".map");
+      if(!java.nio.file.Files.exists(sourceMapPath)){
+        // Try for template-path
+        sourceMapPath = java.nio.file.Path.of(FilenameUtils.removeExtension( sourceFile.getPhysicalPath()) + "_TEMPL.map");
+      }
       String sourceMapContent = java.nio.file.Files.readString(sourceMapPath);
       de.monticore.sourcemap.DecodedSourceMap sourceMap = de.monticore.sourcemap.Decoding.parseSourceMapJson(
           sourceMapContent, sourceMapPath.getParent().toUri().toURL());
@@ -53,7 +57,11 @@ public class GetLineMapping extends  GetLineMappingTOP{
         if (mapping.originalSource == null || mapping.originalSource.url == null)
           continue;
 
-        String originalPath = java.nio.file.Path.of(java.net.URI.create(mapping.originalSource.url.toString().replace('\\', '/'))).normalize().toString();
+        String originalPath;
+        if(mapping.originalSource.url.toString().startsWith("jar:"))
+          originalPath = mapping.originalSource.url.toString().replace('\\', '/');
+        else
+          originalPath = java.nio.file.Path.of(java.net.URI.create(mapping.originalSource.url.toString().replace('\\', '/'))).normalize().toString();
 
        CoverageSourceFile originalFile = pathToFileMap.get(originalPath);
        if(originalFile != null){

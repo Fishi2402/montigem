@@ -200,7 +200,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     context.lines.values().forEach(line -> fileBuilder.linesAdd(line.build().get()));
 
     try {
-      fileBuilder.addAllGeneratedBys(resolveGenerationSources(session, fileBuilder, basePath));
+      fileBuilder.addAllGeneratedBys(resolveGenerationSources(session, fileBuilder, rootPath.toAbsolutePath().normalize()));
     } catch (URISyntaxException e) {
       Log.error("Unable to resolve source-map for " + fileBuilder.getPath() + ": " + e.getMessage());
     }
@@ -211,7 +211,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private List<CoverageSourceFile> resolveGenerationSources(
       ParseSession session,
       CoverageSourceFileBuilder targetFileBuilder,
-      Path basePath) throws IOException, URISyntaxException {
+      Path absoluteRootPath) throws IOException, URISyntaxException {
 
     List<CoverageSourceFile> generatedSources = new ArrayList<>();
 
@@ -246,7 +246,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
       Path decodedSourcePath = resourcePath.getPath().normalize();
 
       CoverageSourceFileBuilder sourceCoverageFile = CoverageDashboardManager.coverageSourceFileBuilder()
-          .path(extractRelativePath(decodedSourcePath, basePath))
+          .path(extractRelativePath(decodedSourcePath, absoluteRootPath))
           .name(extractFileName(decodedSourcePath))
           .physicalPath(resourcePath.getStringPath())
           .category(ArtifactCategory.GENERATED);
@@ -315,7 +315,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
       sourceCoverageFile.metrics(fileMetrics);
 
       try {
-        sourceCoverageFile.addAllGeneratedBys(this.resolveGenerationSources(session, sourceCoverageFile, basePath));
+        sourceCoverageFile.addAllGeneratedBys(this.resolveGenerationSources(session, sourceCoverageFile, absoluteRootPath));
       } catch (URISyntaxException e) {
         Log.error("Unable to resolve nested source-map for " + sourceCoverageFile.getPath() + ": " + e.getMessage());
       }
