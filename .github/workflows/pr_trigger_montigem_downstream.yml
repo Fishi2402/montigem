@@ -1,0 +1,11 @@
+name: "Trigger MontiVerse on PR"
+
+on:
+  pull_request:
+
+jobs:
+  trigger-montiverse:
+    uses: ./.github/workflows/trigger_full_montigem_ci.yml
+    with:
+      project: 'montigem'
+    secrets: inherit
