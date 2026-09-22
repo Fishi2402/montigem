@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-name: "Trigger the MontiVerse (workflow-call)"
+name: "Trigger the MontiGem CI (workflow-call)"
 
 on:
   workflow_call:
@@ -13,9 +13,9 @@ on:
         type: string
         required: false
     secrets:
-      MONTIVERSE_TRIGGER_TOKEN:
+      PIPELINE_TRIGGER_TOKEN:
         required: true
-      MONTIVERSE_ACCESS_TOKEN:
+      PIPELINE_ACCESS_TOKEN:
         required: true
 
 
