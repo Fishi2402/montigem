@@ -335,10 +335,6 @@ class C8JsonCoverageParser implements CoverageReportParser {
       if (Files.exists(standardMap)) {
         return standardMap;
       }
-      Path templateMap = Path.of(FilenameUtils.removeExtension(physicalPath) + "_TEMPL.map");
-      if (Files.exists(templateMap)) {
-        return templateMap;
-      }
     } catch (InvalidPathException ignored) {
       return null;
     }
