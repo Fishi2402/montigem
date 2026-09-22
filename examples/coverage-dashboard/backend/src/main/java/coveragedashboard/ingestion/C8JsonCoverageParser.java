@@ -920,13 +920,27 @@ class C8JsonCoverageParser implements CoverageReportParser {
         return new ResourcePath(path, null, path.toString());
       }
       if ("jar".equalsIgnoreCase(scheme)) {
+        FileSystem fs = null;
+        Path path;
         try {
-          Path path = Path.of(uri).normalize();
-          return new ResourcePath(path, null, uri.toString());
+          path = Path.of(uri).normalize();
         } catch (FileSystemNotFoundException e) {
-          FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
-          return new ResourcePath(Path.of(uri), fs, uri.toString());
+          fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
+          path = Path.of(uri).normalize();
         }
+        String representation = uri.toString();
+        int bangIndex = representation.indexOf('!');
+        if(bangIndex == -1){
+          throw new IOException("JAR scheme without bang:" + representation);
+        }
+        String jarUri = representation.substring(4, bangIndex);
+        Path jar = Path.of(URI.create(jarUri));
+        Path combined = jar.getFileName();
+        for(Path element : path){
+          combined = combined.resolve(element.toString());
+        }
+
+        return new ResourcePath(combined, fs, representation);
       }
       throw new IOException("Unsupported URI scheme: " + scheme);
     }
