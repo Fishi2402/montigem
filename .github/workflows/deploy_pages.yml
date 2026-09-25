@@ -55,7 +55,11 @@ jobs:
           # Double the Gradle daemon heap for this job only
           sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8/' gradle.properties
           export JAVA_OPTS="-Xmx2g"
-          gradle :examples:vis-lib:frontend:screenshot comment2doc:md --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS
+          # Separate calls: comment2doc:md requires the screenshots in docs/gendoc_img,
+          # but Gradle does not guarantee the task order within a single invocation
+          mkdir -p docs/gendoc_img
+          gradle :examples:vis-lib:frontend:screenshot --refresh-dependencies --stacktrace $GRADLE_COMMON_ARGS
+          gradle comment2doc:md --stacktrace $GRADLE_COMMON_ARGS
       - name: Upload generated docs
         uses: actions/upload-artifact@v7
         with:
