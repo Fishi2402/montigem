@@ -16,6 +16,7 @@ public class GeneralDashboard extends GeneralDashboardTOP{
     super();
   }
 
+  /*
   @Override
   public Consumer<Object> onDataPointClick () {
     return (Object o) ->{
@@ -29,5 +30,5 @@ public class GeneralDashboard extends GeneralDashboardTOP{
         }
       }
     };
-  }
+  }*/
 }
