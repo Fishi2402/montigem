@@ -1,17 +1,11 @@
-$tree-bg: #ffffff;
+@use "sass:color";
+
+$tree-bg: #d3d3d3;
 $text-bright: #1a1a1a;
 $text-muted: #6e6e73;
 $hover-bg: rgba(0, 0, 0, 0.04);
 $border-color: rgba(0, 0, 0, 0.05);
 $selected-bg: rgba(9, 105, 218, 0.15);
-
-$bg-low: rgba(207, 34, 46, 0.3);
-$bg-medium: rgba(154, 103, 0, 0.3);
-$bg-high: rgba(26, 127, 55, 0.3);
-
-$text-low: #cf222e;
-$text-medium: #8a5c00;
-$text-high: #1a7f37;
 
 
 :host(.moduleTreeView) {
@@ -119,36 +113,4 @@ $text-high: #1a7f37;
     background-color: $selected-bg !important;
   }
 
-  // Dynamically colors the entire row element based on child coverage values
-  .gem-tree-node {
-    @mixin text-color($color) {
-      .titleCoverage, .contentCoverage, .fileCoverage { color: $color !important; }
-    }
-
-    // LOW COVERAGE: 0% to 49.99%
-    &:has([ng-reflect-value="0%"]),
-    &:has([ng-reflect-value^="1"]),
-    &:has([ng-reflect-value^="2"]),
-    &:has([ng-reflect-value^="3"]),
-    &:has([ng-reflect-value^="4"]) {
-      background-color: $bg-low;
-      @include text-color($text-low);
-    }
-
-    // MEDIUM COVERAGE: 50% to 79.99%
-    &:has([ng-reflect-value^="5"]),
-    &:has([ng-reflect-value^="6"]),
-    &:has([ng-reflect-value^="7"]) {
-      background-color: $bg-medium;
-      @include text-color($text-medium);
-    }
-
-    // HIGH COVERAGE: 80% to 100%
-    &:has([ng-reflect-value^="8"]),
-    &:has([ng-reflect-value^="9"]),
-    &:has([ng-reflect-value^="100"]) {
-      background-color: $bg-high;
-      @include text-color($text-high);
-    }
-  }
 }
