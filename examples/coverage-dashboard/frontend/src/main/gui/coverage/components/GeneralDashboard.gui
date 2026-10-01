@@ -18,7 +18,7 @@ component GeneralDashboard(App app) {
     height = "100%",
     width = "100%",
     rowGap = "15px",
-    y = ["auto"],
+    y = ["100%"],
     cols =[
      [
        @ReportOverview(app = app, report = app.getLatestComponentTest())

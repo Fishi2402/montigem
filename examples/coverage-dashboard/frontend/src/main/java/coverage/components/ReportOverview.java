@@ -20,5 +20,10 @@ public class ReportOverview extends ReportOverviewTOP{
     };
   }
 
-
+  @Override
+  public Consumer<Void> showAggregatedCoverage (CoverageReport report) {
+    return $ ->{
+      Router.navigate("coverage", "AggregationDetails", String.valueOf(report.getGemId()));
+    };
+  }
 }
