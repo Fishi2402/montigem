@@ -24,7 +24,6 @@ import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.DecodedSourceMap;
 import de.monticore.sourcemap.Decoding;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.Closeable;
 import java.io.File;
@@ -89,7 +88,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
       while (parser.nextToken() != JsonToken.END_OBJECT) {
         String outerKeyFilePath = parser.currentName();
-        parser.nextToken(); // Move to file object
+        parser.nextToken();
 
         String internalPath = null;
         Map<String, Range> statementMap = new HashMap<>();
@@ -124,7 +123,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
         String effectiveFilePath = (internalPath != null && !internalPath.isBlank()) ? internalPath : outerKeyFilePath;
 
-        if (effectiveFilePath != null) {
+        if (effectiveFilePath != null && isValidSourceFile(effectiveFilePath, rootPath)) {
           parsedFiles.add(createSourceFile(
               session, effectiveFilePath, basePath, rootPath,
               statementMap, branchMap, statementHits, branchHits, fnMap, fnHits
@@ -368,12 +367,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
   }
 
   private String extractPhysicalPath(String filePath, Path rootPath) {
-    String normalizedFullPath = rootPath.resolve(Path.of(filePath))
-        .toAbsolutePath()
-        .normalize()
-        .toString()
-        .replace(File.separatorChar, '/');
-
+    String normalizedFullPath = normalizePhysicalPath(filePath, rootPath);
     String physicalPath = normalizedFullPath.replace(BUNDLE_PATH, "/");
 
     if (COMPONENT_OBSERVER_MANAGER_PATTERN.matcher(physicalPath).matches()) {
@@ -383,6 +377,22 @@ class C8JsonCoverageParser implements CoverageReportParser {
     return physicalPath
         .replace(BUNDLED_GUI_2_JAVA_2_TS_PATH, GUI_2_JAVA_2_TS_PATH)
         .replace(BUNDLED_UMLP_2_JAVA_PATH, UMLP_2_JAVA_PATH);
+  }
+
+  private boolean isValidSourceFile(String filePath, Path rootPath){
+    String path = normalizePhysicalPath(filePath, rootPath);
+    // Check if this path is from either that gui2java2ts or umlpJava2ts and not some other component
+    return path.contains(BUNDLED_GUI_2_JAVA_2_TS_PATH) || path.contains(BUNDLED_UMLP_2_JAVA_PATH);
+  }
+
+  private String normalizePhysicalPath(String path, Path rootPath){
+    String normalizedFullPath = rootPath.resolve(Path.of(path))
+        .toAbsolutePath()
+        .normalize()
+        .toString()
+        .replace(File.separatorChar, '/');
+
+    return normalizedFullPath.replace(BUNDLE_PATH, "/");
   }
 
   private void parseStatementMap(JsonParser parser, Map<String, Range> map) throws IOException {
