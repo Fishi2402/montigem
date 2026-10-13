@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +97,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
             int cb = getIntAttribute(startElement, "cb");
             int mb = getIntAttribute(startElement, "mb");
 
-            CoverageLine line = CoverageDashboardManager.coverageLineBuilder()
+            CoverageLine line = CoverageDashboardManager.measuredLineBuilder()
                 .lineNumber(nr)
                 .coveredInstructions(ci)
                 .missedInstructions(mi)
@@ -143,7 +142,9 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
                 .missedInstructions(missedInstructions)
                 .coveredBranches(coveredBranches)
                 .missedBranches(missedBranches)
-                .coveredLines(coveredLines).missedLines(missedLines)
+                .coveredLines(coveredLines)
+                .missedLines(missedLines)
+                .unmappedLines(0)
                 .build().get();
 
 

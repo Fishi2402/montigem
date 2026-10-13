@@ -2,11 +2,13 @@ package coveragedashboard.ingestion;
 
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageLine;
-import coveragedashboard.CoverageLineBuilder;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
+import coveragedashboard.MeasuredLine;
+import coveragedashboard.MeasuredLineBuilder;
+import coveragedashboard.UnmappedLineBuilder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -79,30 +81,45 @@ class CoverageModuleAggregator {
     mergedBuilder.setCategory(files.get(0).getCategory());
 
     // Now line-by-line, is covered if at least one of the source files covers it
-    Map<Integer, CoverageLineBuilder> mergedLinesBuilder = new HashMap<>();
+    Map<Integer, MeasuredLineBuilder> mergedLinesBuilder = new HashMap<>();
+    Map<Integer, UnmappedLineBuilder> unmappedLinesBuilder = new HashMap<>();
     for(CoverageSourceFile file : files){
       for(CoverageLine line : file.getLinesList()){
         int num = line.getLineNumber();
-        CoverageLineBuilder builder = mergedLinesBuilder.get(num);
-        if(builder == null){
-          builder = CoverageDashboardManager.coverageLineBuilder()
-              .lineNumber(num)
-              .coveredInstructions(line.getCoveredInstructions())
-              .missedInstructions(line.getMissedInstructions())
-              .coveredBranches(line.getCoveredBranches())
-              .missedBranches(line.getMissedBranches());
-          mergedLinesBuilder.put(num, builder);
+
+        if(line instanceof MeasuredLine measuredLine){
+          // Check if there is already any known information for this
+          MeasuredLineBuilder builder = mergedLinesBuilder.get(num);
+          if(builder == null){
+            builder = CoverageDashboardManager.measuredLineBuilder()
+                .lineNumber(num)
+                .coveredInstructions(measuredLine.getCoveredInstructions())
+                .missedInstructions(measuredLine.getMissedInstructions())
+                .coveredBranches(measuredLine.getCoveredBranches())
+                .missedBranches(measuredLine.getMissedBranches());
+            mergedLinesBuilder.put(num, builder);
+          }else{
+            builder.coveredInstructions(builder.getCoveredInstructions() + measuredLine.getCoveredInstructions());
+            builder.missedInstructions(builder.getMissedInstructions() + measuredLine.getMissedInstructions());
+            builder.coveredBranches(builder.getCoveredBranches() + measuredLine.getCoveredBranches());
+            builder.missedBranches(builder.getMissedBranches() + measuredLine.getMissedBranches());
+          }
+
+          // Remove unmapped information
+          unmappedLinesBuilder.remove(num);
         }else{
-          builder.coveredInstructions(builder.getCoveredInstructions() + line.getCoveredInstructions());
-          builder.missedInstructions(builder.getMissedInstructions() + line.getMissedInstructions());
-          builder.coveredBranches(builder.getCoveredBranches() + line.getCoveredBranches());
-          builder.missedBranches(builder.getMissedBranches() + line.getMissedBranches());
+          // If the line is not a MeasuredLine, it's an unmapped line
+          unmappedLinesBuilder.putIfAbsent(num, CoverageDashboardManager
+              .unmappedLineBuilder().lineNumber(num));
         }
       }
     }
     Set<CoverageLine> mergedLines = new HashSet<>();
-    for(CoverageLineBuilder lineBuilder : mergedLinesBuilder.values()){
+    for(MeasuredLineBuilder lineBuilder : mergedLinesBuilder.values()){
       mergedLines.add(lineBuilder.build().get());
+    }
+    for(UnmappedLineBuilder builder : unmappedLinesBuilder.values()){
+      mergedLines.add(builder.build().get());
     }
 
     CoverageMetrics metrics = calculateMetrics(mergedLines);
@@ -139,18 +156,23 @@ class CoverageModuleAggregator {
     int missedBranches = 0;
     int coveredLines = 0;
     int missedLines = 0;
+    int unmappedLines = 0;
 
     for (CoverageLine line : lines) {
-      coveredInstructions += line.getCoveredInstructions();
-      missedInstructions += line.getMissedInstructions();
+      if(line instanceof MeasuredLine measuredLine) {
+        coveredInstructions += measuredLine.getCoveredInstructions();
+        missedInstructions += measuredLine.getMissedInstructions();
 
-      coveredBranches += line.getCoveredBranches();
-      missedBranches += line.getMissedBranches();
+        coveredBranches += measuredLine.getCoveredBranches();
+        missedBranches += measuredLine.getMissedBranches();
 
-      if (line.getCoveredInstructions() > 0) {
-        coveredLines++;
-      } else {
-        missedLines++;
+        if (measuredLine.getCoveredInstructions() > 0) {
+          coveredLines++;
+        } else {
+          missedLines++;
+        }
+      }else{
+        unmappedLines++;
       }
     }
 
@@ -161,6 +183,7 @@ class CoverageModuleAggregator {
         .missedBranches(missedBranches)
         .coveredLines(coveredLines)
         .missedLines(missedLines)
+        .unmappedLines(unmappedLines)
         .build().get();
   }
 
@@ -171,6 +194,7 @@ class CoverageModuleAggregator {
     int missedBranches = 0;
     int coveredLines = 0;
     int missedLines = 0;
+    int unmappedLines = 0;
 
     // Add metrics from files on this module
     for(CoverageSourceFile file : node.getSourceFilesList()){
@@ -180,6 +204,7 @@ class CoverageModuleAggregator {
       missedBranches += file.getMetrics().getMissedBranches();
       coveredLines += file.getMetrics().getCoveredLines();
       missedLines += file.getMetrics().getMissedLines();
+      unmappedLines += file.getMetrics().getUnmappedLines();
     }
 
     // Get metrics of submodules
@@ -191,6 +216,7 @@ class CoverageModuleAggregator {
       missedBranches += subModule.getMetrics().getMissedBranches();
       coveredLines += subModule.getMetrics().getCoveredLines();
       missedLines += subModule.getMetrics().getMissedLines();
+      unmappedLines += subModule.getMetrics().getUnmappedLines();
     }
 
     // Update own metrics
@@ -200,6 +226,7 @@ class CoverageModuleAggregator {
     node.getMetrics().setMissedBranches(missedBranches);
     node.getMetrics().setCoveredLines(coveredLines);
     node.getMetrics().setMissedLines(missedLines);
+    node.getMetrics().setUnmappedLines(unmappedLines);
   }
 
   private CoverageModule getOrCreateSubModule(CoverageModule currentModule, String name){
@@ -225,6 +252,7 @@ class CoverageModuleAggregator {
             .missedBranches(0)
             .coveredLines(0)
             .missedLines(0)
+            .unmappedLines(0)
             .build().get()
         ).build().get();
   }
