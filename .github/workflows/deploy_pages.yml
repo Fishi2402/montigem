@@ -19,8 +19,8 @@ on:
       - "comment2doc/**"
       - "umlp-rte/frontend/**"
       - "examples/vis-lib/frontend/**"
-  workflow_run: # and when the javadocs have been updated
-    workflows: [ "Gradle Deploy Snapshot" ]
+  workflow_run: # and when the jars have been published (release_mg.yml)
+    workflows: [ "Build" ]
     types:
       - completed
 
@@ -45,7 +45,10 @@ jobs:
       CHROME_BIN: "/usr/bin/google-chrome-stable"
       PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome-stable"
 
-    if: github.ref == 'refs/heads/dev'
+    # After release_mg.yml only if it succeeded (build_pages and deploy are skipped with this job)
+    if: >-
+      github.ref == 'refs/heads/dev' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v7
