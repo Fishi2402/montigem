@@ -17,7 +17,7 @@
 # Optional environment variables:
 #   GITLAB_ACCESS_TOKEN    Access token used to poll the pipeline status
 #                           (needs read_api scope; not needed for public projects)
-#   GITLAB_VARIABLES_JSON  JSON object of pipeline variables, e.g. '{"VAR1":"value1"}' (default: {})
+#   GITLAB_INPUTS_JSON     JSON object of pipeline inputs (spec:inputs), e.g. '{"umlp_ref":"dev"}' (default: {})
 #   GITLAB_POLL_INTERVAL   Seconds between status polls (default: 15, matches the original action)
 #
 # Outputs:
@@ -38,7 +38,7 @@ project_id="${GITLAB_PROJECT_ID:-129999}" # Default is montigem-pipeline project
 ref="${GITLAB_REF:?GITLAB_REF is required}"
 trigger_token="${GITLAB_TRIGGER_TOKEN:?GITLAB_TRIGGER_TOKEN is required}"
 access_token="${GITLAB_ACCESS_TOKEN:?GITLAB_ACCESS_TOKEN is required}"
-variables_json="${GITLAB_VARIABLES_JSON:-{}}"
+inputs_json="${GITLAB_INPUTS_JSON:-{}}"
 poll_interval="${GITLAB_POLL_INTERVAL:-15}"
 
 # Extracts the string/number value of a top-level JSON field without a JSON parser.
@@ -51,15 +51,15 @@ json_field() {
 
 echo "Triggering GitLab pipeline for ${project_id} (${ref}) on ${host}..."
 
-# GitLab's trigger API expects "variables" as individual multipart form fields
-# (variables[KEY]=VALUE), not as a nested JSON object in the request body --
+# GitLab's trigger API expects "inputs" as individual multipart form fields
+# (inputs[KEY]=VALUE), not as a nested JSON object in the request body --
 # see https://docs.gitlab.com/ee/api/pipeline_triggers.html#trigger-a-pipeline-with-a-token
 # (sending it as JSON instead fails with "Invalid JSON format").
 form_args=(--form "token=${trigger_token}" --form "ref=${ref}")
 while IFS='=' read -r key value; do
     [[ -z "$key" ]] && continue
-    form_args+=(--form "variables[${key}]=${value}")
-done < <(printf '%s' "$variables_json" | grep -o '"[^"]*"[[:space:]]*:[[:space:]]*"[^"]*"' \
+    form_args+=(--form "inputs[${key}]=${value}")
+done < <(printf '%s' "$inputs_json" | grep -o '"[^"]*"[[:space:]]*:[[:space:]]*"[^"]*"' \
     | sed -E 's/^"([^"]*)"[[:space:]]*:[[:space:]]*"([^"]*)"$/\1=\2/')
 
 trigger_response=$(curl -sS -w '\n%{http_code}' -X POST \
