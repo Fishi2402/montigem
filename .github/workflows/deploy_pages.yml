@@ -3,20 +3,12 @@ name: Build MKDocs
 
 on:
   workflow_dispatch: # allow manual runs from the Actions tab
-  push: # run this test pipeline on every push (if markdown and/or the docs directory was changed)
+  pull_request: # run this test pipeline on pull requests (if markdown and/or the docs directory was changed)
     paths:
       - "**.md"
       - "docs/**"
       - ".github/workflows/deploy_pages.yml"
       - "comment2doc/**" # sources of the generated GUI component docs
-      - "umlp-rte/frontend/**"
-      - "examples/vis-lib/frontend/**"
-  pull_request: # and pull request (Note: We can skip pull request events IFF the PR is not done from a fork)
-    paths:
-      - "**.md"
-      - "docs/**"
-      - ".github/workflows/deploy_pages.yml"
-      - "comment2doc/**"
       - "umlp-rte/frontend/**"
       - "examples/vis-lib/frontend/**"
   workflow_run: # and when the jars have been published (release_mg.yml)
