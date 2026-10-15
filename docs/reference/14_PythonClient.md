@@ -49,7 +49,7 @@ The generated code depends on the `montigem_runtime` package (`experiments/pytho
 This reference assumes Python 3.12 or newer.
 
 ```powershell
-pip install montigem_runtime --extra-index-url https://git.rwth-aachen.de/api/v4/projects/129570/packages/pypi/simple
+pip install montigem_runtime --extra-index-url https://git.rwth-aachen.de/api/v4/projects/68013/packages/pypi/simple
 ```
 
 ## 14.3 Usage

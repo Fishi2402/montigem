@@ -140,7 +140,7 @@ class GemList(BaseModel, typing.Generic[DataT]):
   indexes: typing.List[int] = []
   _target: typing.Optional[str] = PrivateAttr(default=None)
 
-  def __init__(self, /, target: typing.Optional[str] = None, indexes = None, **data: Any) -> None:
+  def __init__(self, target: typing.Optional[str] = None, indexes = None, **data: Any) -> None:
     super().__init__(**data)
     self.indexes = [] if indexes is None else indexes
     self._target = target
