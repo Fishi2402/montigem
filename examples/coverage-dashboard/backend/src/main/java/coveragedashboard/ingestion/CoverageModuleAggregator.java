@@ -53,8 +53,6 @@ class CoverageModuleAggregator {
   }
 
   public CoverageModule groupDependentFiles(int level, List<CoverageSourceFile> flatFiles){
-    List<CoverageSourceFile> sourceFiles = new ArrayList<CoverageSourceFile>();
-
     // At first, get all files for the correct level
     List<CoverageSourceFile> contributors = new ArrayList<>();
     for(CoverageSourceFile file : flatFiles){
