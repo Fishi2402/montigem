@@ -1,5 +1,7 @@
 package coveragedashboard.util;
 
+import jsweet.lang.Erased;
+
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystem;
@@ -12,6 +14,7 @@ import java.util.Optional;
 public class ResourcePathHelper {
 
   public interface PathFunction<R>{
+    @Erased
     R apply(Path path) throws IOException;
   }
 
@@ -19,6 +22,7 @@ public class ResourcePathHelper {
   }
 
 
+  @Erased
   public static <R> Optional<R> withPath(String rawPath, PathFunction<R> action) throws IOException{
     if(rawPath == null || rawPath.isBlank()){
       return Optional.empty();
@@ -37,6 +41,7 @@ public class ResourcePathHelper {
     return Optional.ofNullable(action.apply(path));
   }
 
+  @Erased
   private static URI parseUriOrNull(String rawPath){
     try{
       String normalized = rawPath.replace('\\', '/');
@@ -49,6 +54,7 @@ public class ResourcePathHelper {
     }
   }
 
+  @Erased
   private static <R> Optional<R> executeInJar(URI uri, PathFunction<R> action) throws IOException {
     try{
       Path path = Path.of(uri).normalize();
