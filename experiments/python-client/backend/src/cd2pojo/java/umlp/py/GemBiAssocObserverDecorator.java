@@ -84,14 +84,13 @@ public class GemBiAssocObserverDecorator extends AbstractDecorator<AbstractDecor
   }
 
   protected void handleAssoc(ASTCDAssocSide side, ASTCDAssocSide otherSide) {
-    // role type from ST completer; TC3 leaves MCQualifiedType#getDefiningSymbol empty
-    var thisSideType = side.getSymbol().getType();
-    if (!thisSideType.hasTypeInfo() || !thisSideType.getTypeInfo().isPresentAstNode()) {
+    var thisSideClass = side.getMCQualifiedType().getDefiningSymbol();
+    if (thisSideClass.isEmpty()) {
       Log.error("Failed to resolve " + side.getMCQualifiedType().printType(), side.get_SourcePositionStart());
       return;
     }
 
-    var biObserverClass = getBiObserverClass((ASTCDClass) thisSideType.getTypeInfo().getAstNode());
+    var biObserverClass = getBiObserverClass((ASTCDClass) thisSideClass.get().getAstNode());
 
 
     //
