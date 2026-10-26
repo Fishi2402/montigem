@@ -34,18 +34,20 @@ page AggregationDetails(App app, CoverageReport report) {
         @GemRow(
           hAlign = "stretch",
           width = "100%",
-          height = "100%",
+          height = "600px",
           colGap = "15px",
           components = [
             @GemCard(
               title = "Direct coverage",
               width = "100%",
+              height = "100%",
               component = @GemPieChart(data = app.getCoverageData(report.directPerspective))
             ),
             @iterate(CoveragePerspective perspective : report.aggregatedPerspectives){
               @GemCard(
                 title = "Aggregated coverage - " + perspective.name,
                 width = "100%",
+                height = "100%",
                 component = @GemPieChart(data = app.getAggregatedCoverageData(perspective))
               );
             }
