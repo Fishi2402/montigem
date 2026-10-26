@@ -1,6 +1,5 @@
 package coverage.components;
 
-import app.AppRouter;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.commands.GetFileContent;
@@ -10,7 +9,6 @@ import mc.fenix.editor.monacoeditortypes.LineClickEvent;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
-import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;

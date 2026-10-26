@@ -23,14 +23,8 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
 
   @Override
   public String getCoveragePercent(CoverageMetrics metrics){
-    int covered = metrics.getCoveredInstructions();
-    int total = metrics.getCoveredInstructions() + metrics.getMissedInstructions();
-    if(total == 0){
-      return "0.00%";
-    }
-    double coverage = (double) covered / total;
-    double rounded = Math.round(coverage * 10000.0) / 100.0;
-    return rounded + "%";
+    double coverage = calculateCoverage(metrics);
+    return coverage + "%";
   }
 
   @Override
@@ -43,17 +37,35 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
 
   @Override
   public String getCoverageColor(CoverageMetrics metrics){
-    int covered = metrics.getCoveredInstructions();
-    int total = metrics.getCoveredInstructions() + metrics.getMissedInstructions();
-    if(total == 0){
+    double coverage = calculateCoverage(metrics);
+    if(coverage < 50){
       return "#cf222e";
-    }
-    double coverage = (double) covered / total;
-    if(coverage < 0.50){
-      return "#cf222e";
-    }else if(coverage < 0.80){
+    }else if(coverage < 80){
       return "#8a5c00";
     }
     return "#1a7f37";
+  }
+
+  private double calculateCoverage(CoverageMetrics metrics){
+    // We use the instructions only when we watch the "root", otherwise
+    // we need to use the lines!
+    double coverage;
+    if(this.isRootPerspective()) {
+      int covered = metrics.getCoveredInstructions();
+      int total = metrics.getCoveredInstructions() + metrics.getMissedInstructions();
+      if (total == 0) {
+        return 0;
+      }
+      coverage = (double) covered / total;
+
+    }else{
+      double covered = metrics.getCoveredLines() + 0.5 * metrics.getPartialLines();
+      int total = metrics.getCoveredLines() + metrics.getMissedLines() + metrics.getPartialLines();
+      if (total == 0) {
+        return 0;
+      }
+      coverage = covered / total;
+    }
+    return Math.round(coverage * 10000.0) / 100.0;
   }
 }
