@@ -102,6 +102,7 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
   public static final String GUI2SYM_JAR_TASK = "gui2symJar";
   public static final String BUILD_LIB_TASK = "buildLib";
   public static final String TEST_LIB_TASK = "testLib";
+  public static final String PUBLISH_LIBS_LOCAL_TASK = "publishLibsToLocalNpmRepo";
   public static final String INSTALL_TEST_BROWSER_TASK = "installTestBrowser";
 
   @Inject
@@ -681,6 +682,21 @@ public class ModuleFrontendPlugin extends ALazyPublishingPlugin implements Plugi
     build.configure(task -> task.dependsOn(buildSubprojects));
     TaskProvider<Task> publish = project.getTasks().named("publish");
     publish.configure(task -> task.dependsOn(publishSubprojects));
+    // Like publish, but can never publish to Nexus: without -PpublishToLocalNpmRepo=true it has no
+    // dependencies and fails, instead of publishing the libraries to the configured repository.
+    project.getTasks().register(PUBLISH_LIBS_LOCAL_TASK, task -> {
+      task.setGroup("publishing");
+      task.setDescription("Publishes the libraries to the local npm registry (publishToLocalNpmRepo=true).");
+      if (publishToLocalNpmRepo.get()) {
+        task.dependsOn(publishSubprojects);
+      }
+      else {
+        task.doFirst(t -> {
+          throw new GradleException(PUBLISH_LIBS_LOCAL_TASK + " requires -PpublishToLocalNpmRepo=true; "
+              + "it refuses to publish to the Nexus npm repository.");
+        });
+      }
+    });
     TaskProvider<Task> test = project.getTasks().named("test");
     test.configure(task -> task.dependsOn(testSubprojects));
   }
