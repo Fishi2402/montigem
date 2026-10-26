@@ -143,7 +143,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .get();
 
       // Aggregate java files
-      CoverageModule javaModule = moduleAggregator.groupDependentFiles(1, parsedFiles);
+      CoverageModule javaModule = moduleAggregator.groupDependentFilesByExtension("java", parsedFiles);
       CoveragePerspective javaPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
           .name("JAVA")
           .rootModule(javaModule)
@@ -152,7 +152,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .get();
 
       // Aggregate FTL files
-      CoverageModule ftlModule = moduleAggregator.groupDependentFiles(2, parsedFiles);
+      CoverageModule ftlModule = moduleAggregator.groupDependentFilesByExtension("ftl", parsedFiles);
       CoveragePerspective ftlPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
           .name("FTL")
           .rootModule(ftlModule)
@@ -256,35 +256,45 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
       Map<Integer, MeasuredLineBuilder> lineBuilders = new HashMap<>();
 
-      decodedMappings.stream()
-          .filter(mapping -> mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url))
-          .forEach(mapping -> {
-            MeasuredLine targetLine = targetLineMap.get(mapping.generatedLine);
-            if (targetLine == null) {
-              return;
-            }
+      Map<Integer, Set<Integer>> origToGenLines = new HashMap<>();
 
-            MeasuredLineBuilder line = lineBuilders.computeIfAbsent(
-                mapping.originalLine,
-                lineNumber -> CoverageDashboardManager.measuredLineBuilder()
-                    .lineNumber(lineNumber)
-                    .coveredInstructions(0)
-                    .missedInstructions(0)
-                    .coveredBranches(0)
-                    .missedBranches(0)
-            );
+      for (DecodedMapping mapping : decodedMappings){
+        if (mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url)) {
+          origToGenLines
+              .computeIfAbsent(mapping.originalLine, k -> new HashSet<>())
+              .add(mapping.generatedLine); // Set eliminates token-level duplicates on the same generated line!
+        }
+      }
 
+      for(Map.Entry<Integer, Set<Integer>> entry : origToGenLines.entrySet()){
+        int origLineNumber = entry.getKey();
+        Set<Integer> genLines = entry.getValue();
+        MeasuredLineBuilder line = lineBuilders.computeIfAbsent(
+            origLineNumber,
+            lineNumber -> CoverageDashboardManager.measuredLineBuilder()
+                .lineNumber(lineNumber)
+                .coveredInstructions(0)
+                .missedInstructions(0)
+                .coveredBranches(0)
+                .missedBranches(0)
+        );
+        for(int genLineNumber : genLines){
+          MeasuredLine targetLine = targetLineMap.get(genLineNumber);
+          if(targetLine != null){
             line.missedInstructions(line.getMissedInstructions() + targetLine.getMissedInstructions());
             line.coveredInstructions(line.getCoveredInstructions() + targetLine.getCoveredInstructions());
             line.missedBranches(line.getMissedBranches() + targetLine.getMissedBranches());
             line.coveredBranches(line.getCoveredBranches() + targetLine.getCoveredBranches());
-          });
+          }
+        }
+      }
 
       int fileCoveredInstructions = 0;
       int fileMissedInstructions = 0;
       int fileCoveredBranches = 0;
       int fileMissedBranches = 0;
       int fileCoveredLines = 0;
+      int filePartialLines = 0;
       int fileMissedLines = 0;
       int fileUnmappedLines = 0;
 
@@ -295,35 +305,42 @@ class C8JsonCoverageParser implements CoverageReportParser {
         fileCoveredInstructions += lineBuilder.getCoveredInstructions();
         fileMissedInstructions += lineBuilder.getMissedInstructions();
 
-        if (lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0) {
-          fileMissedLines++;
-        } else {
+        int totalCovered = lineBuilder.getCoveredInstructions() + lineBuilder.getCoveredBranches();
+        int totalMissed = lineBuilder.getMissedInstructions() + lineBuilder.getMissedBranches();
+
+
+        if (totalCovered > 0 && totalMissed > 0) {
+          filePartialLines++;
+        } else if (totalCovered > 0) {
           fileCoveredLines++;
+        } else {
+          fileMissedLines++;
         }
       }
 
-      Optional<Long> totalLines;
+      Optional<List<String>> fileLines;
       try{
-        totalLines = ResourcePathHelper.withPath(
+        fileLines = ResourcePathHelper.withPath(
           resourcePath.representation,
-          path -> {
-            try(Stream<String> lines = Files.lines(path)){
-              return lines.filter(line -> !line.trim().isEmpty()).count();
-            }
-          });
+          path -> Files.readAllLines(path));
       }catch (IOException e){
         Log.error("Could not read file to count lines: " + resourcePath.representation);
         continue;
       }
-      for(int line = 1; line <= totalLines.get(); line++){
-        if(!lineBuilders.containsKey(line)){
-          fileUnmappedLines++;
-          sourceCoverageFile.linesAdd(CoverageDashboardManager.unmappedLineBuilder()
-              .lineNumber(line).build().get());
+      if(fileLines.isPresent()){
+        List<String> lines = fileLines.get();
+        for(int i = 0; i < lines.size(); i++) {
+          int lineNumber = i + 1;
+          if(lines.get(i).isBlank()){
+            continue;
+          }
+          if (!lineBuilders.containsKey(lineNumber)) {
+            fileUnmappedLines++;
+            sourceCoverageFile.linesAdd(CoverageDashboardManager.unmappedLineBuilder()
+                .lineNumber(lineNumber).build().get());
+          }
         }
       }
-
-
 
       if (sourceCoverageFile.getLinesList().isEmpty()) {
         continue;
@@ -335,6 +352,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .coveredBranches(fileCoveredBranches)
           .missedBranches(fileMissedBranches)
           .coveredLines(fileCoveredLines)
+          .partialLines(filePartialLines)
           .missedLines(fileMissedLines)
           .unmappedLines(fileUnmappedLines)
           .build()
@@ -362,6 +380,15 @@ class C8JsonCoverageParser implements CoverageReportParser {
       Path standardMap = Path.of(physicalPath + ".map");
       if (Files.exists(standardMap)) {
         return standardMap;
+      }
+      if (physicalPath.contains("/gui2java2ts/") || physicalPath.contains("\\gui2java2ts\\")) {
+        String gui2javaPath = physicalPath
+            .replace("/gui2java2ts/", "/gui2java/")
+            .replace("\\gui2java2ts\\", "\\gui2java\\");
+        Path splitMap = Path.of(gui2javaPath + ".map");
+        if (Files.exists(splitMap)) {
+          return splitMap;
+        }
       }
     } catch (InvalidPathException ignored) {
       return null;
@@ -683,14 +710,15 @@ class C8JsonCoverageParser implements CoverageReportParser {
       return;
     }
     if (range.startLine() == range.endLine()) {
-      applyToLine(range.startLine(), range.startColumn(), range.endColumn(), hits, type, context);
+      applyToLine(range.startLine(), range.startColumn(), range.endColumn(), hits, type, true, context);
       return;
     }
-    applyToLine(range.startLine(), range.startColumn(), Integer.MAX_VALUE, hits, type, context);
+    // Only count line metrics once, subsequent lines for visual representation
+    applyToLine(range.startLine(), range.startColumn(), Integer.MAX_VALUE, hits, type, true, context);
     for (int line = range.startLine() + 1; line < range.endLine(); line++) {
-      applyToLine(line, 0, Integer.MAX_VALUE, hits, type, context);
+      applyToLine(line, 0, Integer.MAX_VALUE, hits, type, false, context);
     }
-    applyToLine(range.endLine(), 0, range.endColumn(), hits, type, context);
+    applyToLine(range.endLine(), 0, range.endColumn(), hits, type, false, context);
   }
 
   private void applyToLine(
@@ -699,10 +727,16 @@ class C8JsonCoverageParser implements CoverageReportParser {
       int endCol,
       int hits,
       ColumnRangeType type,
+      boolean countLineMetrics,
       FileCoverageContext context) {
 
     MeasuredLineBuilder lineBuilder = context.getLineBuilder(lineNumber);
     context.addRawRange(lineNumber, startCol, endCol, hits, type);
+
+    if(!countLineMetrics){
+      // Only add ranges for visual representation, avoid double counting
+      return;
+    }
 
     if (type == ColumnRangeType.STATEMENT) {
       if (hits > 0) {
@@ -710,7 +744,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
       } else {
         lineBuilder.missedInstructions(lineBuilder.getMissedInstructions() + 1);
       }
-    } else {
+    } else if(type == ColumnRangeType.BRANCH){
       if (hits > 0) {
         lineBuilder.coveredBranches(lineBuilder.getCoveredBranches() + 1);
       } else {
@@ -748,6 +782,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .coveredBranches(0)
           .missedBranches(0)
           .coveredLines(0)
+          .partialLines(0)
           .missedLines(0)
           .unmappedLines(0)
           .build()
@@ -881,6 +916,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     private int coveredBranches;
     private int missedBranches;
     private int coveredLines;
+    private int partialLines;
     private int missedLines;
 
     void addInstruction(int hits) {
@@ -900,10 +936,15 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
 
     void addLine(MeasuredLineBuilder lineBuilder) {
-      if (lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0) {
-        missedLines++;
-      } else {
+      int totalCovered = lineBuilder.getCoveredInstructions() + lineBuilder.getCoveredBranches();
+      int totalMissed = lineBuilder.getMissedInstructions() + lineBuilder.getMissedBranches();
+
+      if (totalCovered > 0 && totalMissed > 0) {
+        partialLines++;
+      }else if(totalCovered > 0) {
         coveredLines++;
+      } else {
+        missedLines++;
       }
     }
 
@@ -914,6 +955,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .coveredBranches(coveredBranches)
           .missedBranches(missedBranches)
           .coveredLines(coveredLines)
+          .partialLines(partialLines)
           .missedLines(missedLines)
           .unmappedLines(0)
           .build()

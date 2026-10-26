@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 class CoverageModuleAggregator {
@@ -27,8 +28,6 @@ class CoverageModuleAggregator {
 
     // Create root module
     CoverageModule root = getEmptyModule("");
-
-
 
     for(CoverageSourceFile file : flatFiles){
       Path path = Paths.get(file.getPath());
@@ -52,14 +51,20 @@ class CoverageModuleAggregator {
     return root;
   }
 
-  public CoverageModule groupDependentFiles(int level, List<CoverageSourceFile> flatFiles){
-    // At first, get all files for the correct level
+  public CoverageModule groupDependentFilesByExtension(String extension, List<CoverageSourceFile> flatFiles){
+    String cleanExt = extension.startsWith(".") ? extension.toLowerCase() : "." + extension.toLowerCase();
+    return groupDependentFiles(file -> file.getName() != null
+        && file.getName().toLowerCase().endsWith(cleanExt), flatFiles);
+  }
+
+  public CoverageModule groupDependentFiles(Predicate<CoverageSourceFile> filter, List<CoverageSourceFile> flatFiles){
     List<CoverageSourceFile> contributors = new ArrayList<>();
     for(CoverageSourceFile file : flatFiles){
-      contributors.addAll(getGeneratedByAtLevel(file, level));
+      Set<CoverageSourceFile> visited = new HashSet<>();
+      collectTransitiveGeneratedBy(file, filter, contributors, visited);
     }
 
-    // Group them by there path
+    // Group them by their path
     Map<String, List<CoverageSourceFile>> groupedFiles = contributors.stream()
         .collect(Collectors.groupingBy(CoverageSourceFile::getPath));
 
@@ -69,6 +74,24 @@ class CoverageModuleAggregator {
         .collect(Collectors.toList());
 
     return this.groupFilesInModules(aggregatedFiles);
+  }
+
+  private void collectTransitiveGeneratedBy(
+      CoverageSourceFile file,
+      Predicate<CoverageSourceFile> filter,
+      List<CoverageSourceFile> result,
+      Set<CoverageSourceFile> visited){
+    if(file == null || file.getGeneratedByList() == null){
+      return;
+    }
+    for(CoverageSourceFile gen : file.getGeneratedByList()){
+      if(gen != null && visited.add(gen)){
+        if(filter.test(gen)){
+          result.add(gen);
+        }
+        collectTransitiveGeneratedBy(gen, filter, result, visited);
+      }
+    }
   }
 
   private CoverageSourceFile mergeCoverageData(String path, List<CoverageSourceFile> files){
@@ -126,33 +149,13 @@ class CoverageModuleAggregator {
     return mergedBuilder.build().get();
   }
 
-  private List<CoverageSourceFile> getGeneratedByAtLevel(CoverageSourceFile file, int level){
-    if(file == null || level < 1){
-      return Collections.emptyList();
-    }
-
-    List<CoverageSourceFile> currentLevel = Collections.singletonList(file);
-    for(int step = 1; step <= level; step++){
-      List<CoverageSourceFile> nextLevel = new ArrayList<>();
-      for(CoverageSourceFile current : currentLevel){
-        if(current.getGeneratedByList() != null){
-          nextLevel.addAll(current.getGeneratedByList());
-        }
-      }
-      if(nextLevel.isEmpty()){
-        return Collections.emptyList();
-      }
-      currentLevel = nextLevel;
-    }
-    return currentLevel;
-  }
-
   private CoverageMetrics calculateMetrics(Set<CoverageLine> lines){
     int coveredInstructions = 0;
     int missedInstructions = 0;
     int coveredBranches = 0;
     int missedBranches = 0;
     int coveredLines = 0;
+    int partialLines = 0;
     int missedLines = 0;
     int unmappedLines = 0;
 
@@ -164,7 +167,11 @@ class CoverageModuleAggregator {
         coveredBranches += measuredLine.getCoveredBranches();
         missedBranches += measuredLine.getMissedBranches();
 
-        if (measuredLine.getCoveredInstructions() > 0) {
+        int cov = measuredLine.getCoveredInstructions() + measuredLine.getCoveredBranches();
+        int miss = measuredLine.getMissedInstructions() + measuredLine.getMissedBranches();
+        if (cov > 0 && miss > 0) {
+          partialLines++;
+        } else if (cov > 0) {
           coveredLines++;
         } else {
           missedLines++;
@@ -180,6 +187,7 @@ class CoverageModuleAggregator {
         .coveredBranches(coveredBranches)
         .missedBranches(missedBranches)
         .coveredLines(coveredLines)
+        .partialLines(partialLines)
         .missedLines(missedLines)
         .unmappedLines(unmappedLines)
         .build().get();
@@ -191,6 +199,7 @@ class CoverageModuleAggregator {
     int coveredBranches = 0;
     int missedBranches = 0;
     int coveredLines = 0;
+    int partialLines = 0;
     int missedLines = 0;
     int unmappedLines = 0;
 
@@ -201,6 +210,7 @@ class CoverageModuleAggregator {
       coveredBranches += file.getMetrics().getCoveredBranches();
       missedBranches += file.getMetrics().getMissedBranches();
       coveredLines += file.getMetrics().getCoveredLines();
+      partialLines += file.getMetrics().getPartialLines();
       missedLines += file.getMetrics().getMissedLines();
       unmappedLines += file.getMetrics().getUnmappedLines();
     }
@@ -212,6 +222,7 @@ class CoverageModuleAggregator {
       missedInstructions += subModule.getMetrics().getMissedInstructions();
       coveredBranches += subModule.getMetrics().getCoveredBranches();
       missedBranches += subModule.getMetrics().getMissedBranches();
+      partialLines += subModule.getMetrics().getPartialLines();
       coveredLines += subModule.getMetrics().getCoveredLines();
       missedLines += subModule.getMetrics().getMissedLines();
       unmappedLines += subModule.getMetrics().getUnmappedLines();
@@ -223,6 +234,7 @@ class CoverageModuleAggregator {
     node.getMetrics().setCoveredBranches(coveredBranches);
     node.getMetrics().setMissedBranches(missedBranches);
     node.getMetrics().setCoveredLines(coveredLines);
+    node.getMetrics().setPartialLines(partialLines);
     node.getMetrics().setMissedLines(missedLines);
     node.getMetrics().setUnmappedLines(unmappedLines);
   }
@@ -249,6 +261,7 @@ class CoverageModuleAggregator {
             .coveredBranches(0)
             .missedBranches(0)
             .coveredLines(0)
+            .partialLines(0)
             .missedLines(0)
             .unmappedLines(0)
             .build().get()

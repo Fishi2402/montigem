@@ -5,6 +5,7 @@ import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoverageSourceFile;
+import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.test_infrastructure.CoverageDashboardMockTestSetup;
 import org.junit.jupiter.api.Test;
 import umlp.test_rte.ClientSetup;
@@ -55,7 +56,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(25).missedInstructions(7)
             .coveredBranches(6).missedBranches(1)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -70,7 +71,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(100).missedInstructions(0)
             .coveredBranches(12).missedBranches(0)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -85,7 +86,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(10).missedInstructions(40)
             .coveredBranches(2).missedBranches(8)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -100,7 +101,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(200).missedInstructions(15)
             .coveredBranches(20).missedBranches(4)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -115,7 +116,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(50).missedInstructions(0)
             .coveredBranches(5).missedBranches(0)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -130,7 +131,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(120).missedInstructions(30)
             .coveredBranches(15).missedBranches(5)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -145,7 +146,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(500).missedInstructions(100)
             .coveredBranches(50).missedBranches(10)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -160,7 +161,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(80).missedInstructions(5)
             .coveredBranches(8).missedBranches(2)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -175,7 +176,7 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
             .coveredInstructions(60).missedInstructions(60)
             .coveredBranches(10).missedBranches(10)
             .coveredLines(0).missedLines(0)
-            .unmappedLines(0)
+            .partialLines(0).unmappedLines(0)
             .build().get()
         )
         .linesAdd(dummyLine)
@@ -269,5 +270,115 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
     assertEquals(10, apiModule.getMetrics().getMissedBranches());
 
 
+  }
+
+  @Test
+  void testGroupDependentFilesByExtensionWithMixedDepths() {
+    CoverageLine line1 = CoverageDashboardManager.measuredLineBuilder()
+        .lineNumber(1)
+        .coveredInstructions(10).missedInstructions(0)
+        .coveredBranches(2).missedBranches(0)
+        .build().get();
+
+    CoverageLine line2 = CoverageDashboardManager.measuredLineBuilder()
+        .lineNumber(2)
+        .coveredInstructions(0).missedInstructions(5)
+        .coveredBranches(0).missedBranches(1)
+        .build().get();
+
+    // Direct FTL (Level 1 from TS)
+    CoverageSourceFile directFtl = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("gui/Direct.ftl")
+        .name("Direct.ftl")
+        .physicalPath("c:/some/path/gui/Direct.ftl")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(10).missedInstructions(0)
+            .coveredBranches(2).missedBranches(0)
+            .coveredLines(1).missedLines(0)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1)
+        .build().get();
+
+    // Nested FTL (Level 2 from TS via Java)
+    CoverageSourceFile nestedFtl = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("core/Nested.ftl")
+        .name("Nested.ftl")
+        .physicalPath("c:/some/path/core/Nested.ftl")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(0).missedInstructions(5)
+            .coveredBranches(0).missedBranches(1)
+            .coveredLines(0).missedLines(1)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line2)
+        .build().get();
+
+    // Intermediate Java (Level 1 from TS)
+    CoverageSourceFile intermediateJava = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("core/Intermediate.java")
+        .name("Intermediate.java")
+        .physicalPath("c:/some/path/core/Intermediate.java")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(20).missedInstructions(0)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(1).missedLines(0)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1)
+        .generatedByAdd(nestedFtl)
+        .build().get();
+
+    // Root TS files
+    CoverageSourceFile tsFileWithDirectFtl = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("DirectView.ts")
+        .name("DirectView.ts")
+        .physicalPath("c:/some/path/DirectView.ts")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(0).missedInstructions(0)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(0).missedLines(0)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1)
+        .generatedByAdd(directFtl)
+        .build().get();
+
+    CoverageSourceFile tsFileWithJava = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("NestedView.ts")
+        .name("NestedView.ts")
+        .physicalPath("c:/some/path/NestedView.ts")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(0).missedInstructions(0)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(0).missedLines(0)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1)
+        .generatedByAdd(intermediateJava)
+        .build().get();
+
+    CoverageModuleAggregator aggregator = new CoverageModuleAggregator();
+    List<CoverageSourceFile> flatFiles = Arrays.asList(tsFileWithDirectFtl, tsFileWithJava);
+
+    // Group FTL files: should find BOTH Direct.ftl (hop 1) and Nested.ftl (hop 2)
+    CoverageModule ftlRoot = aggregator.groupDependentFilesByExtension("ftl", flatFiles);
+    assertNotNull(ftlRoot);
+    assertEquals(2, ftlRoot.getSubModulesList().size()); // gui and core submodules
+    assertEquals(10, ftlRoot.getMetrics().getCoveredInstructions());
+    assertEquals(5, ftlRoot.getMetrics().getMissedInstructions());
+
+    // Group JAVA files: should find only Intermediate.java (hop 1)
+    CoverageModule javaRoot = aggregator.groupDependentFilesByExtension("java", flatFiles);
+    assertNotNull(javaRoot);
+    assertEquals(1, javaRoot.getSubModulesList().size()); // core submodule
+    CoverageModule coreJava = javaRoot.getSubModulesList().get(0);
+    assertEquals(1, coreJava.getSourceFilesList().size());
+    assertEquals("Intermediate.java", coreJava.getSourceFilesList().get(0).getName());
   }
 }
