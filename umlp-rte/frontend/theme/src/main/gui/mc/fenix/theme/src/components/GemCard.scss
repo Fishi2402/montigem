@@ -2,7 +2,7 @@
   .gem-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1 1 auto;
     background-color: var(--color-surface);
     color: var(--text-main);
     border-radius: var(--btn-border-radius);
@@ -74,10 +74,13 @@
   .gem-card-collapse-wrapper {
     display: grid;
     grid-template-rows: 1fr;
+    flex: 1 1 auto;
+    min-height: 0;
     transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 
     &.gem-card-collapsed {
       grid-template-rows: 0fr;
+      flex-grow: 0;
     }
 
     .gem-card-collapse-inner {
@@ -85,6 +88,7 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      height: 100%;
       transition: opacity 0.25s ease, visibility 0.35s ease;
       opacity: 1;
       visibility: visible;
