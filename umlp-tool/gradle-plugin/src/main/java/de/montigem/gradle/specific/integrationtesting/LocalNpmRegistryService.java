@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.montigem.gradle.specific;
+package de.montigem.gradle.specific.integrationtesting;
 
+import de.montigem.gradle.specific.CreateNpmrcTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.logging.Logger;

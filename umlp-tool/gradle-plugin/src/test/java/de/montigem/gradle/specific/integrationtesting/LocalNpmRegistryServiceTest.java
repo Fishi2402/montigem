@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.montigem.gradle.specific;
+package de.montigem.gradle.specific.integrationtesting;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +20,13 @@ class LocalNpmRegistryServiceTest {
 
   @Test
   void sharedConfigIsAdaptedToTheHost() throws IOException {
-    String config = LocalNpmRegistryService.renderConfig(sharedConfig(), Path.of("/tmp/npmLocal"));
+    Path storage = Path.of("/tmp/npmLocal");
+    String config = LocalNpmRegistryService.renderConfig(sharedConfig(), storage);
 
-    assertTrue(config.contains("storage: /tmp/npmLocal\n"));
-    assertTrue(config.contains("file: /tmp/npmLocal/htpasswd\n"));
+    // absolute, so on Windows with a drive letter and backslashes, e.g. C:\tmp\npmLocal
+    String storageDir = storage.toAbsolutePath().toString();
+    assertTrue(config.contains("storage: " + storageDir + "\n"));
+    assertTrue(config.contains("file: " + storageDir + "/htpasswd\n"));
     assertTrue(config.contains("listen: 127.0.0.1:4873\n"));
     assertFalse(config.contains("/verdaccio"));
   }

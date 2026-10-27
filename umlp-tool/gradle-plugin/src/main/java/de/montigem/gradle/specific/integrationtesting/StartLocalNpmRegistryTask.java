@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.montigem.gradle.specific;
+package de.montigem.gradle.specific.integrationtesting;
 
 import com.github.gradle.node.NodeExtension;
 import com.github.gradle.node.variant.VariantComputer;
@@ -51,7 +51,9 @@ public abstract class StartLocalNpmRegistryTask extends DefaultTask {
       return project.getTasks().named(TASK_NAME, StartLocalNpmRegistryTask.class);
     }
 
-    NodeExtension node = project.getExtensions().getByType(NodeExtension.class);
+    // e.g. umlp downloads node only in the root project, its subprojects would fall back to npm on the PATH
+    Project nodeProject = downloadsNode(project.getRootProject()) ? project.getRootProject() : project;
+    NodeExtension node = nodeProject.getExtensions().getByType(NodeExtension.class);
     VariantComputer variants = new VariantComputer();
     Provider<Directory> nodeBinDir = variants.computeNodeBinDir(variants.computeNodeDir(node));
     Provider<String> nodeExec = variants.computeNodeExec(node, nodeBinDir);
@@ -78,7 +80,12 @@ public abstract class StartLocalNpmRegistryTask extends DefaultTask {
       task.getRegistry().set(service);
       task.usesService(service);
       // node is only downloaded by nodeSetup if the node-gradle plugin is configured to do so
-      task.dependsOn(project.getTasks().named("nodeSetup"));
+      task.dependsOn(nodeProject.getTasks().named("nodeSetup"));
     });
+  }
+
+  private static boolean downloadsNode(Project project) {
+    NodeExtension node = project.getExtensions().findByType(NodeExtension.class);
+    return node != null && node.getDownload().getOrElse(false);
   }
 }

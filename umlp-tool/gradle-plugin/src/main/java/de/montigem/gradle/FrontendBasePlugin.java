@@ -10,7 +10,7 @@ import de.montigem.gradle.specific.FrontendCIImageTask;
 import de.montigem.gradle.specific.FrontendLocalImageTask;
 import de.montigem.gradle.specific.Java2TSTask;
 import de.montigem.gradle.specific.SetupFrontendTask;
-import de.montigem.gradle.specific.StartLocalNpmRegistryTask;
+import de.montigem.gradle.specific.integrationtesting.StartLocalNpmRegistryTask;
 import de.montigem.gradle.specific.UMLP2SymTask;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.api.Plugin;
