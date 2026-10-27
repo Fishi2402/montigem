@@ -34,6 +34,7 @@ import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.DecoratorUtil;
 import umlp.generator.util.PathUtil;
 import umlp.generator.util.TagLookUp;
+import umlp.generator.util.UMLPSymbolTables;
 
 import java.util.ArrayList;
 import java.util.List;

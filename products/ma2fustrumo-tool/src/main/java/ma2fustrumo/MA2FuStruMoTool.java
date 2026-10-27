@@ -102,7 +102,7 @@ public class MA2FuStruMoTool extends MontiArcTool {
 
     MontiArcMill.globalScope().clear();
     MontiArcMill.globalScope().init();
-    this.initBuildInSymbols(enableClass2Mc);
+    this.initBuiltInSymbols(enableClass2Mc);
     this.initGlobalScope(symbolPaths);
     String[] tagPathEntries = Stream.concat(
             Arrays.stream(inputModelPaths),
@@ -221,7 +221,7 @@ public class MA2FuStruMoTool extends MontiArcTool {
     result = null;
     MontiArcMill.globalScope().clear();
     MontiArcMill.globalScope().init();
-    this.initBuildInSymbols(useClass2MC);
+    this.initBuiltInSymbols(useClass2MC);
     this.initGlobalScope(symbolDir);
     try {
       TagLoader.load(new String[]{symbolDir.toString()});
@@ -240,7 +240,7 @@ public class MA2FuStruMoTool extends MontiArcTool {
       this.runSymbolTablePhase2(compilationUnits);
       this.runAfterSymbolTablePhase2Trafos(compilationUnits);
       this.runSymbolTablePhase3(compilationUnits);
-      this.runDefaultCoCos(compilationUnits);
+      compilationUnits.forEach(this::runDefaultCoCos);
       this.runAdditionalCoCos(compilationUnits, true);
       this.generate(mainFunctionFqn);
     } finally {
