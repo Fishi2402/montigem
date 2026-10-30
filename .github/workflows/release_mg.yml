@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Build and deploy
+      - name: Build and Deploy Jars
         shell: bash
         run: |
           # Workspace-relative paths are set here, as env values in the job are not shell-expanded
@@ -64,7 +64,7 @@ jobs:
 
       # Reuses the workspace (build outputs, .gradle, .m2, .npm) of the previous step
       # GitLab: ciDeployImages in build_with_deploy
-      - name: Build and deploy images
+      - name: Deploy Example App Images
         shell: bash
         env:
           # Jib pulls the base image (container_from_image) with these

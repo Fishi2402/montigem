@@ -369,24 +369,15 @@ allprojects {
   plugins.withId("com.google.cloud.tools.jib") {
     if (System.getenv("GITHUB_ACTIONS") != null) {
       // GitHub Actions: the base image (container_from_image) is pulled with other credentials than the images are pushed with.
-      // Only configured if this project's image is pushed, so builds without a push need none of these variables
+      // Only configured when the push task runs so builds without a push need none of these variables
       System.setProperty("jib.console", "plain")
-      gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(tasks.named("jib").get())) {
-          extensions.configure("jib") { jib ->
-            jib.from {
-              auth {
-                username = Objects.requireNonNull(System.getenv("REGISTRY_USER"), "REGISTRY_USER not set")
-                password = Objects.requireNonNull(System.getenv("REGISTRY_PASSWORD"), "REGISTRY_PASSWORD not set")
-              }
-            }
-            jib.to {
-              auth {
-                username = Objects.requireNonNull(System.getenv("UMLP_REGISTRY_USER"), "UMLP_REGISTRY_USER not set")
-                password = Objects.requireNonNull(System.getenv("UMLP_REGISTRY_PASSWORD"), "UMLP_REGISTRY_PASSWORD not set")
-              }
-            }
-          }
+      tasks.named("jib").configure { task ->
+        task.doFirst {
+          def jib = task.project.extensions.getByName("jib")
+          jib.from.auth.username = Objects.requireNonNull(System.getenv("REGISTRY_USER"), "REGISTRY_USER not set")
+          jib.from.auth.password = Objects.requireNonNull(System.getenv("REGISTRY_PASSWORD"), "REGISTRY_PASSWORD not set")
+          jib.to.auth.username = Objects.requireNonNull(System.getenv("UMLP_REGISTRY_USER"), "UMLP_REGISTRY_USER not set")
+          jib.to.auth.password = Objects.requireNonNull(System.getenv("UMLP_REGISTRY_PASSWORD"), "UMLP_REGISTRY_PASSWORD not set")
         }
       }
     } else if (System.getenv("CI") != null && System.getenv("CI_REGISTRY_USER") != null) {
