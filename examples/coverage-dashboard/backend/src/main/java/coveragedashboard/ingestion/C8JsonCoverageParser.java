@@ -239,19 +239,19 @@ class C8JsonCoverageParser implements CoverageReportParser {
       return generatedSources;
     }
 
-    List<DecodedMapping> decodedMappings = sourceMap.getMappings();
+    List<DecodedMapping> decodedMappings = sourceMap.mappings();
 
     Map<Integer, MeasuredLine> targetLineMap = targetFileBuilder.getLinesList().stream()
         .filter(MeasuredLine.class::isInstance)
         .map(MeasuredLine.class::cast)
         .collect(Collectors.toMap(MeasuredLine::getLineNumber, l -> l, (existing, replacement) -> existing));
 
-    for (DecodedSource decodedSource : sourceMap.sources) {
-      if (decodedSource.ignored || decodedSource.url == null) {
+    for (DecodedSource decodedSource : sourceMap.sources()) {
+      if (decodedSource.ignored() || decodedSource.url() == null) {
         continue;
       }
 
-      ResourcePath resourcePath = ResourcePath.of(URI.create(decodedSource.url.toString().replace('\\', '/')));
+      ResourcePath resourcePath = ResourcePath.of(URI.create(decodedSource.url().toString().replace('\\', '/')));
       session.registerResource(resourcePath);
 
       Path decodedSourcePath = resourcePath.getPath().normalize();
@@ -267,10 +267,10 @@ class C8JsonCoverageParser implements CoverageReportParser {
       Map<Integer, Set<Integer>> origToGenLines = new HashMap<>();
 
       for (DecodedMapping mapping : decodedMappings){
-        if (mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url)) {
+        if (mapping.originalSource() != null && mapping.originalSource().url().sameFile(decodedSource.url())) {
           origToGenLines
-              .computeIfAbsent(mapping.originalLine, k -> new HashSet<>())
-              .add(mapping.generatedLine); // Set eliminates token-level duplicates on the same generated line!
+              .computeIfAbsent(mapping.originalLine(), k -> new HashSet<>())
+              .add(mapping.generatedLine()); // Set eliminates token-level duplicates on the same generated line!
         }
       }
 

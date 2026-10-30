@@ -54,19 +54,19 @@ public class GetLineMapping extends  GetLineMappingTOP{
 
       List<String> mappingList = new ArrayList<>();
 
-      for(de.monticore.sourcemap.DecodedMapping mapping : sourceMap.getMappings()){
-        if (mapping.originalSource == null || mapping.originalSource.url == null)
+      for(de.monticore.sourcemap.DecodedMapping mapping : sourceMap.mappings()){
+        if (mapping.originalSource() == null || mapping.originalSource().url() == null)
           continue;
 
         String originalPath;
-        if(mapping.originalSource.url.toString().startsWith("jar:"))
-          originalPath = mapping.originalSource.url.toString().replace('\\', '/');
+        if(mapping.originalSource().url().toString().startsWith("jar:"))
+          originalPath = mapping.originalSource().url().toString().replace('\\', '/');
         else
-          originalPath = java.nio.file.Path.of(java.net.URI.create(mapping.originalSource.url.toString().replace('\\', '/'))).normalize().toString();
+          originalPath = java.nio.file.Path.of(java.net.URI.create(mapping.originalSource().url().toString().replace('\\', '/'))).normalize().toString();
 
        CoverageSourceFile originalFile = pathToFileMap.get(originalPath);
        if(originalFile != null){
-         String entry = mapping.generatedLine + "::" + originalFile.getGemId() + "::" + mapping.originalLine;
+         String entry = mapping.generatedLine() + "::" + originalFile.getGemId() + "::" + mapping.originalLine();
          mappingList.add(entry);
        }
       }

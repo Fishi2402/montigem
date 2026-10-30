@@ -95,7 +95,7 @@ public class GUIDSLReports implements ReportManager.ReportManagerFactory {
     SuccessfulReporter successfulReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     IncGenGradleReporter incGenGradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput,
         lowerCaseName);
-    TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, modelName, "map");
+    TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, modelName, true);
 
     if (reportLevel == ReportLevel.INCGEN) {
       reports.addReportEventHandler(incGenGradleReporter);
