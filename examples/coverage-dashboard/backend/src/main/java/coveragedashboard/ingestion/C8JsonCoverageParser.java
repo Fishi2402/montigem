@@ -230,8 +230,9 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
 
     DecodedSourceMap sourceMap;
+  String sourceMapContent;
     try {
-      String sourceMapContent = Files.readString(sourceMapPath);
+      sourceMapContent = Files.readString(sourceMapPath);
       sourceMap = Decoding.parseSourceMapJson(
           sourceMapContent, sourceMapPath.getParent().toUri().toURL());
     } catch (InvalidPathException e) {
@@ -239,12 +240,19 @@ class C8JsonCoverageParser implements CoverageReportParser {
       return generatedSources;
     }
 
-    List<DecodedMapping> decodedMappings = sourceMap.mappings();
+    List<DecodedMapping> decodedMappings = normalizeMappings(
+        sourceMap, sourceMapContent, targetFileBuilder.getName());
 
     Map<Integer, MeasuredLine> targetLineMap = targetFileBuilder.getLinesList().stream()
         .filter(MeasuredLine.class::isInstance)
         .map(MeasuredLine.class::cast)
         .collect(Collectors.toMap(MeasuredLine::getLineNumber, l -> l, (existing, replacement) -> existing));
+
+    // Pre-group all mappings by generated line sorted by column across all sources
+    Map<Integer, List<DecodedMapping>> allMappingsByGenLine = decodedMappings.stream()
+        .filter(m -> m.originalSource() != null)
+        .sorted(java.util.Comparator.comparingInt(DecodedMapping::generatedColumn))
+        .collect(Collectors.groupingBy(DecodedMapping::generatedLine));
 
     for (DecodedSource decodedSource : sourceMap.sources()) {
       if (decodedSource.ignored() || decodedSource.url() == null) {
@@ -264,21 +272,90 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
       Map<Integer, MeasuredLineBuilder> lineBuilders = new HashMap<>();
 
-      Map<Integer, Set<Integer>> origToGenLines = new HashMap<>();
-
-      for (DecodedMapping mapping : decodedMappings){
+      // Group mappings referencing this source by generated line
+      Map<Integer, List<DecodedMapping>> sourceMappingsByGenLine = new HashMap<>();
+      for (DecodedMapping mapping : decodedMappings) {
         if (mapping.originalSource() != null && mapping.originalSource().url().sameFile(decodedSource.url())) {
-          origToGenLines
-              .computeIfAbsent(mapping.originalLine(), k -> new HashSet<>())
-              .add(mapping.generatedLine()); // Set eliminates token-level duplicates on the same generated line!
+          sourceMappingsByGenLine.computeIfAbsent(mapping.generatedLine(), k -> new ArrayList<>()).add(mapping);
         }
       }
 
-      for(Map.Entry<Integer, Set<Integer>> entry : origToGenLines.entrySet()){
-        int origLineNumber = entry.getKey();
-        Set<Integer> genLines = entry.getValue();
+      // Track line-based coverage status per original line: [0] = hasCovered, [1] = hasMissed
+      Map<Integer, boolean[]> origLineStatus = new HashMap<>();
+
+      for (Map.Entry<Integer, List<DecodedMapping>> entry : sourceMappingsByGenLine.entrySet()) {
+        int genLine = entry.getKey();
+        List<DecodedMapping> sourceMappingsOnLine = entry.getValue();
+        MeasuredLine targetLine = targetLineMap.get(genLine);
+        if (targetLine == null) {
+          continue;
+        }
+
+        List<DecodedMapping> allMappingsOnLine = allMappingsByGenLine.getOrDefault(genLine, List.of());
+        List<coveragedashboard.CoverageColumnRange> columnRanges = targetLine.getColumnRangesList();
+
+        if (columnRanges != null && !columnRanges.isEmpty() && allMappingsOnLine.size() > 1) {
+          // Column range correlation for lines mapped from multiple sources/ranges
+          for (DecodedMapping sm : sourceMappingsOnLine) {
+            int origLine = sm.originalLine();
+            boolean[] status = origLineStatus.computeIfAbsent(origLine, k -> new boolean[2]);
+
+            int colStart = sm.generatedColumn();
+            int colEnd = Integer.MAX_VALUE;
+            int idx = allMappingsOnLine.indexOf(sm);
+            if (idx >= 0 && idx < allMappingsOnLine.size() - 1) {
+              colEnd = allMappingsOnLine.get(idx + 1).generatedColumn();
+            }
+
+            boolean segmentCovered = false;
+            boolean segmentMissed = false;
+            boolean hadOverlap = false;
+
+            for (coveragedashboard.CoverageColumnRange cr : columnRanges) {
+              if (Math.max(colStart, cr.getFromColumn()) < Math.min(colEnd, cr.getToColumn())) {
+                hadOverlap = true;
+                if (cr.getHits() > 0) {
+                  segmentCovered = true;
+                } else {
+                  segmentMissed = true;
+                }
+              }
+            }
+
+            if (hadOverlap) {
+              status[0] |= segmentCovered;
+              status[1] |= segmentMissed;
+            } else {
+              boolean lineCov = targetLine.getCoveredInstructions() > 0 || targetLine.getCoveredBranches() > 0;
+              boolean lineMiss = targetLine.getMissedInstructions() > 0 || targetLine.getMissedBranches() > 0;
+              status[0] |= lineCov;
+              status[1] |= lineMiss;
+            }
+          }
+        } else {
+          // Coarse line coverage: all mapped lines receive credit from the generated line
+          boolean lineCov = targetLine.getCoveredInstructions() > 0 || targetLine.getCoveredBranches() > 0;
+          boolean lineMiss = targetLine.getMissedInstructions() > 0 || targetLine.getMissedBranches() > 0;
+          for (DecodedMapping sm : sourceMappingsOnLine) {
+            int origLine = sm.originalLine();
+            boolean[] status = origLineStatus.computeIfAbsent(origLine, k -> new boolean[2]);
+            status[0] |= lineCov;
+            status[1] |= lineMiss;
+          }
+        }
+      }
+
+      for (Map.Entry<Integer, boolean[]> entry : origLineStatus.entrySet()) {
+        int origLine = entry.getKey();
+        boolean hasCov = entry.getValue()[0];
+        boolean hasMiss = entry.getValue()[1];
+
+        if (!hasCov && !hasMiss) {
+          continue;
+        }
+
         MeasuredLineBuilder line = lineBuilders.computeIfAbsent(
-            origLineNumber,
+            origLine,
             lineNumber -> CoverageDashboardManager.measuredLineBuilder()
                 .lineNumber(lineNumber)
                 .coveredInstructions(0)
@@ -286,14 +363,16 @@ class C8JsonCoverageParser implements CoverageReportParser {
                 .coveredBranches(0)
                 .missedBranches(0)
         );
-        for(int genLineNumber : genLines){
-          MeasuredLine targetLine = targetLineMap.get(genLineNumber);
-          if(targetLine != null){
-            line.missedInstructions(line.getMissedInstructions() + targetLine.getMissedInstructions());
-            line.coveredInstructions(line.getCoveredInstructions() + targetLine.getCoveredInstructions());
-            line.missedBranches(line.getMissedBranches() + targetLine.getMissedBranches());
-            line.coveredBranches(line.getCoveredBranches() + targetLine.getCoveredBranches());
-          }
+
+        if (hasCov && hasMiss) {
+          line.coveredInstructions(1);
+          line.missedInstructions(1);
+        } else if (hasCov) {
+          line.coveredInstructions(1);
+          line.missedInstructions(0);
+        } else {
+          line.coveredInstructions(0);
+          line.missedInstructions(1);
         }
       }
 
@@ -316,7 +395,6 @@ class C8JsonCoverageParser implements CoverageReportParser {
         int totalCovered = lineBuilder.getCoveredInstructions() + lineBuilder.getCoveredBranches();
         int totalMissed = lineBuilder.getMissedInstructions() + lineBuilder.getMissedBranches();
 
-
         if (totalCovered > 0 && totalMissed > 0) {
           filePartialLines++;
         } else if (totalCovered > 0) {
@@ -326,14 +404,21 @@ class C8JsonCoverageParser implements CoverageReportParser {
         }
       }
 
-      Optional<List<String>> fileLines;
+      Optional<List<String>> fileLines = Optional.empty();
       try{
         fileLines = ResourcePathHelper.withPath(
           resourcePath.representation,
           path -> Files.readAllLines(path));
       }catch (IOException e){
-        Log.error("Could not read file to count lines: " + resourcePath.representation);
-        continue;
+        if (decodedSource.content() != null) {
+          fileLines = Optional.of(decodedSource.content().lines().collect(Collectors.toList()));
+        } else {
+          Log.error("Could not read file to count lines: " + resourcePath.representation);
+          continue;
+        }
+      }
+      if (fileLines.isEmpty() && decodedSource.content() != null) {
+        fileLines = Optional.of(decodedSource.content().lines().collect(Collectors.toList()));
       }
       if(fileLines.isPresent()){
         List<String> lines = fileLines.get();
@@ -355,10 +440,10 @@ class C8JsonCoverageParser implements CoverageReportParser {
       }
 
       CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
-          .coveredInstructions(fileCoveredInstructions)
-          .missedInstructions(fileMissedInstructions)
-          .coveredBranches(fileCoveredBranches)
-          .missedBranches(fileMissedBranches)
+          .coveredInstructions(fileCoveredLines)
+          .missedInstructions(fileMissedLines)
+          .coveredBranches(0)
+          .missedBranches(0)
           .coveredLines(fileCoveredLines)
           .partialLines(filePartialLines)
           .missedLines(fileMissedLines)
@@ -402,6 +487,39 @@ class C8JsonCoverageParser implements CoverageReportParser {
       return null;
     }
     return null;
+  }
+
+  /**
+   * Normalizes source map mappings so that generatedLine and originalLine are always 1-based.
+   * This is necessary because JSweet produces 1-based source maps (prepended with a dummy 'A'
+   * mapping at line 0), so they do not need an adjustment. Standard MontiCore source maps
+   * (e.g. Java -> FTL) follow the Source Map V3 specification and are 0-based, requiring
+   * a +1 adjustment to match our 1-based line numbering domain model.
+   */
+  static List<DecodedMapping> normalizeMappings(
+      DecodedSourceMap sourceMap,
+      String sourceMapContent,
+      String targetFileName) {
+    boolean isTargetTs = (targetFileName != null && targetFileName.endsWith(".ts"))
+        || (sourceMap.file() != null && sourceMap.file().endsWith(".ts"));
+    boolean startsWithA = Pattern.compile("\"mappings\"\\s*:\\s*\"A;").matcher(sourceMapContent).find();
+
+    if (isTargetTs && startsWithA) {
+      return sourceMap.mappings();
+    }
+
+    List<DecodedMapping> normalized = new ArrayList<>(sourceMap.mappings().size());
+    for (DecodedMapping m : sourceMap.mappings()) {
+      normalized.add(new DecodedMapping(
+          m.generatedLine() + 1,
+          m.generatedColumn(),
+          m.originalSource(),
+          m.originalLine() + 1,
+          m.originalColumn(),
+          m.name()
+      ));
+    }
+    return normalized;
   }
 
   private String extractFileName(String fullPath) {
@@ -1075,6 +1193,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
     void addLine(MeasuredLineBuilder lineBuilder) {
       int totalCovered = lineBuilder.getCoveredInstructions() + lineBuilder.getCoveredBranches();
       int totalMissed = lineBuilder.getMissedInstructions() + lineBuilder.getMissedBranches();
+
+      if (totalCovered == 0 && totalMissed == 0) {
+        // Line has no coverage measurements (e.g. intermediate visual-only range)
+        return;
+      }
 
       if (totalCovered > 0 && totalMissed > 0) {
         partialLines++;

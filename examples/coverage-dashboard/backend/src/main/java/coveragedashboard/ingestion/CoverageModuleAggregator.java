@@ -120,10 +120,23 @@ class CoverageModuleAggregator {
                 .missedBranches(measuredLine.getMissedBranches());
             mergedLinesBuilder.put(num, builder);
           }else{
-            builder.coveredInstructions(builder.getCoveredInstructions() + measuredLine.getCoveredInstructions());
-            builder.missedInstructions(builder.getMissedInstructions() + measuredLine.getMissedInstructions());
-            builder.coveredBranches(builder.getCoveredBranches() + measuredLine.getCoveredBranches());
-            builder.missedBranches(builder.getMissedBranches() + measuredLine.getMissedBranches());
+            // Line is covered if at least one contributing file covers it
+            boolean prevCovered = builder.getCoveredInstructions() > 0 || builder.getCoveredBranches() > 0;
+            boolean prevMissed = builder.getMissedInstructions() > 0 || builder.getMissedBranches() > 0;
+            boolean nowCovered = measuredLine.getCoveredInstructions() > 0 || measuredLine.getCoveredBranches() > 0;
+            boolean nowMissed = measuredLine.getMissedInstructions() > 0 || measuredLine.getMissedBranches() > 0;
+
+            if (prevCovered || nowCovered) {
+              builder.coveredInstructions(1);
+              builder.missedInstructions(0);
+              builder.coveredBranches(0);
+              builder.missedBranches(0);
+            } else if (prevMissed || nowMissed) {
+              builder.coveredInstructions(0);
+              builder.missedInstructions(1);
+              builder.coveredBranches(0);
+              builder.missedBranches(0);
+            }
           }
 
           // Remove unmapped information
