@@ -3,7 +3,6 @@ package coveragedashboard.commands;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageReport;
-import coveragedashboard.ReportType;
 import coveragedashboard.Run;
 import mc.fenix.charts.gemlinecharttypes.GemLineChartData;
 import mc.fenix.charts.gemlinecharttypes.GemLineChartDataBuilder;
@@ -17,7 +16,9 @@ import umlp.jsweet.extension.annotation.BackendOnlyModes;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
@@ -45,32 +46,41 @@ public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
     List<Run> sortedRuns = runs.stream().sorted(Comparator.comparing(Run::getTimestamp)).toList();
 
     List<String> labels = new ArrayList<>();
-    List<GemLineChartEntry> entries = new ArrayList<>();
-    GemLineChartEntry internalEntryBuilder = new GemLineChartEntryBuilder().label("Internal Coverage");
-    GemLineChartEntry e2eFrontendEntryBuilder = new GemLineChartEntryBuilder().label("E2E Frontend coverage");
-    GemLineChartEntry e2eBackendEntryBuilder = new GemLineChartEntryBuilder().label("E2E Backend coverage");
+    Map<String, GemLineChartEntryBuilder> entryBuilders = new HashMap<>();
 
     for(Run run : sortedRuns){
       labels.add(run.getTimestamp().toString());
+
+      List<String> processedReportsInRun = new ArrayList<>();
       for(CoverageReport report : run.getReportsList()){
+        String reportName = report.getName();
+        processedReportsInRun.add(reportName);
+
         CoverageMetrics metrics = report.getModule().getMetrics();
         double coverage = ((double)metrics.getCoveredInstructions()) / (metrics.getCoveredInstructions() + metrics.getMissedInstructions());
-        switch (report.getType()){
-          case ReportType.INTERNAL:
-            internalEntryBuilder.addData(coverage);
-            break;
-          case ReportType.E2E_BACKEND:
-            e2eBackendEntryBuilder.addData(coverage);
-            break;
-          case ReportType.E2E_FRONTEND:
-            e2eFrontendEntryBuilder.addData(coverage);
-            break;
+        if(Double.isNaN(coverage))
+          coverage = 0d;
+
+        entryBuilders.computeIfAbsent(reportName, (name)->{
+          GemLineChartEntryBuilder newEntryBuilder = new GemLineChartEntryBuilder().label(name);
+          // Fill default data when not present from the beginning
+          for(int i = 0; i < labels.size() - 1; i++){
+            newEntryBuilder.addData(0d);
+          }
+          return newEntryBuilder;
+        }).addData(coverage);
+      }
+      for (Map.Entry<String, GemLineChartEntryBuilder> entry : entryBuilders.entrySet()) {
+        if (!processedReportsInRun.contains(entry.getKey())) {
+          entry.getValue().addData(0d);
         }
       }
     }
-    entries.add(internalEntryBuilder.build().get());
-    entries.add(e2eFrontendEntryBuilder.build().get());
-    entries.add(e2eBackendEntryBuilder.build().get());
+
+    List<GemLineChartEntry> entries = new ArrayList<>();
+    for(GemLineChartEntryBuilder builder : entryBuilders.values()){
+      entries.add(builder.build().get());
+    }
 
     GemLineChartData data = new GemLineChartDataBuilder().entries(entries).labels(labels).build().get();
 
