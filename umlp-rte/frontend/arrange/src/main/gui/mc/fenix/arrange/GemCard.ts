@@ -19,10 +19,9 @@ export class GemCard extends GemCardComponent {
 
   @HostBinding("style.height")
   get computedHeight(): string {
-    return (this.collapsible && this.isCollapsed) ? 'auto' : this._height;
+    return (this.collapsible && this.isCollapsed) ? 'auto' : (this.height || 'auto');
   }
 
-  _height: string = 'auto';
 
   @Input()
   public isCollapsed: boolean = false;
