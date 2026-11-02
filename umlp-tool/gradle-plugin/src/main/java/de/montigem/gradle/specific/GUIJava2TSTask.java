@@ -204,6 +204,10 @@ public abstract class GUIJava2TSTask extends DefaultTask {
   @Optional
   public abstract Property<String> getJacocoAgentArg();
 
+  @Input
+  @Optional
+  public abstract Property<Boolean> getCreateSourceMaps();
+
   @TaskAction
   public void run(InputChanges inputChanges) {
     if (inputChanges.isIncremental() && !shouldRunAgain(inputChanges)) {
@@ -212,9 +216,9 @@ public abstract class GUIJava2TSTask extends DefaultTask {
     }
     // Gradle only closes services it has created
     javaBeansCacheCleanup.get();
-    translate();
+    translate(); 	
   }
-	
+  
   protected boolean shouldRunAgain(InputChanges inputChanges) {
     if (hasChange(inputChanges, getGeneratedSources())
         || (getGeneratedSymbols().isPresent() && hasChange(inputChanges, getGeneratedSymbols()))) {
@@ -400,6 +404,7 @@ public abstract class GUIJava2TSTask extends DefaultTask {
         params.getJSweetClassPath().from(getJSweetClassPath());
         // the UMLP adapters run the same rule in their merged async scanner
         params.getAutoPropagateAsync().set(false);
+        params.getCreateSourceMaps().set(getCreateSourceMaps().orElse(false));
       });
       jsweetQueue.await();
     }
@@ -446,6 +451,7 @@ public abstract class GUIJava2TSTask extends DefaultTask {
       params.getJSweetClassPath().from(getJSweetClassPath());
       // the UMLP adapters run the same rule in their merged async scanner
       params.getAutoPropagateAsync().set(false);
+      params.getCreateSourceMaps().set(getCreateSourceMaps().orElse(false));
     });
 
     // Block until jsweet finishes
