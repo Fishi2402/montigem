@@ -3,6 +3,7 @@ package coverage.components;
 import mc.fenix.arrange.GemGrid;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
 
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
@@ -12,23 +13,35 @@ import mc.fenix.charts.GemLineChart;
 import coverage.components.ReportOverview;
 
 import CoverageDashboard.App;
+import CoverageDashboard.TestGroup;
 
 component GeneralDashboard(App app) {
-  @GemGrid(
-    height = "100%",
+  @GemColumn(
     width = "100%",
-    rowGap = "15px",
-    y = ["100%"],
-    cols =[
-     [
-       @ReportOverview(app = app, report = app.getLatestComponentTest())
-     ],
-     [
-       @ReportOverview(app = app, report = app.getLatestIntegrationTest())
-     ],
-     [
-       @ReportOverview(app = app, report = app.getLatestGeneratedCodeTest())
-     ]
+    rowGap = "20px",
+    components = [
+      @iterate(TestGroup group : app.getLatestTestGroups()){
+        groupCard@GemCard(
+          title = group.name,
+          width = "100%",
+          component = @GemGrid(
+            width = "100%",
+            rowGap = "15px",
+            y = ["100%"],
+            cols = [
+              [
+                @ReportOverview(app = app, report = app.getLatestComponentTest(group))
+              ],
+              [
+                @ReportOverview(app = app, report = app.getLatestIntegrationTest(group))
+              ],
+              [
+                @ReportOverview(app = app, report = app.getLatestGeneratedCodeTest(group))
+              ]
+            ]
+          )
+        );
+      }
     ]
   );
 }
