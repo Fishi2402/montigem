@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
 class C8JsonCoverageParser implements CoverageReportParser {
 
   private static final String BundlePath = File.separator + "dist" + File.separator + "client" + File.separator + "browser" + File.separator;
-  private static final String BundledUmlp2JavaPath = File.separator + "frontend" + File.separator + "build" + File.separator + "app" + File.separator + "gui2java2ts" + File.separator;
-  private static final String Umlp2JavaPath = File.separator + "frontend" + File.separator + "build" + File.separator + "gui2java2ts" + File.separator;
+  private static final String BundledUmlp2JavaPath = File.separator + "frontend" + File.separator + "build" + File.separator + "app" + File.separator + "umlpJava2ts" + File.separator;
+  private static final String Umlp2JavaPath = File.separator + "frontend" + File.separator + "build" + File.separator + "umlpJava2ts" + File.separator;
   private static final String BundledGui2Java2TsPath = File.separator + "frontend" + File.separator + "build" + File.separator + "app" + File.separator + "gui2java2ts" + File.separator;
   private static final String Gui2Java2TsPath = File.separator + "frontend" + File.separator + "build" + File.separator + "gui2java2ts" + File.separator;
   private static final String ComponentObserverManagerRegex = "^.*/frontend/build/app/gui2java2ts/[^/]+ComponentObserverManager\\.ts";
