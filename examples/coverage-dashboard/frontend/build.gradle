@@ -11,3 +11,24 @@ dependencies {
 configurations {
   testRuntimeClasspath.exclude group: 'de.monticore.language-server', module: 'monticore-language-server-runtime'
 }
+
+
+umlpJava2ts{
+  doFirst {
+    System.setProperty("MC_REPORT_SOURCE_MAPPING", "true")
+  }
+
+  doLast {
+    System.setProperty("MC_REPORT_SOURCE_MAPPING", "false")
+  }
+}
+
+gui2java2ts{
+  doFirst {
+    System.setProperty("MC_REPORT_SOURCE_MAPPING", "true")
+  }
+
+  doLast {
+    System.setProperty("MC_REPORT_SOURCE_MAPPING", "false")
+  }
+}

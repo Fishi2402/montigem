@@ -40,3 +40,13 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
+umlp2java{
+  doFirst {
+    System.setProperty("MC_REPORT_SOURCE_MAPPING", "true")
+  }
+
+  doLast {
+    System.setProperty("MC_REPORT_SOURCE_MAPPING", "false")
+  }
+}
+
