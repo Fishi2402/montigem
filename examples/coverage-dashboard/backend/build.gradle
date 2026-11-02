@@ -45,9 +45,16 @@ jib{
   to.image = "${container_target_image_base}coverage-dashboard-backend:latest"
 
   container{
-    mainClass = application.mainClass.get()
     workingDirectory = "/examples/coverage-dashboard/backend"
     ports = ['8081']
+
+    entrypoint = [
+        '/entrypoint.sh',
+        'java',
+        '-cp',
+        '/app/resources:/app/classes:/app/libs/*',
+        application.mainClass.get()
+    ]
   }
 
   extraDirectories{
@@ -99,7 +106,29 @@ jib{
         setFrom(rootProject.file("examples/jsweet-test/backend/src"))
         into = "/examples/jsweet-test/backend/src"
       }
+
+      path{
+        setFrom(file("C:/Users/marku/Documents/Studium/Master/MA/umlp/umlp-tool/build/libs"))
+        includes = ['umlp-tool-7.9.1-SNAPSHOT.jar']
+        into = "/C/Users/marku/Documents/Studium/Master/MA/umlp/umlp-tool/build/libs/"
+      }
+
+      path{
+        setFrom(file("C:/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/7.9.0-SNAPSHOT"))
+        includes = ['cd4analysis-7.9.0-SNAPSHOT.jar']
+        into = "/C/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/7.9.0-SNAPSHOT/"
+      }
+
+      path{
+        setFrom(file("."))
+        includes = ['entrypoint.sh']
+        into "/"
+      }
+
     }
+    permissions = [
+        '/entrypoint.sh': '755'
+    ]
   }
 }
 
