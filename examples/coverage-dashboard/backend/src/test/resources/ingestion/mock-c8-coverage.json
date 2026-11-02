@@ -6,7 +6,21 @@
       "1": 0
     },
     "all": false,
-    "branchMap": {},
+    "branchMap": {
+      "0": {
+        "type": "if",
+        "locations": [
+          {
+            "start": { "line": 2, "column": 10 },
+            "end": { "line": 2, "column": 20 }
+          },
+          {
+            "start": { "line": 2, "column": 25 },
+            "end": { "line": 2, "column": 35 }
+          }
+        ]
+      }
+    },
     "b": {
       "0": [
         2,
