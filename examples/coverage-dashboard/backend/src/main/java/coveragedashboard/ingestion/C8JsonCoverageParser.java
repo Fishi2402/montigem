@@ -135,7 +135,10 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private String extractRelativePath(String fullPath, Path basePath){
     if(fullPath == null || fullPath.isBlank())
       return "unknown";
-    return Paths.get(fullPath).normalize().relativize(basePath).toString();
+    Path target = Paths.get(fullPath).normalize();
+    if(basePath == null || !target.startsWith(basePath))
+      return fullPath;
+    return basePath.relativize(target).toString();
   }
 
 }
