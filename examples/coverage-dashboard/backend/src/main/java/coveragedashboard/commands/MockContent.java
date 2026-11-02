@@ -12,7 +12,7 @@ public class MockContent extends MockContentTOP{
 
   @Override
   public SimpleResult<DummyContent> doAction(){
-    return new SimpleResult<DummyContent>(
+    return new SimpleResult<>(
         this.getId(),
         this.getMockFile(),
         DummyContent.class.getName()
