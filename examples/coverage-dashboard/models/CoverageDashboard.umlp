@@ -72,7 +72,8 @@ classdiagram CoverageDashboard{
 
   enum ColumnRangeType{
     BRANCH,
-    STATEMENT;
+    STATEMENT,
+    PARTIAL;
   }
 
   association [1] Run -> (reports) CoverageReport [1..*];
