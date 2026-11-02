@@ -1,5 +1,7 @@
 package coverage.components;
 
+import java.util.Optional;
+
 import mc.fenix.arrange.GemGrid;
 
 import mc.fenix.input.GemTextInput;
@@ -9,7 +11,7 @@ import mc.fenix.editor.MonacoEditor;
 import CoverageDashboard.CoverageSourceFile;
 import coverage.components.SourceMapViewerTypes.JumpToLineEvent;
 
-component SourceMapViewer(CoverageSourceFile targetFile, ?String sourceContent, ?String targetContent, int jumpSourceFileLine) {
+component SourceMapViewer(App app, ?Optional<CoverageSourceFile> targetFile, ?String sourceContent, ?String targetContent, int jumpSourceFileLine) {
   @GemGrid(
     width = "100%",
     height = "100%",
