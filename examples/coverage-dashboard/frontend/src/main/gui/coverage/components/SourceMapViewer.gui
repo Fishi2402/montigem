@@ -3,8 +3,10 @@ package coverage.components;
 import java.util.Optional;
 
 import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemColumn;
 
-import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemDropdownInput;
+import mc.fenix.input.GemDropdownInputTypes.Option;
 
 import mc.fenix.editor.MonacoEditor;
 import mc.fenix.editor.MonacoEditorTypes.InlineDecoration;
@@ -18,20 +20,32 @@ component SourceMapViewer(
     ?String targetContent,
     int jumpSourceFileLine,
     List<InlineDecoration> targetDecoration,
-    List<InlineDecoration> sourceDecoration) {
+    List<InlineDecoration> sourceDecoration,
+    String selectedSourceFile,
+    List<Option> sourceFileOptions) {
   @GemGrid(
     width = "100%",
     height = "100%",
     x = ["minmax(0, 1fr)", "minmax(0, 1fr)"],
     cols = [
-      [sourceEditor@MonacoEditor(
+      [
+      @GemColumn(
         width = "100%",
         height = "600px",
-        entry = sourceContent,
-        disabled = true,
-        language = getSourceLanguage(targetFile),
-        highlighting = sourceDecoration,
-        jumpToLine = jumpSourceFileLine)
+        components = [
+          @GemDropdownInput(
+            entry = selectedSourceFile,
+            options = sourceFileOptions
+          ),
+          sourceEditor@MonacoEditor(
+            width = "100%",
+            height = "600px",
+            entry = sourceContent,
+            disabled = true,
+            language = getSourceLanguage(targetFile),
+            highlighting = sourceDecoration,
+            jumpToLine = jumpSourceFileLine)
+        ])
       ],
       [targetEditor@MonacoEditor(
         width = "100%",
