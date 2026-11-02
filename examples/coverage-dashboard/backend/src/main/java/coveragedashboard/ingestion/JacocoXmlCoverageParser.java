@@ -68,7 +68,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
             if(nameAttribute != null){
               currentPackage = nameAttribute.getValue();
             }
-          }else if("sourceFile".equals(elementName)) {
+          }else if("sourcefile".equals(elementName)) {
             Attribute nameAttribute = startElement.getAttributeByName(new QName("name"));
             if (nameAttribute != null) {
               currentSourceFileName = nameAttribute.getValue();
@@ -123,7 +123,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
           }
         }else if(event.isEndElement()){
           String elementName = event.asEndElement().getName().getLocalPart();
-          if("sourceFile".equals(elementName) && currentSourceFileName != null){
+          if("sourcefile".equals(elementName) && currentSourceFileName != null){
             String path = currentPackage.isEmpty()
                 ? currentSourceFileName
                 : currentPackage + "/" + currentSourceFileName;
@@ -138,7 +138,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
 
 
             CoverageSourceFileBuilder sourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
-                .path(extractRelativePath(path, basePath))
+                .path(path)
                 .name(currentSourceFileName)
                 .category(ArtifactCategory.GENERATED)
                 .metrics(fileMetrics);
