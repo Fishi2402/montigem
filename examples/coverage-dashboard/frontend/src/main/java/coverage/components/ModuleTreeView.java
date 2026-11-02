@@ -40,4 +40,20 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
     }
     return file.getName();
   }
+
+  @Override
+  public String getCoverageColor(CoverageMetrics metrics){
+    int covered = metrics.getCoveredInstructions();
+    int total = metrics.getCoveredInstructions() + metrics.getMissedInstructions();
+    if(total == 0){
+      return "#cf222e";
+    }
+    double coverage = (double) covered / total;
+    if(coverage < 0.50){
+      return "#cf222e";
+    }else if(coverage < 0.80){
+      return "#8a5c00";
+    }
+    return "#1a7f37";
+  }
 }
