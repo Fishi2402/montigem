@@ -3,6 +3,7 @@ $text-bright: #1a1a1a;
 $text-muted: #6e6e73;
 $hover-bg: rgba(0, 0, 0, 0.04);
 $border-color: rgba(0, 0, 0, 0.05);
+$selected-bg: rgba(9, 105, 218, 0.15);
 
 $bg-low: rgba(207, 34, 46, 0.3);
 $bg-medium: rgba(154, 103, 0, 0.3);
@@ -115,7 +116,7 @@ $text-high: #1a7f37;
 
   // Add effect for selected node
   .gem-tree-node:has(.fileName[ng-reflect-value^="▶ "]){
-    background-color: rgba(9, 105, 218, 0.15) !important;
+    background-color: $selected-bg !important;
   }
 
   // Dynamically colors the entire row element based on child coverage values
