@@ -8,5 +8,5 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 interface CoverageReportParser {
-  CoverageReport parse(File artifactFile, String reportName, Path basePath) throws IOException;
+  CoverageReport parse(File artifactFile, String reportName, Path basePath, Path rootPath) throws IOException;
 }

@@ -30,19 +30,29 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     Log.warn(LocalDateTime.now().toString() + ": Begin data-ingestion");
     // Load the front-end data
     File e2eFrontendFile = new File("./../../jsweet-test/frontend/build/app/coverage/coverage-final.json");
-    Path basePath = Path.of("./../../jsweet-test/frontend/build/app/dist/client/browser/").toAbsolutePath().normalize();
-    CoverageReport e2eReport = service.ingestArtifact(e2eFrontendFile, "Generated Code Test (examples/jsweet-test)", basePath, ReportType.GENERATED_CODE_TEST);
+    Path basePath = Path.of("./examples/jsweet-test/frontend/build/app/dist/client/browser/");
+    Path rootPath = Path.of("./../../../");
+    CoverageReport e2eReport = service.ingestArtifact(
+        e2eFrontendFile,
+        "Generated Code Test (examples/jsweet-test)",
+        basePath, rootPath, ReportType.GENERATED_CODE_TEST);
     Log.warn(LocalDateTime.now().toString() + ": Finished 'Generated Code Test'");
 
     // Load internal jsweet-test coverage
     File internalJsweetFile = new File("./../../../umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml");
-    basePath = Path.of("./../../../umlp-jsweet/src/main/java/").toAbsolutePath().normalize();
-    CoverageReport internalJSweetReport = service.ingestArtifact(internalJsweetFile, "Generator Unit Test (umlp-jsweet)", basePath, ReportType.GENERATOR_UNIT_TEST);
+    basePath = Path.of("./../../../umlp-jsweet/src/main/java/");
+    CoverageReport internalJSweetReport = service.ingestArtifact(
+        internalJsweetFile,
+        "Generator Unit Test (umlp-jsweet)",
+        basePath, rootPath, ReportType.GENERATOR_UNIT_TEST);
     Log.warn(LocalDateTime.now().toString() + ": Finished 'Generator Unit Test'");
 
     // Load jsweet-test umlpjava2ts and gui2java2ts coverage
     File aggregatedTranspilationFile = new File("./../../jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml");
-    CoverageReport aggregatedTranspilationReport = service.ingestArtifact(aggregatedTranspilationFile, "Generator compilation test (examples/jsweet-test)", basePath, ReportType.GENERATOR_COMPILATION_TEST);
+    CoverageReport aggregatedTranspilationReport = service.ingestArtifact(
+        aggregatedTranspilationFile,
+        "Generator compilation test (examples/jsweet-test)",
+        basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST);
     Log.warn(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'");
 
     // Create a run based on this data
