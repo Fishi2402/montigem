@@ -107,15 +107,15 @@ jib{
       }
 
       path{
-        setFrom(file("C:/Users/marku/Documents/Studium/Master/MA/umlp/umlp-tool/build/libs"))
-        includes = ['umlp-tool-7.9.2-SNAPSHOT.jar']
-        into = "/C/Users/marku/Documents/Studium/Master/MA/umlp/umlp-tool/build/libs/"
+        setFrom(file("C:/Users/marku/Documents/Studium/Master/MA/montigem-fork/umlp-tool/build/libs"))
+        includes = ["umlp-tool-${version}.jar"]
+        into = "/C/Users/marku/Documents/Studium/Master/MA/montigem-fork/umlp-tool/build/libs/"
       }
 
       path{
-        setFrom(file("C:/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/7.9.0-SNAPSHOT"))
-        includes = ['cd4analysis-7.9.0-SNAPSHOT.jar']
-        into = "/C/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/7.9.0-SNAPSHOT/"
+        setFrom(file("C:/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/${mc_version}"))
+        includes = ["cd4analysis-${mc_version}.jar"]
+        into = "/C/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/${mc_version}/"
       }
 
       path{

@@ -103,7 +103,7 @@ public class UMLPReports implements ReportManager.ReportManagerFactory {
       }
     };
     StatisticsReporter statisticsReporter = new StatisticsReporter(jsonElement, "UMLP_JAR_JSON", this.reportDirectory, modelName, repository, traverserNodeTree);
-    TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, modelName, "map");
+    TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, modelName, true);
 
     if (reportLevel == ReportLevel.INCGEN) {
       reports.addReportEventHandler(incGenGradleReporter);
