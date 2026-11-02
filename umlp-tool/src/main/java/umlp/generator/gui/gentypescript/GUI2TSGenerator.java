@@ -32,6 +32,7 @@ public class GUI2TSGenerator extends GUI2JavaGenerator {
 
   @Override
   public void generate(ASTGUICompilationUnit gui, String configTemplate) {
+    System.setProperty("CONFIG_TEMPLATE", configTemplate);
     this.setup.setTracing(true);
 
     // create an empty classdiagram
