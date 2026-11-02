@@ -143,6 +143,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
                 .coveredBranches(coveredBranches)
                 .missedBranches(missedBranches)
                 .coveredLines(coveredLines)
+                .partialLines(0)
                 .missedLines(missedLines)
                 .unmappedLines(0)
                 .build().get();
