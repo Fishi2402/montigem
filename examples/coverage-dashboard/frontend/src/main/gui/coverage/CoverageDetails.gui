@@ -1,0 +1,38 @@
+package coverage;
+
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemColumn;
+
+import mc.fenix.basic.GemText;
+
+import coverage.components.SourceMapViewer;
+
+import CoverageDashboard.App;
+
+page CoverageDetails(App app) {
+    @GemGrid(
+      width = "100%",
+      height = "100%",
+      rowGap = "20px",
+      y = ["auto", "1fr"],
+      rows = [
+        [
+          @GemColumn(
+            width = "100%",
+            hAlign = "center",
+            components = [
+              @GemText(
+                value = "Coverage Details",
+                size = "3.5rem",
+                weight = "bold")
+            ])
+        ],
+        [
+          @SourceMapViewer(
+            targetFile=app.getDummyCoverageFile(),
+            sourceContent=getSourceContent(),
+            targetContent=getTargetContent())
+        ]
+      ]
+    );
+}

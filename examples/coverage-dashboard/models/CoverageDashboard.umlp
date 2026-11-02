@@ -93,9 +93,14 @@ classdiagram CoverageDashboard{
 
   association [1] CoverageColumnRange -> (type) ColumnRangeType [1];
 
+  class StringContent{
+    String content;
+  }
+
 
   <<singleton>>
   class App{
     GemLineChartData getCoverageTrajectory();
+    CoverageSourceFile getDummyCoverageFile();
   }
 }
