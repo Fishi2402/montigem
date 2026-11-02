@@ -17,14 +17,17 @@ component ReportOverview(App app, CoverageReport report) {
   @guard(report != null) {
     reportCard@GemCard(
       title = report.name,
+      width = "100%",
       component = cardGrid@GemGrid(
         x = ["1fr"],
+        rowGap = "10px",
         rows = [
           [
             @GemGrid(
               width = "100%",
               height = "100%",
-              y = ["600px", "auto"],
+              rowGap = "10px",
+              y = ["300px", "auto"],
               rows = [
                 [
                   directChart@GemPieChart(data = app.getCoverageData(report.directPerspective))
