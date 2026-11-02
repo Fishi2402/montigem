@@ -1,4 +1,0 @@
-tasks.register("run") {
-  group = "application"
-  dependsOn ":examples:coverage-dashboard:frontend:run", ':examples:coverage-dashboard:backend:run'
-}

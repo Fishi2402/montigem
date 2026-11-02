@@ -2,7 +2,9 @@ package coverage;
 
 import mc.fenix.basic.GemText;
 
-page Dashboard() {
+import coverage.CoverageViewer;
 
-  @GemText(value="Please start here.");
+page Dashboard(App app) {
+
+  @CoverageViewer(file=app.debugSourceFile());
 }
