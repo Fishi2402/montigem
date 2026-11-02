@@ -1,6 +1,7 @@
 package coverage;
 
 import coveragedashboard.CoverageSourceFile;
+import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.Optional;
@@ -14,6 +15,13 @@ public class CoverageDetails extends CoverageDetailsTOP {
   public Consumer<CoverageSourceFile> onFileSelect(){
     return file ->{
       this.setSelectedFile(Optional.of(file));
+    };
+  }
+
+  @Override
+  public Consumer<Void> backToOverview(){
+    return $ ->{
+      Router.navigate("/");
     };
   }
 }
