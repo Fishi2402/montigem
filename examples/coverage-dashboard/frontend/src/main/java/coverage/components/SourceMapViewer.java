@@ -13,7 +13,6 @@ public class SourceMapViewer extends SourceMapViewerTOP{
 
   public SourceMapViewer(){
     super();
-    this.setTestDisabled(true);
     this.setSourceContent(
         """
         package app;
