@@ -75,6 +75,17 @@ jib{
         into = "/umlp-jsweet/src/main/java"
       }
 
+      path {
+        setFrom(rootProject.file("examples/it-sync-protocol-test/frontend/build/reports/jacoco/test"))
+        includes = ['jacocoTestReport.xml']
+        into = "/examples/it-sync-protocol-test/frontend/build/reports/jacoco/test"
+      }
+
+      path {
+        setFrom(rootProject.file("examples/it-sync-protocol-test/backend/build/umlp2java"))
+        into = "/examples/it-sync-protocol-test/backend/build/umlp2java"
+      }
+
       path{
         setFrom(rootProject.file("examples/jsweet-test/frontend/src/main/java"))
         into = "/examples/jsweet-test/frontend/src/main/java"
@@ -107,6 +118,7 @@ tasks.matching { it.name.startsWith('jib') }.configureEach {
   // Depend on tasks from other modules in your root Gradle build
   dependsOn(
       ':umlp-jsweet:jacocoTestReport',
-      ':examples:jsweet-test:frontend:relativizeCoveragePaths'
+      ':examples:jsweet-test:frontend:relativizeCoveragePaths',
+      ':examples:it-sync-protocol-test:frontend:jacocoTestReport'
   )
 }

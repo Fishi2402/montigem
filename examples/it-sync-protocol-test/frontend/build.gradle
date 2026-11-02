@@ -4,6 +4,7 @@ import de.montigem.gradle.specific.GUIJava2TSTask
 
 plugins {
   id "de.rwth.se.montigem-frontend"
+  id "jacoco"
 }
 
 dependencies {
@@ -54,6 +55,27 @@ tasks.named("compileTestJava") {
 test {
   useJUnitPlatform() {
     excludeTags "SlowTest"
+  }
+  finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+  dependsOn test
+
+  def backendProject = project(":examples:it-sync-protocol-test:backend")
+
+  classDirectories.setFrom(
+    backendProject.sourceSets.main.output.classesDirs
+  )
+
+  sourceDirectories.setFrom(
+    backendProject.layout.buildDirectory.dir("umlp2java")
+  )
+
+
+  reports {
+    xml.required = true
+    html.required = true
   }
 }
 
