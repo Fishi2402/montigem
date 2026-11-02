@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.LocalDateTime;
 
+import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
+
 classdiagram CoverageDashboard{
 
   class DummyContent{
@@ -98,6 +100,6 @@ classdiagram CoverageDashboard{
 
   <<singleton>>
   class App{
-    DummyContent mockContent();
+    GemLineChartData getCoverageTrajectory();
   }
 }

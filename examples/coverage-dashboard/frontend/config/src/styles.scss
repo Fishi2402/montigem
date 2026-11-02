@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../../../../../../umlp-rte/frontend/theme/src/main/gui/mc/fenix/theme/theme";
+
+@include montigem-theme();
+
+
+
+/* 1. Force the card body to respect the 600px boundary instead of spilling out */
+.gem-card-body {
+  height: 100% !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+
+/* 2. Force the custom Angular chart tag to stay inside the body */
+gem-line-chart {
+  display: block !important;
+  height: 100% !important;
+  width: 100% !important;
+  min-height: 0 !important;
+}
+
+/* 3. Give Chart.js the boundary it needs to calculate aspect ratio */
+.wholeChartContainer {
+  position: relative !important;
+  height: 100% !important;
+}
