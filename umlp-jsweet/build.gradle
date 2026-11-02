@@ -91,9 +91,7 @@ test{
 jacocoTestReport{
   dependsOn test
   reports{
-    xml.required = false
-    html.required = true
-    csv.required = true
+    xml.required = true
   }
 
   def classesDirProvider =  layout.buildDirectory.dir("classes/java/main")
