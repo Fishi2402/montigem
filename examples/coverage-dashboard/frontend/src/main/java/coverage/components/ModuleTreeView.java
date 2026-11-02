@@ -13,6 +13,10 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
   @Override
   public Consumer<Void> onFileNodeClick(CoverageSourceFile file){
     return $->{
+      if(file.equals(this.getSelectedFile())){
+        return;
+      }
+      this.setSelectedFile(file);
       this.getFileSelect().accept(file);
     };
   }
@@ -27,5 +31,13 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
     double coverage = (double) covered / total;
     double rounded = Math.round(coverage * 10000.0) / 100.0;
     return rounded + "%";
+  }
+
+  @Override
+  public String getFileDisplayName(CoverageSourceFile file, CoverageSourceFile selectedFile){
+    if (selectedFile != null && selectedFile.equals(file)) {
+      return "▶ " + file.getName();
+    }
+    return file.getName();
   }
 }
