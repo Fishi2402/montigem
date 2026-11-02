@@ -6,10 +6,10 @@ class CoverageParserFactory {
 
   public CoverageReportParser getParser(ReportType type){
     switch (type){
-      case E2E_FRONTEND:
+      case GENERATED_CODE_TEST:
         return new C8JsonCoverageParser();
-      case E2E_BACKEND:
-      case INTERNAL:
+      case GENERATOR_UNIT_TEST:
+      case GENERATOR_COMPILATION_TEST:
         return new JacocoXmlCoverageParser(type);
       default:
         throw new IllegalArgumentException("Unknown ReportType: " + type);
