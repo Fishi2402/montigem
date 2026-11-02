@@ -2,7 +2,7 @@ package coverage.components;
 
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageReport;
-import mc.fenix.charts.gemlinecharttypes.DataPointClickEvent;
+//import mc.fenix.charts.gemlinecharttypes.DataPointClickEvent;
 import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
