@@ -27,7 +27,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     // Mock the service and load data by hand for now
     CoverageIngestionService service = new CoverageIngestionService();
 
-    Log.warn(LocalDateTime.now().toString() + ": Begin data-ingestion");
+    Log.info(LocalDateTime.now().toString() + ": Begin data-ingestion", "CoverageDashboardServerApplication");
     // Load the front-end data
     File e2eFrontendFile = new File("./../../jsweet-test/frontend/build/app/coverage/coverage-final.json");
     Path basePath = Path.of("./examples/jsweet-test/frontend/build/app/dist/client/browser/");
@@ -36,7 +36,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
         e2eFrontendFile,
         "Generated Code Test (examples/jsweet-test)",
         basePath, rootPath, ReportType.GENERATED_CODE_TEST);
-    Log.warn(LocalDateTime.now().toString() + ": Finished 'Generated Code Test'");
+    Log.info(LocalDateTime.now().toString() + ": Finished 'Generated Code Test'", "CoverageDashboardServerApplication");
 
     // Load internal jsweet-test coverage
     File internalJsweetFile = new File("./../../../umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml");
@@ -45,7 +45,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
         internalJsweetFile,
         "Generator Unit Test (umlp-jsweet)",
         basePath, rootPath, ReportType.GENERATOR_UNIT_TEST);
-    Log.warn(LocalDateTime.now().toString() + ": Finished 'Generator Unit Test'");
+    Log.info(LocalDateTime.now().toString() + ": Finished 'Generator Unit Test'", "CoverageDashboardServerApplication");
 
     // Load jsweet-test umlpjava2ts and gui2java2ts coverage
     File aggregatedTranspilationFile = new File("./../../jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml");
@@ -53,7 +53,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
         aggregatedTranspilationFile,
         "Generator compilation test (examples/jsweet-test)",
         basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST);
-    Log.warn(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'");
+    Log.info(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'", "CoverageDashboardServerApplication");
 
     // Create a run based on this data
     CoverageDashboardManager.runBuilder()
