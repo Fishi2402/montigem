@@ -17,9 +17,9 @@ public class GetDummyCoverageFile extends GetDummyCoverageFileTOP {
     Optional<CoverageSourceFile> result = dummyCoverageFile();
     if(result.isEmpty()){
       return new SimpleResult<>(
-          getId(), LoadingState.FAILED_TO_LOAD, GetDummyCoverageFile.class.getName());
+          getId(), LoadingState.FAILED_TO_LOAD, CoverageSourceFile.class.getName());
     }
-    return new SimpleResult<>(getId(), result.get(), GetDummyCoverageFile.class.getName());
+    return new SimpleResult<>(getId(), result.get(), CoverageSourceFile.class.getName());
   }
 
   @BackendOnly(BackendOnlyModes.THROW_ERROR)
