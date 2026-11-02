@@ -38,9 +38,10 @@ page CoverageDetails(App app, CoverageReport report, Optional<CoverageSourceFile
             width = "100%",
             height = "100%",
             colGap = "10px",
-            x = ["auto", "1fr"],
+            x = ["1fr", "4fr"],
+            y = ["750px"],
             cols = [
-              [@ModuleTreeView(
+              [moduleTreeView@ModuleTreeView(
                 rootModule = report.module,
                 name = report.name,
                 fileSelect = onFileSelect())],

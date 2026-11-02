@@ -1,0 +1,7 @@
+// Make tree-view scrollable
+.moduleTreeView {
+  overflow-y: auto;
+  overflow-x: visible !important;
+  padding-right: 0.5rem;
+  height: 100%;
+}

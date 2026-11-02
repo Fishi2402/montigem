@@ -4,7 +4,6 @@ import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 
 import coveragedashboard.StringContent;
-import coveragedashboard.StringContentBuilder;
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
