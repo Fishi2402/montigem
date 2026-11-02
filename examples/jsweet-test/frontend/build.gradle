@@ -61,8 +61,40 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
+tasks.register('relativizeCoveragePaths') {
+  group 'verification'
+  dependsOn generateC8Report
+  description 'Relativizes the coverage paths in the coverage report'
+
+  doLast {
+    def rootDir = rootProject.projectDir
+    def coverageFile = file("${projectDir}/build/app/coverage/coverage-final.json")
+    def tempFile = file("${projectDir}/build/app/coverage/coverage-final-temp.json")
+    if (coverageFile.exists()) {
+      def winPathEscaped = java.util.regex.Pattern.quote(rootDir.absolutePath.replace('\\', '\\\\'))
+      def unixPathEscaped = java.util.regex.Pattern.quote(rootDir.absolutePath.replace('\\', '/'))
+
+      def pathRegex = ~/(?i)("${winPathEscaped}(\\\\+|\/)|\/|${unixPathEscaped}[\/\\])/
+
+      tempFile.withWriter("UTF-8") { writer ->
+        coverageFile.eachLine("UTF-8") { line ->
+          def updatedLine = line.replaceAll(pathRegex, '"./').replaceAll('\\\\\\\\', '/')
+          writer.println(updatedLine)
+        }
+      }
+      if (tempFile.exists()) {
+        coverageFile.delete()
+        tempFile.renameTo(coverageFile)
+      }
+    } else {
+      println "Coverage file not found at ${coverageFile.absolutePath}"
+    }
+  }
+}
+
 tasks.register('generateC8Report', NpxTask){
   dependsOn tasks.named('test')
+  finalizedBy relativizeCoveragePaths
   group 'verification'
   description 'Generates ts-coverage report using c8'
 
