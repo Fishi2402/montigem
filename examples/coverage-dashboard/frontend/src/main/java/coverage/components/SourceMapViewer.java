@@ -91,8 +91,8 @@ public class SourceMapViewer extends SourceMapViewerTOP{
       return;
     }
     CoverageSourceFile targetFile = this.getTargetFile().get();
-    this.setTargetContent(CommandManager.executeCommand(new GetFileContent(targetFile.getGemId())).asSimpleResult().get().getContent());
-    this.setSourceContent(CommandManager.executeCommand(new GetSourceFileContent(targetFile.getGemId())).asSimpleResult().get().getContent());
+    this.setTargetContent(CommandManager.executeCommand(new GetFileContent(targetFile.getGemId())).asSimpleResult().get());
+    this.setSourceContent(CommandManager.executeCommand(new GetSourceFileContent(targetFile.getGemId())).asSimpleResult().get());
     this.setTargetDecoration(getDecoration(targetFile));
   }
 
