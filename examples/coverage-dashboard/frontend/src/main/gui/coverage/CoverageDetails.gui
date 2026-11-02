@@ -54,7 +54,7 @@ page CoverageDetails(App app, CoverageReport report, Optional<CoverageSourceFile
                   sourceMapViewer@SourceMapViewer(
                     targetFile=selectedFile);
                 }else{
-                  @SourceViewer(
+                  sourceViewer@SourceViewer(
                     file = selectedFile);
                 }
               ]

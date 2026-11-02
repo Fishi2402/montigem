@@ -29,5 +29,6 @@ public class SourceViewer extends SourceViewerTOP{
 
     this.setDecoration(SourceViewerUtil.calculateDecoration(file));
     this.setLanguage("java");
+    this.setFileName(file.getName());
   }
 }
