@@ -13,6 +13,7 @@ import coveragedashboard.CoverageLineBuilder;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoverageReport;
+import coveragedashboard.CoverageScope;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.ReportType;
@@ -30,9 +31,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -75,8 +77,8 @@ class C8JsonCoverageParser implements CoverageReportParser {
         Map<String, List<Range>> branchMap = new HashMap<>();
         Map<String, Integer> statementHits = new HashMap<>();
         Map<String, List<Integer>> branchHits = new HashMap<>();
-
-
+        Map<String, FnData> fnMap = new HashMap<>();
+        Map<String, Integer> fnHits = new HashMap<>();
 
         while(parser.nextToken() != JsonToken.END_OBJECT){
           String fieldName = parser.currentName();
@@ -90,6 +92,10 @@ class C8JsonCoverageParser implements CoverageReportParser {
             parseStatementHits(parser, statementHits);
           } else if ("b".equals(fieldName) && token == JsonToken.START_OBJECT) {
             parseBranchHits(parser, branchHits);
+          } else if("fnMap".equals(fieldName) && token == JsonToken.START_OBJECT) {
+            parseFnMap(parser, fnMap);
+          }else if("f".equals(fieldName) && token == JsonToken.START_OBJECT) {
+            parseFnHits(parser, fnHits);
           } else {
             parser.skipChildren(); // Ignore fnMap, f, etc. for now
           }
@@ -114,8 +120,45 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private CoverageSourceFile createSourceFile(
       String filePath, Path basePath, Map<String, Range> statementMap,
       Map<String, List<Range>> branchMap, Map<String, Integer> statementHits,
-      Map<String, List<Integer>> branchHits) throws IOException{
+      Map<String, List<Integer>> branchHits, Map<String, FnData> fnMap, Map<String, Integer> fnHits) throws IOException{
+
     Map<Integer, CoverageLineBuilder> lines = new HashMap<>();
+    Set<CoverageScope> scopes = new HashSet<>();
+    List<Range> uncoveredDeclarations = new ArrayList<>();
+    Map<Integer, List<CoverageColumnRangeBuilder>> rawRangesPerLine = new HashMap<>();
+
+    // Scopes and uncovered declarations
+    for(Map.Entry<String, FnData> entry : fnMap.entrySet()){
+      String id = entry.getKey();
+      FnData fnData = entry.getValue();
+      int hits = fnHits.getOrDefault(id, 0);
+      if(hits == 0 && fnData.decl != null){
+        uncoveredDeclarations.add(fnData.decl);
+      }
+
+      if(fnData.decl != null){
+        // for now, empty metrics, compute later
+        CoverageMetrics scopeMetrics = CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(0)
+            .missedInstructions(0)
+            .coveredBranches(0)
+            .missedBranches(0)
+            .coveredLines(0)
+            .missedLines(0)
+            .build().get();
+
+        scopes.add(CoverageDashboardManager.coverageScopeBuilder()
+            .name(fnData.name != null ? fnData.name : "anonymous")
+            .startLine(fnData.decl.startLine)
+            .startColumn(fnData.decl.startColumn)
+            .endLine(fnData.decl.endColumn)
+            .endColumn(fnData.decl.endColumn)
+            .metrics(scopeMetrics)
+            .build().get());
+
+      }
+    }
+
 
     int fileCoveredInstructions = 0;
     int fileMissedInstructions = 0;
@@ -129,6 +172,16 @@ class C8JsonCoverageParser implements CoverageReportParser {
       String id = entry.getKey();
       Range range = entry.getValue();
       int hits = statementHits.getOrDefault(id, 0);
+      // Check if this falls in an uncovered function declaration. The signature of the function is
+      // hit during the import of the class, but not executed. So dismiss this hit to avoid confusion
+      if(hits > 0){
+        for(Range uncoveredDecl : uncoveredDeclarations){
+          if(range.startLine >= uncoveredDecl.startLine && range.endLine <= uncoveredDecl.endLine ){
+            hits = 0;
+            break;
+          }
+        }
+      }
 
       CoverageLineBuilder lineBuilder = lines.computeIfAbsent(range.startLine,(line) -> CoverageDashboardManager.coverageLineBuilder()
           .lineNumber(line)
@@ -199,6 +252,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
         .name(extractFileName(filePath))
         .physicalPath(extractPhysicalPath(filePath))
         .category(ArtifactCategory.GENERATED)
+        .scopes(scopes)
         .metrics(fileMetrics);
 
     for(CoverageLineBuilder lineBuilder : lines.values()){
@@ -448,11 +502,44 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
   }
 
+  private void parseFnMap(JsonParser parser, Map<String, FnData> map) throws IOException{
+    while(parser.nextToken() != JsonToken.END_OBJECT){
+      String id = parser.currentName();
+      parser.nextToken();
+      FnData fnData = new FnData();
+      while(parser.nextToken() != JsonToken.END_OBJECT){
+        String fieldName = parser.currentName();
+        JsonToken token = parser.nextToken();
+        if("name".equals(fieldName)){
+          fnData.name = parser.getText();
+        }else if("decl".equals(fieldName) && token == JsonToken.START_OBJECT){
+          fnData.decl = parseRange(parser);
+        }else{
+          parser.skipChildren();
+        }
+      }
+      map.put(id, fnData);
+    }
+  }
+
+  private void parseFnHits(JsonParser parser, Map<String, Integer> map) throws IOException{
+    while(parser.nextToken() != JsonToken.END_OBJECT){
+      String id = parser.currentName();
+      parser.nextToken();
+      map.put(id, parser.getIntValue());
+    }
+  }
+
   private static class Range{
     int startLine;
     int startColumn;
     int endLine;
     int endColumn;
+  }
+
+  private static class FnData{
+    String name;
+    Range decl;
   }
 
 }
