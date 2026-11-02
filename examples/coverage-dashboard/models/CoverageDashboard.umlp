@@ -42,7 +42,9 @@ classdiagram CoverageDashboard{
   class CoverageScope{
     String name;
     int startLine;
+    int startColumn;
     int endLine;
+    int endColumn;
   }
 
   class CoverageLine{
