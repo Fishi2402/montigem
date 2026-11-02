@@ -178,6 +178,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     CoverageSourceFileBuilder coverageSourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
         .path(extractRelativePath(filePath, basePath))
         .name(extractFileName(filePath))
+        .physicalPath(extractPhysicalPath(filePath))
         .category(ArtifactCategory.GENERATED)
         .metrics(fileMetrics);
 
@@ -212,6 +213,12 @@ class C8JsonCoverageParser implements CoverageReportParser {
     if(basePath == null || !target.startsWith(basePath))
       return fullPath;
     return basePath.relativize(target).toString();
+  }
+
+  private String extractPhysicalPath(String fullPath){
+    // fix file-path: Remove the 'dist/client/browser' from the path
+    return fullPath.replace("dist/client/browser/", "")
+        .replace("dist\\client\\browser\\", "");
   }
 
 
