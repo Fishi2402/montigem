@@ -6,23 +6,47 @@ classdiagram CoverageDashboard{
   class Run{
     String commitHash;
     LocalDateTime timestamp;
+    String branchName;
   }
 
   class CoverageReport{
     String name;
   }
 
-  class CoveragePackage{
+  enum ReportType{
+    E2E_BACKEND,
+    E2E_FRONTEND,
+    INTERNAL;
+  }
+
+  class CoverageModule{
     String name;
   }
 
-  class CoverageClass{
+  class CoverageSourceFile{
     String name;
+    String path;
   }
 
-  class CoverageMethod{
-    String signature;
-    int line;
+  enum ArtifactCategory{
+    TEMPLATE,
+    MODEL,
+    GENERATED,
+    HANDWRITTEN;
+  }
+
+  class CoverageScope{
+    String name;
+    int startLine;
+    int endLine;
+  }
+
+  class CoverageLine{
+    int lineNumber;
+    int missedInstructions;
+    int coveredInstructions;
+    int missedBranches;
+    int coveredBranches;
   }
 
   class CoverageMetrics{
@@ -34,43 +58,38 @@ classdiagram CoverageDashboard{
     int missedLines;
   }
 
-  class CoverageSourceFile{
-    String name;
-    // load content based on commit and name!
-    String content;
-    // Change to enum
-    String type;
-  }
-
-  class CoverageLine{
-    int lineNumber;
-    int missedInstructions;
-    int coveredInstructions;
-    int missedBranches;
-    int coveredBranches;
-  }
-
   class CoverageColumnRange{
     int fromColumn;
     int toColumn;
-    boolean covered;
+    int hits;
+  }
+
+  enum ColumnRangeType{
+    BRANCH,
+    STATEMENT;
   }
 
   association [1] Run -> (reports) CoverageReport [1..*];
 
-  association [1] CoverageReport -> (packages) CoveragePackage [1..*];
-  association [1] CoverageReport -> (metrics) CoverageMetrics [1];
+  association [1] CoverageReport -> (module) CoverageModule [1];
+  association [1] CoverageReport -> (type) ReportType [1];
 
-  association [1] CoveragePackage -> (classes) CoverageClass [1..*];
-  association [1] CoveragePackage -> (metrics) CoverageMetrics [1];
+  association [1] CoverageModule -> (sourceFiles) CoverageSourceFile [*];
+  association [1] CoverageModule -> (metrics) CoverageMetrics [1];
+  association [1] CoverageModule -> (subModules) CoverageModule [*];
 
-  association [1] CoverageClass -> (methods) CoverageMethod [*];
-  association [1] CoverageClass -> (metrics) CoverageMetrics [1];
-  association [*] CoverageClass (classes) <-> (sourceFile) CoverageSourceFile [1];
 
   association [1] CoverageSourceFile -> (lines) CoverageLine[1..*];
+  association [1] CoverageSourceFile -> (metrics) CoverageMetrics [1];
+  association [1] CoverageSourceFile -> (scopes) CoverageScope[*];
+  association [1] CoverageSourceFile -> (category) ArtifactCategory [1];
+
+  association [1] CoverageScope -> (metrics) CoverageMetrics [1];
+  association [1] CoverageScope -> (subScopes) CoverageScope [*];
 
   association [1] CoverageLine -> (columnRanges) CoverageColumnRange [*];
+
+  association [1] CoverageColumnRange -> (type) ColumnRangeType [1];
 
 
   <<singleton>>
