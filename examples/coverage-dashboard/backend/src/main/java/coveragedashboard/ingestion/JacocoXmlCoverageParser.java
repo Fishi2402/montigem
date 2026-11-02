@@ -29,25 +29,32 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
 
   private final XMLInputFactory xmlFactory;
   private final CoverageModuleAggregator moduleAggregator;
+  private final ReportType type;
 
-  public JacocoXmlCoverageParser(){
+  public JacocoXmlCoverageParser(ReportType type){
     this.xmlFactory = XMLInputFactory.newInstance();
-    // Disable DTD to prevent XXE attacks
+
     this.xmlFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
     this.xmlFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
 
     this.moduleAggregator = new CoverageModuleAggregator();
+
+    this.type = type;
   }
 
   @Override
   public CoverageReport parse(File artifactFile, String reportName, Path basePath) throws IOException {
     List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
+
     try(FileInputStream inputStream = new FileInputStream(artifactFile)){
       XMLEventReader reader = xmlFactory.createXMLEventReader(inputStream);
 
+
       String currentPackage = "";
       String currentSourceFileName = null;
+
+
 
       int coveredInstructions = 0;
       int missedInstructions = 0;
@@ -60,6 +67,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
 
       while(reader.hasNext()) {
         XMLEvent event = reader.nextEvent();
+
         if (event.isStartElement()){
           StartElement startElement = event.asStartElement();
           String elementName = startElement.getName().getLocalPart();
@@ -165,7 +173,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
 
     return CoverageDashboardManager.coverageReportBuilder()
         .name(reportName)
-        .type(ReportType.E2E_BACKEND)
+        .type(this.type)
         .module(rootModule)
         .build().get();
   }
