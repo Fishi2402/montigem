@@ -1,0 +1,139 @@
+$tree-bg: #ffffff;
+$text-bright: #1a1a1a;
+$text-muted: #6e6e73;
+$hover-bg: rgba(0, 0, 0, 0.04);
+$border-color: rgba(0, 0, 0, 0.05);
+
+$bg-low: rgba(207, 34, 46, 0.08);     // Light Red
+$bg-medium: rgba(154, 103, 0, 0.06);  // Light Yellow
+$bg-high: rgba(26, 127, 55, 0.06);    // Light Green
+
+$text-low: #cf222e;
+$text-medium: #8a5c00;
+$text-high: #1a7f37;
+
+:host(.moduleTreeView) ::ng-deep {
+  display: block;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: $tree-bg;
+  padding: 2px 0;
+  user-select: none;
+  width: 100%;
+
+  ul, li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .gem-sub-tree-root {
+    padding-left: 6px;
+    border-left: 1px dashed $border-color;
+    margin-left: 7px;
+  }
+
+  .gem-tree-node {
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+
+    &:hover {
+      background-color: $hover-bg;
+    }
+
+    > div {
+      flex: 1;
+      display: flex;
+      min-width: 0;
+    }
+  }
+
+  .gem-tree-item-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    color: $text-muted;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  gem-row.title,
+  gem-row.content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 16px;
+  }
+
+  gem-row.content {
+    padding-left: 22px;
+  }
+
+  // --- File/Folder Name Layout Styles ---
+  .titleName,
+  .contentName {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: $text-bright !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    width: auto !important;
+  }
+
+  // --- Right-aligned Coverage Text ---
+  .titleCoverage,
+  .fileCoverage {
+    font-size: 12px !important;
+    font-family: monospace !important;
+    font-weight: 600 !important;
+    text-align: right;
+    min-width: 55px;
+    flex-shrink: 0;
+    width: auto !important;
+    background: none !important;
+  }
+
+  // Dynamically colors the entire row element based on child coverage values
+  .gem-tree-node {
+    @mixin text-color($color) {
+      .titleCoverage, .contentCoverage { color: $color !important; }
+    }
+
+    // LOW COVERAGE: 0% to 49.99%
+    &:has([ng-reflect-value="0%"]),
+    &:has([ng-reflect-value^="1"]),
+    &:has([ng-reflect-value^="2"]),
+    &:has([ng-reflect-value^="3"]),
+    &:has([ng-reflect-value^="4"]) {
+      background-color: $bg-low;
+      @include text-color($text-low);
+    }
+
+    // MEDIUM COVERAGE: 50% to 79.99%
+    &:has([ng-reflect-value^="5"]),
+    &:has([ng-reflect-value^="6"]),
+    &:has([ng-reflect-value^="7"]) {
+      background-color: $bg-medium;
+      @include text-color($text-medium);
+    }
+
+    // HIGH COVERAGE: 80% to 100%
+    &:has([ng-reflect-value^="8"]),
+    &:has([ng-reflect-value^="9"]),
+    &:has([ng-reflect-value^="100"]) {
+      background-color: $bg-high;
+      @include text-color($text-high);
+    }
+  }
+}
