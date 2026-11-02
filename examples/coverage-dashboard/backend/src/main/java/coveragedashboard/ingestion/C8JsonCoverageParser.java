@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
@@ -230,7 +231,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
 
     DecodedSourceMap sourceMap;
-  String sourceMapContent;
+    String sourceMapContent;
     try {
       sourceMapContent = Files.readString(sourceMapPath);
       sourceMap = Decoding.parseSourceMapJson(
@@ -405,11 +406,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
       }
 
       Optional<List<String>> fileLines = Optional.empty();
-      try{
+      try {
         fileLines = ResourcePathHelper.withPath(
-          resourcePath.representation,
-          path -> Files.readAllLines(path));
-      }catch (IOException e){
+            resourcePath.representation,
+            path -> Files.readAllLines(path));
+      } catch (IOException e) {
         if (decodedSource.content() != null) {
           fileLines = Optional.of(decodedSource.content().lines().collect(Collectors.toList()));
         } else {
@@ -420,11 +421,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
       if (fileLines.isEmpty() && decodedSource.content() != null) {
         fileLines = Optional.of(decodedSource.content().lines().collect(Collectors.toList()));
       }
-      if(fileLines.isPresent()){
+      if (fileLines.isPresent()) {
         List<String> lines = fileLines.get();
-        for(int i = 0; i < lines.size(); i++) {
+        for (int i = 0; i < lines.size(); i++) {
           int lineNumber = i + 1;
-          if(lines.get(i).isBlank()){
+          if (lines.get(i).isBlank()) {
             continue;
           }
           if (!lineBuilders.containsKey(lineNumber)) {
@@ -561,13 +562,13 @@ class C8JsonCoverageParser implements CoverageReportParser {
         .replace(BUNDLED_UMLP_2_JAVA_PATH, UMLP_2_JAVA_PATH);
   }
 
-  private boolean isValidSourceFile(String filePath, Path rootPath){
+  private boolean isValidSourceFile(String filePath, Path rootPath) {
     String path = normalizePhysicalPath(filePath, rootPath);
     // Check if this path is from either that gui2java2ts or umlpJava2ts and not some other component
     return path.contains(BUNDLED_GUI_2_JAVA_2_TS_PATH) || path.contains(BUNDLED_UMLP_2_JAVA_PATH);
   }
 
-  private String normalizePhysicalPath(String path, Path rootPath){
+  private String normalizePhysicalPath(String path, Path rootPath) {
     String normalizedFullPath = rootPath.resolve(Path.of(path))
         .toAbsolutePath()
         .normalize()
@@ -860,7 +861,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     MeasuredLineBuilder lineBuilder = context.getLineBuilder(lineNumber);
     context.addRawRange(lineNumber, startCol, endCol, hits, type);
 
-    if(!countLineMetrics){
+    if (!countLineMetrics) {
       // Only add ranges for visual representation, avoid double counting
       return;
     }
@@ -871,7 +872,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
       } else {
         lineBuilder.missedInstructions(lineBuilder.getMissedInstructions() + 1);
       }
-    } else if(type == ColumnRangeType.BRANCH){
+    } else if (type == ColumnRangeType.BRANCH) {
       if (hits > 0) {
         lineBuilder.coveredBranches(lineBuilder.getCoveredBranches() + 1);
       } else {
@@ -982,7 +983,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
       ParseSession session,
       Path basePath,
       Path rootPath,
-      List<CoverageSourceFile> alreadyParsedFiles) throws IOException{
+      List<CoverageSourceFile> alreadyParsedFiles) throws IOException {
 
     List<CoverageSourceFile> uncoveredFiles = new ArrayList<>();
 
@@ -1025,7 +1026,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
     return uncoveredFiles;
   }
 
-  private Path resolveBuildDir(Path basePath, Path rootPath){
+  private Path resolveBuildDir(Path basePath, Path rootPath) {
     Path fullBasePath = rootPath.resolve(basePath).toAbsolutePath().normalize();
     String appPath = fullBasePath.toString().replace('\\', '/').replaceFirst("/dist/client/browser/?$", "");
     Path appDir = Path.of(appPath);
@@ -1135,9 +1136,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
     }
   }
 
-  private record BranchData(Range loc, List<Range> locations) {}
+  private record BranchData(Range loc, List<Range> locations) {
+  }
 
-  private record SegmentState(boolean isActive, int hits, ColumnRangeType type) {}
+  private record SegmentState(boolean isActive, int hits, ColumnRangeType type) {
+  }
 
   private static class FileCoverageContext {
     final Map<Integer, MeasuredLineBuilder> lines = new HashMap<>();
@@ -1201,7 +1204,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
       if (totalCovered > 0 && totalMissed > 0) {
         partialLines++;
-      }else if(totalCovered > 0) {
+      } else if (totalCovered > 0) {
         coveredLines++;
       } else {
         missedLines++;
@@ -1268,18 +1271,43 @@ class C8JsonCoverageParser implements CoverageReportParser {
         try {
           path = Path.of(uri).normalize();
         } catch (FileSystemNotFoundException e) {
-          fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
-          path = Path.of(uri).normalize();
+          try {
+            fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
+            path = Path.of(uri).normalize();
+          } catch (IOException ioException) {
+            // Fallback to class loader
+            int bangIndex = uri.toString().indexOf('!');
+            if (bangIndex != -1) {
+              String innerPath = uri.toString().substring(bangIndex + 2);
+              URL url = ResourcePathHelper.class.getClassLoader().getResource(innerPath);
+              if (url != null) {
+                URI classpathURI = URI.create(url.toString().replace(" ", "%20"));
+                try{
+                  path = Path.of(classpathURI).normalize();
+                  uri = classpathURI;
+                } catch (Exception ex) {
+                  // first time, open fs
+                  fs = FileSystems.newFileSystem(classpathURI, Collections.emptyMap());
+                  path = Path.of(classpathURI).normalize();
+                  uri = classpathURI;
+                }
+              } else {
+                throw ioException;
+              }
+            } else {
+              throw ioException;
+            }
+          }
         }
         String representation = uri.toString();
         int bangIndex = representation.indexOf('!');
-        if(bangIndex == -1){
+        if (bangIndex == -1) {
           throw new IOException("JAR scheme without bang:" + representation);
         }
         String jarUri = representation.substring(4, bangIndex);
         Path jar = Path.of(URI.create(jarUri));
         Path combined = jar.getFileName();
-        for(Path element : path){
+        for (Path element : path) {
           combined = combined.resolve(element.toString());
         }
 
