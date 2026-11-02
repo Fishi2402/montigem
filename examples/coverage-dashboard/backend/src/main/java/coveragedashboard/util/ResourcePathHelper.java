@@ -60,13 +60,29 @@ public class ResourcePathHelper {
       Path path = Path.of(uri).normalize();
       return Optional.ofNullable(action.apply(path));
     } catch (FileSystemNotFoundException e) {
+      // 1. Try opening the URI directly on the FS
       // Create and keep the filesystem only for the executed action alive
       try(FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())){
         Path path = Path.of(uri).normalize();
         return Optional.ofNullable(action.apply(path));
+      }catch (IOException ioException){
+        // 2. Fallback, Host path in JAR URI does not exist (e.g. Docker or moved TMP DIR)
+        String str = uri.toString();
+        int bang = str.indexOf("!");
+        if(bang != -1){
+          String innerPath = str.substring(bang + 2);
+          java.net.URL url = ResourcePathHelper.class.getClassLoader().getResource(innerPath);
+          if(url != null){
+            URI classpathURI = URI.create(url.toString().replace(" ", "%20"));
+            try(FileSystem fs = FileSystems.newFileSystem(classpathURI, Collections.emptyMap())){
+              return Optional.ofNullable(action.apply(Path.of(classpathURI)));
+            }
+          }
+          throw ioException;
+        }
+        return Optional.empty();
       }
     }
-
   }
 
 }

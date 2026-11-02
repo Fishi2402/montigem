@@ -35,6 +35,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2', withoutSpringLogging
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2', withoutSpringLogging
   implementation project(':umlp-rte')
+  implementation "umlp:umlp-tool:$version"
   implementation project(':umlp-rte:frontend')
   testImplementation project(':umlp-test-rte')
 }
@@ -46,14 +47,7 @@ jib{
   container{
     workingDirectory = "/examples/coverage-dashboard/backend"
     ports = ['8081']
-
-    entrypoint = [
-        '/entrypoint.sh',
-        'java',
-        '-cp',
-        '/app/resources:/app/classes:/app/libs/*',
-        application.mainClass.get()
-    ]
+    mainClass = application.mainClass.get()
   }
 
   extraDirectories{
@@ -105,29 +99,7 @@ jib{
         setFrom(rootProject.file("examples/jsweet-test/backend/src"))
         into = "/examples/jsweet-test/backend/src"
       }
-
-      path{
-        setFrom(file("C:/Users/marku/Documents/Studium/Master/MA/montigem-fork/umlp-tool/build/libs"))
-        includes = ["umlp-tool-${version}.jar"]
-        into = "/C/Users/marku/Documents/Studium/Master/MA/montigem-fork/umlp-tool/build/libs/"
-      }
-
-      path{
-        setFrom(file("C:/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/${mc_version}"))
-        includes = ["cd4analysis-${mc_version}.jar"]
-        into = "/C/Users/marku/.m2/repository/de/monticore/lang/cd4analysis/${mc_version}/"
-      }
-
-      path{
-        setFrom(file("."))
-        includes = ['entrypoint.sh']
-        into "/"
-      }
-
     }
-    permissions = [
-        '/entrypoint.sh': '755'
-    ]
   }
 }
 
