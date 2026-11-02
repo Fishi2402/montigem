@@ -7,11 +7,17 @@ import mc.fenix.arrange.GemGrid;
 import mc.fenix.input.GemTextInput;
 
 import mc.fenix.editor.MonacoEditor;
+import mc.fenix.editor.MonacoEditorTypes.InlineDecoration;
 
 import CoverageDashboard.CoverageSourceFile;
 import coverage.components.SourceMapViewerTypes.JumpToLineEvent;
 
-component SourceMapViewer(App app, ?Optional<CoverageSourceFile> targetFile, ?String sourceContent, ?String targetContent, int jumpSourceFileLine) {
+component SourceMapViewer(
+    Optional<CoverageSourceFile> targetFile,
+    ?String sourceContent,
+    ?String targetContent,
+    int jumpSourceFileLine,
+    List<InlineDecoration> targetDecoration) {
   @GemGrid(
     width = "100%",
     height = "100%",
@@ -32,7 +38,7 @@ component SourceMapViewer(App app, ?Optional<CoverageSourceFile> targetFile, ?St
         entry = targetContent,
         disabled = true,
         language = getTargetLanguage(targetFile),
-        highlighting = getTargetHighlighting(targetFile),
+        highlighting = targetDecoration,
         lineClick = onTargetClick())
       ]
     ]
