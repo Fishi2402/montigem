@@ -55,25 +55,61 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
         basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'", "CoverageDashboardServerApplication");
 
-    TestGroup jsweetGroup = CoverageDashboardManager.testGroupBuilder()
-        .name("jsweet-test")
-        .reportsAdd(e2eReport)
-        .reportsAdd(aggregatedTranspilationReport)
-        .build().get();
+    // Load assoc-test coverage
+    File assocTestFile = new File("./../../it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml");
+    Path assocBasePath = Path.of("./../../it-sync-protocol-test/backend/build/umlp2java/");
+    CoverageReport assocReport = service.ingestArtifact(
+        assocTestFile,
+        "Association Sync Protocol Tests (examples/it-sync-protocol-test)",
+        assocBasePath, rootPath, ReportType.GENERATED_CODE_TEST);
+    Log.info(LocalDateTime.now().toString() + ": Finished 'Association Sync Protocol Tests'", "CoverageDashboardServerApplication");
 
-    TestGroup umlpJsweetGroup = CoverageDashboardManager.testGroupBuilder()
-        .name("umlp-jsweet")
-        .reportsAdd(internalJSweetReport)
-        .build().get();
+    TestGroup jsweetGroup = null;
+    if (e2eReport != null || aggregatedTranspilationReport != null) {
+      TestGroupBuilder jsweetGroupBuilder = CoverageDashboardManager.testGroupBuilder()
+          .name("jsweet-test");
+      if (e2eReport != null) {
+        jsweetGroupBuilder.reportsAdd(e2eReport);
+      }
+      if (aggregatedTranspilationReport != null) {
+        jsweetGroupBuilder.reportsAdd(aggregatedTranspilationReport);
+      }
+      jsweetGroup = jsweetGroupBuilder.build().get();
+    }
+
+    TestGroup umlpJsweetGroup = null;
+    if (internalJSweetReport != null) {
+      umlpJsweetGroup = CoverageDashboardManager.testGroupBuilder()
+          .name("umlp-jsweet")
+          .reportsAdd(internalJSweetReport)
+          .build().get();
+    }
+
+    TestGroup assocGroup = null;
+    if (assocReport != null) {
+      assocGroup = CoverageDashboardManager.testGroupBuilder()
+          .name("assoc-test")
+          .reportsAdd(assocReport)
+          .build().get();
+    }
 
     // Create a run based on this data
-    CoverageDashboardManager.runBuilder()
+    RunBuilder runBuilder = CoverageDashboardManager.runBuilder()
         .commitHash("f0879ff463c32226eea6b39e41860f79b70668d8")
         .timestamp(LocalDateTime.now())
-        .branchName("ma-mfl/Generator_coverage")
-        .testGroupsAdd(jsweetGroup)
-        .testGroupsAdd(umlpJsweetGroup)
-        .build().get();
+        .branchName("ma-mfl/Generator_coverage");
+
+    if (assocGroup != null) {
+      runBuilder.testGroupsAdd(assocGroup);
+    }
+    if (jsweetGroup != null) {
+      runBuilder.testGroupsAdd(jsweetGroup);
+    }
+    if (umlpJsweetGroup != null) {
+      runBuilder.testGroupsAdd(umlpJsweetGroup);
+    }
+
+    runBuilder.build().get();
   }
 }
 

@@ -24,9 +24,11 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 class JacocoXmlCoverageParser implements CoverageReportParser {
 
@@ -136,6 +138,25 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
                 ? currentSourceFileName
                 : currentPackage + "/" + currentSourceFileName;
 
+            int unmappedLines = 0;
+            if (currentLines.isEmpty()) {
+              Path actualFilePath = basePath.resolve(path);
+              int lineCount = 0;
+              if (Files.isRegularFile(actualFilePath)) {
+                try (Stream<String> linesStream = Files.lines(actualFilePath)) {
+                  lineCount = (int) linesStream.count();
+                } catch (Exception ignored) {
+                }
+              }
+              if (lineCount == 0) {
+                lineCount = 1;
+              }
+              unmappedLines = lineCount;
+              for (int l = 1; l <= lineCount; l++) {
+                currentLines.add(CoverageDashboardManager.unmappedLineBuilder().lineNumber(l).build().get());
+              }
+            }
+
             CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
                 .coveredInstructions(coveredInstructions)
                 .missedInstructions(missedInstructions)
@@ -144,7 +165,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
                 .coveredLines(coveredLines)
                 .partialLines(0)
                 .missedLines(missedLines)
-                .unmappedLines(0)
+                .unmappedLines(unmappedLines)
                 .build().get();
 
             CoverageSourceFileBuilder sourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()

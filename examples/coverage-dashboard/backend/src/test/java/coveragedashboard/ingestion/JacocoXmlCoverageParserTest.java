@@ -73,4 +73,22 @@ public class JacocoXmlCoverageParserTest extends CoverageDashboardMockTestSetup 
         .orElse(null);
     assertNotNull(ftlPerspective, "FTL perspective should have been created from Foo.java.map");
   }
+
+  @Test
+  void testParseActualAssocReport() throws Exception {
+    Path xmlPath = Path.of("../../../examples/it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml");
+    Path repoRoot = Path.of("../../..");
+    if (!Files.exists(xmlPath)) {
+      xmlPath = Path.of("examples/it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml");
+      repoRoot = Path.of(".");
+    }
+    if (Files.exists(xmlPath)) {
+      Path basePath = repoRoot.resolve("examples/it-sync-protocol-test/backend/build/umlp2java");
+      JacocoXmlCoverageParser parser = new JacocoXmlCoverageParser(ReportType.GENERATED_CODE_TEST);
+      CoverageReport report = parser.parse(xmlPath.toFile(), "Assoc Real Test", basePath, repoRoot);
+      assertNotNull(report);
+      assertNotNull(report.getDirectPerspective());
+      assertFalse(report.getAggregatedPerspectivesList().isEmpty(), "Aggregated perspectives should be generated for real assoc report");
+    }
+  }
 }
