@@ -3,6 +3,7 @@ package coveragedashboard.commands;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 
+import coveragedashboard.util.ResourcePathHelper;
 import org.apache.commons.text.StringEscapeUtils;
 
 import de.se_rwth.commons.logging.Log;
@@ -45,56 +46,15 @@ public class GetFileContent extends GetFileContentTOP {
       return Optional.empty();
     CoverageSourceFile sourceFile = sourceFileOpt.get();
 
-    URI uri;
     try {
-      String path = sourceFile.getPhysicalPath().replace('\\', '/');
-      if(path.matches("^[a-zA-Z]:/.*")){
-        uri = Path.of(sourceFile.getPhysicalPath()).toUri();
-      }else {
-        uri = URI.create(sourceFile.getPhysicalPath());
-      }
-    } catch (IllegalArgumentException e) {
-      uri = null;
-    }
+      Optional<String> value = ResourcePathHelper.withPath(
+          sourceFile.getPhysicalPath(),
+          path -> StringEscapeUtils.escapeJava(Files.readString(path)));
+      return value;
 
-    String scheme = (uri != null) ? uri.getScheme() : null;
-    Path path = null;
-    FileSystem fs = null;
-
-    try{
-      if(scheme == null){
-        path = Path.of(sourceFile.getPhysicalPath()).normalize();
-      }else if ("file".equalsIgnoreCase(scheme)){
-        path = Path.of(uri).normalize();
-      }else if("jar".equalsIgnoreCase(scheme)){
-        try{
-          path = Path.of(uri).normalize();
-        }catch (FileSystemNotFoundException e){
-          try {
-            fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
-            path = Path.of(uri);
-          } catch (IOException ex) {
-            return Optional.empty();
-          }
-        }
-      }
-      if (path == null) {
-        return Optional.empty();
-      }
-
-      String value = Files.readString(path);
-      return Optional.of(StringEscapeUtils.escapeJava(value));
-
-    }catch (IOException ex){
-      Log.error("Error while reading content of source-file: " + ex.getMessage());
+    } catch (IOException e) {
+      Log.error("Error while reading content of source-file: " + e.getMessage());
       return Optional.empty();
-    }finally {
-      if (fs != null && fs.isOpen()) {
-        try {
-          fs.close();
-        } catch (IOException ignored) {
-        }
-      }
     }
   }
 }

@@ -19,6 +19,7 @@ import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
+import coveragedashboard.util.ResourcePathHelper;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.DecodedSourceMap;
@@ -43,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -300,13 +302,20 @@ class C8JsonCoverageParser implements CoverageReportParser {
         }
       }
 
-      long totalLines = 0;
-      try(Stream<String> lineStream = Files.lines(Path.of(resourcePath.representation))) {
-        totalLines = lineStream.count();
+      Optional<Long> totalLines;
+      try{
+        totalLines = ResourcePathHelper.withPath(
+          resourcePath.representation,
+          path -> {
+            try(Stream<String> lines = Files.lines(path)){
+              return lines.count();
+            }
+          });
       }catch (IOException e){
         Log.error("Could not read file to count lines: " + resourcePath.representation);
+        continue;
       }
-      for(int line = 1; line <= totalLines; line++){
+      for(int line = 1; line <= totalLines.get(); line++){
         if(!lineBuilders.containsKey(line)){
           fileUnmappedLines++;
           sourceCoverageFile.linesAdd(CoverageDashboardManager.unmappedLineBuilder()
