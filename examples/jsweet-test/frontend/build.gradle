@@ -61,6 +61,24 @@ tasks.register("slowtest", Test) {
   dependsOn npmInstall
 }
 
+tasks.register('generateC8Report', NpxTask){
+  dependsOn tasks.named('test')
+  group 'verification'
+  description 'Generates ts-coverage report using c8'
+
+  workingDir = file("${projectDir}/build/app")
+  def tempDir = file("${projectDir}/build/reports/coverage")
+  command = 'c8'
+  args = [
+      'report',
+      "--temp-directory=${tempDir}",
+      '--reporter=json',
+      '--include=**/browser/gui2java2ts/**',
+      '--include=**/umlpJava2ts/**',
+      '--exclude-after-remap=true'
+  ]
+}
+
 if(project.hasProperty('coverage')){
   def agentPath = configurations.detachedConfiguration(
       dependencies.create("org.jacoco:org.jacoco.agent:${jacoco.toolVersion}:runtime")
