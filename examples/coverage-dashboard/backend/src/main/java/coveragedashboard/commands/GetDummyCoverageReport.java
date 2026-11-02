@@ -24,8 +24,14 @@ public class GetDummyCoverageReport extends GetDummyCoverageReportTOP {
 
   @BackendOnly(BackendOnlyModes.THROW_ERROR)
   protected  Optional<CoverageReport> dummyCoverageReport(){
+    if (CoverageDashboardManager.getRunList().isEmpty()) {
+      return Optional.empty();
+    }
     Run run = CoverageDashboardManager.getRunList().getFirst();
-    return Optional.of(run.getReports(0));
+    if (run.getTestGroupsList().isEmpty() || run.getTestGroups(0).getReportsList().isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(run.getTestGroups(0).getReports(0));
   }
 
 }

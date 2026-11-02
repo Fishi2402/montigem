@@ -17,6 +17,10 @@ classdiagram CoverageDashboard{
     String name;
   }
 
+  class TestGroup{
+    String name;
+  }
+
   enum ReportType{
     GENERATOR_UNIT_TEST,
     GENERATOR_COMPILATION_TEST,
@@ -94,7 +98,9 @@ classdiagram CoverageDashboard{
     PARTIAL;
   }
 
-  association [1] Run -> (reports) CoverageReport [1..*];
+  association [1] Run -> (testGroups) TestGroup [1..*];
+
+  association [1] TestGroup -> (reports) CoverageReport [1..*];
 
   association [1] CoverageReport -> (directPerspective) CoveragePerspective [1];
   association [1] CoverageReport -> (aggregatedPerspectives) CoveragePerspective [*];
@@ -130,9 +136,10 @@ classdiagram CoverageDashboard{
     CoverageReport getDummyCoverageReport();
     String getFileContent(CoverageSourceFile file);
     List<String> getLineMapping(CoverageSourceFile file);
-    CoverageReport getLatestComponentTest();
-    CoverageReport getLatestIntegrationTest();
-    CoverageReport getLatestGeneratedCodeTest();
+    CoverageReport getLatestComponentTest(TestGroup group);
+    CoverageReport getLatestIntegrationTest(TestGroup group);
+    CoverageReport getLatestGeneratedCodeTest(TestGroup group);
+    List<TestGroup> getLatestTestGroups();
 
     GemPieChartData getCoverageData(CoveragePerspective perspective);
     GemPieChartData getAggregatedCoverageData(CoveragePerspective perspective);

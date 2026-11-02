@@ -52,7 +52,8 @@ public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
       labels.add(run.getTimestamp().toString());
 
       List<String> processedReportsInRun = new ArrayList<>();
-      for(CoverageReport report : run.getReportsList()){
+      for(coveragedashboard.TestGroup group : run.getTestGroupsList()){
+        for(CoverageReport report : group.getReportsList()){
         String reportName = report.getName();
         processedReportsInRun.add(reportName);
 
@@ -70,6 +71,7 @@ public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
           return newEntryBuilder;
         });
         entryBuilder.addData(coverage);
+        }
       }
       for (Map.Entry<String, GemLineChartEntryBuilder> entry : entryBuilders.entrySet()) {
         if (!processedReportsInRun.contains(entry.getKey())) {

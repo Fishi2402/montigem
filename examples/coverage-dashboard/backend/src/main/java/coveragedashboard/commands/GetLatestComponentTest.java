@@ -3,7 +3,7 @@ package coveragedashboard.commands;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageReport;
 import coveragedashboard.ReportType;
-import coveragedashboard.Run;
+import coveragedashboard.TestGroup;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
 import umlp.jsweet.extension.annotation.BackendOnly;
@@ -13,13 +13,13 @@ import java.util.Optional;
 
 public class GetLatestComponentTest extends GetLatestComponentTestTOP {
 
-  public GetLatestComponentTest(){
-    super();
+  public GetLatestComponentTest(long groupGemId){
+    super(groupGemId);
   }
 
   @Override
   public SimpleResult<CoverageReport> doAction(){
-    Optional<CoverageReport> result = getReport();
+    Optional<CoverageReport> result = getReport(this.getGroupGemId());
     if(result.isEmpty()){
       return new SimpleResult<>(
           getId(), LoadingState.FAILED_TO_LOAD, CoverageReport.class.getName());
@@ -28,9 +28,13 @@ public class GetLatestComponentTest extends GetLatestComponentTestTOP {
   }
 
   @BackendOnly(BackendOnlyModes.THROW_ERROR)
-  protected Optional<CoverageReport> getReport(){
-    Run run = CoverageDashboardManager.getRunList().getFirst();
-    for(CoverageReport report : run.getReportsList()){
+  protected Optional<CoverageReport> getReport(long groupGemId){
+    Optional<TestGroup> groupOpt = CoverageDashboardManager.testGroupOpt(groupGemId);
+    if(groupOpt.isEmpty()){
+      return Optional.empty();
+    }
+    TestGroup group = groupOpt.get();
+    for(CoverageReport report : group.getReportsList()){
       if(report.getType() == ReportType.GENERATOR_UNIT_TEST){
         return Optional.of(report);
       }
