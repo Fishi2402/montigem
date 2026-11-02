@@ -1,0 +1,30 @@
+package coverage.components;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemColumn;
+
+import mc.fenix.basic.GemButton;
+
+import mc.fenix.charts.GemPieChart;
+
+import CoverageDashboard.CoverageReport;
+import CoverageDashboard.App;
+
+component ReportOverview(App app, CoverageReport report) {
+  reportCard@GemCard(
+    title = report.name,
+    component = @GemGrid(
+      x = ["1fr"],
+      y = ["600px"],
+      rows = [
+        [
+          @GemPieChart(data = app.getCoverageData(report.directPerspective))
+        ],
+        [
+          @GemButton(label = "Details", leftClick = showDetails(report))
+        ]
+      ]
+    )
+  );
+}

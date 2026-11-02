@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
+import mc.fenix.charts.GemPieChartTypes.GemPieChartData;
 
 classdiagram CoverageDashboard{
 
@@ -121,5 +122,11 @@ classdiagram CoverageDashboard{
     CoverageReport getDummyCoverageReport();
     String getFileContent(CoverageSourceFile file);
     List<String> getLineMapping(CoverageSourceFile file);
+    CoverageReport getLatestComponentTest();
+    CoverageReport getLatestIntegrationTest();
+    CoverageReport getLatestGeneratedCodeTest();
+
+    GemPieChartData getCoverageData(CoveragePerspective perspective);
+    GemPieChartData getAggregatedCoverageData(CoveragePerspective perspective);
   }
 }
