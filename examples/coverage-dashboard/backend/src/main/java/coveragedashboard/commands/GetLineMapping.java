@@ -40,8 +40,9 @@ public class GetLineMapping extends  GetLineMappingTOP{
     try {
       java.nio.file.Path sourceMapPath = java.nio.file.Path.of(sourceFile.getPhysicalPath() + ".map");
       if(!java.nio.file.Files.exists(sourceMapPath)){
-        // Try for template-path
-        sourceMapPath = java.nio.file.Path.of(FilenameUtils.removeExtension( sourceFile.getPhysicalPath()) + "_TEMPL.map");
+        // There is no source-map for this
+        Log.warn("No source-map available for " + sourceFile.getPhysicalPath());
+        return Optional.empty();
       }
       String sourceMapContent = java.nio.file.Files.readString(sourceMapPath);
       de.monticore.sourcemap.DecodedSourceMap sourceMap = de.monticore.sourcemap.Decoding.parseSourceMapJson(
