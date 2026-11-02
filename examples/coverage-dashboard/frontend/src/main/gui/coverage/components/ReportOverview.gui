@@ -3,8 +3,10 @@ package coverage.components;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemGrid;
 import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemTreeNode;
 
 import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
 
 import mc.fenix.charts.GemPieChart;
 
@@ -14,12 +16,26 @@ import CoverageDashboard.App;
 component ReportOverview(App app, CoverageReport report) {
   reportCard@GemCard(
     title = report.name,
-    component = @GemGrid(
+    component = cardGrid@GemGrid(
       x = ["1fr"],
       y = ["600px"],
       rows = [
         [
-          @GemPieChart(data = app.getCoverageData(report.directPerspective))
+          @GemGrid(
+            width = "100%",
+            height = "100%",
+            y = ["1fr", "auto"],
+            rows = [
+              [
+                directChart@GemPieChart(data = app.getCoverageData(report.directPerspective))
+              ],
+              [
+                @guard(report.aggregatedPerspectives.size() > 0){
+                  @GemButton(label = "Aggregated Coverage", leftClick = showAggregatedCoverage(report));
+                }
+              ]
+            ]
+          )
         ],
         [
           @GemButton(label = "Details", leftClick = showDetails(report))
