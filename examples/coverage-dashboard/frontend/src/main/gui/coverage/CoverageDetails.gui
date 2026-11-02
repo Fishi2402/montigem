@@ -5,6 +5,7 @@ import java.util.Optional;
 import mc.fenix.arrange.GemGrid;
 import mc.fenix.arrange.GemColumn;
 
+import mc.fenix.basic.GemButton;
 import mc.fenix.basic.GemText;
 
 import coverage.components.SourceMapViewer;
@@ -22,6 +23,12 @@ page CoverageDetails(App app, CoverageReport report, Optional<CoverageSourceFile
       rowGap = "20px",
       y = ["auto", "1fr"],
       rows = [
+        [
+          @GemButton(
+            label = "Back",
+            leftClick = backToOverview()
+          )
+        ],
         [
           @GemColumn(
             width = "100%",
