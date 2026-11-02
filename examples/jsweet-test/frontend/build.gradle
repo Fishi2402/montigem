@@ -133,7 +133,7 @@ if(project.hasProperty('coverage')){
     executionData.setFrom(file("$destFileUmlpJava2ts"))
     reports {
       xml.required = true
-      xml.outputLocation = layout.buildDirectory.dir("reports/jacoco/umlpJava2ts")
+      xml.outputLocation = layout.buildDirectory.file("reports/jacoco/umlpJava2ts/umlpJava2ts.xml")
     }
 
     classDirectories.setFrom(files(
@@ -150,7 +150,7 @@ if(project.hasProperty('coverage')){
     executionData.setFrom(file("$destFileGui2java2ts"))
     reports {
       xml.required = true
-      xml.outputLocation = layout.buildDirectory.dir("reports/jacoco/gui2java2ts")
+      xml.outputLocation = layout.buildDirectory.file("reports/jacoco/gui2java2ts/gui2java2ts.xml")
     }
 
     classDirectories.setFrom(files(
