@@ -36,7 +36,7 @@ public class C8JsonCoverageParserTest extends CoverageDashboardMockTestSetup {
 
     assertNotNull(report);
     assertEquals("Test Report", report.getName());
-    assertEquals(ReportType.E2E_FRONTEND, report.getType());
+    assertEquals(ReportType.GENERATED_CODE_TEST, report.getType());
 
     CoverageModule rootModule = report.getModule();
     assertNotNull(rootModule);
