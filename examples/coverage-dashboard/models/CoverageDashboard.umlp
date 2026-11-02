@@ -3,6 +3,10 @@ import java.time.LocalDateTime;
 
 classdiagram CoverageDashboard{
 
+  class DummyContent{
+    String content;
+  }
+
   class Run{
     String commitHash;
     LocalDateTime timestamp;
@@ -94,6 +98,6 @@ classdiagram CoverageDashboard{
 
   <<singleton>>
   class App{
-    CoverageSourceFile debugSourceFile();
+    DummyContent mockContent();
   }
 }

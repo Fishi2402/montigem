@@ -19,29 +19,9 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
   }
 
   public void createDummyData(){
-
-    CoverageColumnRange range = CoverageDashboardManager.coverageColumnRangeBuilder()
-        .fromColumn(0)
-        .toColumn(10)
-        .hits(1)
-        .build().get();
-
-    CoverageLine line = CoverageDashboardManager.coverageLineBuilder()
-        .lineNumber(1)
-        .missedInstructions(0)
-        .coveredInstructions(1)
-        .missedBranches(0)
-        .coveredBranches(0)
-        .columnRangesAdd(range)
-        .build().get();
-
-
-    CoverageDashboardManager.coverageSourceFileBuilder()
-        .name("Debug test name")
-        .path("some/path")
-        .linesAdd(line)
+    CoverageDashboardManager.dummyContentBuilder()
+        .content("0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789")
         .build();
-
   }
 }
 
