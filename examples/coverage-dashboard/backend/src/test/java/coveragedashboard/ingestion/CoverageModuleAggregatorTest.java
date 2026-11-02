@@ -6,7 +6,6 @@ import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.test_infrastructure.CoverageDashboardMockTestSetup;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import umlp.test_rte.ClientSetup;
 
