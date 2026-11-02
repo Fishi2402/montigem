@@ -1,18 +1,14 @@
 package coverage.components;
 
-import coveragedashboard.App;
 import coveragedashboard.CoverageColumnRange;
 import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageSourceFile;
-import coveragedashboard.StringContent;
 import coveragedashboard.commands.GetFileContent;
 import coveragedashboard.commands.GetSourceFileContent;
 import mc.fenix.editor.monacoeditortypes.InlineDecoration;
 import mc.fenix.editor.monacoeditortypes.LineClickEvent;
 import mc.fenix.editor.monacoeditortypes.Range;
 import umlp.backendrte.command.CommandManager;
-import umlp.backendrte.command.CommandResult;
-import umlp.backendrte.command.SimpleResult;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -84,13 +80,23 @@ public class SourceMapViewer extends SourceMapViewerTOP{
 
   }
 
-  @Override
-  public List<InlineDecoration> getTargetHighlighting (Optional<CoverageSourceFile> fileOpt) {
-    if(fileOpt.isEmpty())
-      return null;
 
-    CoverageSourceFile file = fileOpt.get();
+  // New target-file
+  private void updateEditors(){
+    if(this.getTargetFile().isEmpty()){
+      this.setSourceContent("");
+      this.setTargetContent("");
+      this.setTargetDecoration(new ArrayList<>());
+      // TODO: More cleanup like language, highlighting etc...
+      return;
+    }
+    CoverageSourceFile targetFile = this.getTargetFile().get();
+    this.setTargetContent(CommandManager.executeCommand(new GetFileContent(targetFile.getGemId())).asSimpleResult().get().getContent());
+    this.setSourceContent(CommandManager.executeCommand(new GetSourceFileContent(targetFile.getGemId())).asSimpleResult().get().getContent());
+    this.setTargetDecoration(getDecoration(targetFile));
+  }
 
+  private List<InlineDecoration> getDecoration(CoverageSourceFile file){
     List<InlineDecoration> decorations = new ArrayList<>();
     for(CoverageLine line : file.getLinesList()){
       if(line.getColumnRangesList().size() > 0){
@@ -117,27 +123,5 @@ public class SourceMapViewer extends SourceMapViewerTOP{
       }
     }
     return decorations;
-  }
-
-
-  // New target-file
-  private void updateEditors(){
-    if(this.getTargetFile().isEmpty()){
-      this.setSourceContent("");
-      this.setTargetContent("");
-      // TODO: More cleanup like language, highlighting etc...
-      return;
-    }
-    CoverageSourceFile file = this.getTargetFile().get();
-
-    CommandResult<StringContent> result = CommandManager.executeCommand(new GetFileContent(file.getGemId()));
-    SimpleResult<StringContent> simpleResult = result.asSimpleResult();
-    String value = simpleResult.get().getContent();
-    this.setTargetContent(value);
-    result = CommandManager.executeCommand(new GetSourceFileContent(file.getGemId()));
-    simpleResult = result.asSimpleResult();
-    value = simpleResult.get().getContent();
-
-    this.setSourceContent(value);
   }
 }
