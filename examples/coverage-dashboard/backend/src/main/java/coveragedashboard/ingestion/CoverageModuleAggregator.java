@@ -44,6 +44,8 @@ class CoverageModuleAggregator {
     int missedInstructions = 0;
     int coveredBranches = 0;
     int missedBranches = 0;
+    int coveredLines = 0;
+    int missedLines = 0;
 
     // Add metrics from files on this module
     for(CoverageSourceFile file : node.getSourceFilesList()){
@@ -51,6 +53,8 @@ class CoverageModuleAggregator {
       missedInstructions += file.getMetrics().getMissedInstructions();
       coveredBranches += file.getMetrics().getCoveredBranches();
       missedBranches += file.getMetrics().getMissedBranches();
+      coveredLines += file.getMetrics().getCoveredLines();
+      missedLines += file.getMetrics().getMissedLines();
     }
 
     // Get metrics of submodules
@@ -60,6 +64,8 @@ class CoverageModuleAggregator {
       missedInstructions += subModule.getMetrics().getMissedInstructions();
       coveredBranches += subModule.getMetrics().getCoveredBranches();
       missedBranches += subModule.getMetrics().getMissedBranches();
+      coveredLines += subModule.getMetrics().getCoveredLines();
+      missedLines += subModule.getMetrics().getMissedLines();
     }
 
     // Update own metrics
@@ -67,6 +73,8 @@ class CoverageModuleAggregator {
     node.getMetrics().setMissedInstructions(missedInstructions);
     node.getMetrics().setCoveredBranches(coveredBranches);
     node.getMetrics().setMissedBranches(missedBranches);
+    node.getMetrics().setCoveredLines(coveredLines);
+    node.getMetrics().setMissedLines(missedLines);
   }
 
   private CoverageModule getOrCreateSubModule(CoverageModule currentModule, String name){
