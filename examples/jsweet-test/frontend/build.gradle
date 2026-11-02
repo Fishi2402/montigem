@@ -105,7 +105,7 @@ tasks.register('generateC8Report', NpxTask){
       'report',
       "--temp-directory=${tempDir}",
       '--reporter=json',
-      '--include=**/browser/gui2java2ts/**',
+      '--include=**/gui2java2ts/**',
       '--include=**/umlpJava2ts/**',
       '--exclude-after-remap=true'
   ]
