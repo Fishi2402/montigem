@@ -6,7 +6,9 @@ import com.fasterxml.jackson.core.JsonToken;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 
-import coveragedashboard.StringContent;
+import org.apache.commons.text.StringEscapeUtils;
+
+
 import de.se_rwth.commons.logging.Log;
 import umlp.backendrte.command.SimpleResult;
 import umlp.backendrte.common.LoadingState;
@@ -26,17 +28,17 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
   }
 
   @Override
-  public SimpleResult<StringContent> doAction(){
-    Optional<StringContent> result = getSourceFileContent(this.getFileGemId());
+  public SimpleResult<String> doAction(){
+    Optional<String> result = getSourceFileContent(this.getFileGemId());
     if(result.isEmpty()){
       return new SimpleResult<>(
-          getId(), LoadingState.FAILED_TO_LOAD, StringContent.class.getName());
+          getId(), LoadingState.FAILED_TO_LOAD, String.class.getName());
     }
-    return new SimpleResult<>(getId(), result.get(), StringContent.class.getName());
+    return new SimpleResult<>(getId(), result.get(), String.class.getName());
   }
 
   @BackendOnly(BackendOnlyModes.THROW_ERROR)
-  protected Optional<StringContent> getSourceFileContent(long fileGemId){
+  protected Optional<String> getSourceFileContent(long fileGemId){
     // Try to get file and read content
     Optional<CoverageSourceFile> sourceFileOpt = CoverageDashboardManager.coverageSourceFileOpt(fileGemId);
     if(sourceFileOpt.isEmpty())
@@ -46,8 +48,8 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
     // Check if there is a source-map for this file
     Path sourceMap = Path.of(sourceFile.getPhysicalPath() + ".map");
     if(sourceMap.getFileName().endsWith("TOP")){
-      StringContent value = CoverageDashboardManager.stringContentBuilder().content("Source-map for TOP not implemented yet.").build().get();
-      return Optional.of(value);
+      String value = "Source-map for TOP not implemented yet.";
+      return Optional.of(StringEscapeUtils.escapeJava(value));
     }
 
     if(Files.exists(sourceMap)){
@@ -78,15 +80,15 @@ public class GetSourceFileContent extends GetSourceFileContentTOP{
           }
         }
 
-        StringContent value = CoverageDashboardManager.stringContentBuilder().content(Files.readString(Path.of(sourcePath))).build().get();
-        return Optional.of(value);
+        String value = Files.readString(Path.of(sourcePath));
+        return Optional.of(StringEscapeUtils.escapeJava(value));
       }catch(IOException ex){
         Log.error("Error while reading content of source-file: " + ex.getMessage());
         return Optional.empty();
       }
     }else{
-      StringContent value = CoverageDashboardManager.stringContentBuilder().content("No source-file available.").build().get();
-      return Optional.of(value);
+      String value = "No source-file available.";
+      return Optional.of(StringEscapeUtils.escapeJava(value));
     }
   }
 }
