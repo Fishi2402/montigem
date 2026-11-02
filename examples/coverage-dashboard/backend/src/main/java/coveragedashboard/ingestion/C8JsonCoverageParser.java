@@ -76,8 +76,6 @@ class C8JsonCoverageParser implements CoverageReportParser {
           }
         }
 
-
-
         if(filePath != null){
           parsedFiles.add(createSourceFile(filePath, basePath, statementMap, branchMap, statementHits, branchHits));
         }
@@ -104,6 +102,8 @@ class C8JsonCoverageParser implements CoverageReportParser {
     int fileMissedInstructions = 0;
     int fileCoveredBranches = 0;
     int fileMissedBranches = 0;
+    int fileCoveredLines = 0;
+    int fileMissedLines = 0;
 
     // Statements
     for(Map.Entry<String, Range> entry : statementMap.entrySet()){
@@ -156,12 +156,23 @@ class C8JsonCoverageParser implements CoverageReportParser {
       }
     }
 
+    for(CoverageLineBuilder lineBuilder : lines.values()){
+      // If the line as any covered instruction or branch, the line is covered for now, maybe this
+      // must be re-evaluated in the future
+      if(lineBuilder.getCoveredInstructions() > 0 || lineBuilder.getCoveredBranches() > 0){
+        fileCoveredLines++;
+      }else{
+        fileMissedLines++;
+      }
+    }
+
     CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
         .coveredInstructions(fileCoveredInstructions)
         .missedInstructions(fileMissedInstructions)
         .coveredBranches(fileCoveredBranches)
         .missedBranches(fileMissedBranches)
-        .coveredLines(0).missedLines(0) // Can be calculated based on lines map size if needed
+        .coveredLines(fileCoveredLines)
+        .missedLines(fileMissedLines)
         .build().get();
 
     CoverageSourceFileBuilder coverageSourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
