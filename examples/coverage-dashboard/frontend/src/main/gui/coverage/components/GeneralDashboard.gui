@@ -5,6 +5,7 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemRow;
 
 import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
 
 import mc.fenix.charts.GemLineChart;
 
@@ -15,7 +16,7 @@ component GeneralDashboard(App app) {
     height = "100%",
     width = "100%",
     rowGap = "15px",
-    y = ["auto", "auto"],
+    y = ["auto", "auto", "auto"],
     rows =[
       [
         @GemCard(
@@ -40,6 +41,17 @@ component GeneralDashboard(App app) {
             @GemCard(
               title = "TODO - What's interesting",
               component = @GemText(value = "Lorem ipsum")
+            )
+          ]
+        )
+      ],
+      [
+        @GemRow(
+          hAlign = "center",
+          components = [
+            @GemButton(
+              label = "Debug details",
+              leftClick = debugDetails()
             )
           ]
         )
