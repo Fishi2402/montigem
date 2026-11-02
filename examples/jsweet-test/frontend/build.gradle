@@ -70,10 +70,12 @@ if(project.hasProperty('coverage')){
 
   tasks.named('umlpJava2ts'){
     jacocoAgentArg.set("-javaagent:${agentPath}=destfile=${destFileUmlpJava2ts},append=true,includes=umlp.jsweet.extension.*")
+    createSourceMaps.set(true)
   }
 
   tasks.named('gui2java2ts'){
     jacocoAgentArg.set("-javaagent:${agentPath}=destfile=${destFileGui2java2ts},append=true,includes=umlp.jsweet.extension.*")
+    createSourceMaps.set(true)
   }
 
   tasks.register('jacocoUmlpJava2ts', JacocoReport){
