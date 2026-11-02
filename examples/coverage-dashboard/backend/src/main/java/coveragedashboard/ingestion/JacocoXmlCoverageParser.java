@@ -7,10 +7,12 @@ import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
+import coveragedashboard.CoverageReportBuilder;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
+import de.se_rwth.commons.logging.Log;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -32,7 +34,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
   private final CoverageModuleAggregator moduleAggregator;
   private final ReportType type;
 
-  public JacocoXmlCoverageParser(ReportType type){
+  public JacocoXmlCoverageParser(ReportType type) {
     this.xmlFactory = XMLInputFactory.newInstance();
 
     this.xmlFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
@@ -47,15 +49,12 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
   public CoverageReport parse(File artifactFile, String reportName, Path basePath, Path rootPath) throws IOException {
     List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
-
-    try(FileInputStream inputStream = new FileInputStream(artifactFile)){
+    try (SourceMapCoverageMapper mapper = new SourceMapCoverageMapper();
+         FileInputStream inputStream = new FileInputStream(artifactFile)) {
       XMLEventReader reader = xmlFactory.createXMLEventReader(inputStream);
-
 
       String currentPackage = "";
       String currentSourceFileName = null;
-
-
 
       int coveredInstructions = 0;
       int missedInstructions = 0;
@@ -66,18 +65,18 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
 
       List<CoverageLine> currentLines = new ArrayList<>();
 
-      while(reader.hasNext()) {
+      while (reader.hasNext()) {
         XMLEvent event = reader.nextEvent();
 
-        if (event.isStartElement()){
+        if (event.isStartElement()) {
           StartElement startElement = event.asStartElement();
           String elementName = startElement.getName().getLocalPart();
-          if("package".equals(elementName)){
+          if ("package".equals(elementName)) {
             Attribute nameAttribute = startElement.getAttributeByName(new QName("name"));
-            if(nameAttribute != null){
+            if (nameAttribute != null) {
               currentPackage = nameAttribute.getValue();
             }
-          }else if("sourcefile".equals(elementName)) {
+          } else if ("sourcefile".equals(elementName)) {
             Attribute nameAttribute = startElement.getAttributeByName(new QName("name"));
             if (nameAttribute != null) {
               currentSourceFileName = nameAttribute.getValue();
@@ -89,7 +88,7 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
             missedBranches = 0;
             coveredLines = 0;
             missedLines = 0;
-          }else if("line".equals(elementName) && currentSourceFileName != null){
+          } else if ("line".equals(elementName) && currentSourceFileName != null) {
             // individual line data
             int nr = getIntAttribute(startElement, "nr");
             int ci = getIntAttribute(startElement, "ci");
@@ -107,14 +106,14 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
 
             currentLines.add(line);
 
-          }else if("counter".equals(elementName) && currentSourceFileName != null){
+          } else if ("counter".equals(elementName) && currentSourceFileName != null) {
             // Aggregated file metrics
             Attribute typeAttribute = startElement.getAttributeByName(new QName("type"));
-            if(typeAttribute != null){
+            if (typeAttribute != null) {
               String type = typeAttribute.getValue();
               int missed = getIntAttribute(startElement, "missed");
               int covered = getIntAttribute(startElement, "covered");
-              switch (type){
+              switch (type) {
                 case "INSTRUCTION":
                   missedInstructions = missed;
                   coveredInstructions = covered;
@@ -130,9 +129,9 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
               }
             }
           }
-        }else if(event.isEndElement()){
+        } else if (event.isEndElement()) {
           String elementName = event.asEndElement().getName().getLocalPart();
-          if("sourcefile".equals(elementName) && currentSourceFileName != null){
+          if ("sourcefile".equals(elementName) && currentSourceFileName != null) {
             String path = currentPackage.isEmpty()
                 ? currentSourceFileName
                 : currentPackage + "/" + currentSourceFileName;
@@ -148,7 +147,6 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
                 .unmappedLines(0)
                 .build().get();
 
-
             CoverageSourceFileBuilder sourceFileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
                 .path(path)
                 .name(currentSourceFileName)
@@ -156,20 +154,30 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
                 .category(ArtifactCategory.GENERATED)
                 .metrics(fileMetrics);
 
-            for(CoverageLine parsedLine : currentLines){
+            for (CoverageLine parsedLine : currentLines) {
               sourceFileBuilder.linesAdd(parsedLine);
             }
+
+            // Resolve source maps if available
+            try {
+              sourceFileBuilder.addAllGeneratedBys(
+                  mapper.resolveGenerationSources(sourceFileBuilder, rootPath.toAbsolutePath().normalize())
+              );
+            } catch (Exception e) {
+              Log.warn("Unable to resolve source map for " + sourceFileBuilder.getPath() + ": " + e.getMessage());
+            }
+
             CoverageSourceFile sourceFile = sourceFileBuilder.build().get();
 
             parsedFiles.add(sourceFile);
             currentSourceFileName = null; // Exit source file state
             currentLines.clear();
-          }else if("package".equals(elementName)){
+          } else if ("package".equals(elementName)) {
             currentPackage = "";
           }
         }
       }
-    }catch(XMLStreamException ex){
+    } catch (XMLStreamException ex) {
       throw new IOException("Expected valid XML format: " + ex.getMessage(), ex);
     }
 
@@ -183,11 +191,23 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
         .build()
         .get();
 
-    return CoverageDashboardManager.coverageReportBuilder()
+    CoverageReportBuilder reportBuilder = CoverageDashboardManager.coverageReportBuilder()
         .name(reportName)
         .type(this.type)
-        .directPerspective(directPerspective)
-        .build().get();
+        .directPerspective(directPerspective);
+
+    CoverageModule ftlModule = moduleAggregator.groupDependentFilesByExtension("ftl", parsedFiles);
+    if (!ftlModule.getSubModulesList().isEmpty() || !ftlModule.getSourceFilesList().isEmpty()) {
+      CoveragePerspective ftlPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+          .name("FTL")
+          .rootModule(ftlModule)
+          .type(PerspectiveType.AGGREGATED)
+          .build()
+          .get();
+      reportBuilder.aggregatedPerspectivesAdd(ftlPerspective);
+    }
+
+    return reportBuilder.build().get();
   }
 
   private int getIntAttribute(StartElement element, String attributeName) {
