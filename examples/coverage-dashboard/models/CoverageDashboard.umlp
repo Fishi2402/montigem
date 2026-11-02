@@ -57,12 +57,18 @@ classdiagram CoverageDashboard{
     int endColumn;
   }
 
-  class CoverageLine{
+  abstract class CoverageLine{
     int lineNumber;
+  }
+
+  class MeasuredLine extends CoverageLine{
     int missedInstructions;
     int coveredInstructions;
     int missedBranches;
     int coveredBranches;
+  }
+
+  class UnmappedLine extends CoverageLine{
   }
 
   class CoverageMetrics{
@@ -72,6 +78,7 @@ classdiagram CoverageDashboard{
     int missedBranches;
     int coveredLines;
     int missedLines;
+    int unmappedLines;
   }
 
   class CoverageColumnRange{
@@ -110,7 +117,7 @@ classdiagram CoverageDashboard{
   association [1] CoverageScope -> (metrics) CoverageMetrics [1];
   association [1] CoverageScope -> (subScopes) CoverageScope [*];
 
-  association [1] CoverageLine -> (columnRanges) CoverageColumnRange [*];
+  association [1] MeasuredLine -> (columnRanges) CoverageColumnRange [*];
 
   association [1] CoverageColumnRange -> (type) ColumnRangeType [1];
 
