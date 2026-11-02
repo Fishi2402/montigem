@@ -1,7 +1,8 @@
 package coverage.components;
 
+import app.AppRouter;
+import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
-import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.function.Consumer;
@@ -15,15 +16,15 @@ public class ReportOverview extends ReportOverviewTOP{
 
   @Override
   public Consumer<Void> showDetails (CoverageReport report) {
-    return $ ->{
-      Router.navigate("coverage", "CoverageDetails", String.valueOf(report.getGemId()));
+    return $ -> {
+      // To discuss: await not transpiled correctly!
+      CoveragePerspective directPerspective = report.getDirectPerspective();
+      AppRouter.navigateToCoverageCoverageDetails(report.getGemId(), directPerspective.getGemId());
     };
   }
 
   @Override
   public Consumer<Void> showAggregatedCoverage (CoverageReport report) {
-    return $ ->{
-      Router.navigate("coverage", "AggregationDetails", String.valueOf(report.getGemId()));
-    };
+    return $ -> AppRouter.navigateToCoverageAggregationDetails(report.getGemId());
   }
 }

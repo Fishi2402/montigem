@@ -36,15 +36,21 @@ public class FileView extends FileViewTOP {
   public Consumer<Void> onViewClicked (String perspective) {
     return $ ->{
       // Check "root" first
+      CoveragePerspective selected = null;
       if(this.getReport().getDirectPerspective().getName().equals(perspective)){
-        this.setSelectedPerspective(this.getReport().getDirectPerspective());
-        return;
+        selected = this.getReport().getDirectPerspective();
       }
       // Try all aggregated modules
       for(CoveragePerspective aggregatedPerspective : this.getReport().getAggregatedPerspectivesList()){
         if(aggregatedPerspective.getName().equals(perspective)){
-          this.setSelectedPerspective(aggregatedPerspective);
-          return;
+          selected = aggregatedPerspective;
+          break;
+        }
+      }
+      if(selected != null){
+        this.setSelectedPerspective(selected);
+        if(this.getPerspectiveSelect() != null){
+          this.getPerspectiveSelect().accept(selected);
         }
       }
     };
