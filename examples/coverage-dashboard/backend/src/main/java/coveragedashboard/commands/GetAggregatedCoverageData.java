@@ -41,9 +41,19 @@ public class GetAggregatedCoverageData  extends GetAggregatedCoverageDataTOP {
 
     CoverageMetrics metrics = perspective.getRootModule().getMetrics();
 
+    // Instructions is the most accurate value we have
+    // In order to set this in relation to the unknown values, take covered+missed as this is with
+    // unknown total amount of lines. The 'known' percentage is split based on the instructions
+    int totalLines = metrics.getCoveredLines() + metrics.getMissedLines() + metrics.getUnmappedLines();
+
+    double unmapped = (double) metrics.getUnmappedLines() / totalLines;
+    double covered = (1 - unmapped) * ((double) metrics.getCoveredInstructions() / (metrics.getCoveredInstructions() + metrics.getMissedInstructions()));
+    double missed = 1 - unmapped - covered;
+
     List<GemPieChartEntry> entries = new ArrayList<>();
-    entries.add(new GemPieChartEntry(metrics.getCoveredInstructions(), "Covered", Optional.of("#1a7f37")));
-    entries.add(new GemPieChartEntry(metrics.getMissedInstructions(), "Missed", Optional.of("#cf222e")));
+    entries.add(new GemPieChartEntry((int)(covered * 100), "Covered", Optional.of("#1a7f37")));
+    entries.add(new GemPieChartEntry((int)(missed * 100), "Missed", Optional.of("#cf222e")));
+    entries.add(new GemPieChartEntry((int)(unmapped * 100), "Unmapped", Optional.of("#8c8c8c")));
     return new GemPieChartDataBuilder().entries(entries).build();
   }
 }
