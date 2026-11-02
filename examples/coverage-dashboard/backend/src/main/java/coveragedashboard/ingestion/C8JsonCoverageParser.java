@@ -717,11 +717,12 @@ class C8JsonCoverageParser implements CoverageReportParser {
     if (!range.isValid()) {
       return;
     }
-    if (range.startLine() == range.endLine()) {
+    // Branches only apply to the decision line, they do not apply to the entire range
+    if (type == ColumnRangeType.BRANCH || range.startLine() == range.endLine()) {
       applyToLine(range.startLine(), range.startColumn(), range.endColumn(), hits, type, true, context);
       return;
     }
-    // Only count line metrics once, subsequent lines for visual representation
+    // Only count line metrics once, subsequent lines for visual representation (statements only)
     applyToLine(range.startLine(), range.startColumn(), Integer.MAX_VALUE, hits, type, true, context);
     for (int line = range.startLine() + 1; line < range.endLine(); line++) {
       applyToLine(line, 0, Integer.MAX_VALUE, hits, type, false, context);
@@ -1003,11 +1004,14 @@ class C8JsonCoverageParser implements CoverageReportParser {
      * if the declaration is null or degenerate (common in arrow functions and expressions).
      */
     public Range getEffectiveRange() {
-      if (decl != null && decl.isValid()) {
-        return decl;
-      }
-      if (loc != null && loc.isValid()) {
-        return loc;
+      // Span from the start of decl (or loc) to the end of loc
+      int startLine = (decl != null && decl.isValid()) ? decl.startLine() : (loc != null ? loc.startLine() : 0);
+      int startCol = (decl != null && decl.isValid()) ? decl.startColumn() : (loc != null ? loc.startColumn() : 0);
+      int endLine = (loc != null && loc.isValid()) ? loc.endLine() : (decl != null ? decl.endLine() : 0);
+      int endCol = (loc != null && loc.isValid()) ? loc.endColumn() : (decl != null ? decl.endColumn() : 0);
+
+      if (startLine > 0 && endLine >= startLine) {
+        return new Range(startLine, startCol, endLine, endCol);
       }
       return null;
     }
