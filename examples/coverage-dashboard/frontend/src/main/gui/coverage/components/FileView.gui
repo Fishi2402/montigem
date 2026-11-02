@@ -16,6 +16,8 @@ import coverage.components.ModuleTreeView;
 component FileView(
     CoverageReport report,
     CoveragePerspective selectedPerspective,
+    Boolean isRootPerspective,
+    Event<CoveragePerspective> perspectiveSelect,
     Event<CoverageSourceFile> fileSelect){
   mainGrid@GemGrid(
     width = "100%",
