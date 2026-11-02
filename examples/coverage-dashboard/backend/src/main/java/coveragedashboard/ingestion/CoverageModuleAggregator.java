@@ -51,8 +51,6 @@ class CoverageModuleAggregator {
   }
 
   public CoverageModule groupDependentFiles(int level, List<CoverageSourceFile> flatFiles){
-    CoverageModule root = getEmptyModule("");
-
     List<CoverageSourceFile> sourceFiles = new ArrayList<CoverageSourceFile>();
 
     // At first, get all files for the correct level
@@ -70,7 +68,7 @@ class CoverageModuleAggregator {
         .map(entry -> mergeCoverageData(entry.getKey(), entry.getValue()))
         .collect(Collectors.toList());
 
-    return root;
+    return this.groupFilesInModules(aggregatedFiles);
   }
 
   private CoverageSourceFile mergeCoverageData(String path, List<CoverageSourceFile> files){
