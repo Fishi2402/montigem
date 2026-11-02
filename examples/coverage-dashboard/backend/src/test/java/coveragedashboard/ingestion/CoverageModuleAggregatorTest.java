@@ -381,4 +381,105 @@ public class CoverageModuleAggregatorTest extends CoverageDashboardMockTestSetup
     assertEquals(1, coreJava.getSourceFilesList().size());
     assertEquals("Intermediate.java", coreJava.getSourceFilesList().get(0).getName());
   }
+
+  @Test
+  void testMergeCoverageDataAtLeastOneCoversSemantics() {
+    CoverageLine line1Covered = CoverageDashboardManager.measuredLineBuilder()
+        .lineNumber(1)
+        .coveredInstructions(1).missedInstructions(0)
+        .coveredBranches(0).missedBranches(0)
+        .build().get();
+
+    CoverageLine line2Missed = CoverageDashboardManager.measuredLineBuilder()
+        .lineNumber(2)
+        .coveredInstructions(0).missedInstructions(1)
+        .coveredBranches(0).missedBranches(0)
+        .build().get();
+
+    CoverageLine line1Missed = CoverageDashboardManager.measuredLineBuilder()
+        .lineNumber(1)
+        .coveredInstructions(0).missedInstructions(1)
+        .coveredBranches(0).missedBranches(0)
+        .build().get();
+
+    CoverageLine line2Covered = CoverageDashboardManager.measuredLineBuilder()
+        .lineNumber(2)
+        .coveredInstructions(1).missedInstructions(0)
+        .coveredBranches(0).missedBranches(0)
+        .build().get();
+
+    // Contributor 1: covers line 1, misses line 2
+    CoverageSourceFile javaFileFromTest1 = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("common/Shared.java")
+        .name("Shared.java")
+        .physicalPath("c:/some/path/common/Shared.java")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(1).missedInstructions(1)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(1).missedLines(1)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1Covered)
+        .linesAdd(line2Missed)
+        .build().get();
+
+    // Contributor 2: misses line 1, covers line 2
+    CoverageSourceFile javaFileFromTest2 = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("common/Shared.java")
+        .name("Shared.java")
+        .physicalPath("c:/some/path/common/Shared.java")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(1).missedInstructions(1)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(1).missedLines(1)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1Missed)
+        .linesAdd(line2Covered)
+        .build().get();
+
+    CoverageSourceFile rootTs1 = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("Test1.ts")
+        .name("Test1.ts")
+        .physicalPath("c:/some/path/Test1.ts")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(0).missedInstructions(0)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(0).missedLines(0)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line1Covered)
+        .generatedByAdd(javaFileFromTest1)
+        .build().get();
+
+    CoverageSourceFile rootTs2 = CoverageDashboardManager.coverageSourceFileBuilder()
+        .category(ArtifactCategory.GENERATED)
+        .path("Test2.ts")
+        .name("Test2.ts")
+        .physicalPath("c:/some/path/Test2.ts")
+        .metrics(CoverageDashboardManager.coverageMetricsBuilder()
+            .coveredInstructions(0).missedInstructions(0)
+            .coveredBranches(0).missedBranches(0)
+            .coveredLines(0).missedLines(0)
+            .partialLines(0).unmappedLines(0)
+            .build().get())
+        .linesAdd(line2Covered)
+        .generatedByAdd(javaFileFromTest2)
+        .build().get();
+
+    CoverageModuleAggregator aggregator = new CoverageModuleAggregator();
+    CoverageModule javaRoot = aggregator.groupDependentFilesByExtension("java", Arrays.asList(rootTs1, rootTs2));
+
+    assertNotNull(javaRoot);
+    CoverageModule commonModule = javaRoot.getSubModulesList().get(0);
+    CoverageSourceFile mergedSharedJava = commonModule.getSourceFilesList().get(0);
+
+    // Both lines should be COVERED because each was covered by at least one test
+    assertEquals(2, mergedSharedJava.getMetrics().getCoveredLines());
+    assertEquals(0, mergedSharedJava.getMetrics().getMissedLines());
+    assertEquals(0, mergedSharedJava.getMetrics().getPartialLines());
+  }
 }
