@@ -821,7 +821,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
       if("jar".equalsIgnoreCase(scheme)){
         try{
           Path path = Path.of(uri).normalize();
-          return new ResourcePath(path, null, path.toString());
+          return new ResourcePath(path, null, uri.toString());
         }catch (FileSystemNotFoundException e){
           FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
           return new ResourcePath(Path.of(uri), fs, uri.toString());
