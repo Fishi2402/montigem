@@ -37,6 +37,31 @@ component SourceMapViewer(
     y = ["minmax(0, 1fr)"],
     cols = [
       [
+      transpiledColumn@GemColumn(
+        width = "100%",
+        height = "100%",
+        components = [
+          transpiledHeader@GemRow(
+            width = "100%",
+            height = "100%",
+            hAlign = "left",
+            vAlign = "center",
+            components = [
+              transpiledLabel@GemText(width = "auto", value="Transpiled: "),
+              transpiledText@GemText(width = "100%", value= targetFileName)
+            ]
+          ),
+          targetEditor@MonacoEditor(
+            width = "100%",
+            height = "100%",
+            entry = targetContent,
+            disabled = true,
+            language = getTargetLanguage(targetFile),
+            highlighting = targetDecoration,
+            lineClick = onTargetClick())
+        ])
+      ],
+      [
       sourceColumn@GemColumn(
         width = "100%",
         height = "100%",
@@ -69,31 +94,6 @@ component SourceMapViewer(
             language = getSourceLanguage(targetFile),
             highlighting = sourceDecoration,
             jumpToLine = jumpSourceFileLine)
-        ])
-      ],
-      [
-      transpiledColumn@GemColumn(
-        width = "100%",
-        height = "100%",
-        components = [
-          transpiledHeader@GemRow(
-            width = "100%",
-            height = "100%",
-            hAlign = "left",
-            vAlign = "center",
-            components = [
-              transpiledLabel@GemText(width = "auto", value="Transpiled: "),
-              transpiledText@GemText(width = "100%", value= targetFileName)
-            ]
-          ),
-          targetEditor@MonacoEditor(
-            width = "100%",
-            height = "100%",
-            entry = targetContent,
-            disabled = true,
-            language = getTargetLanguage(targetFile),
-            highlighting = targetDecoration,
-            lineClick = onTargetClick())
         ])
       ]
     ]
