@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 
 import java.util.Arrays;
@@ -19,7 +20,7 @@ public class GUI2JavaGenerator extends CDGenerator {
   }
 
   public void generate(ASTGUICompilationUnit gui, String configTemplate) {
-    System.setProperty("CONFIG_TEMPLATE", configTemplate);
+    Reporting.setConfigTemplate(configTemplate);
     this.setup.setTracing(true);
 
     // create an empty classdiagram
@@ -31,6 +32,7 @@ public class GUI2JavaGenerator extends CDGenerator {
     // translate the GUI-AST into Java
     hpp.processValue(tc, gui,
         Arrays.asList(cd, setup.getGlex(), setup.getHandcodedPath(), setup.getOutputDirectory().toPath(), this));
+    Reporting.clearConfigTemplate();
   }
 
 }

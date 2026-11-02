@@ -5,6 +5,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.guidsl._ast.ASTGUICompilationUnit;
 import umlp.generator.gui.GUIGeneratorUtil;
 
@@ -25,7 +26,7 @@ public class GUI2HtmlGenerator {
   }
 
   public void generate(ASTGUICompilationUnit ast, String configTemplate) {
-    System.setProperty("CONFIG_TEMPLATE", configTemplate);
+    Reporting.setConfigTemplate(configTemplate);
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
 
@@ -34,6 +35,7 @@ public class GUI2HtmlGenerator {
     // translate the GUI-AST into HTML
     hpp.processValue(tc, ast,
         Arrays.asList(ast, setup.getGlex(), setup.getHandcodedPath(), this));
+    Reporting.clearConfigTemplate();
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {
