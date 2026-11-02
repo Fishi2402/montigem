@@ -30,8 +30,7 @@ page CoverageDetails(App app) {
         [
           @SourceMapViewer(
             targetFile=app.getDummyCoverageFile(),
-            sourceContent=getSourceContent(),
-            targetContent=getTargetContent())
+            jumpSourceFileLine=0)
         ]
       ]
     );
