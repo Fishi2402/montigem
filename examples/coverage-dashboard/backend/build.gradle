@@ -40,6 +40,7 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
+/*
 umlp2java{
   doFirst {
     System.setProperty("MC_REPORT_SOURCE_MAPPING", "true")
@@ -49,6 +50,7 @@ umlp2java{
     System.setProperty("MC_REPORT_SOURCE_MAPPING", "false")
   }
 }
+*/
 
 // Use rootDir.absolutePath to ensure absolute paths in XML/JSON reports resolve correctly
 def containerWorkspaceRoot = "/" + rootProject.rootDir.absolutePath
