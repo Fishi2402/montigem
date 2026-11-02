@@ -133,6 +133,14 @@ class C8JsonCoverageParser implements CoverageReportParser {
         }
       }
 
+      // The report contains only information for files that have a non-zero coverage, as otherwise
+      // the file is not even touched when the app is running and may even be excluded during the
+      // bundling process.
+      // But as those files are also important and MUST be shown, as they have 0 coverage, check
+      // the source-directories for files that are not parsed so far and add them with 0 coverage.
+      parsedFiles.addAll(findUncoveredFiles(session, basePath, rootPath, parsedFiles));
+
+
       CoverageModule rootModule = moduleAggregator.groupFilesInModules(parsedFiles);
 
       CoveragePerspective directPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
@@ -849,6 +857,131 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
   private boolean isInsideUncoveredDeclaration(Range range, List<Range> uncoveredDeclarations) {
     return uncoveredDeclarations.stream().anyMatch(range::isEnclosedIn);
+  }
+
+  private List<CoverageSourceFile> findUncoveredFiles(
+      ParseSession session,
+      Path basePath,
+      Path rootPath,
+      List<CoverageSourceFile> alreadyParsedFiles) throws IOException{
+
+    List<CoverageSourceFile> uncoveredFiles = new ArrayList<>();
+
+    Set<String> existingPaths = alreadyParsedFiles.stream()
+        .map(f -> f.getPhysicalPath().replace('\\', '/'))
+        .collect(Collectors.toSet());
+
+    Path buildDir = resolveBuildDir(basePath, rootPath);
+    List<Path> targetDirs = new ArrayList<>();
+    for (String target : List.of("gui2java2ts", "umlpJava2ts")) {
+      Path inBuild = buildDir.resolve(target);
+      if (Files.exists(inBuild) && Files.isDirectory(inBuild)) {
+        targetDirs.add(inBuild);
+      }
+    }
+    if (targetDirs.isEmpty()) {
+      return uncoveredFiles;
+    }
+    for (Path targetDir : targetDirs) {
+      Path relativeRoot = targetDir.getParent();
+
+      try (Stream<Path> stream = Files.walk(targetDir)) {
+        List<Path> tsFiles = stream
+            .filter(Files::isRegularFile)
+            .filter(p -> p.getFileName().toString().endsWith(".ts"))
+            .filter(p -> !p.getFileName().toString().endsWith(".d.ts"))
+            .toList();
+
+        for (Path tsFile : tsFiles) {
+          String relPath = relativeRoot.relativize(tsFile).toString().replace('\\', '/');
+          String physicalPath = extractPhysicalPath(tsFile.toString(), rootPath);
+          if (existingPaths.contains(physicalPath)) {
+            continue;
+          }
+          uncoveredFiles.add(createZeroCoverageFile(session, tsFile, relPath, rootPath));
+          existingPaths.add(relPath);
+        }
+      }
+    }
+    return uncoveredFiles;
+  }
+
+  private Path resolveBuildDir(Path basePath, Path rootPath){
+    Path fullBasePath = rootPath.resolve(basePath).toAbsolutePath().normalize();
+    String appPath = fullBasePath.toString().replace('\\', '/').replaceFirst("/dist/client/browser/?$", "");
+    Path appDir = Path.of(appPath);
+    return appDir;
+  }
+
+  private CoverageSourceFile createZeroCoverageFile(
+      ParseSession session,
+      Path tsFile,
+      String relativePath,
+      Path rootPath) throws IOException {
+
+    String physicalPath = extractPhysicalPath(tsFile.toString(), rootPath);
+    List<String> fileLines = Files.readAllLines(tsFile);
+
+    List<MeasuredLine> lines = new ArrayList<>();
+    int missedLines = 0;
+
+    for (int i = 0; i < fileLines.size(); i++) {
+      String lineText = fileLines.get(i);
+      if (lineText.isBlank()) {
+        continue;
+      }
+      int lineNum = i + 1;
+      missedLines++;
+
+      MeasuredLineBuilder lineBuilder = CoverageDashboardManager.measuredLineBuilder()
+          .lineNumber(lineNum)
+          .coveredInstructions(0)
+          .missedInstructions(1)
+          .coveredBranches(0)
+          .missedBranches(0);
+
+      lineBuilder.columnRangesAdd(CoverageDashboardManager.coverageColumnRangeBuilder()
+          .fromColumn(0)
+          .toColumn(lineText.length())
+          .hits(0)
+          .type(ColumnRangeType.STATEMENT)
+          .build()
+          .get());
+
+      lines.add(lineBuilder.build().get());
+    }
+
+    CoverageMetrics metrics = CoverageDashboardManager.coverageMetricsBuilder()
+        .coveredInstructions(0)
+        .missedInstructions(missedLines)
+        .coveredBranches(0)
+        .missedBranches(0)
+        .coveredLines(0)
+        .partialLines(0)
+        .missedLines(missedLines)
+        .unmappedLines(0)
+        .build()
+        .get();
+
+    CoverageSourceFileBuilder fileBuilder = CoverageDashboardManager.coverageSourceFileBuilder()
+        .path(relativePath)
+        .name(extractFileName(tsFile))
+        .physicalPath(physicalPath)
+        .category(ArtifactCategory.GENERATED)
+        .metrics(metrics);
+
+    lines.forEach(fileBuilder::linesAdd);
+
+    // Resolve upstream Java and FTL source files (they will inherit the 0% coverage)
+    try {
+      fileBuilder.addAllGeneratedBys(
+          resolveGenerationSources(session, fileBuilder, rootPath.toAbsolutePath().normalize())
+      );
+    } catch (URISyntaxException e) {
+      Log.error("Unable to resolve source-map for " + fileBuilder.getPath() + ": " + e.getMessage());
+    }
+
+    return fileBuilder.build().get();
   }
 
   // --- Supporting Domain & State Classes ---
