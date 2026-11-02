@@ -1,4 +1,70 @@
 /* (c) https://github.com/MontiCore/monticore */
+import java.time.LocalDateTime;
+
 classdiagram CoverageDashboard{
 
+  class Run{
+    String commitHash;
+    LocalDateTime timestamp;
+  }
+
+  class CoverageReport{
+    String name;
+  }
+
+  class CoveragePackage{
+    String name;
+  }
+
+  class CoverageClass{
+    String name;
+  }
+
+  class CoverageMethod{
+    String signature;
+    int line;
+  }
+
+  class CoverageMetrics{
+    int coveredInstructions;
+    int missedInstructions;
+    int coveredBranches;
+    int missedBranches;
+    int coveredLines;
+    int missedLines;
+  }
+
+  class CoverageSourceFile{
+    String name;
+  }
+
+  class CoverageLine{
+    int lineNumber;
+    int missedInstructions;
+    int coveredInstructions;
+    int missedBranches;
+    int coveredBranches;
+  }
+
+  class CoverageColumnRange{
+    int fromColumn;
+    int toColumn;
+    boolean covered;
+  }
+
+  association [1] Run -> (reports) CoverageReport [1..*];
+
+  association [1] CoverageReport -> (packages) CoveragePackage [1..*];
+  association [1] CoverageReport -> (metrics) CoverageMetrics [1];
+
+  association [1] CoveragePackage -> (classes) CoverageClass [1..*];
+  association [1] CoveragePackage -> (metrics) CoverageMetrics [1];
+
+  association [1] CoverageClass -> (methods) CoverageMethod [*];
+  association [1] CoverageClass -> (metrics) CoverageMetrics [1];
+  association [1..*] CoverageClass (classes) <-> (sourceFile) CoverageSourceFile [1];
+
+  association [1] CoverageSourceFile -> (lines) CoverageLine[1..*];
+
+  association [1] CoverageLine -> (columnRanges) CoverageColumnRange [*];
 }
