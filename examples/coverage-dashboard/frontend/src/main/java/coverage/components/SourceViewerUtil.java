@@ -52,13 +52,20 @@ public final class SourceViewerUtil {
             } else {
               css = lineRange.getHits() > 0 ? "range-covered" : "range-missed";
             }
-            Range range = new Range(line.getLineNumber(), lineRange.getFromColumn(), line.getLineNumber(), lineRange.getToColumn());
+            // Monaco Editor columns are 1-based, whereas C8/istanbul columns are 0-based
+            Range range = new Range(
+                line.getLineNumber(),
+                lineRange.getFromColumn() + 1,
+                line.getLineNumber(),
+                lineRange.getToColumn() + 1
+            );
             decorations.add(new InlineDecoration(range, css));
           }
         } else {
           // coarse data, based on hits per line
           String css = determineCoarseCss(line);
-          Range range = new Range(line.getLineNumber(), 0, line.getLineNumber() + 1, 0);
+          // Monaco line-covering range from column 1 to next line column 1
+          Range range = new Range(line.getLineNumber(), 1, line.getLineNumber() + 1, 1);
           decorations.add(new InlineDecoration(range, css));
         }
       }
@@ -68,10 +75,13 @@ public final class SourceViewerUtil {
   }
 
   private static String determineCoarseCss(MeasuredLine line){
-    if (line.getMissedInstructions() > 0 || line.getMissedBranches() > 0) {
-      return (line.getCoveredInstructions() > 0 || line.getCoveredBranches() > 0)
-          ? "range-partial"
-          : "range-missed";
+    boolean hasMiss = line.getMissedInstructions() > 0 || line.getMissedBranches() > 0;
+    boolean hasCov = line.getCoveredInstructions() > 0 || line.getCoveredBranches() > 0;
+    if (hasMiss && hasCov) {
+      return "range-partial";
+    }
+    if (hasMiss) {
+      return "range-missed";
     }
     return "range-covered";
   }
