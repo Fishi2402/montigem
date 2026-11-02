@@ -55,14 +55,24 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
         basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'", "CoverageDashboardServerApplication");
 
+    TestGroup jsweetGroup = CoverageDashboardManager.testGroupBuilder()
+        .name("jsweet-test")
+        .reportsAdd(e2eReport)
+        .reportsAdd(aggregatedTranspilationReport)
+        .build().get();
+
+    TestGroup umlpJsweetGroup = CoverageDashboardManager.testGroupBuilder()
+        .name("umlp-jsweet")
+        .reportsAdd(internalJSweetReport)
+        .build().get();
+
     // Create a run based on this data
     CoverageDashboardManager.runBuilder()
         .commitHash("f0879ff463c32226eea6b39e41860f79b70668d8")
         .timestamp(LocalDateTime.now())
         .branchName("ma-mfl/Generator_coverage")
-        .reportsAdd(e2eReport)
-        .reportsAdd(internalJSweetReport)
-        .reportsAdd(aggregatedTranspilationReport)
+        .testGroupsAdd(jsweetGroup)
+        .testGroupsAdd(umlpJsweetGroup)
         .build().get();
   }
 }
