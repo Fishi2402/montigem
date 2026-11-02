@@ -40,18 +40,6 @@ dependencies {
   testImplementation project(':umlp-test-rte')
 }
 
-/*
-umlp2java{
-  doFirst {
-    System.setProperty("MC_REPORT_SOURCE_MAPPING", "true")
-  }
-
-  doLast {
-    System.setProperty("MC_REPORT_SOURCE_MAPPING", "false")
-  }
-}
-*/
-
 jib{
   from.image =  'eclipse-temurin:21-jre-alpine'//"$container_from_image"
   to.image = "${container_target_image_base}coverage-dashboard-backend:latest"
