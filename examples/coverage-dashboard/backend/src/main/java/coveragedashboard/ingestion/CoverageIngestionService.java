@@ -16,7 +16,7 @@ public class CoverageIngestionService {
   }
 
   public CoverageReport ingestArtifact(File artifactFile, String reportName, Path basePath, Path rootPath, ReportType type){
-    CoverageReportParser parser = parserFactory.getParser(type);
+    CoverageReportParser parser = parserFactory.getParser(artifactFile, type);
     try {
       CoverageReport coverageReport = parser.parse(artifactFile, reportName, basePath, rootPath);
 
