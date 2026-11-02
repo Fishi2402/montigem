@@ -18,13 +18,12 @@ component ReportOverview(App app, CoverageReport report) {
     title = report.name,
     component = cardGrid@GemGrid(
       x = ["1fr"],
-      y = ["600px"],
       rows = [
         [
           @GemGrid(
             width = "100%",
             height = "100%",
-            y = ["1fr", "auto"],
+            y = ["600px", "auto"],
             rows = [
               [
                 directChart@GemPieChart(data = app.getCoverageData(report.directPerspective))
