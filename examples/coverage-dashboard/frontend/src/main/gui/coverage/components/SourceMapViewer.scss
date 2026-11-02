@@ -1,6 +1,5 @@
 :host ::ng-deep .range-missed {
   background-color: rgba(244, 67, 54, 0.25);
-  /* Optional: Adds a slightly darker border to the bottom for extra visibility */
   border-bottom: 2px solid rgba(244, 67, 54, 0.5);
 }
 
@@ -11,6 +10,18 @@
 
 :host ::ng-deep .range-covered {
   background-color: rgba(76, 175, 80, 0.25);
+}
+
+:host ::ng-deep .range-missed-light {
+  background-color: rgba(244, 67, 54, 0.15);
+  border-bottom: 2px dashed rgba(244, 67, 54, 0.6);
+  border-radius: 2px;
+}
+
+:host ::ng-deep .range-covered-light {
+  background-color: rgba(76, 175, 80, 0.15);
+  border-bottom: 2px dashed rgba(76, 175, 80, 0.6);
+  border-radius: 2px;
 }
 
 :host(.sourceMapViewer) {
