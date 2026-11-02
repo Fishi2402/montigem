@@ -21,8 +21,8 @@ component ModuleTreeView(
     content = title@GemRow(
       width = "100%",
       components = [
-        titleName@GemText(value = name),
-        titleCoverage@GemText(value = getCoveragePercent(rootModule.metrics))
+        titleName@GemText(value = name, color = getCoverageColor(rootModule.metrics)),
+        titleCoverage@GemText(value = getCoveragePercent(rootModule.metrics), color = getCoverageColor(rootModule.metrics))
       ]
     ),
     children = [
@@ -44,8 +44,8 @@ component ModuleTreeView(
          content = content@GemRow(
            width = "100%",
            components = [
-             fileName@GemText(value = getFileDisplayName(file, selectedFile)),
-             fileCoverage@GemText(value = getCoveragePercent(file.metrics))
+             fileName@GemText(value = getFileDisplayName(file, selectedFile), color = getCoverageColor(file.metrics)),
+             fileCoverage@GemText(value = getCoveragePercent(file.metrics), color = getCoverageColor(file.metrics))
            ]
          ),
          onClick = onFileNodeClick(file)
