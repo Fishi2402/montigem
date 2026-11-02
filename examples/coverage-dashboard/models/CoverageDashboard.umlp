@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
 
@@ -96,11 +97,13 @@ classdiagram CoverageDashboard{
 
   association [1] CoverageColumnRange -> (type) ColumnRangeType [1];
 
+
+
   <<singleton>>
   class App{
     GemLineChartData getCoverageTrajectory();
     CoverageReport getDummyCoverageReport();
-    String getSourceFileContent(CoverageSourceFile file);
     String getFileContent(CoverageSourceFile file);
+    List<String> getLineMapping(CoverageSourceFile file);
   }
 }

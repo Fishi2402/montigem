@@ -17,7 +17,8 @@ component SourceMapViewer(
     ?String sourceContent,
     ?String targetContent,
     int jumpSourceFileLine,
-    List<InlineDecoration> targetDecoration) {
+    List<InlineDecoration> targetDecoration,
+    List<InlineDecoration> sourceDecoration) {
   @GemGrid(
     width = "100%",
     height = "100%",
@@ -29,7 +30,7 @@ component SourceMapViewer(
         entry = sourceContent,
         disabled = true,
         language = getSourceLanguage(targetFile),
-        highlighting = getSourceHighlighting(targetFile),
+        highlighting = sourceDecoration,
         jumpToLine = jumpSourceFileLine)
       ],
       [targetEditor@MonacoEditor(
