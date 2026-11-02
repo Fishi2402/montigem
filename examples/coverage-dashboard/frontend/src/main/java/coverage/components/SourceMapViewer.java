@@ -1,14 +1,10 @@
 package coverage.components;
 
-import coveragedashboard.CoverageColumnRange;
-import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.commands.GetFileContent;
 import coveragedashboard.commands.GetLineMapping;
 import de.se_rwth.commons.logging.Log;
-import mc.fenix.editor.monacoeditortypes.InlineDecoration;
 import mc.fenix.editor.monacoeditortypes.LineClickEvent;
-import mc.fenix.editor.monacoeditortypes.Range;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
 import umlp.jsweet.extension.annotation.Component;
@@ -123,10 +119,10 @@ public class SourceMapViewer extends SourceMapViewerTOP{
       // For now, simply load first
       this.setSourceContent(CommandManager.executeCommand(new GetFileContent(targetFile.getGeneratedBy(0).getGemId()))
           .asSimpleResult().get());
-      this.setSourceDecoration(getDecoration(targetFile.getGeneratedBy(0)));
+      this.setSourceDecoration(SourceViewerUtil.calculateDecoration(targetFile.getGeneratedBy(0)));
     }
 
-    this.setTargetDecoration(getDecoration(targetFile));
+    this.setTargetDecoration(SourceViewerUtil.calculateDecoration(targetFile));
 
     List<String> mappingList = new ArrayList<>();
 
@@ -153,33 +149,5 @@ public class SourceMapViewer extends SourceMapViewerTOP{
     }
   }
 
-  private List<InlineDecoration> getDecoration(CoverageSourceFile file){
-    List<InlineDecoration> decorations = new ArrayList<>();
-    for(CoverageLine line : file.getLinesList()){
-      if(line.getColumnRangesList().size() > 0){
-        // We have range data for the line
-        for(CoverageColumnRange lineRange : line.getColumnRangesList()){
-          Range range = new Range(line.getLineNumber(), lineRange.getFromColumn(), line.getLineNumber(), lineRange.getToColumn());
-          InlineDecoration decoration = new InlineDecoration(range, "range-missed");
-          if(lineRange.getHits() > 0){
-            decoration.setCssClass("range-covered");
-          }
-          decorations.add(decoration);
-        }
-      }else{
-        // coarse data, based on hits per line
-        Range range = new Range(line.getLineNumber(), 0, line.getLineNumber() + 1, 0);
-        InlineDecoration decoration = new InlineDecoration(range, "range-missed");
-        if(line.getMissedInstructions() > 0 || line.getMissedBranches() > 0){
-          if(line.getCoveredInstructions() > 0 || line.getMissedBranches() > 0){
-            decoration.setCssClass("range-partial");
-          }
-        }else{
-          decoration.setCssClass("range-covered");
-        }
-        decorations.add(decoration);
-      }
-    }
-    return decorations;
-  }
+
 }

@@ -12,3 +12,10 @@
 :host ::ng-deep .range-covered {
   background-color: rgba(76, 175, 80, 0.25);
 }
+
+:host ::ng-deep .range-missed,
+:host ::ng-deep .range-partial,
+:host ::ng-deep .range-covered {
+  /* Force the background to fill the entire line height */
+  height: 100%;
+}
