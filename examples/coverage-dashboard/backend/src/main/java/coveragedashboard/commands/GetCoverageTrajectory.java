@@ -66,17 +66,14 @@ public class GetCoverageTrajectory extends GetCoverageTrajectoryTOP {
           // Fill default data when not present from the beginning
           for(int i = 0; i < labels.size() - 1; i++){
             newEntryBuilder.addData(0d);
-            newEntryBuilder.addIds(0L);
           }
           return newEntryBuilder;
         });
         entryBuilder.addData(coverage);
-        entryBuilder.addIds(report.getGemId());
       }
       for (Map.Entry<String, GemLineChartEntryBuilder> entry : entryBuilders.entrySet()) {
         if (!processedReportsInRun.contains(entry.getKey())) {
           entry.getValue().addData(0d);
-          entry.getValue().addIds(0L);
         }
       }
     }

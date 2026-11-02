@@ -216,9 +216,9 @@ public abstract class GUIJava2TSTask extends DefaultTask {
     }
     // Gradle only closes services it has created
     javaBeansCacheCleanup.get();
-    translate(); 	
+    translate();
   }
-  
+
   protected boolean shouldRunAgain(InputChanges inputChanges) {
     if (hasChange(inputChanges, getGeneratedSources())
         || (getGeneratedSymbols().isPresent() && hasChange(inputChanges, getGeneratedSymbols()))) {
@@ -479,39 +479,6 @@ public abstract class GUIJava2TSTask extends DefaultTask {
     return individualInputPaths;
   }
 
-  @Override
-  protected void prepareWorkQueue(){
-    // Check if JaCoCo is requested for this build to get the coverage during invocation of the
-    // generator. In order to attach JaCoCo, spawn separate JVM just for this step and attach
-    // JaCoCo
-    if(getJacocoAgentArg().isPresent() && !getJacocoAgentArg().get().isEmpty()) {
-      getLogger().info("Spawning separate JVM with JaCoCo attached for internal coverage");
-      super.workQueue = getWorkerExecutor().processIsolation(spec ->{
-        // Set working directory of new JVM to project dir to match gradle behavior
-        spec.getForkOptions().setWorkingDir(getProject().getProjectDir());
-        // Inject the current environment to match behavior of Gradle-worker
-        spec.getForkOptions().environment(System.getenv());
-        // Bypass Java JPMS strong encapsulation (--add-opens) to allow JSweet
-        // to access internal JDK compiler packages (com.sun.tools.javac.*)
-        // and java.net via reflection, which are otherwise blocked in Java 21+.
-        // (see https://github.com/cincheo/jsweet/issues/710#issuecomment-1048061355)
-        spec.getForkOptions().jvmArgs(
-            getJacocoAgentArg().get(),
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-            "--add-opens", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-            "--add-opens", "java.base/java.net=ALL-UNNAMED"
-        );
-      });
-    }else{
-      // Default behavior
-      super.prepareWorkQueue();
-    }
-  }
 
   private WorkQueue createWorkQueue(ConfigurableFileCollection targetClassPath){
     // Check if JaCoCo is requested for this build to get the coverage during invocation of the
@@ -543,7 +510,9 @@ public abstract class GUIJava2TSTask extends DefaultTask {
       });
     }else{
       // JSweet runs in a class loader that stays open between builds, see Java2TSAction
-      return getWorkerExecutor().noIsolation();
+      return getWorkerExecutor().classLoaderIsolation(spec -> {
+        spec.getClasspath().from(targetClassPath);
+      });
     }
   }
 }
