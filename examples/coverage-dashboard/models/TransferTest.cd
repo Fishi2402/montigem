@@ -1,0 +1,7 @@
+<<pojoCD>>
+classdiagram CoverageDashboard{
+
+  public class StringContent{
+    +String content;
+  }
+}

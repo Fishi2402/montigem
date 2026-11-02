@@ -2,6 +2,7 @@ package coverage.components;
 
 import coveragedashboard.App;
 import coveragedashboard.CoverageSourceFile;
+import coveragedashboard.StringContent;
 import coveragedashboard.commands.GetFileContent;
 import coveragedashboard.commands.GetSourceFileContent;
 import mc.fenix.editor.monacoeditortypes.LineClickEvent;
@@ -87,10 +88,14 @@ public class SourceMapViewer extends SourceMapViewerTOP{
     }
     CoverageSourceFile file = this.getTargetFile().get();
 
-    CommandResult<String> result = CommandManager.executeCommand(new GetFileContent(file.getGemId()));
-    SimpleResult<String> simpleResult = result.asSimpleResult();
-    String value = simpleResult.get();
+    CommandResult<StringContent> result = CommandManager.executeCommand(new GetFileContent(file.getGemId()));
+    SimpleResult<StringContent> simpleResult = result.asSimpleResult();
+    String value = simpleResult.get().getContent();
     this.setTargetContent(value);
-    this.setSourceContent(CommandManager.executeCommand(new GetSourceFileContent(file.getGemId())).asSimpleResult().get());
+    result = CommandManager.executeCommand(new GetSourceFileContent(file.getGemId()));
+    simpleResult = result.asSimpleResult();
+    value = simpleResult.get().getContent();
+
+    this.setSourceContent(value);
   }
 }

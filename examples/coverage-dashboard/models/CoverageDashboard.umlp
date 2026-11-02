@@ -5,6 +5,10 @@ import mc.fenix.charts.GemLineChartTypes.GemLineChartData;
 
 classdiagram CoverageDashboard{
 
+  class StringContent{
+    String content;
+  }
+
   class Run{
     String commitHash;
     LocalDateTime timestamp;
@@ -99,7 +103,7 @@ classdiagram CoverageDashboard{
     GemLineChartData getCoverageTrajectory();
     CoverageSourceFile getDummyCoverageFile();
     CoverageReport getDummyCoverageReport();
-    String getSourceFileContent(CoverageSourceFile file);
-    String getFileContent(CoverageSourceFile file);
+    StringContent getSourceFileContent(CoverageSourceFile file);
+    StringContent getFileContent(CoverageSourceFile file);
   }
 }
