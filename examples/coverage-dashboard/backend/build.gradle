@@ -109,7 +109,7 @@ jib{
 
       path{
         setFrom(file("C:/Users/marku/Documents/Studium/Master/MA/umlp/umlp-tool/build/libs"))
-        includes = ['umlp-tool-7.9.1-SNAPSHOT.jar']
+        includes = ['umlp-tool-7.9.2-SNAPSHOT.jar']
         into = "/C/Users/marku/Documents/Studium/Master/MA/umlp/umlp-tool/build/libs/"
       }
 
