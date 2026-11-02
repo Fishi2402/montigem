@@ -36,12 +36,13 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
 
     // Load internal jsweet-test coverage
     File internalJsweetFile = new File("./../../../umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml");
-    CoverageReport internalJSweetReport = service.ingestArtifact(internalJsweetFile, "JSweet-Unit test", Path.of("./"), ReportType.INTERNAL);
+    basePath = Path.of("./../../../umlp-jsweet/src/main/java/").toAbsolutePath().normalize();
+    CoverageReport internalJSweetReport = service.ingestArtifact(internalJsweetFile, "JSweet-Unit test", basePath, ReportType.INTERNAL);
     Log.warn(LocalDateTime.now().toString() + ": Finished jsweet unit test data");
 
     // Load jsweet-test umlpjava2ts and gui2java2ts coverage
     File aggregatedTranspilationFile = new File("./../../jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml");
-    CoverageReport aggregatedTranspilationReport = service.ingestArtifact(aggregatedTranspilationFile, "Integrated coverage tests", Path.of("./"), ReportType.INTERNAL);
+    CoverageReport aggregatedTranspilationReport = service.ingestArtifact(aggregatedTranspilationFile, "Integrated coverage tests", basePath, ReportType.INTERNAL);
     Log.warn(LocalDateTime.now().toString() + ": Finished aggregated jsweet coverage data");
 
     // Create a run based on this data
