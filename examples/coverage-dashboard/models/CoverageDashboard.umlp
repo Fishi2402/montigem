@@ -22,8 +22,17 @@ classdiagram CoverageDashboard{
     GENERATED_CODE_TEST;
   }
 
+  class CoveragePerspective{
+    String name;
+  }
+
   class CoverageModule{
     String name;
+  }
+
+  enum PerspectiveType{
+    MEASURED_ROOT,
+    AGGREGATED;
   }
 
   class CoverageSourceFile{
@@ -78,8 +87,12 @@ classdiagram CoverageDashboard{
 
   association [1] Run -> (reports) CoverageReport [1..*];
 
-  association [1] CoverageReport -> (module) CoverageModule [1];
+  association [1] CoverageReport -> (directPerspective) CoveragePerspective [1];
+  association [1] CoverageReport -> (aggregatedPerspectives) CoveragePerspective [*];
   association [1] CoverageReport -> (type) ReportType [1];
+
+  association [1] CoveragePerspective -> (type) PerspectiveType [1];
+  association [1] CoveragePerspective -> (rootModule) CoverageModule [1];
 
   association [1] CoverageModule -> (sourceFiles) CoverageSourceFile [*];
   association [1] CoverageModule -> (metrics) CoverageMetrics [1];

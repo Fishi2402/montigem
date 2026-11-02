@@ -1,12 +1,23 @@
 package coveragedashboard.ingestion;
 
 import coveragedashboard.CoverageDashboardManager;
+import coveragedashboard.CoverageLine;
+import coveragedashboard.CoverageLineBuilder;
+import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoverageSourceFile;
+import coveragedashboard.CoverageSourceFileBuilder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class CoverageModuleAggregator {
 
@@ -37,6 +48,122 @@ class CoverageModuleAggregator {
     calculateMetricsRecursively(root);
 
     return root;
+  }
+
+  public CoverageModule groupDependentFiles(int level, List<CoverageSourceFile> flatFiles){
+    CoverageModule root = getEmptyModule("");
+
+    List<CoverageSourceFile> sourceFiles = new ArrayList<CoverageSourceFile>();
+
+    // At first, get all files for the correct level
+    List<CoverageSourceFile> contributors = new ArrayList<>();
+    for(CoverageSourceFile file : flatFiles){
+      contributors.addAll(getGeneratedByAtLevel(file, level));
+    }
+
+    // Group them by there path
+    Map<String, List<CoverageSourceFile>> groupedFiles = contributors.stream()
+        .collect(Collectors.groupingBy(CoverageSourceFile::getPath));
+
+    // Merge metrics for each of those files
+    List<CoverageSourceFile> aggregatedFiles = groupedFiles.entrySet().stream()
+        .map(entry -> mergeCoverageData(entry.getKey(), entry.getValue()))
+        .collect(Collectors.toList());
+
+    return root;
+  }
+
+  private CoverageSourceFile mergeCoverageData(String path, List<CoverageSourceFile> files){
+    CoverageSourceFileBuilder mergedBuilder = CoverageDashboardManager.coverageSourceFileBuilder();
+    mergedBuilder.setPath(path);
+    mergedBuilder.setName(files.get(0).getName());
+    mergedBuilder.setPhysicalPath(files.get(0).getPhysicalPath());
+    mergedBuilder.setCategory(files.get(0).getCategory());
+
+    // Now line-by-line, is covered if at least one of the source files covers it
+    Map<Integer, CoverageLineBuilder> mergedLinesBuilder = new HashMap<>();
+    for(CoverageSourceFile file : files){
+      for(CoverageLine line : file.getLinesList()){
+        int num = line.getLineNumber();
+        CoverageLineBuilder builder = mergedLinesBuilder.get(num);
+        if(builder == null){
+          builder = CoverageDashboardManager.coverageLineBuilder()
+              .lineNumber(num)
+              .coveredInstructions(line.getCoveredInstructions())
+              .missedInstructions(line.getMissedInstructions())
+              .coveredBranches(line.getCoveredBranches())
+              .missedBranches(line.getMissedBranches());
+          mergedLinesBuilder.put(num, builder);
+        }else{
+          builder.coveredInstructions(builder.getCoveredInstructions() + line.getCoveredInstructions());
+          builder.missedInstructions(builder.getMissedInstructions() + line.getMissedInstructions());
+          builder.coveredBranches(builder.getCoveredBranches() + line.getCoveredBranches());
+          builder.missedBranches(builder.getMissedBranches() + line.getMissedBranches());
+        }
+      }
+    }
+    Set<CoverageLine> mergedLines = new HashSet<>();
+    for(CoverageLineBuilder lineBuilder : mergedLinesBuilder.values()){
+      mergedLines.add(lineBuilder.build().get());
+    }
+
+    CoverageMetrics metrics = calculateMetrics(mergedLines);
+    mergedBuilder.metrics(metrics);
+    mergedBuilder.lines(mergedLines);
+    return mergedBuilder.build().get();
+  }
+
+  private List<CoverageSourceFile> getGeneratedByAtLevel(CoverageSourceFile file, int level){
+    if(file == null || level < 1){
+      return Collections.emptyList();
+    }
+
+    List<CoverageSourceFile> currentLevel = Collections.singletonList(file);
+    for(int step = 1; step <= level; step++){
+      List<CoverageSourceFile> nextLevel = new ArrayList<>();
+      for(CoverageSourceFile current : currentLevel){
+        if(current.getGeneratedByList() != null){
+          nextLevel.addAll(current.getGeneratedByList());
+        }
+      }
+      if(nextLevel.isEmpty()){
+        return Collections.emptyList();
+      }
+      currentLevel = nextLevel;
+    }
+    return currentLevel;
+  }
+
+  private CoverageMetrics calculateMetrics(Set<CoverageLine> lines){
+    int coveredInstructions = 0;
+    int missedInstructions = 0;
+    int coveredBranches = 0;
+    int missedBranches = 0;
+    int coveredLines = 0;
+    int missedLines = 0;
+
+    for (CoverageLine line : lines) {
+      coveredInstructions += line.getCoveredInstructions();
+      missedInstructions += line.getMissedInstructions();
+
+      coveredBranches += line.getCoveredBranches();
+      missedBranches += line.getMissedBranches();
+
+      if (line.getCoveredInstructions() > 0) {
+        coveredLines++;
+      } else {
+        missedLines++;
+      }
+    }
+
+    return CoverageDashboardManager.coverageMetricsBuilder()
+        .coveredInstructions(coveredInstructions)
+        .missedInstructions(missedInstructions)
+        .coveredBranches(coveredBranches)
+        .missedBranches(missedBranches)
+        .coveredLines(coveredLines)
+        .missedLines(missedLines)
+        .build().get();
   }
 
   private void calculateMetricsRecursively(CoverageModule node){

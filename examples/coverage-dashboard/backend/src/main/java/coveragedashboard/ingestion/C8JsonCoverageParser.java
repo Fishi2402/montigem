@@ -12,10 +12,12 @@ import coveragedashboard.CoverageLine;
 import coveragedashboard.CoverageLineBuilder;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
+import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
 import coveragedashboard.CoverageScope;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
+import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSource;
@@ -132,10 +134,38 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
       CoverageModule rootModule = moduleAggregator.groupFilesInModules(parsedFiles);
 
+      CoveragePerspective directPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+          .name("TS")
+          .rootModule(rootModule)
+          .type(PerspectiveType.MEASURED_ROOT)
+          .build()
+          .get();
+
+      // Aggregate java files
+      CoverageModule javaModule = moduleAggregator.groupDependentFiles(1, parsedFiles);
+      CoveragePerspective javaPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+          .name("JAVA")
+          .rootModule(javaModule)
+          .type(PerspectiveType.AGGREGATED)
+          .build()
+          .get();
+
+      // Aggregate FTL files
+      CoverageModule ftlModule = moduleAggregator.groupDependentFiles(2, parsedFiles);
+      CoveragePerspective ftlPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+          .name("FTL")
+          .rootModule(ftlModule)
+          .type(PerspectiveType.AGGREGATED)
+          .build()
+          .get();
+
+
       return CoverageDashboardManager.coverageReportBuilder()
           .name(reportName)
           .type(ReportType.GENERATED_CODE_TEST)
-          .module(rootModule)
+          .directPerspective(directPerspective)
+          .aggregatedPerspectivesAdd(javaPerspective)
+          .aggregatedPerspectivesAdd(ftlPerspective)
           .build()
           .get();
     }
