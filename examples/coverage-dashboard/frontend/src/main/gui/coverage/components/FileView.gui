@@ -21,20 +21,21 @@ component FileView(
     width = "100%",
     height = "100%",
     rowGap = "5px",
-    y = ["minmax(0, 1fr)", "auto"],
+    y = ["minmax(0,1fr)", "auto"],
+    x = ["auto"],
     rows = [
       [moduleTreeView@ModuleTreeView(
         rootModule = selectedPerspective.rootModule,
-        name = report.name,
+        name = getRootDisplayName(selectedPerspective),
         fileSelect = fileSelect)],
       [
-        // switch between different view -> defined by module
+        // switch between different views -> defined by report
         viewsContainer@GemRow(
           width = "100%",
-          height = "100%",
+          height = "auto",
           components = [
             @iterate(String view : getPossibleViews(report)){
-              @GemButton(
+              viewButton@GemButton(
                 label = view,
                 leftClick = onViewClicked(view));
             }

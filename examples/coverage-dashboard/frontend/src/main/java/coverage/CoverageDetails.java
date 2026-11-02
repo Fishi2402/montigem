@@ -36,4 +36,9 @@ public class CoverageDetails extends CoverageDetailsTOP {
     else
       return false;
   }
+
+  @Override
+  public String getTitle(CoverageReport report){
+    return "Coverage Details: " + report.getName();
+  }
 }

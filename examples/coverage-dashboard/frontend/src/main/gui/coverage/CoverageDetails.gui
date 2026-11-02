@@ -31,7 +31,7 @@ page CoverageDetails(App app, CoverageReport report, Optional<CoverageSourceFile
         ],
         [
           @GemText(
-            value = "Coverage Details",
+            value = getTitle(report),
             size = "3.5rem",
             weight = "bold")
         ],

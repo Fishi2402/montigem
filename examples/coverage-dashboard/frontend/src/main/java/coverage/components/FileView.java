@@ -2,6 +2,7 @@ package coverage.components;
 
 import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
+import coveragedashboard.PerspectiveType;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -13,7 +14,12 @@ public class FileView extends FileViewTOP {
 
   public FileView(){
     super();
-    this.setSelectedPerspective (this.getReport().getDirectPerspective());
+  }
+
+  @Override
+  public void setReport(CoverageReport report){
+    super.setReport(report);
+    this.setSelectedPerspective(this.getReport().getDirectPerspective());
   }
 
   @Override
@@ -42,5 +48,14 @@ public class FileView extends FileViewTOP {
         }
       }
     };
+  }
+
+  @Override
+  public String getRootDisplayName(CoveragePerspective perspective){
+    if(perspective.getType() == PerspectiveType.MEASURED_ROOT){
+      return "Direct perspective - " + perspective.getName();
+    }else {
+      return "Aggregated perspective - " +perspective.getName();
+    }
   }
 }
