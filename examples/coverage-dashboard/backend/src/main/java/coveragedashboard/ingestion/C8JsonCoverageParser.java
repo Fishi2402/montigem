@@ -308,7 +308,7 @@ class C8JsonCoverageParser implements CoverageReportParser {
           resourcePath.representation,
           path -> {
             try(Stream<String> lines = Files.lines(path)){
-              return lines.count();
+              return lines.filter(line -> !line.trim().isEmpty()).count();
             }
           });
       }catch (IOException e){
