@@ -1,9 +1,14 @@
 package coveragedashboard;
 
+import coveragedashboard.ingestion.CoverageIngestionService;
+import de.se_rwth.commons.logging.Log;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 public class CoverageDashboardServerApplication extends CoverageDashboardServerApplicationTOP {
   public static void main(String[] args) {
@@ -15,13 +20,39 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
   public void init() throws IOException {
     super.init();
 
-    createDummyData();
+    createLocalData();
   }
 
-  public void createDummyData(){
-    CoverageDashboardManager.dummyContentBuilder()
-        .content("0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789\n0123456789")
-        .build();
+  public void createLocalData(){
+    // Mock the service and load data by hand for now
+    CoverageIngestionService service = new CoverageIngestionService();
+
+    Log.warn(LocalDateTime.now().toString() + ": Begin data-ingestion");
+    // Load the front-end data
+    File e2eFrontendFile = new File("./../../jsweet-test/frontend/build/app/coverage/coverage-final.json");
+    Path basePath = Path.of("./../../jsweet-test/frontend/build/app/dist/client/browser/").toAbsolutePath().normalize();
+    CoverageReport e2eReport = service.ingestArtifact(e2eFrontendFile, "E2E-Frontend Test", basePath, ReportType.E2E_FRONTEND);
+    Log.warn(LocalDateTime.now().toString() + ": Finished e2e frontend");
+
+    // Load internal jsweet-test coverage
+    File internalJsweetFile = new File("./../../../umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml");
+    CoverageReport internalJSweetReport = service.ingestArtifact(internalJsweetFile, "JSweet-Unit test", Path.of("./"), ReportType.INTERNAL);
+    Log.warn(LocalDateTime.now().toString() + ": Finished jsweet unit test data");
+
+    // Load jsweet-test umlpjava2ts and gui2java2ts coverage
+    File aggregatedTranspilationFile = new File("./../../jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml");
+    CoverageReport aggregatedTranspilationReport = service.ingestArtifact(aggregatedTranspilationFile, "Integrated coverage tests", Path.of("./"), ReportType.INTERNAL);
+    Log.warn(LocalDateTime.now().toString() + ": Finished aggregated jsweet coverage data");
+
+    // Create a run based on this data
+    CoverageDashboardManager.runBuilder()
+        .commitHash("f0879ff463c32226eea6b39e41860f79b70668d8")
+        .timestamp(LocalDateTime.now())
+        .branchName("ma-mfl/Generator_coverage")
+        .reportsAdd(e2eReport)
+        .reportsAdd(internalJSweetReport)
+        .reportsAdd(aggregatedTranspilationReport)
+        .build().get();
   }
 }
 
