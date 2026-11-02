@@ -22,14 +22,20 @@ import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.DecodedSourceMap;
 import de.monticore.sourcemap.Decoding;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FilenameUtils;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,14 +58,21 @@ class C8JsonCoverageParser implements CoverageReportParser {
 
   private final JsonFactory jsonFactory;
   private final CoverageModuleAggregator moduleAggregator;
+  private final List<ResourcePath> resourcePaths;
 
   public C8JsonCoverageParser(){
     this.jsonFactory = new JsonFactory();
     this.moduleAggregator = new CoverageModuleAggregator();
+    this.resourcePaths = new ArrayList<>();
   }
 
   @Override
   public CoverageReport parse(File jsonFile, String reportName, Path basePath, Path rootPath) throws IOException {
+    for(ResourcePath resourcePath : resourcePaths){
+      resourcePath.close();
+    }
+    resourcePaths.clear();
+
     List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
     try (JsonParser parser = jsonFactory.createParser(jsonFile)) {
@@ -111,6 +124,11 @@ class C8JsonCoverageParser implements CoverageReportParser {
       }
     }
 
+    for(ResourcePath resourcePath : resourcePaths){
+      resourcePath.close();
+    }
+    resourcePaths.clear();
+
     // Aggregate into modules
     CoverageModule rootModule = moduleAggregator.groupFilesInModules(parsedFiles);
 
@@ -157,91 +175,125 @@ class C8JsonCoverageParser implements CoverageReportParser {
     List<CoverageSourceFile> generatedBy = new ArrayList<>();
 
     // Check if a source-map exists
-    Path sourceMapPath = Path.of(targetFileBuilder.getPhysicalPath() + ".map");
-    if(Files.exists(sourceMapPath)){
-      String sourceMapContent = Files.readString(sourceMapPath);
-      DecodedSourceMap sourceMap = Decoding.parseSourceMapJson(
-          sourceMapContent, sourceMapPath.getParent().toUri().toURL());
-      List<DecodedMapping> decodedMappings = sourceMap.getMappings();
-
-      // Performance: Pre-map target lines for O(1) lookup
-      Map<Integer, CoverageLine> targetLineMap = targetFileBuilder.getLinesList().stream().collect(
-          Collectors.toMap(CoverageLine::getLineNumber, l -> l, (existing, replacement) -> existing)
-      );
-
-      for(DecodedSource decodedSource : sourceMap.sources){
-        // Skip if we can not find the source, or it is explicitly ignored
-        if(decodedSource.ignored || decodedSource.url == null)
-          continue;
-
-        Path decodedSourcePath = Path.of(URI.create(decodedSource.url.toString().replace('\\', '/'))).normalize();
-        CoverageSourceFileBuilder sourceCoverageFile = CoverageDashboardManager.coverageSourceFileBuilder()
-            .path(extractRelativePath(decodedSourcePath, basePath))
-            .name(extractFileName(decodedSourcePath))
-            .physicalPath(decodedSourcePath.toAbsolutePath().toString())
-            // Check how we will decide this later on!
-            .category(ArtifactCategory.GENERATED);
-
-        Map<Integer, CoverageLineBuilder> lineBuilders = new HashMap<Integer, CoverageLineBuilder>();
-        // Get all mappings for this source and build the lines based on the coverage data
-        decodedMappings.stream().filter(mapping -> mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url))
-            .forEach(mapping ->{
-
-              CoverageLine targetLine = targetLineMap.get(mapping.generatedLine);
-              if(targetLine == null)
-                return;
-
-              // Get the line-coverage for this line in the target file and based on this, we set the coverage for the source-file
-              CoverageLineBuilder line = lineBuilders.computeIfAbsent(mapping.originalLine,
-                    (lineNumber) -> CoverageDashboardManager.coverageLineBuilder()
-                        .lineNumber(lineNumber)
-                        .coveredInstructions(0)
-                        .missedInstructions(0)
-                        .coveredBranches(0)
-                        .missedBranches(0));
-
-              // For now, only map the lines back
-              line.missedInstructions(line.getMissedInstructions() + targetLine.getMissedInstructions());
-              line.coveredInstructions(line.getCoveredInstructions() + targetLine.getCoveredInstructions());
-              line.missedBranches(line.getMissedBranches() + targetLine.getMissedBranches());
-              line.coveredBranches(line.getCoveredBranches() + targetLine.getCoveredBranches());
-        });
-
-        int fileCoveredInstructions = 0;
-        int fileMissedInstructions = 0;
-        int fileCoveredBranches = 0;
-        int fileMissedBranches = 0;
-        int fileCoveredLines = 0;
-        int fileMissedLines = 0;
-
-        // Finish the builder and add to the source-file and build up the file-metrics on the fly
-        for(CoverageLineBuilder lineBuilder : lineBuilders.values()){
-          sourceCoverageFile.linesAdd(lineBuilder.build().get());
-          fileCoveredBranches += lineBuilder.getCoveredBranches();
-          fileCoveredInstructions += lineBuilder.getCoveredInstructions();
-          fileMissedBranches += lineBuilder.getMissedBranches();
-          fileMissedInstructions += lineBuilder.getMissedInstructions();
-          if(lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0){
-            fileMissedLines++;
-          }else{
-            fileCoveredLines++;
-          }
-        }
-
-        CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
-            .coveredInstructions(fileCoveredInstructions)
-            .missedInstructions(fileMissedInstructions)
-            .coveredBranches(fileCoveredBranches)
-            .missedBranches(fileMissedBranches)
-            .coveredLines(fileCoveredLines)
-            .missedLines(fileMissedLines)
-            .build().get();
-
-        sourceCoverageFile.metrics(fileMetrics);
-
-        generatedBy.add(sourceCoverageFile.build().get());
+    Path sourceMapPath;
+    try {
+      sourceMapPath = Path.of(targetFileBuilder.getPhysicalPath() + ".map");
+      if (!Files.exists(sourceMapPath)) {
+        // Check if template-source maps exist
+        sourceMapPath = Path.of(FilenameUtils.removeExtension(targetFileBuilder.getPhysicalPath()) + "_TEMPL.map");
       }
+      if (!Files.exists(sourceMapPath)) {
+        return generatedBy;
+      }
+    } catch (Exception e) {
+      Log.error("Not able to check for source maps: " + e.getMessage());
+      return generatedBy;
     }
+
+    String sourceMapContent = Files.readString(sourceMapPath);
+    DecodedSourceMap sourceMap;
+    try {
+      sourceMap = Decoding.parseSourceMapJson(
+          sourceMapContent, sourceMapPath.getParent().toUri().toURL());
+    }catch (Exception e){
+      Log.error("Error while parsing source-map for " + targetFileBuilder.getPath() + ": " + e.getMessage());
+      return generatedBy;
+    }
+    List<DecodedMapping> decodedMappings = sourceMap.getMappings();
+
+    // Performance: Pre-map target lines for O(1) lookup
+    Map<Integer, CoverageLine> targetLineMap = targetFileBuilder.getLinesList().stream().collect(
+        Collectors.toMap(CoverageLine::getLineNumber, l -> l, (existing, replacement) -> existing)
+    );
+
+    for(DecodedSource decodedSource : sourceMap.sources){
+      // Skip if we can not find the source, or it is explicitly ignored
+      if(decodedSource.ignored || decodedSource.url == null)
+        continue;
+      ResourcePath resourcePath = ResourcePath.of(URI.create(decodedSource.url.toString().replace('\\', '/')));
+      Path decodedSourcePath = resourcePath.getPath().normalize();
+      this.resourcePaths.add(resourcePath);
+
+      CoverageSourceFileBuilder sourceCoverageFile = CoverageDashboardManager.coverageSourceFileBuilder()
+          .path(extractRelativePath(decodedSourcePath, basePath))
+          .name(extractFileName(decodedSourcePath))
+          .physicalPath(resourcePath.representation)
+          // Check how we will decide this later on!
+          .category(ArtifactCategory.GENERATED);
+
+      Map<Integer, CoverageLineBuilder> lineBuilders = new HashMap<Integer, CoverageLineBuilder>();
+      // Get all mappings for this source and build the lines based on the coverage data
+      decodedMappings.stream().filter(mapping -> mapping.originalSource != null && mapping.originalSource.url.sameFile(decodedSource.url))
+          .forEach(mapping ->{
+
+            CoverageLine targetLine = targetLineMap.get(mapping.generatedLine);
+            if(targetLine == null)
+              return;
+
+            // Get the line-coverage for this line in the target file and based on this, we set the coverage for the source-file
+            CoverageLineBuilder line = lineBuilders.computeIfAbsent(mapping.originalLine,
+                  (lineNumber) -> CoverageDashboardManager.coverageLineBuilder()
+                      .lineNumber(lineNumber)
+                      .coveredInstructions(0)
+                      .missedInstructions(0)
+                      .coveredBranches(0)
+                      .missedBranches(0));
+
+            // For now, only map the lines back
+            line.missedInstructions(line.getMissedInstructions() + targetLine.getMissedInstructions());
+            line.coveredInstructions(line.getCoveredInstructions() + targetLine.getCoveredInstructions());
+            line.missedBranches(line.getMissedBranches() + targetLine.getMissedBranches());
+            line.coveredBranches(line.getCoveredBranches() + targetLine.getCoveredBranches());
+      });
+
+      int fileCoveredInstructions = 0;
+      int fileMissedInstructions = 0;
+      int fileCoveredBranches = 0;
+      int fileMissedBranches = 0;
+      int fileCoveredLines = 0;
+      int fileMissedLines = 0;
+
+      // Finish the builder and add to the source-file and build up the file-metrics on the fly
+      for(CoverageLineBuilder lineBuilder : lineBuilders.values()){
+        sourceCoverageFile.linesAdd(lineBuilder.build().get());
+        fileCoveredBranches += lineBuilder.getCoveredBranches();
+        fileCoveredInstructions += lineBuilder.getCoveredInstructions();
+        fileMissedBranches += lineBuilder.getMissedBranches();
+        fileMissedInstructions += lineBuilder.getMissedInstructions();
+        if(lineBuilder.getMissedInstructions() > 0 || lineBuilder.getMissedBranches() > 0){
+          fileMissedLines++;
+        }else{
+          fileCoveredLines++;
+        }
+      }
+
+      // Skip if no line was added, no need to have empty files stored
+      if(sourceCoverageFile.getLinesList().isEmpty()){
+        continue;
+      }
+
+
+      CoverageMetrics fileMetrics = CoverageDashboardManager.coverageMetricsBuilder()
+          .coveredInstructions(fileCoveredInstructions)
+          .missedInstructions(fileMissedInstructions)
+          .coveredBranches(fileCoveredBranches)
+          .missedBranches(fileMissedBranches)
+          .coveredLines(fileCoveredLines)
+          .missedLines(fileMissedLines)
+          .build().get();
+
+      sourceCoverageFile.metrics(fileMetrics);
+
+      // Check if this file is generated as well
+      try{
+        sourceCoverageFile.addAllGeneratedBys(this.getGenerationFiles(sourceCoverageFile, basePath));
+      }catch (URISyntaxException e) {
+        Log.error("Not able to resolve source-map for " + sourceCoverageFile.getPath() + ": " + e.getMessage());
+      }
+
+      generatedBy.add(sourceCoverageFile.build().get());
+    }
+
 
     return generatedBy;
   }
@@ -746,6 +798,52 @@ class C8JsonCoverageParser implements CoverageReportParser {
   private static class BranchData{
     Range loc;
     List<Range> locations = new ArrayList<>();
+  }
+
+  private static class ResourcePath implements Closeable{
+
+    private final Path path;
+    private final FileSystem fileSystem;
+    private final String representation;
+
+    private ResourcePath(Path path, FileSystem fileSystem, String representation){
+      this.path = path;
+      this.fileSystem = fileSystem;
+      this.representation = representation;
+    }
+
+    public static ResourcePath of(URI uri) throws IOException{
+      String scheme = uri.getScheme();
+      if("file".equalsIgnoreCase(scheme)){
+        Path path = Path.of(uri).normalize();
+        return new ResourcePath(path, null, path.toString());
+      }
+      if("jar".equalsIgnoreCase(scheme)){
+        try{
+          Path path = Path.of(uri).normalize();
+          return new ResourcePath(path, null, path.toString());
+        }catch (FileSystemNotFoundException e){
+          FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
+          return new ResourcePath(Path.of(uri), fs, uri.toString());
+        }
+      }
+      throw new IOException("Unsupported URI scheme: " + scheme);
+    }
+
+    public Path getPath(){
+      return path;
+    }
+
+    public String getStringPath(){
+      return representation;
+    }
+
+    @Override
+    public void close() throws IOException {
+      if (fileSystem != null && fileSystem.isOpen()) {
+        fileSystem.close();
+      }
+    }
   }
 
 }

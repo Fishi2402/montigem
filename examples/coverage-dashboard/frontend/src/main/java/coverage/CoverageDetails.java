@@ -1,5 +1,6 @@
 package coverage;
 
+import app.AppRouter;
 import coveragedashboard.CoverageReport;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.ReportType;
@@ -23,7 +24,7 @@ public class CoverageDetails extends CoverageDetailsTOP {
   @Override
   public Consumer<Void> backToOverview(){
     return $ ->{
-      Router.navigate("/");
+      AppRouter.navigateToCoverageDashboard();
     };
   }
 

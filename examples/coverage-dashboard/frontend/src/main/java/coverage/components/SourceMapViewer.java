@@ -1,5 +1,6 @@
 package coverage.components;
 
+import app.AppRouter;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.commands.GetFileContent;
@@ -9,6 +10,7 @@ import mc.fenix.editor.monacoeditortypes.LineClickEvent;
 import mc.fenix.input.gemdropdowninputtypes.Option;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
+import umlp.guiutil.Router;
 import umlp.jsweet.extension.annotation.Component;
 
 import java.util.ArrayList;
@@ -102,6 +104,21 @@ public class SourceMapViewer extends SourceMapViewerTOP{
   }
 
   @Override
+  public Consumer<Void> openViewSources(){
+    return $ ->
+      {
+        // set the currently selected source-file as the new target file
+        if(this._currentSelectedSourceFile != -1){
+          Optional<CoverageSourceFile> newTargetOpt = CoverageDashboardManager
+              .coverageSourceFileOpt(this._currentSelectedSourceFile);
+          if(newTargetOpt.isPresent()){
+            this.setTargetFile(newTargetOpt);
+          }
+        }
+      };
+  }
+
+  @Override
   public void setSelectedSourceFile(String value){
     super.setSelectedSourceFile(value);
     try {
@@ -129,6 +146,7 @@ public class SourceMapViewer extends SourceMapViewerTOP{
       this.setTargetDecoration(new ArrayList<>());
       this.setSourceDecoration(new ArrayList<>());
       this.resetSourceDropdown();
+      this.setViewSourcesDisabled(true);
       return;
     }
     CoverageSourceFile targetFile = this.getTargetFile().get();
@@ -141,6 +159,7 @@ public class SourceMapViewer extends SourceMapViewerTOP{
       this.resetSourceDropdown();
     }else{
       this._currentSourceFileOptions.clear();
+      this.setViewSourcesDisabled(false);
       for(CoverageSourceFile sourceFile : targetFile.getGeneratedByList()){
           this._currentSourceFileOptions.add(new Option(Long.toString(sourceFile.getGemId()), sourceFile.getName()));
       }
@@ -182,6 +201,7 @@ public class SourceMapViewer extends SourceMapViewerTOP{
     this._currentSourceFileOptions.clear();
     this.setSourceFileOptions(this._currentSourceFileOptions);
     this.setSelectedSourceFile(null);
+    this.setViewSourcesDisabled(true);
   }
 
 

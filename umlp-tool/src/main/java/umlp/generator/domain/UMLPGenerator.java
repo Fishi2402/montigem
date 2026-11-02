@@ -44,6 +44,7 @@ public class UMLPGenerator {
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate,
                        List<ASTOCLCompilationUnit> oclCompilationUnits) {
+    System.setProperty("CONFIG_TEMPLATE", configTemplate);
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
