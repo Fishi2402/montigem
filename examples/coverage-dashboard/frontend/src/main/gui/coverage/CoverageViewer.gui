@@ -4,16 +4,19 @@ package coverage;
 import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 
+import mc.fenix.basic.GemText;
+
 import mc.fenix.editor.MonacoEditor;
 
-import CoverageDashboard.CoverageSourceFile;
+import CoverageDashboard.DummyContent;
 
 component CoverageViewer(
-  CoverageSourceFile file
+  DummyContent content
 ){
   @GemCard(title = "Coverage", height = "auto", component =
     @GemColumn(height = "100%", components = [
-      @MonacoEditor(entry=file.content, language=file.type, disabled = true, autoHeight = true, highlighting = getHighlights())
+      @MonacoEditor(entry=content.content, language="java", disabled = true, autoHeight = true, highlighting = getHighlights()),
+      @MonacoEditor(entry=content.content, language="java", disabled = true, autoHeight = true, highlighting = getHighlights())
     ])
   );
 }

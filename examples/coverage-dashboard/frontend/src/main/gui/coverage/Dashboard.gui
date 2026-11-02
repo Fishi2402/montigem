@@ -6,5 +6,5 @@ import coverage.CoverageViewer;
 
 page Dashboard(App app) {
 
-  @CoverageViewer(file=app.debugSourceFile());
+  @CoverageViewer(content=app.mockContent());
 }
