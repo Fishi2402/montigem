@@ -34,16 +34,16 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     Path rootPath = Path.of("./../../../");
     CoverageReport e2eReport = service.ingestArtifact(
         e2eFrontendFile,
-        "Generated Code Test (examples/jsweet-test)",
+        "Generated Code Test (examples/jsweet-test) - TS",
         basePath, rootPath, ReportType.GENERATED_CODE_TEST);
-    Log.info(LocalDateTime.now().toString() + ": Finished 'Generated Code Test'", "CoverageDashboardServerApplication");
+    Log.info(LocalDateTime.now().toString() + ": Finished 'Generated Code Test (JSweet-Test)'", "CoverageDashboardServerApplication");
 
     // Load internal jsweet-test coverage
     File internalJsweetFile = new File("./../../../umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml");
     basePath = Path.of("./../../../umlp-jsweet/src/main/java/");
     CoverageReport internalJSweetReport = service.ingestArtifact(
         internalJsweetFile,
-        "Generator Unit Test (umlp-jsweet)",
+        "Generator Unit Test (umlp-jsweet) - JAVA",
         basePath, rootPath, ReportType.GENERATOR_UNIT_TEST);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generator Unit Test'", "CoverageDashboardServerApplication");
 
@@ -51,7 +51,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     File aggregatedTranspilationFile = new File("./../../jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml");
     CoverageReport aggregatedTranspilationReport = service.ingestArtifact(
         aggregatedTranspilationFile,
-        "Generator compilation test (examples/jsweet-test)",
+        "Generator compilation test (examples/jsweet-test) - JAVA",
         basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'", "CoverageDashboardServerApplication");
 
@@ -60,7 +60,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     Path assocBasePath = Path.of("./../../it-sync-protocol-test/backend/build/umlp2java/");
     CoverageReport assocReport = service.ingestArtifact(
         assocTestFile,
-        "Association Sync Protocol Tests (examples/it-sync-protocol-test)",
+        "Generated Code Test (examples/it-sync-protocol-test) - TS",
         assocBasePath, rootPath, ReportType.GENERATED_CODE_TEST);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Association Sync Protocol Tests'", "CoverageDashboardServerApplication");
 
