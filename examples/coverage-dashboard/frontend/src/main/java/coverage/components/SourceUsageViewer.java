@@ -11,6 +11,7 @@ import umlp.jsweet.extension.annotation.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 public class SourceUsageViewer extends SourceUsageViewerTOP{
@@ -55,6 +56,15 @@ public class SourceUsageViewer extends SourceUsageViewerTOP{
     }
     return this._cachedUsages;
 
+  }
+
+  @Override
+  public Consumer<Void> onUsedByFileSelected(CoverageSourceFile file) {
+    return $ ->{
+      if(this.getUsageSelect() != null){
+        this.getUsageSelect().accept(file);
+      }
+    };
   }
 
   @Override

@@ -61,7 +61,8 @@ page CoverageDetails(
                   @guard(isUsageViewRequired(report, selectedPerspective)){
                     sourceUsageViewer@SourceUsageViewer(
                       directPerspective = report.directPerspective,
-                      file = selectedFile
+                      file = selectedFile,
+                      usageSelect = onUsageSelect()
                     );
                   }else{
                     sourceViewer@SourceViewer(

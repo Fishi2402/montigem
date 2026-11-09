@@ -53,6 +53,16 @@ public class CoverageDetails extends CoverageDetailsTOP {
   }
 
   @Override
+  public Consumer<CoverageSourceFile> onUsageSelect(){
+    return file ->{
+      // Switch back to direct view
+      this.setSelectedPerspective(this.getReport().getDirectPerspective());
+      // Set file as target
+      this.setSelectedFile(Optional.of(file));
+    };
+  }
+
+  @Override
   public String getTitle(CoverageReport report){
     return "Coverage Details: " + report.getName();
   }

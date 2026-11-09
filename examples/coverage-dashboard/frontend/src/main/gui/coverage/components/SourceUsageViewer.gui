@@ -13,8 +13,8 @@ import coverage.components.SourceViewer;
 
 component SourceUsageViewer(
     CoveragePerspective directPerspective,
-    Optional<CoverageSourceFile> file) {
-
+    Optional<CoverageSourceFile> file,
+    Event<CoverageSourceFile> usageSelect) {
   rootGrid@GemGrid(
     width = "100%",
     height = "100%",
