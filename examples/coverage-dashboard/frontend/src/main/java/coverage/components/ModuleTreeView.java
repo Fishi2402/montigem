@@ -4,6 +4,7 @@ import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageSourceFile;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Component
@@ -13,10 +14,6 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
   @Override
   public Consumer<Void> onFileNodeClick(CoverageSourceFile file){
     return $->{
-      if(file.equals(this.getSelectedFile())){
-        return;
-      }
-      this.setSelectedFile(file);
       this.getFileSelect().accept(file);
     };
   }
@@ -31,8 +28,8 @@ public class ModuleTreeView extends ModuleTreeViewTOP{
   }
 
   @Override
-  public String getFileDisplayName(CoverageSourceFile file, CoverageSourceFile selectedFile){
-    if (selectedFile != null && selectedFile.equals(file)) {
+  public String getFileDisplayName(CoverageSourceFile file, Optional<CoverageSourceFile> selectedFile){
+    if (selectedFile != null && selectedFile.isPresent() && selectedFile.get().getGemId() == file.getGemId() ) {
       return "▶ " + file.getName();
     }
     return file.getName();
