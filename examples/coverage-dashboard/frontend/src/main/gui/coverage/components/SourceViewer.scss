@@ -33,26 +33,20 @@
 }
 
 :host(.sourceViewer) ::ng-deep {
-  $border-color: #e1e4e8;
-  $header-bg: #f6f8fa;
-  $text-main: #24292e;
-  $text-muted: #586069;
-  $panel-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-
   // 1. MAIN GRID - Add spacing between the editors
   .rootGrid {
     padding: 0 16px 16px 16px; // Breathing room on the edges
-    background-color: #ffffff;
+    background-color: var(--color-bg, #ffffff);
     box-sizing: border-box;
   }
 
   // 2. PANELS
   .sourceColumn {
-    border: 1px solid $border-color;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     overflow: hidden;
-    box-shadow: $panel-shadow;
-    background-color: #ffffff;
+    box-shadow: var(--card-shadow);
+    background-color: var(--color-surface);
     display: flex !important;
     flex-direction: column !important;
   }
@@ -61,8 +55,8 @@
   .sourceHeader {
     height: 44px !important;
     min-height: 44px !important;
-    background-color: $header-bg;
-    border-bottom: 1px solid $border-color;
+    background-color: var(--card-header-bg, var(--color-bg));
+    border-bottom: 1px solid var(--color-border);
     padding: 0 16px !important;
     margin: 0 !important;
     display: flex !important;
@@ -74,7 +68,7 @@
     font-family: 'Segoe UI', -apple-system, sans-serif !important;
     font-size: 11px !important;
     font-weight: 600 !important;
-    color: $text-muted !important;
+    color: var(--text-muted) !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-right: 12px;
@@ -86,11 +80,11 @@
     font-family: 'Fira Code', 'Consolas', monospace !important;
     font-size: 13px !important;
     font-weight: 500 !important;
-    color: $text-main !important;
-    background-color: #ffffff;
+    color: var(--text-main) !important;
+    background-color: var(--color-surface);
     padding: 4px 10px;
     border-radius: 4px;
-    border: 1px solid darken($header-bg, 4%);
+    border: 1px solid var(--color-border);
     white-space: nowrap !important;
   }
 
