@@ -1,5 +1,6 @@
 package coverage.components;
 
+import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.commands.GetTemplateUsages;
@@ -7,6 +8,7 @@ import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +42,14 @@ public class SourceUsageViewer extends SourceUsageViewerTOP{
     // Cache to avoid re-computing the result
     if(commandResult.isListResult() && commandResult.isSuccessful()){
       this._cachedUsages = commandResult.asListResult().get();
+
+      // Trigger batch-loading of all metrics now to avoid later single requests when the coverage percentage is calculated...
+      List<Long> metricsIds = new ArrayList<>();
+      for(CoverageSourceFile usage : this._cachedUsages) {
+        metricsIds.add(usage.getMetricsGem().getGemId());
+      }
+      CoverageDashboardManager.loadAllCoverageMetricsWithIDs(metricsIds);
+
     }else{
       this._cachedUsages = List.of();
     }
