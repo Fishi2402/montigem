@@ -1,0 +1,32 @@
+:host(.sourceUsageViewer) ::ng-deep {
+
+  .usagesList {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 4px;
+  }
+
+  .usageItem {
+    width: 100%;
+    justify-content: stretch;
+    text-align: left;
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
+    border-radius: 4px;
+    padding: 8px 12px;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
+      border-color: var(--color-primary, #1976d2);
+    }
+
+    .gem-button-content {
+      width: 100%;
+    }
+  }
+}

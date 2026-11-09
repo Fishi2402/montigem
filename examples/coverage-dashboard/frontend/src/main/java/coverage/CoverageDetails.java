@@ -43,6 +43,16 @@ public class CoverageDetails extends CoverageDetailsTOP {
   }
 
   @Override
+  public Boolean isUsageViewRequired(CoverageReport report, CoveragePerspective perspective){
+    // We have this currently only for aggregated files
+    if(report.getType() == ReportType.GENERATED_CODE_TEST
+        && perspective.getType() == PerspectiveType.AGGREGATED)
+      return true;
+    else
+      return false;
+  }
+
+  @Override
   public String getTitle(CoverageReport report){
     return "Coverage Details: " + report.getName();
   }

@@ -9,6 +9,7 @@ import mc.fenix.basic.GemText;
 
 import coverage.components.SourceMapViewer;
 import coverage.components.SourceViewer;
+import coverage.components.SourceUsageViewer;
 import coverage.components.FileView;
 
 
@@ -57,8 +58,15 @@ page CoverageDetails(
                   sourceMapViewer@SourceMapViewer(
                     targetFile=selectedFile);
                 }else{
-                  sourceViewer@SourceViewer(
-                    file = selectedFile);
+                  @guard(isUsageViewRequired(report, selectedPerspective)){
+                    sourceUsageViewer@SourceUsageViewer(
+                      directPerspective = report.directPerspective,
+                      file = selectedFile
+                    );
+                  }else{
+                    sourceViewer@SourceViewer(
+                      file = selectedFile);
+                  }
                 }
               ]
             ]
