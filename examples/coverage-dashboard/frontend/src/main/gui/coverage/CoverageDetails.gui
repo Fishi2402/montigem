@@ -50,6 +50,8 @@ page CoverageDetails(
             cols = [
               [fileView@FileView(
                 report = report,
+                selectedPerspective = selectedPerspective,
+                selectedFile = selectedFile,
                 perspectiveSelect = onPerspectiveSelect(),
                 fileSelect = onFileSelect())],
               [

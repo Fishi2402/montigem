@@ -15,7 +15,7 @@ import coverage.components.FileItem;
 component ModuleTreeView(
     CoverageModule rootModule,
     String name,
-    CoverageSourceFile selectedFile,
+    Optional<CoverageSourceFile> selectedFile,
     Boolean rootPerspective,
     Event<CoverageSourceFile> fileSelect) {
   rootNode@GemTreeNode(
