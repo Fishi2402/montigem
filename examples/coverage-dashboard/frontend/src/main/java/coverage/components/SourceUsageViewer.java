@@ -69,28 +69,11 @@ public class SourceUsageViewer extends SourceUsageViewerTOP{
 
   @Override
   public String getCoveragePercent(CoverageMetrics metrics){
-    double coverage = calculateCoverage(metrics);
-    return coverage + "%";
+    return CoverageUtil.getCoveragePercentage(metrics, CoverageUtil::calculateCoverage);
   }
 
   @Override
   public String getCoverageColor(CoverageMetrics metrics){
-    double coverage = calculateCoverage(metrics);
-    if(coverage < 50){
-      return "#cf222e";
-    }else if(coverage < 80){
-      return "#8a5c00";
-    }
-    return "#1a7f37";
-  }
-
-  private double calculateCoverage(CoverageMetrics metrics){
-    double covered = metrics.getCoveredLines() + 0.5 * metrics.getPartialLines();
-    int total = metrics.getCoveredLines() + metrics.getMissedLines() + metrics.getPartialLines();
-    if (total == 0) {
-      return 0;
-    }
-    double coverage = covered / total;
-    return Math.round(coverage * 10000.0) / 100.0;
+    return CoverageUtil.getCoverageColor(metrics, CoverageUtil::calculateCoverage);
   }
 }
