@@ -6,8 +6,11 @@ import coveragedashboard.CoverageReport;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
+import coveragedashboard.TemplateUsage;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -15,9 +18,17 @@ import java.util.function.Consumer;
 public class CoverageDetails extends CoverageDetailsTOP {
   // Add hwc
 
+  public CoverageDetails(){
+    super();
+    // init as empty list to avoid loading everything during init!
+    this.setActiveFiles(List.of());
+  }
+
   @Override
   public Consumer<CoverageSourceFile> onFileSelect(){
-    return file -> this.setSelectedFile(Optional.of(file));
+    return file -> {
+      this.setActiveFiles(List.of(file));
+    };
   }
 
   @Override
@@ -53,13 +64,30 @@ public class CoverageDetails extends CoverageDetailsTOP {
   }
 
   @Override
-  public Consumer<CoverageSourceFile> onUsageSelect(){
-    return file ->{
+  public Consumer<TemplateUsage> onUsageSelect(){
+    return usage -> {
       // Switch back to direct view
       this.setSelectedPerspective(this.getReport().getDirectPerspective());
-      // Set file as target
-      this.setSelectedFile(Optional.of(file));
+      // Set the active files
+      this.setActiveFiles(usage.getChainList());
     };
+  }
+
+  @Override
+  public Consumer<CoverageSourceFile> onOpenSource(){
+    return file -> {
+      List<CoverageSourceFile> activeFiles = new ArrayList<>(this.getActiveFiles());
+      activeFiles.add(file);
+      this.setActiveFiles(activeFiles);
+    };
+  }
+
+  @Override
+  public Optional<CoverageSourceFile> getBaseFile(List<CoverageSourceFile> activeFiles){
+    if(activeFiles.isEmpty()){
+      return Optional.empty();
+    }
+    return Optional.of(activeFiles.get(activeFiles.size() - 1));
   }
 
   @Override

@@ -1,5 +1,6 @@
 package coverage.components;
 
+import java.util.List;
 import java.util.Optional;
 
 import mc.fenix.arrange.GemRow;
@@ -15,7 +16,7 @@ import coverage.components.FileItem;
 component ModuleTreeView(
     CoverageModule rootModule,
     String name,
-    Optional<CoverageSourceFile> selectedFile,
+    List<CoverageSourceFile> activeFiles,
     Boolean rootPerspective,
     Event<CoverageSourceFile> fileSelect) {
   rootNode@GemTreeNode(
@@ -34,7 +35,7 @@ component ModuleTreeView(
             @ModuleTreeView(
               rootModule = subModule,
               name = subModule.name,
-              selectedFile = selectedFile,
+              activeFiles = activeFiles,
               fileSelect = fileSelect)
           ]
         );
@@ -44,8 +45,9 @@ component ModuleTreeView(
        fileNode@GemTreeNode(
          content = content@GemRow(
            width = "100%",
+           vAlign = "top",
            components = [
-             fileName@GemText(value = getFileDisplayName(file, selectedFile), color = getCoverageColor(file.metrics)),
+             fileName@GemText(value = getFileDisplayName(file, activeFiles), color = getCoverageColor(file.metrics)),
              fileCoverage@GemText(value = getCoveragePercent(file.metrics), color = getCoverageColor(file.metrics))
            ]
          ),
