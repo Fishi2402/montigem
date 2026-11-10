@@ -99,7 +99,8 @@ public class BuilderDecorator extends AbstractDecorator {
         domainClass.getName(),
         managerName,
         attrAssocs,
-        TagLookUp.isSingleton(domainClass)
+        TagLookUp.isSingleton(domainClass),
+        TagLookUp.isPojo(domainClass)
     );
     // TODO: filter by mandatory
     List<String> mandatoryAttrList = new ArrayList<>();

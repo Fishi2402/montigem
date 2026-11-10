@@ -108,6 +108,17 @@ public class TagLookUp {
     return isPojoCacheSymbol.getUnchecked(typeSymbol);
   }
 
+  public static boolean isPojo(ASTCDClass astcdClass) {
+    boolean stereo = astcdClass.getModifier().isPresentStereotype() && astcdClass.getModifier().getStereotype().contains(POJO);
+    boolean tag = isPojo(astcdClass.getSymbol());
+    if (stereo != tag) {
+      // Ensure tagging does work like it should
+      // Only here for testing purposes
+      Log.warn("Missing tag for " + astcdClass.getName(), astcdClass.get_SourcePositionStart());
+    }
+    return tag || stereo;
+  }
+
   public static boolean isDomainValidationEntry(ISymbol symbol) {
     return hasSimpleTag(symbol, DOMAIN_VALIDATION_ENTRY);
   }
