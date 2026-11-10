@@ -20,6 +20,7 @@ import coverage.components.SourceMapViewerTypes.JumpToLineEvent;
 
 component SourceMapViewer(
     Optional<CoverageSourceFile> targetFile,
+    Event<CoverageSourceFile> openSource,
     ?String sourceContent,
     ?String targetContent,
     int jumpSourceFileLine,

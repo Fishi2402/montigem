@@ -3,6 +3,7 @@ package coverage.components;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageSourceFile;
+import coveragedashboard.TemplateUsage;
 import coveragedashboard.commands.GetTemplateUsages;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
 @Component
 public class SourceUsageViewer extends SourceUsageViewerTOP{
 
-  private List<CoverageSourceFile> _cachedUsages;
+  private List<TemplateUsage> _cachedUsages;
 
   public SourceUsageViewer() {
     super();
@@ -31,7 +32,7 @@ public class SourceUsageViewer extends SourceUsageViewerTOP{
   }
 
   @Override
-  public List<CoverageSourceFile> getUsages (Optional<CoverageSourceFile> fileOpt) {
+  public List<TemplateUsage> getUsages (Optional<CoverageSourceFile> fileOpt) {
     if(fileOpt.isEmpty())
       return List.of();
 
@@ -39,15 +40,16 @@ public class SourceUsageViewer extends SourceUsageViewerTOP{
     if(this._cachedUsages != null)
       return this._cachedUsages;
 
-    CommandResult<CoverageSourceFile> commandResult = CommandManager.executeCommand(new GetTemplateUsages(fileOpt.get().getGemId(), this.getDirectPerspective().getGemId()));
+
+    CommandResult<TemplateUsage> commandResult = CommandManager.executeCommand(new GetTemplateUsages(fileOpt.get().getGemId(), this.getDirectPerspective().getGemId()));
     // Cache to avoid re-computing the result
     if(commandResult.isListResult() && commandResult.isSuccessful()){
       this._cachedUsages = commandResult.asListResult().get();
 
       // Trigger batch-loading of all metrics now to avoid later single requests when the coverage percentage is calculated...
       List<Long> metricsIds = new ArrayList<>();
-      for(CoverageSourceFile usage : this._cachedUsages) {
-        metricsIds.add(usage.getMetricsGem().getGemId());
+      for(TemplateUsage usage : this._cachedUsages) {
+        metricsIds.add(usage.getTargetFile().getMetricsGem().getGemId());
       }
       CoverageDashboardManager.loadAllCoverageMetricsWithIDs(metricsIds);
 
@@ -59,10 +61,10 @@ public class SourceUsageViewer extends SourceUsageViewerTOP{
   }
 
   @Override
-  public Consumer<Void> onUsedByFileSelected(CoverageSourceFile file) {
+  public Consumer<Void> onUsedByFileSelected(TemplateUsage usage) {
     return $ ->{
       if(this.getUsageSelect() != null){
-        this.getUsageSelect().accept(file);
+        this.getUsageSelect().accept(usage);
       }
     };
   }

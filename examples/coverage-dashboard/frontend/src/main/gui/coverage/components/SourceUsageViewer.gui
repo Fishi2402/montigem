@@ -14,7 +14,7 @@ import coverage.components.SourceViewer;
 component SourceUsageViewer(
     CoveragePerspective directPerspective,
     Optional<CoverageSourceFile> file,
-    Event<CoverageSourceFile> usageSelect) {
+    Event<TemplateUsage> usageSelect) {
   rootGrid@GemGrid(
     width = "100%",
     height = "100%",
@@ -48,7 +48,7 @@ component SourceUsageViewer(
                   width = "100%",
                   height = "100%",
                   components = [
-                    @iterate(CoverageSourceFile usedBy : getUsages(file)){
+                    @iterate(TemplateUsage usedBy : getUsages(file)){
                       usageItem@GemButton(
                         width = "100%",
                         content = [
@@ -58,11 +58,11 @@ component SourceUsageViewer(
                             hAlign = "space-between",
                             components = [
                               fileName@GemText(
-                                value = usedBy.name,
+                                value = usedBy.targetFile.name,
                                 weight = "medium"),
                               fileCoverage@GemText(
-                                value = getCoveragePercent(usedBy.metrics),
-                                color = getCoverageColor(usedBy.metrics)
+                                value = getCoveragePercent(usedBy.targetFile.metrics),
+                                color = getCoverageColor(usedBy.targetFile.metrics)
                               )
                             ]
                           )

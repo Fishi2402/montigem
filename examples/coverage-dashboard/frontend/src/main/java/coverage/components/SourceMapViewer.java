@@ -38,7 +38,6 @@ public class SourceMapViewer extends SourceMapViewerTOP{
   @Override
   public void setTargetFile(Optional<CoverageSourceFile> file){
     super.setTargetFile(file);
-
     this.updateEditors();
   }
 
@@ -106,11 +105,11 @@ public class SourceMapViewer extends SourceMapViewerTOP{
     return $ ->
       {
         // set the currently selected source-file as the new target file
-        if(this._currentSelectedSourceFile != -1){
+        if(this.getOpenSource() != null && this._currentSelectedSourceFile != -1){
           Optional<CoverageSourceFile> newTargetOpt = CoverageDashboardManager
               .coverageSourceFileOpt(this._currentSelectedSourceFile);
           if(newTargetOpt.isPresent()){
-            this.setTargetFile(newTargetOpt);
+            this.getOpenSource().accept(newTargetOpt.get());
           }
         }
       };

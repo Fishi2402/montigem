@@ -1,5 +1,6 @@
 package coverage.components;
 
+import java.util.List;
 import java.util.Optional;
 
 import mc.fenix.arrange.GemGrid;
@@ -18,7 +19,7 @@ import coverage.components.ModuleTreeView;
 component FileView(
     CoverageReport report,
     CoveragePerspective selectedPerspective,
-    Optional<CoverageSourceFile> selectedFile,
+    List<CoverageSourceFile> activeFiles,
     Boolean isRootPerspective,
     Event<CoveragePerspective> perspectiveSelect,
     Event<CoverageSourceFile> fileSelect){
@@ -32,7 +33,7 @@ component FileView(
       [moduleTreeView@ModuleTreeView(
         rootModule = selectedPerspective.rootModule,
         name = getRootDisplayName(selectedPerspective),
-        selectedFile = selectedFile,
+        activeFiles = activeFiles,
         fileSelect = fileSelect)],
       [
         // switch between different views -> defined by report
