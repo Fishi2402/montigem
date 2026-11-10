@@ -57,6 +57,7 @@ import de.se_rwth.commons.logging.Log;
 import umlp.generator.domain.decorator.GenService;
 import umlp.generator.util.TagLookUp;
 import umlp.generator.domain.decorator.ManagerDecorator;
+import umlp.generator.gui.genjava.decorator.CallTypeDeriver;
 import umlp.generator.gui.genjava.decorator.GUI2JavaClassDecorator;
 import umlp.generator.gui.genjava.prettyprinter.Expression2NullCheckAccessorPrinter;
 import umlp.generator.gui.genjava.prettyprinter.Expression2SetterPrinter;
@@ -1193,6 +1194,9 @@ public class GUIGeneratorUtil {
   }
 
   public SymTypeExpression getType(ASTExpression node) {
+    if (node instanceof ASTCallExpression && CallTypeDeriver.getInstance().hasReturnType((ASTCallExpression) node)) {
+      return CallTypeDeriver.getInstance().getReturnType((ASTCallExpression) node);
+    }
     return TypeCheck3.typeOf(node);
   }
 
