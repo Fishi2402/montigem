@@ -45,7 +45,7 @@ public class UMLPGenerator {
 
   public void generate(ASTCDCompilationUnit cdAST, String configTemplate,
                        List<ASTOCLCompilationUnit> oclCompilationUnits) {
-    Reporting.setConfigTemplate(configTemplate);
+    Reporting.addConfigTemplate(configTemplate);
     // create an empty classdiagram
     ASTCDCompilationUnit decoratedAST = createCompilationUnit(cdAST);
 
@@ -60,7 +60,7 @@ public class UMLPGenerator {
         cdGenerator,
         schemaGenerator,
         oclCompilationUnits));
-    Reporting.clearConfigTemplate();
+    Reporting.clearConfigTemplates();
   }
 
   protected static void logTrafoExec(String trafo, ASTCDCompilationUnit ast){
