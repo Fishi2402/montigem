@@ -33,7 +33,7 @@ public class GUI2TSGenerator extends GUI2JavaGenerator {
 
   @Override
   public void generate(ASTGUICompilationUnit gui, String configTemplate) {
-    Reporting.setConfigTemplate(configTemplate);
+    Reporting.addConfigTemplate(configTemplate);
 
     this.setup.setTracing(true);
 
@@ -46,7 +46,7 @@ public class GUI2TSGenerator extends GUI2JavaGenerator {
     // translate the GUI-AST into TypeScript
     hpp.processValue(tc, gui, Arrays.asList(
         cd, setup.getGlex(), setup.getHandcodedPath(), setup.getOutputDirectory().toPath(), importsPath, this));
-    Reporting.clearConfigTemplate();
+    Reporting.clearConfigTemplates();
   }
 
 }

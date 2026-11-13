@@ -20,7 +20,7 @@ public class GUI2JavaGenerator extends CDGenerator {
   }
 
   public void generate(ASTGUICompilationUnit gui, String configTemplate) {
-    Reporting.setConfigTemplate(configTemplate);
+    Reporting.addConfigTemplate(configTemplate);
     this.setup.setTracing(true);
 
     // create an empty classdiagram
@@ -32,7 +32,7 @@ public class GUI2JavaGenerator extends CDGenerator {
     // translate the GUI-AST into Java
     hpp.processValue(tc, gui,
         Arrays.asList(cd, setup.getGlex(), setup.getHandcodedPath(), setup.getOutputDirectory().toPath(), this));
-    Reporting.clearConfigTemplate();
+    Reporting.clearConfigTemplates();
   }
 
 }

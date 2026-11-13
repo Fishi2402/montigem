@@ -2,6 +2,9 @@ package coveragedashboard.commands;
 
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageSourceFile;
+import de.monticore.sourcemap.DecodedMapping;
+import de.monticore.sourcemap.DecodedSourceMap;
+import de.monticore.sourcemap.SourceMapDecoding;
 import de.se_rwth.commons.logging.Log;
 import jsweet.lang.Erased;
 import umlp.backendrte.command.ListResult;
@@ -45,7 +48,7 @@ public class GetLineMapping extends  GetLineMappingTOP{
         return Optional.empty();
       }
       String sourceMapContent = java.nio.file.Files.readString(sourceMapPath);
-      de.monticore.sourcemap.DecodedSourceMap sourceMap = de.monticore.sourcemap.Decoding.parseSourceMapJson(
+      DecodedSourceMap sourceMap = SourceMapDecoding.parseSourceMapJson(
           sourceMapContent, sourceMapPath.getParent().toUri().toURL());
 
       List<de.monticore.sourcemap.DecodedMapping> mappings = normalizeMappings(
@@ -113,8 +116,8 @@ public class GetLineMapping extends  GetLineMappingTOP{
    * a +1 adjustment to match our 1-based line numbering domain model.
    */
   @Erased
-  private static List<de.monticore.sourcemap.DecodedMapping> normalizeMappings(
-      de.monticore.sourcemap.DecodedSourceMap sourceMap,
+  private static List<DecodedMapping> normalizeMappings(
+      DecodedSourceMap sourceMap,
       String sourceMapContent,
       String targetFileName) {
     boolean isTargetTs = (targetFileName != null && targetFileName.endsWith(".ts"))
@@ -125,9 +128,9 @@ public class GetLineMapping extends  GetLineMappingTOP{
       return sourceMap.mappings();
     }
 
-    List<de.monticore.sourcemap.DecodedMapping> normalized = new ArrayList<>(sourceMap.mappings().size());
-    for (de.monticore.sourcemap.DecodedMapping m : sourceMap.mappings()) {
-      normalized.add(new de.monticore.sourcemap.DecodedMapping(
+    List<DecodedMapping> normalized = new ArrayList<>(sourceMap.mappings().size());
+    for (DecodedMapping m : sourceMap.mappings()) {
+      normalized.add(new DecodedMapping(
           m.generatedLine() + 1,
           m.generatedColumn(),
           m.originalSource(),

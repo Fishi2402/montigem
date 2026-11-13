@@ -12,7 +12,7 @@ import coveragedashboard.util.ResourcePathHelper;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.DecodedSourceMap;
-import de.monticore.sourcemap.Decoding;
+import de.monticore.sourcemap.SourceMapDecoding;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.Closeable;
@@ -73,7 +73,7 @@ public class SourceMapCoverageMapper implements AutoCloseable {
     String sourceMapContent;
     try {
       sourceMapContent = Files.readString(sourceMapPath);
-      sourceMap = Decoding.parseSourceMapJson(
+      sourceMap = SourceMapDecoding.parseSourceMapJson(
           sourceMapContent, sourceMapPath.getParent().toUri().toURL());
     } catch (InvalidPathException e) {
       Log.error("Error while parsing source-map for " + targetFilePath + ": " + e.getMessage());
