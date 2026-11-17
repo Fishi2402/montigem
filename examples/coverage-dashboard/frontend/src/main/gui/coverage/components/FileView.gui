@@ -33,6 +33,7 @@ component FileView(
       [moduleTreeView@ModuleTreeView(
         rootModule = selectedPerspective.rootModule,
         name = getRootDisplayName(selectedPerspective),
+        currentPath = "",
         activeFiles = activeFiles,
         fileSelect = fileSelect)],
       [

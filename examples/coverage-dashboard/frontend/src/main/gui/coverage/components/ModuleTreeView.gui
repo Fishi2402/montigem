@@ -16,10 +16,13 @@ import coverage.components.FileItem;
 component ModuleTreeView(
     CoverageModule rootModule,
     String name,
+    String currentPath,
     List<CoverageSourceFile> activeFiles,
     Boolean rootPerspective,
     Event<CoverageSourceFile> fileSelect) {
   rootNode@GemTreeNode(
+    onToggle = onNodeToggle(rootModule),
+    isExpanded = shouldBeExpanded(activeFiles),
     content = title@GemRow(
       width = "100%",
       components = [
@@ -35,6 +38,7 @@ component ModuleTreeView(
             @ModuleTreeView(
               rootModule = subModule,
               name = subModule.name,
+              currentPath = buildCurrentPath(subModule.name),
               activeFiles = activeFiles,
               fileSelect = fileSelect)
           ]
