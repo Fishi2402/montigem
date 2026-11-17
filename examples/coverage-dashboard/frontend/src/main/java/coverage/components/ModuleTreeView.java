@@ -1,16 +1,81 @@
 package coverage.components;
 
+import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageMetrics;
+import coveragedashboard.CoverageModule;
 import coveragedashboard.CoverageSourceFile;
 import umlp.jsweet.extension.annotation.Component;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 @Component
 public class ModuleTreeView extends ModuleTreeViewTOP{
 
+  private Long lastActiveFileId;
+  private Boolean isExpanded;
+
+  public ModuleTreeView(){
+    super();
+    this.isExpanded = false;
+    this.lastActiveFileId = null;
+  }
+
+  @Override
+  public Consumer<Boolean> onNodeToggle(CoverageModule module){
+    return expanded ->{
+      this.isExpanded = expanded;
+      if(expanded && module != null){
+        loadMetricsForModule(module);
+      }
+    };
+  }
+
+  private void loadMetricsForModule(CoverageModule module) {
+    if (module != null && module.getSourceFilesList() != null) {
+      List<Long> metricsIds = new ArrayList<>();
+      for (CoverageSourceFile file : module.getSourceFilesList()) {
+        if (file != null && file.getMetricsGem() != null) {
+          metricsIds.add(file.getMetricsGem().getGemId());
+        }
+      }
+      if (!metricsIds.isEmpty()) {
+        CoverageDashboardManager.loadAllCoverageMetricsWithIDs(metricsIds);
+      }
+    }
+  }
+
+  @Override
+  public String buildCurrentPath(String subModuleName){
+    if(this.getCurrentPath().isEmpty())
+      return subModuleName;
+    return this.getCurrentPath() + "/" + subModuleName;
+  }
+
+  @Override
+  public Boolean shouldBeExpanded(List<CoverageSourceFile> activeFiles){
+    if(activeFiles == null || activeFiles.isEmpty()) {
+      this.lastActiveFileId = null;
+      return this.isExpanded;
+    }
+
+    CoverageSourceFile baseFile = activeFiles.get(0);
+    Long currentFileId = baseFile.getGemId();
+
+
+    if(this.lastActiveFileId != null & this.lastActiveFileId.equals(currentFileId))
+      // No new file, do not try to expand automatically
+      return this.isExpanded;
+
+    // Check if we have to auto-expand
+    String activeFilePath = baseFile.getPath().replace('\\', '/');
+    if(activeFilePath.startsWith(this.getCurrentPath())){
+      this.isExpanded = true;
+      loadMetricsForModule(this.getRootModule());
+    }
+    return this.isExpanded;
+  }
 
   @Override
   public Consumer<Void> onFileNodeClick(CoverageSourceFile file){

@@ -98,6 +98,12 @@ classdiagram CoverageDashboard{
     PARTIAL;
   }
 
+  <<pojo>>
+  class TemplateUsage{
+    CoverageSourceFile targetFile;
+    List<CoverageSourceFile> chain;
+  }
+
   association [1] Run -> (testGroups) TestGroup [1..*];
 
   association [1] TestGroup -> (reports) CoverageReport [1..*];
