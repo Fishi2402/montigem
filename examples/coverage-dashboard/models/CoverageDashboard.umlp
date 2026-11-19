@@ -142,6 +142,7 @@ classdiagram CoverageDashboard{
     CoverageReport getDummyCoverageReport();
     String getFileContent(CoverageSourceFile file);
     List<String> getLineMapping(CoverageSourceFile file);
+    List<String> getTemplateIncludes(CoverageSourceFile file);
     List<TemplateUsage> getTemplateUsages(CoverageSourceFile template, CoveragePerspective directPerspective);
     CoverageReport getLatestComponentTest(TestGroup group);
     CoverageReport getLatestIntegrationTest(TestGroup group);
