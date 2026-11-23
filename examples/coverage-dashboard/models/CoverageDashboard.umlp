@@ -48,7 +48,6 @@ classdiagram CoverageDashboard{
 
   enum ArtifactCategory{
     TEMPLATE,
-    MODEL,
     GENERATED,
     HANDWRITTEN;
   }
@@ -104,33 +103,33 @@ classdiagram CoverageDashboard{
     List<CoverageSourceFile> chain;
   }
 
-  association [1] Run -> (testGroups) TestGroup [1..*];
+  composition [1] Run -> (testGroups) TestGroup [1..*];
 
   association [1] TestGroup -> (reports) CoverageReport [1..*];
 
-  association [1] CoverageReport -> (directPerspective) CoveragePerspective [1];
-  association [1] CoverageReport -> (aggregatedPerspectives) CoveragePerspective [*];
+  composition [1] CoverageReport -> (directPerspective) CoveragePerspective [1];
+  composition [1] CoverageReport -> (aggregatedPerspectives) CoveragePerspective [*];
   association [1] CoverageReport -> (type) ReportType [1];
 
   association [1] CoveragePerspective -> (type) PerspectiveType [1];
-  association [1] CoveragePerspective -> (rootModule) CoverageModule [1];
+  composition [1] CoveragePerspective -> (rootModule) CoverageModule [1];
 
-  association [1] CoverageModule -> (sourceFiles) CoverageSourceFile [*];
-  association [1] CoverageModule -> (metrics) CoverageMetrics [1];
-  association [1] CoverageModule -> (subModules) CoverageModule [*];
+  composition [1] CoverageModule -> (sourceFiles) CoverageSourceFile [*];
+  composition [1] CoverageModule -> (metrics) CoverageMetrics [1];
+  composition [1] CoverageModule -> (subModules) CoverageModule [*];
 
 
-  association [1] CoverageSourceFile -> (lines) CoverageLine[1..*];
-  association [1] CoverageSourceFile -> (metrics) CoverageMetrics [1];
-  association [1] CoverageSourceFile -> (scopes) CoverageScope[*];
+  composition [1] CoverageSourceFile -> (lines) CoverageLine[1..*];
+  composition [1] CoverageSourceFile -> (metrics) CoverageMetrics [1];
+  composition [1] CoverageSourceFile -> (scopes) CoverageScope[*];
   association [1] CoverageSourceFile -> (category) ArtifactCategory [1];
   association [1] CoverageSourceFile -> (generatedBy) CoverageSourceFile [*];
 
 
-  association [1] CoverageScope -> (metrics) CoverageMetrics [1];
-  association [1] CoverageScope -> (subScopes) CoverageScope [*];
+  composition [1] CoverageScope -> (metrics) CoverageMetrics [1];
+  composition [1] CoverageScope -> (subScopes) CoverageScope [*];
 
-  association [1] MeasuredLine -> (columnRanges) CoverageColumnRange [*];
+  composition [1] MeasuredLine -> (columnRanges) CoverageColumnRange [*];
 
   association [1] CoverageColumnRange -> (type) ColumnRangeType [1];
 
