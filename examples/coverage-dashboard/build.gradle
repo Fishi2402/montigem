@@ -1,0 +1,385 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+
+def coverageBundleDir = layout.buildDirectory.dir("coverage-bundle")
+def coverageBundleZip = layout.buildDirectory.file("coverage-bundle/coverage-bundle.zip")
+
+def allowedSourceExtensions = [
+    '.java', '.ts', '.js', '.html', '.scss', '.css',
+    '.ftl', '.map', '.gui', '.umlp', '.cd', '.ocl', '.json', '.xml'
+] as Set
+
+def runGitCommand = { List<String> args, File workDir ->
+  try {
+    def proc = new ProcessBuilder(['git'] + args)
+        .directory(workDir)
+        .redirectErrorStream(true)
+        .start()
+    def out = proc.inputStream.getText('UTF-8').trim()
+    proc.waitFor()
+    return proc.exitValue() == 0 && !out.isEmpty() ? out : null
+  } catch (Exception ignored) {
+    return null
+  }
+}
+
+def resolveAbsolutePath = { String rawSource ->
+  try {
+    String normalized = rawSource.replace('\\', '/')
+    if (normalized.startsWith('file:')) {
+      return Path.of(URI.create(normalized.replace(' ', '%20'))).toAbsolutePath().normalize()
+    }
+    if (normalized.matches('^[a-zA-Z]:/.*') || normalized.startsWith('/')) {
+      return Path.of(rawSource).toAbsolutePath().normalize()
+    }
+  } catch (Exception ignored) {
+    return null
+  }
+  return null
+}
+
+tasks.register('packageCoverageBundle') {
+  group = 'verification'
+  description = 'Packages coverage reports, sources, rewritten .map files, extracted .ftl templates, and manifest.json into coverage-bundle.zip.'
+
+  outputs.file(coverageBundleZip)
+  outputs.upToDateWhen { false }
+
+  doLast {
+    Path repoRoot = rootProject.projectDir.toPath().toAbsolutePath().normalize()
+    Path stagingDir = coverageBundleDir.get().asFile.toPath().resolve('staging').toAbsolutePath().normalize()
+    Path outputZip = coverageBundleZip.get().asFile.toPath().toAbsolutePath().normalize()
+
+    if (Files.exists(stagingDir)) {
+      project.delete(stagingDir.toFile())
+    }
+    Files.createDirectories(stagingDir)
+    Files.createDirectories(outputZip.parent)
+
+    String commitHash = (project.findProperty('coverage.commitHash') as String)
+        ?: System.getenv('CI_COMMIT_SHA')
+        ?: runGitCommand(['rev-parse', 'HEAD'], rootProject.projectDir)
+        ?: 'unknown'
+
+    String branchName = (project.findProperty('coverage.branchName') as String)
+        ?: System.getenv('CI_COMMIT_REF_NAME')
+        ?: runGitCommand(['rev-parse', '--abbrev-ref', 'HEAD'], rootProject.projectDir)
+        ?: 'unknown'
+
+    String timestamp = (project.findProperty('coverage.timestamp') as String)
+        ?: LocalDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+
+    def configuredGroups = [
+        [
+            name   : 'jsweet-test',
+            reports: [
+                [
+                    name      : 'Generated Code Test (examples/jsweet-test) - TS',
+                    type      : 'GENERATED_CODE_TEST',
+                    reportPath: 'examples/jsweet-test/frontend/build/app/coverage/coverage-final.json',
+                    basePath  : './examples/jsweet-test/frontend/build/app/dist/client/browser/'
+                ],
+                [
+                    name      : 'Generator compilation test (examples/jsweet-test) - JAVA',
+                    type      : 'GENERATOR_COMPILATION_TEST',
+                    reportPath: 'examples/jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml',
+                    basePath  : 'umlp-jsweet/src/main/java'
+                ]
+            ]
+        ],
+        [
+            name   : 'umlp-jsweet',
+            reports: [
+                [
+                    name      : 'Generator Unit Test (umlp-jsweet) - JAVA',
+                    type      : 'GENERATOR_UNIT_TEST',
+                    reportPath: 'umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml',
+                    basePath  : 'umlp-jsweet/src/main/java'
+                ]
+            ]
+        ],
+        [
+            name   : 'assoc-test',
+            reports: [
+                [
+                    name      : 'Generated Code Test (examples/it-sync-protocol-test) - JAVA',
+                    type      : 'GENERATED_CODE_TEST',
+                    reportPath: 'examples/it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml',
+                    basePath  : 'examples/it-sync-protocol-test/backend/build/umlp2java'
+                ]
+            ]
+        ]
+    ]
+
+    def sourceDirsToCopy = [
+        'umlp-jsweet/src/main/java',
+        'examples/jsweet-test/frontend/src/main/java',
+        'examples/jsweet-test/frontend/build/gui2java',
+        'examples/jsweet-test/frontend/build/gui2java2ts',
+        'examples/jsweet-test/frontend/build/umlpJava2ts',
+        'examples/jsweet-test/backend/build/umlp2java',
+        'examples/jsweet-test/backend/src',
+        'examples/it-sync-protocol-test/backend/build/umlp2java'
+    ]
+
+    // 1. Copy available reports and assemble manifest testGroups
+    def manifestGroups = []
+    int totalReports = 0
+    configuredGroups.each { group ->
+      def includedReports = []
+      group.reports.each { report ->
+        Path srcReport = repoRoot.resolve(report.reportPath).normalize()
+        if (Files.isRegularFile(srcReport)) {
+          Path dstReport = stagingDir.resolve(report.reportPath).normalize()
+          Files.createDirectories(dstReport.parent)
+          Files.copy(srcReport, dstReport, StandardCopyOption.REPLACE_EXISTING)
+          includedReports << report
+          totalReports++
+        } else {
+          logger.warn("Skipping missing coverage report: {}", report.reportPath)
+        }
+      }
+      if (!includedReports.isEmpty()) {
+        manifestGroups << [name: group.name, reports: includedReports]
+      }
+    }
+
+    if (totalReports == 0) {
+      throw new GradleException("No coverage reports found to package. Run coverage tasks first.")
+    }
+
+    // 2. Copy source & generated directories (text/source/map files only, never .class or .jar)
+    sourceDirsToCopy.each { relDir ->
+      Path srcDir = repoRoot.resolve(relDir).normalize()
+      if (!Files.isDirectory(srcDir)) {
+        logger.info("Skipping non-existent source directory: {}", relDir)
+        return
+      }
+      Files.walk(srcDir).withCloseable { stream ->
+        stream.filter { Files.isRegularFile(it) }.forEach { Path file ->
+          String name = file.fileName.toString().toLowerCase(Locale.ROOT)
+          int dotIdx = name.lastIndexOf('.')
+          String ext = dotIdx >= 0 ? name.substring(dotIdx) : ''
+          if (!allowedSourceExtensions.contains(ext)) {
+            return
+          }
+          Path rel = repoRoot.relativize(file)
+          Path dst = stagingDir.resolve(rel).normalize()
+          Files.createDirectories(dst.parent)
+          Files.copy(file, dst, StandardCopyOption.REPLACE_EXISTING)
+        }
+      }
+    }
+
+    // 3. Extract .ftl templates from jar: references and rewrite staged .map files to relative paths
+    def slurper = new JsonSlurper()
+    int rewrittenMaps = 0
+    int extractedTemplates = 0
+    Map<String, ZipFile> openJars = [:]
+
+    try {
+      List<Path> mapFiles = []
+      Files.walk(stagingDir).withCloseable { stream ->
+        stream.filter { Files.isRegularFile(it) && it.fileName.toString().endsWith('.map') }
+            .forEach { mapFiles << it }
+      }
+
+      mapFiles.each { Path mapFile ->
+        def parsed
+        try {
+          parsed = slurper.parse(mapFile.toFile(), 'UTF-8')
+        } catch (Exception e) {
+          logger.warn("Skipping unparseable source map {}: {}", mapFile, e.message)
+          return
+        }
+        if (!(parsed instanceof Map) || !(parsed.sources instanceof List)) {
+          return
+        }
+
+        List sources = parsed.sources as List
+        List sourcesContent = (parsed.sourcesContent instanceof List) ? (parsed.sourcesContent as List) : null
+        boolean modified = false
+
+        for (int i = 0; i < sources.size(); i++) {
+          Object rawObj = sources[i]
+          if (!(rawObj instanceof String)) {
+            continue
+          }
+          String rawSource = (rawObj as String).replace('\\', '/')
+
+          if (rawSource.startsWith('jar:')) {
+            int bangIdx = rawSource.indexOf('!')
+            if (bangIdx < 0) {
+              continue
+            }
+            String jarPart = rawSource.substring(4, bangIdx)
+            String innerPath = rawSource.substring(bangIdx + 1)
+            while (innerPath.startsWith('/')) {
+              innerPath = innerPath.substring(1)
+            }
+            String jarFileName = jarPart.substring(jarPart.lastIndexOf('/') + 1)
+            String jarStem = jarFileName.endsWith('.jar')
+                ? jarFileName.substring(0, jarFileName.length() - 4)
+                : jarFileName
+            jarStem = jarStem.replaceAll('[^a-zA-Z0-9._-]', '_')
+
+            Path targetTemplate = stagingDir.resolve('templates').resolve(jarStem).resolve(innerPath).normalize()
+            if (!targetTemplate.startsWith(stagingDir)) {
+              continue
+            }
+
+            if (!Files.exists(targetTemplate)) {
+              String content = (sourcesContent != null && i < sourcesContent.size() && sourcesContent[i] instanceof String)
+                  ? (sourcesContent[i] as String)
+                  : null
+
+              if (content == null) {
+                Path jarPath = resolveAbsolutePath(jarPart)
+                if (jarPath != null && Files.isRegularFile(jarPath)) {
+                  ZipFile zf = openJars.computeIfAbsent(jarPath.toString()) { new ZipFile(jarPath.toFile()) }
+                  ZipEntry ze = zf.getEntry(innerPath)
+                  if (ze != null) {
+                    content = zf.getInputStream(ze).getText('UTF-8')
+                  }
+                }
+              }
+
+              if (content != null) {
+                Files.createDirectories(targetTemplate.parent)
+                Files.writeString(targetTemplate, content, StandardCharsets.UTF_8)
+                extractedTemplates++
+              }
+            }
+
+            if (Files.exists(targetTemplate)) {
+              String relUri = mapFile.parent.relativize(targetTemplate).toString().replace('\\', '/')
+              sources[i] = relUri
+              if (sourcesContent != null && i < sourcesContent.size()) {
+                sourcesContent[i] = null
+              }
+              modified = true
+            }
+          } else {
+            Path absPath = resolveAbsolutePath(rawSource)
+            if (absPath != null && absPath.startsWith(repoRoot)) {
+              Path stagedTarget = stagingDir.resolve(repoRoot.relativize(absPath)).normalize()
+              String relUri = mapFile.parent.relativize(stagedTarget).toString().replace('\\', '/')
+              sources[i] = relUri
+              modified = true
+            }
+          }
+        }
+
+        if (modified) {
+          if (sourcesContent != null && sourcesContent.every { it == null }) {
+            parsed.remove('sourcesContent')
+          }
+          Files.writeString(mapFile, JsonOutput.toJson(parsed), StandardCharsets.UTF_8)
+          rewrittenMaps++
+        }
+      }
+    } finally {
+      openJars.values().each {
+        try { it.close() } catch (Exception ignored) {}
+      }
+    }
+
+    // 4. Write manifest.json
+    def manifest = [
+        commitHash: commitHash,
+        branchName: branchName,
+        timestamp : timestamp,
+        testGroups: manifestGroups
+    ]
+    Files.writeString(
+        stagingDir.resolve('manifest.json'),
+        JsonOutput.prettyPrint(JsonOutput.toJson(manifest)),
+        StandardCharsets.UTF_8
+    )
+
+    // 5. Zip stagingDir -> coverage-bundle.zip
+    new ZipOutputStream(Files.newOutputStream(outputZip)).withCloseable { ZipOutputStream zos ->
+      Files.walk(stagingDir).withCloseable { stream ->
+        stream.filter { Files.isRegularFile(it) }.sorted().forEach { Path file ->
+          String entryName = stagingDir.relativize(file).toString().replace('\\', '/')
+          zos.putNextEntry(new ZipEntry(entryName))
+          Files.copy(file, zos)
+          zos.closeEntry()
+        }
+      }
+    }
+
+    double sizeMb = Files.size(outputZip) / (1024.0 * 1024.0)
+    logger.lifecycle(
+        "Packaged coverage bundle: {} ({} MB) — {} report(s), {} unique template(s) extracted, {} .map file(s) rewritten.",
+        outputZip, String.format(Locale.ROOT, '%.2f', sizeMb), totalReports, extractedTemplates, rewrittenMaps
+    )
+  }
+}
+
+tasks.register('uploadCoverageBundle') {
+  group = 'verification'
+  description = 'Packages and uploads coverage-bundle.zip to the coverage-dashboard IngestionEndpoint.'
+  dependsOn tasks.named('packageCoverageBundle')
+
+  doLast {
+    Path bundlePath = coverageBundleZip.get().asFile.toPath()
+    if (!Files.isRegularFile(bundlePath)) {
+      throw new GradleException("Coverage bundle not found at: ${bundlePath}")
+    }
+
+    String uploadUrl = (project.findProperty('coverage.uploadUrl') as String)
+        ?: System.getenv('COVERAGE_UPLOAD_URL')
+        ?: 'http://localhost:8081/umlp/api/v1/runs'
+
+    String boundary = "----MontiGemCoverageBoundary${UUID.randomUUID().toString().replace('-', '')}"
+    byte[] headerBytes = (
+        "--${boundary}\r\n" +
+        "Content-Disposition: form-data; name=\"artifact\"; filename=\"${bundlePath.fileName}\"\r\n" +
+        "Content-Type: application/zip\r\n\r\n"
+    ).getBytes(StandardCharsets.UTF_8)
+    byte[] footerBytes = "\r\n--${boundary}--\r\n".getBytes(StandardCharsets.UTF_8)
+
+    HttpClient client = HttpClient.newBuilder()
+        .connectTimeout(Duration.ofSeconds(30))
+        .build()
+
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(uploadUrl))
+        .timeout(Duration.ofMinutes(10))
+        .header('Content-Type', "multipart/form-data; boundary=${boundary}")
+        .POST(HttpRequest.BodyPublishers.ofInputStream {
+          new SequenceInputStream(Collections.enumeration([
+              new ByteArrayInputStream(headerBytes),
+              Files.newInputStream(bundlePath),
+              new ByteArrayInputStream(footerBytes)
+          ]))
+        })
+        .build()
+
+    logger.lifecycle("Uploading {} to {} ...", bundlePath.fileName, uploadUrl)
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+
+    if (response.statusCode() < 200 || response.statusCode() >= 300) {
+      throw new GradleException("Coverage upload failed with HTTP ${response.statusCode()}: ${response.body()}")
+    }
+
+    String location = response.headers().firstValue('Location').orElse('(none)')
+    logger.lifecycle("Coverage bundle uploaded successfully (HTTP {}): Location={}", response.statusCode(), location)
+    logger.lifecycle("Response: {}", response.body())
+  }
+}

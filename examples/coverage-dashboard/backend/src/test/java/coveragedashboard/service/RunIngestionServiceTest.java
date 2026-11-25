@@ -114,6 +114,69 @@ public class RunIngestionServiceTest extends CoverageDashboardMockTestSetup {
   }
 
   @Test
+  void ingestsZipWithRewrittenRelativeTemplateSourceMap() throws IOException {
+    String manifest = """
+        {
+          "commitHash": "deadbeef1234",
+          "branchName": "dev",
+          "timestamp": "2026-11-25T18:30:00",
+          "testGroups": [
+            {
+              "name": "assoc-test",
+              "reports": [
+                {
+                  "name": "Assoc Test - JAVA",
+                  "type": "GENERATED_CODE_TEST",
+                  "reportPath": "reports/jacoco.xml",
+                  "basePath": "src/main/java"
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+    String jacocoXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <report name="assoc-test">
+          <package name="pkg">
+            <sourcefile name="Foo.java">
+              <line nr="2" mi="0" ci="5" mb="0" cb="0"/>
+              <counter type="INSTRUCTION" missed="0" covered="5"/>
+              <counter type="LINE" missed="0" covered="1"/>
+            </sourcefile>
+          </package>
+        </report>
+        """;
+
+    // Simulates a .map rewritten by packageCoverageBundle (relative path to templates/<jar>/<ftl>, no jar: URI)
+    String rewrittenMap = """
+        {"version":3,"file":"Foo.java","sources":["../../../../templates/umlp-tool/umlp/Foo.ftl"],"mappings":"AAGA;AACA;"}
+        """;
+
+    byte[] zip = createZip(Map.of(
+        "manifest.json", manifest,
+        "reports/jacoco.xml", jacocoXml,
+        "src/main/java/pkg/Foo.java", "package pkg;\npublic class Foo {}\n",
+        "src/main/java/pkg/Foo.java.map", rewrittenMap,
+        "templates/umlp-tool/umlp/Foo.ftl", "<#-- template -->\npublic class Foo {}\n"
+    ));
+
+    MockMultipartFile file = new MockMultipartFile("artifact", "bundle.zip", "application/zip", zip);
+    RunIngestionResponse response = runIngestionService.ingestArchive(file);
+
+    assertEquals("deadbeef1234", response.commitHash());
+    var run = coveragedashboard.CoverageDashboardManager.runOpt(response.runId()).orElseThrow();
+    var report = run.getTestGroupsList().get(0).getReportsList().get(0);
+    var ftlPerspective = report.getAggregatedPerspectivesList().stream()
+        .filter(p -> "FTL".equals(p.getName()))
+        .findFirst()
+        .orElseThrow();
+    assertTrue(!ftlPerspective.getRootModule().getSubModulesList().isEmpty()
+        || !ftlPerspective.getRootModule().getSourceFilesList().isEmpty());
+  }
+
+  @Test
   void rejectsMissingManifestAndCleansUpStorageDir() throws IOException {
     byte[] zip = createZip(Map.of("reports/jacoco.xml", "<report/>"));
     MockMultipartFile file = new MockMultipartFile("artifact", "no-manifest.zip", "application/zip", zip);
