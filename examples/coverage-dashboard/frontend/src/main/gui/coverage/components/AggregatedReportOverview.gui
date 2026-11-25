@@ -1,0 +1,61 @@
+page AggregatedReportOverview() {
+
+}
+package coverage.components;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemRow;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+import mc.fenix.charts.GemPieChart;
+
+import CoverageDashboard.AggregatedCoverageReport;
+import CoverageDashboard.CoveragePerspective;
+import CoverageDashboard.App;
+
+component AggregatedReportOverview(App app, AggregatedCoverageReport report) {
+  @guard(report != null) {
+    mergedCard@GemCard(
+      title = getReportTitle(report),
+      width = "100%",
+      component = cardGrid@GemGrid(
+        x = ["1fr"],
+        rowGap = "10px",
+        rows = [
+          [
+            @GemText(value = getProvenanceText(report), size = "0.9rem")
+          ],
+          [
+            @GemRow(
+              width = "100%",
+              colGap = "15px",
+              components = [
+                @iterate(CoveragePerspective perspective : report.perspectives){
+                  @GemCard(
+                    title = getPerspectiveTitle(perspective),
+                    width = "100%",
+                    component = @GemGrid(
+                      x = ["1fr"],
+                      y = ["300px"],
+                      rows = [
+                        [
+                          @GemPieChart(data = app.getAggregatedCoverageData(perspective))
+                        ]
+                      ]
+                    )
+                  );
+                }
+              ]
+            )
+          ],
+          [
+            @GemButton(label = "Details", leftClick = showDetails(report))
+          ]
+        ]
+      )
+    );
+  }
+}

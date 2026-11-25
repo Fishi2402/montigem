@@ -34,6 +34,21 @@ public final class CoverageUtil {
     return coverage + "%";
   }
 
+  public static String formatPercentage(double ratio) {
+    double pct = Math.round(ratio * 10000.0) / 100.0;
+    return pct + "%";
+  }
+
+  public static String getColorForRatio(double ratio) {
+    double pct = ratio * 100.0;
+    if (pct < 50) {
+      return "#cf222e";
+    } else if (pct < 80) {
+      return "#8a5c00";
+    }
+    return "#1a7f37";
+  }
+
   public static String getCoverageColor(CoverageMetrics metrics, Function<CoverageMetrics, Double> coverageCalculator) {
     double coverage = coverageCalculator.apply(metrics);
     if(coverage < 50){

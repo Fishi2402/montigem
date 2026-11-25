@@ -8,38 +8,98 @@ import mc.fenix.arrange.GemColumn;
 import mc.fenix.basic.GemText;
 import mc.fenix.basic.GemButton;
 
-import mc.fenix.charts.GemLineChart;
-
 import coverage.components.ReportOverview;
+import coverage.components.AggregatedReportOverview;
 
 import CoverageDashboard.App;
+import CoverageDashboard.Run;
 import CoverageDashboard.TestGroup;
 import CoverageDashboard.CoverageReport;
+import CoverageDashboard.AggregatedCoverageReport;
 
 component GeneralDashboard(App app) {
   @GemColumn(
     width = "100%",
     rowGap = "20px",
     components = [
-      @iterate(TestGroup group : app.getLatestTestGroups()){
-        groupCard@GemCard(
-          title = group.name,
+      @iterate(Run run : getLatestRuns()){
+        runSummaryCard@GemCard(
+          title = "Latest Run",
           width = "100%",
           component = @GemGrid(
             width = "100%",
             colGap = "20px",
-            rowGap = "20px",
-            hAlign = "start",
-            x = ["1fr", "1fr", "1fr"],
+            x = ["1fr", "1fr", "1fr", "1fr"],
             rows = [
               [
-                @iterate(CoverageReport report : getReportsForGroup(group)){
-                  @ReportOverview(app = app, report = report);
-                }
+                @GemColumn(
+                  components = [
+                    @GemText(value = "Composite Coverage Index (CCI)", size = "0.85rem"),
+                    @GemText(value = getRunCciText(run), size = "1.8rem", weight = "bold", color = getRunCciColor(run))
+                  ]
+                ),
+                @GemColumn(
+                  components = [
+                    @GemText(value = "Branch", size = "0.85rem"),
+                    @GemText(value = run.branchName, size = "1.2rem", weight = "bold")
+                  ]
+                ),
+                @GemColumn(
+                  components = [
+                    @GemText(value = "Commit", size = "0.85rem"),
+                    @GemText(value = getShortCommit(run), size = "1.2rem", weight = "bold")
+                  ]
+                ),
+                @GemColumn(
+                  components = [
+                    @GemText(value = "Timestamp", size = "0.85rem"),
+                    @GemText(value = getFormattedTimestamp(run), size = "1.2rem", weight = "bold")
+                  ]
+                )
               ]
             ]
           )
         );
+        @guard(hasAggregatedReports(run)) {
+          aggregatedSectionCard@GemCard(
+            title = "Aggregated Generator Coverage (Merged Suites)",
+            width = "100%",
+            component = @GemGrid(
+              width = "100%",
+              colGap = "20px",
+              rowGap = "20px",
+              hAlign = "start",
+              x = ["1fr", "1fr"],
+              rows = [
+                [
+                  @iterate(AggregatedCoverageReport mergedReport : run.aggregatedReports){
+                    @AggregatedReportOverview(app = app, report = mergedReport);
+                  }
+                ]
+              ]
+            )
+          );
+        }
+        @iterate(TestGroup group : run.testGroups){
+          groupCard@GemCard(
+            title = getGroupTitle(group),
+            width = "100%",
+            component = @GemGrid(
+              width = "100%",
+              colGap = "20px",
+              rowGap = "20px",
+              hAlign = "start",
+              x = ["1fr", "1fr", "1fr"],
+              rows = [
+                [
+                  @iterate(CoverageReport report : getReportsForGroup(group)){
+                    @ReportOverview(app = app, report = report);
+                  }
+                ]
+              ]
+            )
+          );
+        }
       }
     ]
   );

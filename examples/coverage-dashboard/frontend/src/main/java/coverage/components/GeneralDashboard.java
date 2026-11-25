@@ -1,10 +1,12 @@
 package coverage.components;
 
 import coveragedashboard.CoverageReport;
+import coveragedashboard.Run;
 import coveragedashboard.TestGroup;
 import coveragedashboard.commands.GetLatestComponentTest;
 import coveragedashboard.commands.GetLatestGeneratedCodeTest;
 import coveragedashboard.commands.GetLatestIntegrationTest;
+import coveragedashboard.commands.GetLatestRun;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
 import umlp.jsweet.extension.annotation.Component;
@@ -17,6 +19,53 @@ public class GeneralDashboard extends GeneralDashboardTOP {
 
   public GeneralDashboard() {
     super();
+  }
+
+  @Override
+  public List<Run> getLatestRuns() {
+    List<Run> runs = new ArrayList<>();
+    CommandResult<Run> res = CommandManager.executeCommand(new GetLatestRun());
+    if (res.isSuccessful() && res.isSimpleResult() && res.asSimpleResult().get() != null) {
+      runs.add(res.asSimpleResult().get());
+    }
+    return runs;
+  }
+
+  @Override
+  public String getRunCciText(Run run) {
+    return CoverageUtil.formatPercentage(run.getCci());
+  }
+
+  @Override
+  public String getRunCciColor(Run run) {
+    return CoverageUtil.getColorForRatio(run.getCci());
+  }
+
+  @Override
+  public String getShortCommit(Run run) {
+    String hash = run.getCommitHash();
+    if (hash == null || hash.isEmpty()) {
+      return "unknown";
+    }
+    return hash.length() > 8 ? hash.substring(0, 8) : hash;
+  }
+
+  @Override
+  public String getFormattedTimestamp(Run run) {
+    if (run.getTimestamp() == null) {
+      return "";
+    }
+    return run.getTimestamp().toString().replace("T", " ");
+  }
+
+  @Override
+  public Boolean hasAggregatedReports(Run run) {
+    return run != null && !run.getAggregatedReportsList().isEmpty();
+  }
+
+  @Override
+  public String getGroupTitle(TestGroup group) {
+    return group.getName() + " — CCI: " + CoverageUtil.formatPercentage(group.getCci());
   }
 
   public List<CoverageReport> getReportsForGroup(TestGroup group) {

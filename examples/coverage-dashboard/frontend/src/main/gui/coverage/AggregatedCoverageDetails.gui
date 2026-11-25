@@ -1,0 +1,99 @@
+page AggregatedCoverageDetails() {
+
+}
+package coverage;
+
+import java.util.List;
+import java.util.Optional;
+
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.arrange.GemRow;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+
+import coverage.components.ModuleTreeView;
+import coverage.components.SourceViewer;
+
+import CoverageDashboard.App;
+import CoverageDashboard.AggregatedCoverageReport;
+import CoverageDashboard.CoveragePerspective;
+import CoverageDashboard.CoverageSourceFile;
+
+page AggregatedCoverageDetails(
+  App app,
+  AggregatedCoverageReport report,
+  CoveragePerspective selectedPerspective,
+  List<CoverageSourceFile> activeFiles) {
+    @GemGrid(
+      width = "100%",
+      height = "100%",
+      rowGap = "15px",
+      y = ["auto", "auto", "auto", "minmax(0, 1fr)"],
+      rows = [
+        [
+          @GemButton(
+            label = "Back",
+            leftClick = backToOverview()
+          )
+        ],
+        [
+          @GemText(
+            value = getTitle(report),
+            size = "3.0rem",
+            weight = "bold")
+        ],
+        [
+          @GemText(
+            value = getProvenanceText(report),
+            size = "1.0rem")
+        ],
+        [
+          @GemGrid(
+            width = "100%",
+            height = "100%",
+            colGap = "10px",
+            x = ["1fr", "4fr"],
+            y = ["minmax(0, 1fr)"],
+            cols = [
+              [
+                @GemGrid(
+                  width = "100%",
+                  height = "100%",
+                  rowGap = "5px",
+                  y = ["minmax(0, 1fr)", "auto"],
+                  x = ["auto"],
+                  rows = [
+                    [
+                      moduleTreeView@ModuleTreeView(
+                        rootModule = selectedPerspective.rootModule,
+                        name = getRootDisplayName(selectedPerspective),
+                        currentPath = "",
+                        activeFiles = activeFiles,
+                        fileSelect = onFileSelect())
+                    ],
+                    [
+                      @GemRow(
+                        width = "100%",
+                        height = "auto",
+                        components = [
+                          @iterate(CoveragePerspective p : report.perspectives){
+                            @GemButton(
+                              label = p.name,
+                              leftClick = onPerspectiveClicked(p));
+                          }
+                        ]
+                      )
+                    ]
+                  ]
+                )
+              ],
+              [
+                sourceViewer@SourceViewer(file = getBaseFile(activeFiles))
+              ]
+            ]
+          )
+        ]
+      ]
+    );
+}

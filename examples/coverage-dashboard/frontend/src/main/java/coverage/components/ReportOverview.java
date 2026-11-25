@@ -15,6 +15,20 @@ public class ReportOverview extends ReportOverviewTOP{
   }
 
   @Override
+  public String getReportTitle(CoverageReport report) {
+    return report.getName() + " — " + CoverageUtil.formatPercentage(report.getCoverageValue());
+  }
+
+  @Override
+  public String getDirectSubtitle(CoverageReport report) {
+    CoveragePerspective direct = report.getDirectPerspective();
+    if (direct == null) {
+      return "";
+    }
+    return "Direct (" + direct.getName() + "): " + CoverageUtil.formatPercentage(direct.getCoverageValue());
+  }
+
+  @Override
   public Consumer<Void> showDetails (CoverageReport report) {
     return $ -> {
       // To discuss: await not transpiled correctly!
