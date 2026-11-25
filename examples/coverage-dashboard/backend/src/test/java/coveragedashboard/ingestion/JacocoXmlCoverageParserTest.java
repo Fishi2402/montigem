@@ -74,6 +74,23 @@ public class JacocoXmlCoverageParserTest extends CoverageDashboardMockTestSetup 
     assertNotNull(ftlPerspective, "FTL perspective should have been created from Foo.java.map");
   }
 
+  /**
+   * Integration test against real workspace build artifacts from {@code examples/it-sync-protocol-test}.
+   *
+   * <p><strong>Prerequisites to run and pass this test:</strong>
+   * <ol>
+   *   <li>Generate the {@code it-sync-protocol-test} backend sources <em>with template source maps enabled</em>:
+   *       <pre>{@code .\gradlew.bat :examples:it-sync-protocol-test:backend:umlp2java '-Pumlp.templateSourceMapping=include_sources'}</pre>
+   *   </li>
+   *   <li>Generate the JaCoCo XML report for {@code it-sync-protocol-test/frontend}:
+   *       <pre>{@code .\gradlew.bat :examples:it-sync-protocol-test:frontend:jacocoTestReport}</pre>
+   *   </li>
+   * </ol>
+   *
+   * <p>If the JaCoCo XML report does not exist, this test is skipped silently. If the XML report exists
+   * without matching {@code .java.map} files in {@code examples/it-sync-protocol-test/backend/build/umlp2java},
+   * the assertion verifying aggregated {@code FTL} perspectives will fail.
+   */
   @Test
   void testParseActualAssocReport() throws Exception {
     Path xmlPath = Path.of("../../../examples/it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml");
