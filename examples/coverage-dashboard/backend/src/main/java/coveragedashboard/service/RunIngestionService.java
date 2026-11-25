@@ -10,6 +10,7 @@ import coveragedashboard.TestGroupBuilder;
 import coveragedashboard.ingestion.CoverageIngestionService;
 import coveragedashboard.service.dto.IngestionManifest;
 import coveragedashboard.service.dto.RunIngestionResponse;
+import coveragedashboard.util.CciCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -133,16 +135,37 @@ public class RunIngestionService {
           throw new InvalidIngestionRequestException(
               "Report file referenced in manifest does not exist in archive: " + report.reportPath());
         }
+        if (report.weight() != null && (!Double.isFinite(report.weight()) || report.weight() <= 0.0)) {
+          throw new InvalidIngestionRequestException(
+              "Report '" + report.name() + "' weight must be a finite positive number, got: " + report.weight());
+        }
+        if (report.perspectiveWeights() != null) {
+          for (Map.Entry<String, Double> pw : report.perspectiveWeights().entrySet()) {
+            Double val = pw.getValue();
+            if (val == null || !Double.isFinite(val) || val <= 0.0) {
+              throw new InvalidIngestionRequestException(
+                  "Report '" + report.name() + "' perspectiveWeight for '" + pw.getKey()
+                      + "' must be a finite positive number, got: " + val);
+            }
+          }
+        }
       }
     }
   }
 
   private Run ingestManifest(Path runDir, IngestionManifest manifest) {
     List<TestGroup> persistedGroups = new ArrayList<>();
+    List<CoverageReport> allReports = new ArrayList<>();
+    List<Double> allReportWeights = new ArrayList<>();
+    boolean hasAnyReportWeight = false;
 
     for (IngestionManifest.TestGroupEntry groupEntry : manifest.testGroups()) {
       TestGroupBuilder groupBuilder = CoverageDashboardManager.testGroupBuilder()
           .name(groupEntry.name());
+
+      List<CoverageReport> groupReports = new ArrayList<>();
+      List<Double> groupWeights = new ArrayList<>();
+      boolean hasGroupWeight = false;
 
       for (IngestionManifest.ReportEntry reportEntry : groupEntry.reports()) {
         Path reportFile = storageService.resolveSafePath(runDir, reportEntry.reportPath());
@@ -153,23 +176,42 @@ public class RunIngestionService {
             reportEntry.name(),
             effectiveBasePath,
             runDir,
-            reportEntry.type()
+            reportEntry.type(),
+            reportEntry.perspectiveWeights()
         );
         if (report == null) {
           throw new InvalidIngestionRequestException(
               "Failed to ingest report '" + reportEntry.name() + "' from " + reportEntry.reportPath());
         }
         groupBuilder.reportsAdd(report);
+        groupReports.add(report);
+        allReports.add(report);
+
+        double effectiveWeight = reportEntry.weight() != null ? reportEntry.weight() : 1.0;
+        if (reportEntry.weight() != null) {
+          hasGroupWeight = true;
+          hasAnyReportWeight = true;
+        }
+        groupWeights.add(effectiveWeight);
+        allReportWeights.add(effectiveWeight);
       }
+
+      double groupCci = CciCalculator.computeTestGroupCci(
+          groupReports, hasGroupWeight ? groupWeights : null);
+      groupBuilder.cci(groupCci);
 
       persistedGroups.add(groupBuilder.build().get());
     }
+
+    double runCci = CciCalculator.computeRunCci(
+        allReports, hasAnyReportWeight ? allReportWeights : null);
 
     LocalDateTime timestamp = manifest.timestamp() != null ? manifest.timestamp() : LocalDateTime.now();
     RunBuilder runBuilder = CoverageDashboardManager.runBuilder()
         .commitHash(manifest.commitHash())
         .branchName(manifest.branchName())
-        .timestamp(timestamp);
+        .timestamp(timestamp)
+        .cci(runCci);
 
     for (TestGroup group : persistedGroups) {
       runBuilder.testGroupsAdd(group);
@@ -199,8 +241,10 @@ public class RunIngestionService {
     List<RunIngestionResponse.TestGroupSummary> groupSummaries = run.getTestGroupsList().stream()
         .map(group -> new RunIngestionResponse.TestGroupSummary(
             group.getName(),
+            group.getCci(),
             group.getReportsList().stream()
-                .map(report -> new RunIngestionResponse.ReportSummary(report.getName(), report.getType()))
+                .map(report -> new RunIngestionResponse.ReportSummary(
+                    report.getName(), report.getType(), report.getCoverageValue()))
                 .toList()
         ))
         .toList();
@@ -210,6 +254,7 @@ public class RunIngestionService {
         run.getCommitHash(),
         run.getBranchName(),
         run.getTimestamp(),
+        run.getCci(),
         groupSummaries
     );
   }

@@ -33,7 +33,7 @@ public class C8JsonCoverageParserTest extends CoverageDashboardMockTestSetup {
     Path basePath = Paths.get("/some/CI/dependet/path/frontend/build/app/");
     Path rootPath = Paths.get("/some/root/path/");
 
-    CoverageReport report = parser.parse(mockFile, "Test Report", basePath, rootPath);
+    CoverageReport report = parser.parse(mockFile, "Test Report", basePath, rootPath, null);
 
     assertNotNull(report);
     assertEquals("Test Report", report.getName());

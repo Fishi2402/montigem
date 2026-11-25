@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Map;
 
 public class CoverageIngestionService {
 
@@ -15,12 +16,16 @@ public class CoverageIngestionService {
     this.parserFactory = new CoverageParserFactory();
   }
 
-  public CoverageReport ingestArtifact(File artifactFile, String reportName, Path basePath, Path rootPath, ReportType type){
+  public CoverageReport ingestArtifact(
+      File artifactFile,
+      String reportName,
+      Path basePath,
+      Path rootPath,
+      ReportType type,
+      Map<String, Double> perspectiveWeights){
     CoverageReportParser parser = parserFactory.getParser(artifactFile, type);
     try {
-      CoverageReport coverageReport = parser.parse(artifactFile, reportName, basePath, rootPath);
-
-      return coverageReport;
+      return parser.parse(artifactFile, reportName, basePath, rootPath, perspectiveWeights);
     }catch (UnsupportedOperationException e){
       Log.error("Feature pending: " + e.getMessage());
     }catch (Exception e){

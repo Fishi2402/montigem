@@ -13,16 +13,19 @@ public record RunIngestionResponse(
     String commitHash,
     String branchName,
     LocalDateTime timestamp,
+    double cci,
     List<TestGroupSummary> testGroups
 ) {
 
   public record TestGroupSummary(
       String name,
+      double cci,
       List<ReportSummary> reports
   ) {}
 
   public record ReportSummary(
       String name,
-      ReportType type
+      ReportType type,
+      double coverageValue
   ) {}
 }

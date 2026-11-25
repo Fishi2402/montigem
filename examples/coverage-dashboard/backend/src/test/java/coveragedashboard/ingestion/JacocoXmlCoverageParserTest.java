@@ -58,7 +58,7 @@ public class JacocoXmlCoverageParserTest extends CoverageDashboardMockTestSetup 
     Files.writeString(xmlFile, xmlContent);
 
     JacocoXmlCoverageParser parser = new JacocoXmlCoverageParser(ReportType.GENERATED_CODE_TEST);
-    CoverageReport report = parser.parse(xmlFile.toFile(), "Assoc Test", tempDir, tempDir);
+    CoverageReport report = parser.parse(xmlFile.toFile(), "Assoc Test", tempDir, tempDir, null);
 
     assertNotNull(report);
     assertEquals("Assoc Test", report.getName());
@@ -102,7 +102,7 @@ public class JacocoXmlCoverageParserTest extends CoverageDashboardMockTestSetup 
     if (Files.exists(xmlPath)) {
       Path basePath = repoRoot.resolve("examples/it-sync-protocol-test/backend/build/umlp2java");
       JacocoXmlCoverageParser parser = new JacocoXmlCoverageParser(ReportType.GENERATED_CODE_TEST);
-      CoverageReport report = parser.parse(xmlPath.toFile(), "Assoc Real Test", basePath, repoRoot);
+      CoverageReport report = parser.parse(xmlPath.toFile(), "Assoc Real Test", basePath, repoRoot, null);
       assertNotNull(report);
       assertNotNull(report.getDirectPerspective());
       assertFalse(report.getAggregatedPerspectivesList().isEmpty(), "Aggregated perspectives should be generated for real assoc report");

@@ -1,6 +1,7 @@
 package coveragedashboard;
 
 import coveragedashboard.ingestion.CoverageIngestionService;
+import coveragedashboard.util.CciCalculator;
 import de.se_rwth.commons.logging.Log;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CoverageDashboardServerApplication extends CoverageDashboardServerApplicationTOP {
 
@@ -42,7 +45,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     CoverageReport e2eReport = service.ingestArtifact(
         e2eFrontendFile,
         "Generated Code Test (examples/jsweet-test) - TS",
-        basePath, rootPath, ReportType.GENERATED_CODE_TEST);
+        basePath, rootPath, ReportType.GENERATED_CODE_TEST, null);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generated Code Test (JSweet-Test)'", "CoverageDashboardServerApplication");
 
     // Load internal jsweet-test coverage
@@ -51,7 +54,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     CoverageReport internalJSweetReport = service.ingestArtifact(
         internalJsweetFile,
         "Generator Unit Test (umlp-jsweet) - JAVA",
-        basePath, rootPath, ReportType.GENERATOR_UNIT_TEST);
+        basePath, rootPath, ReportType.GENERATOR_UNIT_TEST, null);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generator Unit Test'", "CoverageDashboardServerApplication");
 
     // Load jsweet-test umlpjava2ts and gui2java2ts coverage
@@ -59,7 +62,7 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     CoverageReport aggregatedTranspilationReport = service.ingestArtifact(
         aggregatedTranspilationFile,
         "Generator compilation test (examples/jsweet-test) - JAVA",
-        basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST);
+        basePath, rootPath, ReportType.GENERATOR_COMPILATION_TEST, null);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Generator compilation test'", "CoverageDashboardServerApplication");
 
     // Load assoc-test coverage
@@ -68,35 +71,47 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     CoverageReport assocReport = service.ingestArtifact(
         assocTestFile,
         "Generated Code Test (examples/it-sync-protocol-test) - TS",
-        assocBasePath, rootPath, ReportType.GENERATED_CODE_TEST);
+        assocBasePath, rootPath, ReportType.GENERATED_CODE_TEST, null);
     Log.info(LocalDateTime.now().toString() + ": Finished 'Association Sync Protocol Tests'", "CoverageDashboardServerApplication");
+
+    List<CoverageReport> allReports = new ArrayList<>();
 
     TestGroup jsweetGroup = null;
     if (e2eReport != null || aggregatedTranspilationReport != null) {
+      List<CoverageReport> groupReports = new ArrayList<>();
       TestGroupBuilder jsweetGroupBuilder = CoverageDashboardManager.testGroupBuilder()
           .name("jsweet-test");
       if (e2eReport != null) {
         jsweetGroupBuilder.reportsAdd(e2eReport);
+        groupReports.add(e2eReport);
       }
       if (aggregatedTranspilationReport != null) {
         jsweetGroupBuilder.reportsAdd(aggregatedTranspilationReport);
+        groupReports.add(aggregatedTranspilationReport);
       }
-      jsweetGroup = jsweetGroupBuilder.build().get();
+      allReports.addAll(groupReports);
+      jsweetGroup = jsweetGroupBuilder
+          .cci(CciCalculator.computeTestGroupCci(groupReports, null))
+          .build().get();
     }
 
     TestGroup umlpJsweetGroup = null;
     if (internalJSweetReport != null) {
+      allReports.add(internalJSweetReport);
       umlpJsweetGroup = CoverageDashboardManager.testGroupBuilder()
           .name("umlp-jsweet")
           .reportsAdd(internalJSweetReport)
+          .cci(CciCalculator.computeTestGroupCci(List.of(internalJSweetReport), null))
           .build().get();
     }
 
     TestGroup assocGroup = null;
     if (assocReport != null) {
+      allReports.add(assocReport);
       assocGroup = CoverageDashboardManager.testGroupBuilder()
           .name("assoc-test")
           .reportsAdd(assocReport)
+          .cci(CciCalculator.computeTestGroupCci(List.of(assocReport), null))
           .build().get();
     }
 
@@ -104,7 +119,8 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
     RunBuilder runBuilder = CoverageDashboardManager.runBuilder()
         .commitHash("f0879ff463c32226eea6b39e41860f79b70668d8")
         .timestamp(LocalDateTime.now())
-        .branchName("ma-mfl/Generator_coverage");
+        .branchName("ma-mfl/Generator_coverage")
+        .cci(CciCalculator.computeRunCci(allReports, null));
 
     if (assocGroup != null) {
       runBuilder.testGroupsAdd(assocGroup);

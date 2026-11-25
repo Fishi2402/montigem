@@ -94,10 +94,13 @@ public class RunIngestionServiceTest extends CoverageDashboardMockTestSetup {
 
     assertEquals("f0879ff463c32226eea6b39e41860f79b70668d8", response.commitHash());
     assertEquals("ma-mfl/Generator_coverage", response.branchName());
+    assertEquals(1.0, response.cci(), 1e-9);
     assertEquals(1, response.testGroups().size());
     assertEquals("umlp-jsweet", response.testGroups().get(0).name());
+    assertEquals(1.0, response.testGroups().get(0).cci(), 1e-9);
     assertEquals(1, response.testGroups().get(0).reports().size());
     assertEquals(ReportType.GENERATOR_UNIT_TEST, response.testGroups().get(0).reports().get(0).type());
+    assertEquals(1.0, response.testGroups().get(0).reports().get(0).coverageValue(), 1e-9);
 
     Optional<RunIngestionResponse> fetched = runIngestionService.getRunSummary(response.runId());
     assertTrue(fetched.isPresent());
@@ -217,6 +220,42 @@ public class RunIngestionServiceTest extends CoverageDashboardMockTestSetup {
 
     try (var dirs = Files.list(storageDir)) {
       assertEquals(0, dirs.count(), "Failed ingestion should clean up extracted files");
+    }
+  }
+
+  @Test
+  void rejectsNonPositiveWeightInManifestAndCleansUp() throws IOException {
+    String manifest = """
+        {
+          "commitHash": "abc123",
+          "branchName": "main",
+          "testGroups": [
+            {
+              "name": "grp",
+              "reports": [
+                {
+                  "name": "Bad Weight",
+                  "type": "GENERATOR_UNIT_TEST",
+                  "reportPath": "reports/jacoco.xml",
+                  "basePath": "src/main/java",
+                  "weight": 0
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+    byte[] zip = createZip(Map.of(
+        "manifest.json", manifest,
+        "reports/jacoco.xml", "<report name=\"x\"/>"
+    ));
+    MockMultipartFile file = new MockMultipartFile("artifact", "bad-weight.zip", "application/zip", zip);
+
+    assertThrows(InvalidIngestionRequestException.class, () -> runIngestionService.ingestArchive(file));
+
+    try (var dirs = Files.list(storageDir)) {
+      assertEquals(0, dirs.count(), "Invalid weight should clean up extracted files");
     }
   }
 

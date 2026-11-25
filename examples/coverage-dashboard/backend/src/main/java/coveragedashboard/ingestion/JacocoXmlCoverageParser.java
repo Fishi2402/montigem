@@ -12,6 +12,7 @@ import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
+import coveragedashboard.util.CciCalculator;
 import de.se_rwth.commons.logging.Log;
 
 import javax.xml.namespace.QName;
@@ -28,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 class JacocoXmlCoverageParser implements CoverageReportParser {
@@ -48,7 +50,12 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
   }
 
   @Override
-  public CoverageReport parse(File artifactFile, String reportName, Path basePath, Path rootPath) throws IOException {
+  public CoverageReport parse(
+      File artifactFile,
+      String reportName,
+      Path basePath,
+      Path rootPath,
+      Map<String, Double> perspectiveWeights) throws IOException {
     List<CoverageSourceFile> parsedFiles = new ArrayList<>();
 
     try (SourceMapCoverageMapper mapper = new SourceMapCoverageMapper();
@@ -209,23 +216,34 @@ class JacocoXmlCoverageParser implements CoverageReportParser {
         .name("JAVA")
         .rootModule(rootModule)
         .type(PerspectiveType.MEASURED_ROOT)
+        .coverageValue(CciCalculator.computeDirectPerspectiveCoverage(rootModule.getMetrics()))
         .build()
         .get();
 
-    CoverageReportBuilder reportBuilder = CoverageDashboardManager.coverageReportBuilder()
-        .name(reportName)
-        .type(this.type)
-        .directPerspective(directPerspective);
-
+    List<CoveragePerspective> aggregatedPerspectives = new ArrayList<>();
     CoverageModule ftlModule = moduleAggregator.groupDependentFilesByExtension("ftl", parsedFiles);
     if (!ftlModule.getSubModulesList().isEmpty() || !ftlModule.getSourceFilesList().isEmpty()) {
       CoveragePerspective ftlPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
           .name("FTL")
           .rootModule(ftlModule)
           .type(PerspectiveType.AGGREGATED)
+          .coverageValue(CciCalculator.computeAggregatedPerspectiveCoverage(ftlModule.getMetrics()))
           .build()
           .get();
-      reportBuilder.aggregatedPerspectivesAdd(ftlPerspective);
+      aggregatedPerspectives.add(ftlPerspective);
+    }
+
+    double reportCoverage = CciCalculator.computeReportCoverage(
+        directPerspective, aggregatedPerspectives, perspectiveWeights);
+
+    CoverageReportBuilder reportBuilder = CoverageDashboardManager.coverageReportBuilder()
+        .name(reportName)
+        .type(this.type)
+        .directPerspective(directPerspective)
+        .coverageValue(reportCoverage);
+
+    for (CoveragePerspective aggregated : aggregatedPerspectives) {
+      reportBuilder.aggregatedPerspectivesAdd(aggregated);
     }
 
     return reportBuilder.build().get();

@@ -4,6 +4,7 @@ import coveragedashboard.ReportType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Schema for {@code manifest.json} placed at the root of an uploaded coverage artifact archive.
@@ -24,6 +25,8 @@ public record IngestionManifest(
       String name,
       ReportType type,
       String reportPath,
-      String basePath
+      String basePath,
+      Double weight,
+      Map<String, Double> perspectiveWeights
   ) {}
 }

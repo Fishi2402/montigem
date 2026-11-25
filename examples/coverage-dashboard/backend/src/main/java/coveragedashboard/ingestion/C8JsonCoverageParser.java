@@ -14,11 +14,13 @@ import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoverageModule;
 import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
+import coveragedashboard.CoverageReportBuilder;
 import coveragedashboard.CoverageScope;
 import coveragedashboard.CoverageSourceFile;
 import coveragedashboard.CoverageSourceFileBuilder;
 import coveragedashboard.PerspectiveType;
 import coveragedashboard.ReportType;
+import coveragedashboard.util.CciCalculator;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSourceMap;
 import de.se_rwth.commons.logging.Log;
@@ -70,7 +72,12 @@ class C8JsonCoverageParser implements CoverageReportParser {
   }
 
   @Override
-  public CoverageReport parse(File jsonFile, String reportName, Path basePath, Path rootPath) throws IOException {
+  public CoverageReport parse(
+      File jsonFile,
+      String reportName,
+      Path basePath,
+      Path rootPath,
+      Map<String, Double> perspectiveWeights) throws IOException {
     Objects.requireNonNull(jsonFile, "jsonFile must not be null");
     Objects.requireNonNull(reportName, "reportName must not be null");
 
@@ -142,36 +149,52 @@ class C8JsonCoverageParser implements CoverageReportParser {
           .name("TS")
           .rootModule(rootModule)
           .type(PerspectiveType.MEASURED_ROOT)
+          .coverageValue(CciCalculator.computeDirectPerspectiveCoverage(rootModule.getMetrics()))
           .build()
           .get();
+
+      List<CoveragePerspective> aggregatedPerspectives = new ArrayList<>();
 
       // Aggregate java files
       CoverageModule javaModule = moduleAggregator.groupDependentFilesByExtension("java", parsedFiles);
-      CoveragePerspective javaPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
-          .name("JAVA")
-          .rootModule(javaModule)
-          .type(PerspectiveType.AGGREGATED)
-          .build()
-          .get();
+      if (!javaModule.getSubModulesList().isEmpty() || !javaModule.getSourceFilesList().isEmpty()) {
+        CoveragePerspective javaPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+            .name("JAVA")
+            .rootModule(javaModule)
+            .type(PerspectiveType.AGGREGATED)
+            .coverageValue(CciCalculator.computeAggregatedPerspectiveCoverage(javaModule.getMetrics()))
+            .build()
+            .get();
+        aggregatedPerspectives.add(javaPerspective);
+      }
 
       // Aggregate FTL files
       CoverageModule ftlModule = moduleAggregator.groupDependentFilesByExtension("ftl", parsedFiles);
-      CoveragePerspective ftlPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
-          .name("FTL")
-          .rootModule(ftlModule)
-          .type(PerspectiveType.AGGREGATED)
-          .build()
-          .get();
+      if (!ftlModule.getSubModulesList().isEmpty() || !ftlModule.getSourceFilesList().isEmpty()) {
+        CoveragePerspective ftlPerspective = CoverageDashboardManager.coveragePerspectiveBuilder()
+            .name("FTL")
+            .rootModule(ftlModule)
+            .type(PerspectiveType.AGGREGATED)
+            .coverageValue(CciCalculator.computeAggregatedPerspectiveCoverage(ftlModule.getMetrics()))
+            .build()
+            .get();
+        aggregatedPerspectives.add(ftlPerspective);
+      }
 
+      double reportCoverage = CciCalculator.computeReportCoverage(
+          directPerspective, aggregatedPerspectives, perspectiveWeights);
 
-      return CoverageDashboardManager.coverageReportBuilder()
+      CoverageReportBuilder reportBuilder = CoverageDashboardManager.coverageReportBuilder()
           .name(reportName)
           .type(this.type)
           .directPerspective(directPerspective)
-          .aggregatedPerspectivesAdd(javaPerspective)
-          .aggregatedPerspectivesAdd(ftlPerspective)
-          .build()
-          .get();
+          .coverageValue(reportCoverage);
+
+      for (CoveragePerspective aggregated : aggregatedPerspectives) {
+        reportBuilder.aggregatedPerspectivesAdd(aggregated);
+      }
+
+      return reportBuilder.build().get();
     }
   }
 

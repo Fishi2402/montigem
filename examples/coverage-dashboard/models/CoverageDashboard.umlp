@@ -11,14 +11,17 @@ classdiagram CoverageDashboard{
     String commitHash;
     LocalDateTime timestamp;
     String branchName;
+    double cci;
   }
 
   class CoverageReport{
     String name;
+    double coverageValue;
   }
 
   class TestGroup{
     String name;
+    double cci;
   }
 
   enum ReportType{
@@ -29,6 +32,7 @@ classdiagram CoverageDashboard{
 
   class CoveragePerspective{
     String name;
+    double coverageValue;
   }
 
   class CoverageModule{

@@ -51,9 +51,11 @@ class IngestionEndpointTest {
         "abc123",
         "main",
         LocalDateTime.of(2026, 11, 25, 17, 0),
+        0.85,
         List.of(new RunIngestionResponse.TestGroupSummary(
             "jsweet-test",
-            List.of(new RunIngestionResponse.ReportSummary("Unit Test", ReportType.GENERATOR_UNIT_TEST))
+            0.85,
+            List.of(new RunIngestionResponse.ReportSummary("Unit Test", ReportType.GENERATOR_UNIT_TEST, 0.85))
         ))
     );
     when(runIngestionService.ingestArchive(any())).thenReturn(expected);
@@ -67,8 +69,11 @@ class IngestionEndpointTest {
         .andExpect(jsonPath("$.runId").value(42))
         .andExpect(jsonPath("$.commitHash").value("abc123"))
         .andExpect(jsonPath("$.branchName").value("main"))
+        .andExpect(jsonPath("$.cci").value(0.85))
         .andExpect(jsonPath("$.testGroups[0].name").value("jsweet-test"))
-        .andExpect(jsonPath("$.testGroups[0].reports[0].type").value("GENERATOR_UNIT_TEST"));
+        .andExpect(jsonPath("$.testGroups[0].cci").value(0.85))
+        .andExpect(jsonPath("$.testGroups[0].reports[0].type").value("GENERATOR_UNIT_TEST"))
+        .andExpect(jsonPath("$.testGroups[0].reports[0].coverageValue").value(0.85));
   }
 
   @Test
@@ -99,6 +104,7 @@ class IngestionEndpointTest {
         "def456",
         "feature/test",
         LocalDateTime.of(2026, 11, 25, 17, 5),
+        0.75,
         List.of()
     );
     when(runIngestionService.getRunSummary(7L)).thenReturn(Optional.of(expected));
@@ -106,7 +112,8 @@ class IngestionEndpointTest {
     mockMvc.perform(get("/v1/runs/7"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.runId").value(7))
-        .andExpect(jsonPath("$.commitHash").value("def456"));
+        .andExpect(jsonPath("$.commitHash").value("def456"))
+        .andExpect(jsonPath("$.cci").value(0.75));
   }
 
   @Test
