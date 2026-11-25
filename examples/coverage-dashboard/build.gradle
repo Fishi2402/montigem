@@ -1,5 +1,6 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.gradle.api.tasks.PathSensitivity
 
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -56,8 +57,112 @@ tasks.register('packageCoverageBundle') {
   group = 'verification'
   description = 'Packages coverage reports, sources, rewritten .map files, extracted .ftl templates, and manifest.json into coverage-bundle.zip.'
 
+  if (project.hasProperty('coverage')) {
+    dependsOn(
+        ':umlp-jsweet:jacocoTestReport',
+        ':examples:jsweet-test:frontend:relativizeCoveragePaths',
+        ':examples:jsweet-test:frontend:jacocoAggregated',
+        ':examples:it-sync-protocol-test:frontend:jacocoTestReport'
+    )
+  }
+
+  String commitHash = (project.findProperty('coverage.commitHash') as String)
+      ?: System.getenv('CI_COMMIT_SHA')
+      ?: runGitCommand(['rev-parse', 'HEAD'], rootProject.projectDir)
+      ?: 'unknown'
+
+  String branchName = (project.findProperty('coverage.branchName') as String)
+      ?: System.getenv('CI_COMMIT_REF_NAME')
+      ?: runGitCommand(['rev-parse', '--abbrev-ref', 'HEAD'], rootProject.projectDir)
+      ?: 'unknown'
+
+  String explicitTimestamp = (project.findProperty('coverage.timestamp') as String)
+
+  def configuredGroups = [
+      [
+          name   : 'jsweet-test',
+          reports: [
+              [
+                  name      : 'Generated Code Test (examples/jsweet-test) - TS',
+                  type      : 'GENERATED_CODE_TEST',
+                  reportPath: 'examples/jsweet-test/frontend/build/app/coverage/coverage-final.json',
+                  basePath  : './examples/jsweet-test/frontend/build/app/dist/client/browser/'
+              ],
+              [
+                  name      : 'Generator compilation test (examples/jsweet-test) - JAVA',
+                  type      : 'GENERATOR_COMPILATION_TEST',
+                  reportPath: 'examples/jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml',
+                  basePath  : 'umlp-jsweet/src/main/java'
+              ]
+          ]
+      ],
+      [
+          name   : 'umlp-jsweet',
+          reports: [
+              [
+                  name      : 'Generator Unit Test (umlp-jsweet) - JAVA',
+                  type      : 'GENERATOR_UNIT_TEST',
+                  reportPath: 'umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml',
+                  basePath  : 'umlp-jsweet/src/main/java'
+              ]
+          ]
+      ],
+      [
+          name   : 'assoc-test',
+          reports: [
+              [
+                  name      : 'Generated Code Test (examples/it-sync-protocol-test) - JAVA',
+                  type      : 'GENERATED_CODE_TEST',
+                  reportPath: 'examples/it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml',
+                  basePath  : 'examples/it-sync-protocol-test/backend/build/umlp2java'
+              ]
+          ]
+      ]
+  ]
+
+  def configuredMergedReports = [
+      [
+          name         : 'Combined E2E Template Coverage (FTL)',
+          sourceReports: [
+              'Generated Code Test (examples/jsweet-test) - TS',
+              'Generated Code Test (examples/it-sync-protocol-test) - JAVA'
+          ],
+          perspectives : ['FTL']
+      ]
+  ]
+
+  def sourceDirsToCopy = [
+      'umlp-jsweet/src/main/java',
+      'examples/jsweet-test/frontend/src/main/java',
+      'examples/jsweet-test/frontend/build/gui2java',
+      'examples/jsweet-test/frontend/build/gui2java2ts',
+      'examples/jsweet-test/frontend/build/umlpJava2ts',
+      'examples/jsweet-test/backend/build/umlp2java',
+      'examples/jsweet-test/backend/src',
+      'examples/it-sync-protocol-test/backend/build/umlp2java'
+  ]
+
+  def allowedSourcePatterns = allowedSourceExtensions.collect { "**/*${it}" }
+  def configuredReportFiles = configuredGroups.collectMany { group ->
+    group.reports.collect { report -> rootProject.file(report.reportPath) }
+  }
+  def configuredSourceTrees = sourceDirsToCopy.collect { relDir ->
+    fileTree(rootProject.file(relDir)) {
+      include allowedSourcePatterns
+    }
+  }
+
+  inputs.property('commitHash', commitHash)
+  inputs.property('branchName', branchName)
+  inputs.property('explicitTimestamp', explicitTimestamp ?: '')
+  inputs.property('manifestConfig', JsonOutput.toJson([groups: configuredGroups, merged: configuredMergedReports]))
+  inputs.files(configuredReportFiles)
+      .withPropertyName('reportFiles')
+      .withPathSensitivity(PathSensitivity.RELATIVE)
+  inputs.files(configuredSourceTrees)
+      .withPropertyName('sourceFiles')
+      .withPathSensitivity(PathSensitivity.RELATIVE)
   outputs.file(coverageBundleZip)
-  outputs.upToDateWhen { false }
 
   doLast {
     Path repoRoot = rootProject.projectDir.toPath().toAbsolutePath().normalize()
@@ -70,82 +175,8 @@ tasks.register('packageCoverageBundle') {
     Files.createDirectories(stagingDir)
     Files.createDirectories(outputZip.parent)
 
-    String commitHash = (project.findProperty('coverage.commitHash') as String)
-        ?: System.getenv('CI_COMMIT_SHA')
-        ?: runGitCommand(['rev-parse', 'HEAD'], rootProject.projectDir)
-        ?: 'unknown'
-
-    String branchName = (project.findProperty('coverage.branchName') as String)
-        ?: System.getenv('CI_COMMIT_REF_NAME')
-        ?: runGitCommand(['rev-parse', '--abbrev-ref', 'HEAD'], rootProject.projectDir)
-        ?: 'unknown'
-
-    String timestamp = (project.findProperty('coverage.timestamp') as String)
+    String timestamp = explicitTimestamp
         ?: LocalDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-
-    def configuredGroups = [
-        [
-            name   : 'jsweet-test',
-            reports: [
-                [
-                    name      : 'Generated Code Test (examples/jsweet-test) - TS',
-                    type      : 'GENERATED_CODE_TEST',
-                    reportPath: 'examples/jsweet-test/frontend/build/app/coverage/coverage-final.json',
-                    basePath  : './examples/jsweet-test/frontend/build/app/dist/client/browser/'
-                ],
-                [
-                    name      : 'Generator compilation test (examples/jsweet-test) - JAVA',
-                    type      : 'GENERATOR_COMPILATION_TEST',
-                    reportPath: 'examples/jsweet-test/frontend/build/reports/jacoco/jacocoAggregated/jacocoAggregated.xml',
-                    basePath  : 'umlp-jsweet/src/main/java'
-                ]
-            ]
-        ],
-        [
-            name   : 'umlp-jsweet',
-            reports: [
-                [
-                    name      : 'Generator Unit Test (umlp-jsweet) - JAVA',
-                    type      : 'GENERATOR_UNIT_TEST',
-                    reportPath: 'umlp-jsweet/build/reports/jacoco/test/jacocoTestReport.xml',
-                    basePath  : 'umlp-jsweet/src/main/java'
-                ]
-            ]
-        ],
-        [
-            name   : 'assoc-test',
-            reports: [
-                [
-                    name      : 'Generated Code Test (examples/it-sync-protocol-test) - JAVA',
-                    type      : 'GENERATED_CODE_TEST',
-                    reportPath: 'examples/it-sync-protocol-test/frontend/build/reports/jacoco/test/jacocoTestReport.xml',
-                    basePath  : 'examples/it-sync-protocol-test/backend/build/umlp2java'
-                ]
-            ]
-        ]
-    ]
-
-    def configuredMergedReports = [
-        [
-            name         : 'Combined E2E Template Coverage (FTL)',
-            sourceReports: [
-                'Generated Code Test (examples/jsweet-test) - TS',
-                'Generated Code Test (examples/it-sync-protocol-test) - JAVA'
-            ],
-            perspectives : ['FTL']
-        ]
-    ]
-
-    def sourceDirsToCopy = [
-        'umlp-jsweet/src/main/java',
-        'examples/jsweet-test/frontend/src/main/java',
-        'examples/jsweet-test/frontend/build/gui2java',
-        'examples/jsweet-test/frontend/build/gui2java2ts',
-        'examples/jsweet-test/frontend/build/umlpJava2ts',
-        'examples/jsweet-test/backend/build/umlp2java',
-        'examples/jsweet-test/backend/src',
-        'examples/it-sync-protocol-test/backend/build/umlp2java'
-    ]
 
     // 1. Copy available reports and assemble manifest testGroups
     def manifestGroups = []
