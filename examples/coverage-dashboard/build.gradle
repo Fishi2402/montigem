@@ -125,6 +125,17 @@ tasks.register('packageCoverageBundle') {
         ]
     ]
 
+    def configuredMergedReports = [
+        [
+            name         : 'Combined E2E Template Coverage (FTL)',
+            sourceReports: [
+                'Generated Code Test (examples/jsweet-test) - TS',
+                'Generated Code Test (examples/it-sync-protocol-test) - JAVA'
+            ],
+            perspectives : ['FTL']
+        ]
+    ]
+
     def sourceDirsToCopy = [
         'umlp-jsweet/src/main/java',
         'examples/jsweet-test/frontend/src/main/java',
@@ -138,6 +149,7 @@ tasks.register('packageCoverageBundle') {
 
     // 1. Copy available reports and assemble manifest testGroups
     def manifestGroups = []
+    Set<String> includedReportNames = [] as Set
     int totalReports = 0
     configuredGroups.each { group ->
       def includedReports = []
@@ -148,6 +160,7 @@ tasks.register('packageCoverageBundle') {
           Files.createDirectories(dstReport.parent)
           Files.copy(srcReport, dstReport, StandardCopyOption.REPLACE_EXISTING)
           includedReports << report
+          includedReportNames << report.name
           totalReports++
         } else {
           logger.warn("Skipping missing coverage report: {}", report.reportPath)
@@ -160,6 +173,15 @@ tasks.register('packageCoverageBundle') {
 
     if (totalReports == 0) {
       throw new GradleException("No coverage reports found to package. Run coverage tasks first.")
+    }
+
+    def manifestMergedReports = []
+    configuredMergedReports.each { merged ->
+      if (merged.sourceReports.every { includedReportNames.contains(it) }) {
+        manifestMergedReports << merged
+      } else {
+        logger.warn("Skipping merged report '{}' because not all sourceReports are present: {}", merged.name, merged.sourceReports)
+      }
     }
 
     // 2. Copy source & generated directories (text/source/map files only, never .class or .jar)
@@ -300,10 +322,11 @@ tasks.register('packageCoverageBundle') {
 
     // 4. Write manifest.json
     def manifest = [
-        commitHash: commitHash,
-        branchName: branchName,
-        timestamp : timestamp,
-        testGroups: manifestGroups
+        commitHash   : commitHash,
+        branchName   : branchName,
+        timestamp    : timestamp,
+        testGroups   : manifestGroups,
+        mergedReports: manifestMergedReports
     ]
     Files.writeString(
         stagingDir.resolve('manifest.json'),
@@ -325,8 +348,8 @@ tasks.register('packageCoverageBundle') {
 
     double sizeMb = Files.size(outputZip) / (1024.0 * 1024.0)
     logger.lifecycle(
-        "Packaged coverage bundle: {} ({} MB) — {} report(s), {} unique template(s) extracted, {} .map file(s) rewritten.",
-        outputZip, String.format(Locale.ROOT, '%.2f', sizeMb), totalReports, extractedTemplates, rewrittenMaps
+        "Packaged coverage bundle: {} ({} MB) — {} report(s), {} merged report(s), {} unique template(s) extracted, {} .map file(s) rewritten.",
+        outputZip, String.format(Locale.ROOT, '%.2f', sizeMb), totalReports, manifestMergedReports.size(), extractedTemplates, rewrittenMaps
     )
   }
 }
