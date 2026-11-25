@@ -3,6 +3,7 @@ package coveragedashboard;
 import coveragedashboard.ingestion.CoverageIngestionService;
 import de.se_rwth.commons.logging.Log;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 
 import java.io.File;
@@ -11,6 +12,10 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 public class CoverageDashboardServerApplication extends CoverageDashboardServerApplicationTOP {
+
+  @Value("${coverage.ingestion.load-local-data:false}")
+  private boolean loadLocalData;
+
   public static void main(String[] args) {
     SpringApplication.run(CoverageDashboardServerApplication.class, args);
   }
@@ -20,7 +25,9 @@ public class CoverageDashboardServerApplication extends CoverageDashboardServerA
   public void init() throws IOException {
     super.init();
 
-    createLocalData();
+    if (loadLocalData) {
+      createLocalData();
+    }
   }
 
   public void createLocalData(){
