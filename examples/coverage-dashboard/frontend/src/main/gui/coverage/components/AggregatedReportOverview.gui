@@ -1,6 +1,3 @@
-page AggregatedReportOverview() {
-
-}
 package coverage.components;
 
 import mc.fenix.arrange.GemCard;

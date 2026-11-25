@@ -1,6 +1,3 @@
-page AggregatedCoverageDetails() {
-
-}
 package coverage;
 
 import java.util.List;
