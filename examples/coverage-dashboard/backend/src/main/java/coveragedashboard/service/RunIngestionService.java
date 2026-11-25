@@ -1,6 +1,7 @@
 package coveragedashboard.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import coveragedashboard.AggregatedCoverageReport;
 import coveragedashboard.CoverageDashboardManager;
 import coveragedashboard.CoverageReport;
 import coveragedashboard.Run;
@@ -8,6 +9,7 @@ import coveragedashboard.RunBuilder;
 import coveragedashboard.TestGroup;
 import coveragedashboard.TestGroupBuilder;
 import coveragedashboard.ingestion.CoverageIngestionService;
+import coveragedashboard.ingestion.CoverageReportMerger;
 import coveragedashboard.service.dto.IngestionManifest;
 import coveragedashboard.service.dto.RunIngestionResponse;
 import coveragedashboard.util.CciCalculator;
@@ -20,10 +22,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Orchestrates coverage bundle extraction, {@code manifest.json} validation, report ingestion,
@@ -37,19 +42,22 @@ public class RunIngestionService {
   private final ArtifactStorageService storageService;
   private final ObjectMapper objectMapper;
   private final CoverageIngestionService coverageIngestionService;
+  private final CoverageReportMerger reportMerger;
 
   @Autowired
   public RunIngestionService(ArtifactStorageService storageService, ObjectMapper objectMapper) {
-    this(storageService, objectMapper, new CoverageIngestionService());
+    this(storageService, objectMapper, new CoverageIngestionService(), new CoverageReportMerger());
   }
 
   RunIngestionService(
       ArtifactStorageService storageService,
       ObjectMapper objectMapper,
-      CoverageIngestionService coverageIngestionService) {
+      CoverageIngestionService coverageIngestionService,
+      CoverageReportMerger reportMerger) {
     this.storageService = storageService;
     this.objectMapper = objectMapper;
     this.coverageIngestionService = coverageIngestionService;
+    this.reportMerger = reportMerger;
   }
 
   public synchronized RunIngestionResponse ingestArchive(MultipartFile archive) {
@@ -101,6 +109,9 @@ public class RunIngestionService {
       throw new InvalidIngestionRequestException("Manifest must contain at least one test group.");
     }
 
+    Set<String> allReportNames = new HashSet<>();
+    Set<String> duplicateReportNames = new HashSet<>();
+
     for (IngestionManifest.TestGroupEntry group : manifest.testGroups()) {
       if (group == null || isBlank(group.name())) {
         throw new InvalidIngestionRequestException("Each test group must have a non-blank 'name'.");
@@ -116,6 +127,9 @@ public class RunIngestionService {
         if (isBlank(report.name())) {
           throw new InvalidIngestionRequestException(
               "Each report in test group '" + group.name() + "' must have a non-blank 'name'.");
+        }
+        if (!allReportNames.add(report.name())) {
+          duplicateReportNames.add(report.name());
         }
         if (report.type() == null) {
           throw new InvalidIngestionRequestException(
@@ -135,20 +149,72 @@ public class RunIngestionService {
           throw new InvalidIngestionRequestException(
               "Report file referenced in manifest does not exist in archive: " + report.reportPath());
         }
-        if (report.weight() != null && (!Double.isFinite(report.weight()) || report.weight() <= 0.0)) {
-          throw new InvalidIngestionRequestException(
-              "Report '" + report.name() + "' weight must be a finite positive number, got: " + report.weight());
+        validateOptionalWeight("Report '" + report.name() + "'", report.weight());
+        validateOptionalPerspectiveWeights("Report '" + report.name() + "'", report.perspectiveWeights());
+      }
+    }
+
+    if (manifest.mergedReports() != null) {
+      for (IngestionManifest.MergedReportEntry merged : manifest.mergedReports()) {
+        if (merged == null || isBlank(merged.name())) {
+          throw new InvalidIngestionRequestException("Each merged report must have a non-blank 'name'.");
         }
-        if (report.perspectiveWeights() != null) {
-          for (Map.Entry<String, Double> pw : report.perspectiveWeights().entrySet()) {
-            Double val = pw.getValue();
-            if (val == null || !Double.isFinite(val) || val <= 0.0) {
-              throw new InvalidIngestionRequestException(
-                  "Report '" + report.name() + "' perspectiveWeight for '" + pw.getKey()
-                      + "' must be a finite positive number, got: " + val);
-            }
+        if (merged.sourceReports() == null || merged.sourceReports().size() < 2) {
+          throw new InvalidIngestionRequestException(
+              "Merged report '" + merged.name() + "' must specify at least 2 sourceReports.");
+        }
+        Set<String> seenSources = new HashSet<>();
+        for (String srcName : merged.sourceReports()) {
+          if (isBlank(srcName)) {
+            throw new InvalidIngestionRequestException(
+                "Merged report '" + merged.name() + "' contains a blank sourceReport name.");
+          }
+          if (!seenSources.add(srcName)) {
+            throw new InvalidIngestionRequestException(
+                "Merged report '" + merged.name() + "' lists duplicate sourceReport '" + srcName + "'.");
+          }
+          if (!allReportNames.contains(srcName)) {
+            throw new InvalidIngestionRequestException(
+                "Merged report '" + merged.name() + "' references unknown sourceReport '" + srcName + "'.");
+          }
+          if (duplicateReportNames.contains(srcName)) {
+            throw new InvalidIngestionRequestException(
+                "Merged report '" + merged.name() + "' references non-unique report name '" + srcName + "'.");
           }
         }
+        if (merged.perspectives() == null || merged.perspectives().isEmpty()) {
+          throw new InvalidIngestionRequestException(
+              "Merged report '" + merged.name() + "' must explicitly specify at least one perspective to merge.");
+        }
+        for (String p : merged.perspectives()) {
+          if (isBlank(p)) {
+            throw new InvalidIngestionRequestException(
+                "Merged report '" + merged.name() + "' contains a blank perspective name.");
+          }
+        }
+        validateOptionalWeight("Merged report '" + merged.name() + "'", merged.weight());
+        validateOptionalPerspectiveWeights("Merged report '" + merged.name() + "'", merged.perspectiveWeights());
+      }
+    }
+  }
+
+  private void validateOptionalWeight(String label, Double weight) {
+    if (weight != null && (!Double.isFinite(weight) || weight <= 0.0)) {
+      throw new InvalidIngestionRequestException(
+          label + " weight must be a finite positive number, got: " + weight);
+    }
+  }
+
+  private void validateOptionalPerspectiveWeights(String label, Map<String, Double> perspectiveWeights) {
+    if (perspectiveWeights == null) {
+      return;
+    }
+    for (Map.Entry<String, Double> pw : perspectiveWeights.entrySet()) {
+      Double val = pw.getValue();
+      if (val == null || !Double.isFinite(val) || val <= 0.0) {
+        throw new InvalidIngestionRequestException(
+            label + " perspectiveWeight for '" + pw.getKey()
+                + "' must be a finite positive number, got: " + val);
       }
     }
   }
@@ -157,7 +223,8 @@ public class RunIngestionService {
     List<TestGroup> persistedGroups = new ArrayList<>();
     List<CoverageReport> allReports = new ArrayList<>();
     List<Double> allReportWeights = new ArrayList<>();
-    boolean hasAnyReportWeight = false;
+    Map<String, CoverageReport> reportsByName = new HashMap<>();
+    boolean hasAnyWeight = false;
 
     for (IngestionManifest.TestGroupEntry groupEntry : manifest.testGroups()) {
       TestGroupBuilder groupBuilder = CoverageDashboardManager.testGroupBuilder()
@@ -186,11 +253,12 @@ public class RunIngestionService {
         groupBuilder.reportsAdd(report);
         groupReports.add(report);
         allReports.add(report);
+        reportsByName.put(reportEntry.name(), report);
 
         double effectiveWeight = reportEntry.weight() != null ? reportEntry.weight() : 1.0;
         if (reportEntry.weight() != null) {
           hasGroupWeight = true;
-          hasAnyReportWeight = true;
+          hasAnyWeight = true;
         }
         groupWeights.add(effectiveWeight);
         allReportWeights.add(effectiveWeight);
@@ -203,8 +271,56 @@ public class RunIngestionService {
       persistedGroups.add(groupBuilder.build().get());
     }
 
-    double runCci = CciCalculator.computeRunCci(
-        allReports, hasAnyReportWeight ? allReportWeights : null);
+    // Build explicit AggregatedCoverageReports and track replaced source reports
+    List<AggregatedCoverageReport> aggregatedReports = new ArrayList<>();
+    List<Double> aggregatedReportWeights = new ArrayList<>();
+    Set<String> replacedReportNames = new HashSet<>();
+
+    if (manifest.mergedReports() != null) {
+      for (IngestionManifest.MergedReportEntry mergedEntry : manifest.mergedReports()) {
+        List<CoverageReport> sources = new ArrayList<>(mergedEntry.sourceReports().size());
+        for (String srcName : mergedEntry.sourceReports()) {
+          sources.add(reportsByName.get(srcName));
+          replacedReportNames.add(srcName);
+        }
+
+        AggregatedCoverageReport merged;
+        try {
+          merged = reportMerger.mergeReports(
+              mergedEntry.name(),
+              sources,
+              mergedEntry.perspectives(),
+              mergedEntry.perspectiveWeights()
+          );
+        } catch (IllegalArgumentException e) {
+          throw new InvalidIngestionRequestException(e.getMessage(), e);
+        }
+
+        aggregatedReports.add(merged);
+        if (mergedEntry.weight() != null) {
+          hasAnyWeight = true;
+        }
+        aggregatedReportWeights.add(mergedEntry.weight() != null ? mergedEntry.weight() : 1.0);
+      }
+    }
+
+    // Compute flat Run.cci: merged reports replace their constituent sourceReports
+    List<Double> runCciValues = new ArrayList<>();
+    List<Double> runCciWeights = new ArrayList<>();
+    for (int i = 0; i < allReports.size(); i++) {
+      CoverageReport report = allReports.get(i);
+      if (!replacedReportNames.contains(report.getName())) {
+        runCciValues.add(report.getCoverageValue());
+        runCciWeights.add(allReportWeights.get(i));
+      }
+    }
+    for (int i = 0; i < aggregatedReports.size(); i++) {
+      runCciValues.add(aggregatedReports.get(i).getCoverageValue());
+      runCciWeights.add(aggregatedReportWeights.get(i));
+    }
+
+    double runCci = CciCalculator.computeRunCciFromValues(
+        runCciValues, hasAnyWeight ? runCciWeights : null);
 
     LocalDateTime timestamp = manifest.timestamp() != null ? manifest.timestamp() : LocalDateTime.now();
     RunBuilder runBuilder = CoverageDashboardManager.runBuilder()
@@ -215,6 +331,9 @@ public class RunIngestionService {
 
     for (TestGroup group : persistedGroups) {
       runBuilder.testGroupsAdd(group);
+    }
+    for (AggregatedCoverageReport merged : aggregatedReports) {
+      runBuilder.aggregatedReportsAdd(merged);
     }
 
     return runBuilder.build().get();
@@ -249,13 +368,21 @@ public class RunIngestionService {
         ))
         .toList();
 
+    List<RunIngestionResponse.MergedReportSummary> mergedSummaries = run.getAggregatedReportsList().stream()
+        .map(merged -> new RunIngestionResponse.MergedReportSummary(
+            merged.getName(),
+            merged.getCoverageValue()
+        ))
+        .toList();
+
     return new RunIngestionResponse(
         run.getGemId(),
         run.getCommitHash(),
         run.getBranchName(),
         run.getTimestamp(),
         run.getCci(),
-        groupSummaries
+        groupSummaries,
+        mergedSummaries
     );
   }
 

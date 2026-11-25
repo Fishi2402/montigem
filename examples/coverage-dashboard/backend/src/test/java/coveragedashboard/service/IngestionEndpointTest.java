@@ -56,7 +56,8 @@ class IngestionEndpointTest {
             "jsweet-test",
             0.85,
             List.of(new RunIngestionResponse.ReportSummary("Unit Test", ReportType.GENERATOR_UNIT_TEST, 0.85))
-        ))
+        )),
+        List.of(new RunIngestionResponse.MergedReportSummary("Combined E2E", 0.9))
     );
     when(runIngestionService.ingestArchive(any())).thenReturn(expected);
 
@@ -73,7 +74,9 @@ class IngestionEndpointTest {
         .andExpect(jsonPath("$.testGroups[0].name").value("jsweet-test"))
         .andExpect(jsonPath("$.testGroups[0].cci").value(0.85))
         .andExpect(jsonPath("$.testGroups[0].reports[0].type").value("GENERATOR_UNIT_TEST"))
-        .andExpect(jsonPath("$.testGroups[0].reports[0].coverageValue").value(0.85));
+        .andExpect(jsonPath("$.testGroups[0].reports[0].coverageValue").value(0.85))
+        .andExpect(jsonPath("$.mergedReports[0].name").value("Combined E2E"))
+        .andExpect(jsonPath("$.mergedReports[0].coverageValue").value(0.9));
   }
 
   @Test
@@ -105,6 +108,7 @@ class IngestionEndpointTest {
         "feature/test",
         LocalDateTime.of(2026, 11, 25, 17, 5),
         0.75,
+        List.of(),
         List.of()
     );
     when(runIngestionService.getRunSummary(7L)).thenReturn(Optional.of(expected));

@@ -259,6 +259,139 @@ public class RunIngestionServiceTest extends CoverageDashboardMockTestSetup {
     }
   }
 
+  @Test
+  void ingestsExplicitMergedReportAndReplacesSourceReportsInRunCci() throws IOException {
+    String manifest = """
+        {
+          "commitHash": "cafe1234",
+          "branchName": "dev",
+          "testGroups": [
+            {
+              "name": "suite-a",
+              "reports": [
+                {
+                  "name": "Suite A",
+                  "type": "GENERATED_CODE_TEST",
+                  "reportPath": "reports/a.xml",
+                  "basePath": "srcA"
+                }
+              ]
+            },
+            {
+              "name": "suite-b",
+              "reports": [
+                {
+                  "name": "Suite B",
+                  "type": "GENERATED_CODE_TEST",
+                  "reportPath": "reports/b.xml",
+                  "basePath": "srcB"
+                }
+              ]
+            }
+          ],
+          "mergedReports": [
+            {
+              "name": "Combined E2E FTL",
+              "sourceReports": ["Suite A", "Suite B"],
+              "perspectives": ["FTL"]
+            }
+          ]
+        }
+        """;
+
+    // Suite A covers line 1 of Shared.ftl (via A.java line 1) and misses line 2 (via A.java line 2) -> FTL = 0.5
+    String xmlA = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <report name="a">
+          <package name="pkg">
+            <sourcefile name="A.java">
+              <line nr="1" mi="0" ci="5" mb="0" cb="0"/>
+              <line nr="2" mi="5" ci="0" mb="0" cb="0"/>
+              <counter type="INSTRUCTION" missed="5" covered="5"/>
+              <counter type="LINE" missed="1" covered="1"/>
+            </sourcefile>
+          </package>
+        </report>
+        """;
+    // Suite B misses line 1 of Shared.ftl and covers line 2 -> FTL = 0.5
+    String xmlB = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <report name="b">
+          <package name="pkg">
+            <sourcefile name="B.java">
+              <line nr="1" mi="5" ci="0" mb="0" cb="0"/>
+              <line nr="2" mi="0" ci="5" mb="0" cb="0"/>
+              <counter type="INSTRUCTION" missed="5" covered="5"/>
+              <counter type="LINE" missed="1" covered="1"/>
+            </sourcefile>
+          </package>
+        </report>
+        """;
+
+    // Both A.java.map and B.java.map map line 1->1 and line 2->2 of templates/Shared.ftl (0-based -> +1)
+    String mapA = "{\"version\":3,\"file\":\"A.java\",\"sources\":[\"../../templates/Shared.ftl\"],\"mappings\":\"AAAA;AACA;\"}";
+    String mapB = "{\"version\":3,\"file\":\"B.java\",\"sources\":[\"../../templates/Shared.ftl\"],\"mappings\":\"AAAA;AACA;\"}";
+
+    byte[] zip = createZip(Map.of(
+        "manifest.json", manifest,
+        "reports/a.xml", xmlA,
+        "reports/b.xml", xmlB,
+        "srcA/pkg/A.java", "line1\nline2\n",
+        "srcA/pkg/A.java.map", mapA,
+        "srcB/pkg/B.java", "line1\nline2\n",
+        "srcB/pkg/B.java.map", mapB,
+        "templates/Shared.ftl", "tpl1\ntpl2\n"
+    ));
+
+    MockMultipartFile file = new MockMultipartFile("artifact", "merged.zip", "application/zip", zip);
+    RunIngestionResponse response = runIngestionService.ingestArchive(file);
+
+    // Individual reports each have 0.5 coverage, but the merged FTL report has 1.0 and replaces both in Run.cci
+    assertEquals(1, response.mergedReports().size());
+    assertEquals("Combined E2E FTL", response.mergedReports().get(0).name());
+    assertEquals(1.0, response.mergedReports().get(0).coverageValue(), 1e-9);
+    assertEquals(1.0, response.cci(), 1e-9);
+    assertEquals(0.5, response.testGroups().get(0).cci(), 1e-9);
+    assertEquals(0.5, response.testGroups().get(1).cci(), 1e-9);
+  }
+
+  @Test
+  void rejectsMergedReportWithoutExplicitPerspectives() throws IOException {
+    String manifest = """
+        {
+          "commitHash": "abc123",
+          "branchName": "main",
+          "testGroups": [
+            {
+              "name": "g",
+              "reports": [
+                { "name": "R1", "type": "GENERATED_CODE_TEST", "reportPath": "r1.xml", "basePath": "src" },
+                { "name": "R2", "type": "GENERATED_CODE_TEST", "reportPath": "r2.xml", "basePath": "src" }
+              ]
+            }
+          ],
+          "mergedReports": [
+            {
+              "name": "Invalid Merge",
+              "sourceReports": ["R1", "R2"]
+            }
+          ]
+        }
+        """;
+
+    byte[] zip = createZip(Map.of(
+        "manifest.json", manifest,
+        "r1.xml", "<report name=\"1\"/>",
+        "r2.xml", "<report name=\"2\"/>"
+    ));
+    MockMultipartFile file = new MockMultipartFile("artifact", "no-persp.zip", "application/zip", zip);
+
+    assertThrows(InvalidIngestionRequestException.class, () -> runIngestionService.ingestArchive(file));
+    try (var dirs = Files.list(storageDir)) {
+      assertEquals(0, dirs.count(), "Invalid mergedReport should clean up extracted files");
+    }
+  }
+
   private static byte[] createZip(Map<String, String> entries) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try (ZipOutputStream zos = new ZipOutputStream(baos)) {

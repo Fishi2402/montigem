@@ -14,7 +14,8 @@ public record RunIngestionResponse(
     String branchName,
     LocalDateTime timestamp,
     double cci,
-    List<TestGroupSummary> testGroups
+    List<TestGroupSummary> testGroups,
+    List<MergedReportSummary> mergedReports
 ) {
 
   public record TestGroupSummary(
@@ -26,6 +27,11 @@ public record RunIngestionResponse(
   public record ReportSummary(
       String name,
       ReportType type,
+      double coverageValue
+  ) {}
+
+  public record MergedReportSummary(
+      String name,
       double coverageValue
   ) {}
 }

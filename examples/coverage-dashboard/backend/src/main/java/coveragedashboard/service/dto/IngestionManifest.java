@@ -13,7 +13,8 @@ public record IngestionManifest(
     String commitHash,
     String branchName,
     LocalDateTime timestamp,
-    List<TestGroupEntry> testGroups
+    List<TestGroupEntry> testGroups,
+    List<MergedReportEntry> mergedReports
 ) {
 
   public record TestGroupEntry(
@@ -26,6 +27,14 @@ public record IngestionManifest(
       ReportType type,
       String reportPath,
       String basePath,
+      Double weight,
+      Map<String, Double> perspectiveWeights
+  ) {}
+
+  public record MergedReportEntry(
+      String name,
+      List<String> sourceReports,
+      List<String> perspectives,
       Double weight,
       Map<String, Double> perspectiveWeights
   ) {}

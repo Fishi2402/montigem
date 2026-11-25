@@ -76,6 +76,24 @@ class CoverageModuleAggregator {
     return this.groupFilesInModules(aggregatedFiles);
   }
 
+  /**
+   * Groups {@code flatFiles} by relative path, merges duplicate files using line-by-line logical OR,
+   * and organizes the merged files into a hierarchical {@link CoverageModule} tree.
+   */
+  public CoverageModule mergeFilesInModules(List<CoverageSourceFile> flatFiles) {
+    if (flatFiles == null || flatFiles.isEmpty()) {
+      return getEmptyModule("");
+    }
+    Map<String, List<CoverageSourceFile>> groupedFiles = flatFiles.stream()
+        .collect(Collectors.groupingBy(CoverageSourceFile::getPath));
+
+    List<CoverageSourceFile> mergedFiles = groupedFiles.entrySet().stream()
+        .map(entry -> mergeCoverageData(entry.getKey(), entry.getValue()))
+        .collect(Collectors.toList());
+
+    return this.groupFilesInModules(mergedFiles);
+  }
+
   private void collectTransitiveGeneratedBy(
       CoverageSourceFile file,
       Predicate<CoverageSourceFile> filter,

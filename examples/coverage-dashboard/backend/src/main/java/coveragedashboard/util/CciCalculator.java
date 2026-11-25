@@ -70,16 +70,25 @@ public final class CciCalculator {
     if (aggregatedPerspectives != null) {
       all.addAll(aggregatedPerspectives);
     }
-    if (all.isEmpty()) {
+    return computePerspectivesCci(all, perspectiveWeights);
+  }
+
+  /**
+   * Computes the weighted harmonic mean over a list of {@link CoveragePerspective}s.
+   */
+  public static double computePerspectivesCci(
+      List<CoveragePerspective> perspectives,
+      Map<String, Double> perspectiveWeights) {
+    if (perspectives == null || perspectives.isEmpty()) {
       return 0.0;
     }
 
-    List<Double> values = new ArrayList<>(all.size());
+    List<Double> values = new ArrayList<>(perspectives.size());
     List<Double> weights = (perspectiveWeights != null && !perspectiveWeights.isEmpty())
-        ? new ArrayList<>(all.size())
+        ? new ArrayList<>(perspectives.size())
         : null;
 
-    for (CoveragePerspective perspective : all) {
+    for (CoveragePerspective perspective : perspectives) {
       values.add(perspective.getCoverageValue());
       if (weights != null) {
         Double w = perspectiveWeights.get(perspective.getName());
@@ -104,6 +113,14 @@ public final class CciCalculator {
    */
   public static double computeRunCci(List<CoverageReport> allReports, List<Double> weights) {
     return computeReportsHarmonicMean(allReports, weights);
+  }
+
+  /**
+   * Computes the flat Run-level Composite Coverage Index (CCI) from precomputed report/aggregated
+   * coverage values and optional weights.
+   */
+  public static double computeRunCciFromValues(List<Double> coverageValues, List<Double> weights) {
+    return weightedHarmonicMean(coverageValues, weights);
   }
 
   /**

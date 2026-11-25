@@ -19,6 +19,11 @@ classdiagram CoverageDashboard{
     double coverageValue;
   }
 
+  class AggregatedCoverageReport{
+    String name;
+    double coverageValue;
+  }
+
   class TestGroup{
     String name;
     double cci;
@@ -108,8 +113,11 @@ classdiagram CoverageDashboard{
   }
 
   composition [1] Run -> (testGroups) TestGroup [1..*];
+  composition [1] Run -> (aggregatedReports) AggregatedCoverageReport [*];
 
   association [1] TestGroup -> (reports) CoverageReport [1..*];
+  association [*] AggregatedCoverageReport -> (sourceReports) CoverageReport [1..*];
+  composition [1] AggregatedCoverageReport -> (perspectives) CoveragePerspective [1..*];
 
   composition [1] CoverageReport -> (directPerspective) CoveragePerspective [1];
   composition [1] CoverageReport -> (aggregatedPerspectives) CoveragePerspective [*];
