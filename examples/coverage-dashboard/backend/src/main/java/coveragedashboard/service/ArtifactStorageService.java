@@ -1,6 +1,7 @@
 package coveragedashboard.service;
 
 import de.se_rwth.commons.logging.Log;
+import jsweet.lang.Erased;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ import java.util.zip.ZipInputStream;
  * ingestion parsers and {@code GetFileContent} can read reports, source maps, and source files.
  */
 @Service
+@Erased
 public class ArtifactStorageService {
 
   private static final DateTimeFormatter DIR_TIMESTAMP =

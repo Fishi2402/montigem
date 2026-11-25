@@ -3,6 +3,7 @@ package coveragedashboard.util;
 import coveragedashboard.CoverageMetrics;
 import coveragedashboard.CoveragePerspective;
 import coveragedashboard.CoverageReport;
+import jsweet.lang.Erased;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
  * Utility class for computing normalized perspective coverage ratios and the
  * Composite Coverage Index (CCI) using a weighted harmonic mean.
  */
+@Erased
 public final class CciCalculator {
 
   private CciCalculator() {

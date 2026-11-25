@@ -1,6 +1,7 @@
 package coveragedashboard.service.dto;
 
 import coveragedashboard.ReportType;
+import jsweet.lang.Erased;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * REST response summary for an ingested coverage {@code Run}.
  */
+@Erased
 public record RunIngestionResponse(
     long runId,
     String commitHash,

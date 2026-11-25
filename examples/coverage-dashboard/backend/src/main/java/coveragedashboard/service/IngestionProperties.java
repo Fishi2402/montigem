@@ -1,5 +1,6 @@
 package coveragedashboard.service;
 
+import jsweet.lang.Erased;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +8,7 @@ import java.nio.file.Path;
 
 @Component
 @ConfigurationProperties(prefix = "coverage.ingestion")
+@Erased
 public class IngestionProperties {
 
   /**

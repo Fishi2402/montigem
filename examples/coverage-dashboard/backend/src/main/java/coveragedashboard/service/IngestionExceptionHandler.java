@@ -1,6 +1,7 @@
 package coveragedashboard.service;
 
 import de.se_rwth.commons.logging.Log;
+import jsweet.lang.Erased;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
  * Translates ingestion failures into RFC 7807 {@link ProblemDetail} HTTP responses.
  */
 @RestControllerAdvice(assignableTypes = IngestionEndpoint.class)
+@Erased
 public class IngestionExceptionHandler {
 
   @ExceptionHandler(InvalidIngestionRequestException.class)

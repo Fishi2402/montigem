@@ -348,7 +348,7 @@ tasks.register('packageCoverageBundle') {
 
     double sizeMb = Files.size(outputZip) / (1024.0 * 1024.0)
     logger.lifecycle(
-        "Packaged coverage bundle: {} ({} MB) — {} report(s), {} merged report(s), {} unique template(s) extracted, {} .map file(s) rewritten.",
+        "Packaged coverage bundle: {} ({} MB) - {} report(s), {} merged report(s), {} unique template(s) extracted, {} .map file(s) rewritten.",
         outputZip, String.format(Locale.ROOT, '%.2f', sizeMb), totalReports, manifestMergedReports.size(), extractedTemplates, rewrittenMaps
     )
   }

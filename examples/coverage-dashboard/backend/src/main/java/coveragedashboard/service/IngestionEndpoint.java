@@ -1,6 +1,7 @@
 package coveragedashboard.service;
 
 import coveragedashboard.service.dto.RunIngestionResponse;
+import jsweet.lang.Erased;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/v1/runs")
+@Erased
 public class IngestionEndpoint {
 
   private final RunIngestionService runIngestionService;
