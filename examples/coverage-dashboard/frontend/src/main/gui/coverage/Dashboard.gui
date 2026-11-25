@@ -12,9 +12,9 @@ import CoverageDashboard.App;
 page Dashboard(App app) {
   @GemGrid(
     width = "100%",
-    height = "100vh",
+    height = "auto",
     rowGap = "20px",
-    y = ["auto", "1fr"],
+    y = ["auto", "auto"],
     rows = [
       [
         @GemColumn(
