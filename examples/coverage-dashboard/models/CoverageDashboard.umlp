@@ -149,16 +149,12 @@ classdiagram CoverageDashboard{
 
   <<singleton>>
   class App{
-    GemLineChartData getCoverageTrajectory();
-    CoverageReport getDummyCoverageReport();
     String getFileContent(CoverageSourceFile file);
     List<String> getLineMapping(CoverageSourceFile file);
     List<TemplateUsage> getTemplateUsages(CoverageSourceFile template, CoveragePerspective directPerspective);
     CoverageReport getLatestComponentTest(TestGroup group);
     CoverageReport getLatestIntegrationTest(TestGroup group);
     CoverageReport getLatestGeneratedCodeTest(TestGroup group);
-    List<TestGroup> getLatestTestGroups();
-    Run getLatestRun();
     List<Run> getAllRuns();
     GemLineChartData getCciTrajectory();
 
