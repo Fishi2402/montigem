@@ -2,16 +2,19 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.gradle.api.tasks.PathSensitivity
 
+import java.io.BufferedOutputStream
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
@@ -166,19 +169,16 @@ tasks.register('packageCoverageBundle') {
 
   doLast {
     Path repoRoot = rootProject.projectDir.toPath().toAbsolutePath().normalize()
-    Path stagingDir = coverageBundleDir.get().asFile.toPath().resolve('staging').toAbsolutePath().normalize()
     Path outputZip = coverageBundleZip.get().asFile.toPath().toAbsolutePath().normalize()
+    Path virtualRoot = Path.of('bundle')
 
-    if (Files.exists(stagingDir)) {
-      project.delete(stagingDir.toFile())
-    }
-    Files.createDirectories(stagingDir)
     Files.createDirectories(outputZip.parent)
 
     String timestamp = explicitTimestamp
         ?: LocalDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
-    // 1. Copy available reports and assemble manifest testGroups
+    // 1. Collect available reports and assemble manifest testGroups
+    Map<String, Path> filesToZip = new TreeMap<>()
     def manifestGroups = []
     Set<String> includedReportNames = [] as Set
     int totalReports = 0
@@ -187,9 +187,8 @@ tasks.register('packageCoverageBundle') {
       group.reports.each { report ->
         Path srcReport = repoRoot.resolve(report.reportPath).normalize()
         if (Files.isRegularFile(srcReport)) {
-          Path dstReport = stagingDir.resolve(report.reportPath).normalize()
-          Files.createDirectories(dstReport.parent)
-          Files.copy(srcReport, dstReport, StandardCopyOption.REPLACE_EXISTING)
+          String entryName = repoRoot.relativize(srcReport).toString().replace('\\', '/')
+          filesToZip.put(entryName, srcReport)
           includedReports << report
           includedReportNames << report.name
           totalReports++
@@ -215,7 +214,7 @@ tasks.register('packageCoverageBundle') {
       }
     }
 
-    // 2. Copy source & generated directories (text/source/map files only, never .class or .jar)
+    // 2. Collect source & generated files (text/source/map files only, never .class or .jar)
     sourceDirsToCopy.each { relDir ->
       Path srcDir = repoRoot.resolve(relDir).normalize()
       if (!Files.isDirectory(srcDir)) {
@@ -230,31 +229,27 @@ tasks.register('packageCoverageBundle') {
           if (!allowedSourceExtensions.contains(ext)) {
             return
           }
-          Path rel = repoRoot.relativize(file)
-          Path dst = stagingDir.resolve(rel).normalize()
-          Files.createDirectories(dst.parent)
-          Files.copy(file, dst, StandardCopyOption.REPLACE_EXISTING)
+          String entryName = repoRoot.relativize(file).toString().replace('\\', '/')
+          filesToZip.put(entryName, file)
         }
       }
     }
 
-    // 3. Extract .ftl templates from jar: references and rewrite staged .map files to relative paths
-    def slurper = new JsonSlurper()
-    int rewrittenMaps = 0
-    int extractedTemplates = 0
-    Map<String, ZipFile> openJars = [:]
+    // 3. Extract .ftl templates from jar: references and rewrite .map files in memory (parallel)
+    List<Map.Entry<String, Path>> mapEntries = new ArrayList<>(filesToZip.entrySet().findAll { it.key.endsWith('.map') })
+    ThreadLocal<JsonSlurper> threadSlurper = ThreadLocal.withInitial { new JsonSlurper() }
+    ConcurrentHashMap<String, String> extractedTemplates = new ConcurrentHashMap<>()
+    ConcurrentHashMap<String, byte[]> rewrittenMapBytes = new ConcurrentHashMap<>()
+    ConcurrentHashMap<String, ZipFile> openJars = new ConcurrentHashMap<>()
+    AtomicInteger rewrittenMaps = new AtomicInteger(0)
 
     try {
-      List<Path> mapFiles = []
-      Files.walk(stagingDir).withCloseable { stream ->
-        stream.filter { Files.isRegularFile(it) && it.fileName.toString().endsWith('.map') }
-            .forEach { mapFiles << it }
-      }
-
-      mapFiles.each { Path mapFile ->
+      mapEntries.parallelStream().forEach { Map.Entry<String, Path> entry ->
+        String mapEntryName = entry.key
+        Path mapFile = entry.value
         def parsed
         try {
-          parsed = slurper.parse(mapFile.toFile(), 'UTF-8')
+          parsed = threadSlurper.get().parse(mapFile.toFile(), 'UTF-8')
         } catch (Exception e) {
           logger.warn("Skipping unparseable source map {}: {}", mapFile, e.message)
           return
@@ -263,6 +258,7 @@ tasks.register('packageCoverageBundle') {
           return
         }
 
+        Path virtualMapPath = virtualRoot.resolve(mapEntryName).normalize()
         List sources = parsed.sources as List
         List sourcesContent = (parsed.sourcesContent instanceof List) ? (parsed.sourcesContent as List) : null
         boolean modified = false
@@ -290,12 +286,13 @@ tasks.register('packageCoverageBundle') {
                 : jarFileName
             jarStem = jarStem.replaceAll('[^a-zA-Z0-9._-]', '_')
 
-            Path targetTemplate = stagingDir.resolve('templates').resolve(jarStem).resolve(innerPath).normalize()
-            if (!targetTemplate.startsWith(stagingDir)) {
+            Path virtualTemplate = virtualRoot.resolve('templates').resolve(jarStem).resolve(innerPath).normalize()
+            if (!virtualTemplate.startsWith(virtualRoot)) {
               continue
             }
+            String templateEntryName = virtualRoot.relativize(virtualTemplate).toString().replace('\\', '/')
 
-            if (!Files.exists(targetTemplate)) {
+            if (!extractedTemplates.containsKey(templateEntryName)) {
               String content = (sourcesContent != null && i < sourcesContent.size() && sourcesContent[i] instanceof String)
                   ? (sourcesContent[i] as String)
                   : null
@@ -304,22 +301,22 @@ tasks.register('packageCoverageBundle') {
                 Path jarPath = resolveAbsolutePath(jarPart)
                 if (jarPath != null && Files.isRegularFile(jarPath)) {
                   ZipFile zf = openJars.computeIfAbsent(jarPath.toString()) { new ZipFile(jarPath.toFile()) }
-                  ZipEntry ze = zf.getEntry(innerPath)
-                  if (ze != null) {
-                    content = zf.getInputStream(ze).getText('UTF-8')
+                  synchronized (zf) {
+                    ZipEntry ze = zf.getEntry(innerPath)
+                    if (ze != null) {
+                      content = zf.getInputStream(ze).getText('UTF-8')
+                    }
                   }
                 }
               }
 
               if (content != null) {
-                Files.createDirectories(targetTemplate.parent)
-                Files.writeString(targetTemplate, content, StandardCharsets.UTF_8)
-                extractedTemplates++
+                extractedTemplates.putIfAbsent(templateEntryName, content)
               }
             }
 
-            if (Files.exists(targetTemplate)) {
-              String relUri = mapFile.parent.relativize(targetTemplate).toString().replace('\\', '/')
+            if (extractedTemplates.containsKey(templateEntryName)) {
+              String relUri = virtualMapPath.parent.relativize(virtualTemplate).toString().replace('\\', '/')
               sources[i] = relUri
               if (sourcesContent != null && i < sourcesContent.size()) {
                 sourcesContent[i] = null
@@ -329,8 +326,8 @@ tasks.register('packageCoverageBundle') {
           } else {
             Path absPath = resolveAbsolutePath(rawSource)
             if (absPath != null && absPath.startsWith(repoRoot)) {
-              Path stagedTarget = stagingDir.resolve(repoRoot.relativize(absPath)).normalize()
-              String relUri = mapFile.parent.relativize(stagedTarget).toString().replace('\\', '/')
+              Path virtualTarget = virtualRoot.resolve(repoRoot.relativize(absPath)).normalize()
+              String relUri = virtualMapPath.parent.relativize(virtualTarget).toString().replace('\\', '/')
               sources[i] = relUri
               modified = true
             }
@@ -341,8 +338,8 @@ tasks.register('packageCoverageBundle') {
           if (sourcesContent != null && sourcesContent.every { it == null }) {
             parsed.remove('sourcesContent')
           }
-          Files.writeString(mapFile, JsonOutput.toJson(parsed), StandardCharsets.UTF_8)
-          rewrittenMaps++
+          rewrittenMapBytes.put(mapEntryName, JsonOutput.toJson(parsed).getBytes(StandardCharsets.UTF_8))
+          rewrittenMaps.incrementAndGet()
         }
       }
     } finally {
@@ -351,7 +348,7 @@ tasks.register('packageCoverageBundle') {
       }
     }
 
-    // 4. Write manifest.json
+    // 4. Stream manifest.json, extracted templates, and source/report files directly to coverage-bundle.zip
     def manifest = [
         commitHash   : commitHash,
         branchName   : branchName,
@@ -359,28 +356,45 @@ tasks.register('packageCoverageBundle') {
         testGroups   : manifestGroups,
         mergedReports: manifestMergedReports
     ]
-    Files.writeString(
-        stagingDir.resolve('manifest.json'),
-        JsonOutput.prettyPrint(JsonOutput.toJson(manifest)),
-        StandardCharsets.UTF_8
-    )
+    byte[] manifestBytes = JsonOutput.prettyPrint(JsonOutput.toJson(manifest)).getBytes(StandardCharsets.UTF_8)
+    byte[] copyBuffer = new byte[65536]
 
-    // 5. Zip stagingDir -> coverage-bundle.zip
-    new ZipOutputStream(Files.newOutputStream(outputZip)).withCloseable { ZipOutputStream zos ->
-      Files.walk(stagingDir).withCloseable { stream ->
-        stream.filter { Files.isRegularFile(it) }.sorted().forEach { Path file ->
-          String entryName = stagingDir.relativize(file).toString().replace('\\', '/')
-          zos.putNextEntry(new ZipEntry(entryName))
-          Files.copy(file, zos)
+    new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(outputZip), 65536)).withCloseable { ZipOutputStream zos ->
+      zos.setLevel(Deflater.BEST_SPEED)
+
+      zos.putNextEntry(new ZipEntry('manifest.json'))
+      zos.write(manifestBytes)
+      zos.closeEntry()
+
+      new TreeMap<>(extractedTemplates).each { String templateEntry, String content ->
+        if (!filesToZip.containsKey(templateEntry)) {
+          zos.putNextEntry(new ZipEntry(templateEntry))
+          zos.write(content.getBytes(StandardCharsets.UTF_8))
           zos.closeEntry()
         }
+      }
+
+      filesToZip.each { String entryName, Path srcFile ->
+        zos.putNextEntry(new ZipEntry(entryName))
+        byte[] rewritten = rewrittenMapBytes.get(entryName)
+        if (rewritten != null) {
+          zos.write(rewritten)
+        } else {
+          Files.newInputStream(srcFile).withCloseable { InputStream input ->
+            int read
+            while ((read = input.read(copyBuffer)) != -1) {
+              zos.write(copyBuffer, 0, read)
+            }
+          }
+        }
+        zos.closeEntry()
       }
     }
 
     double sizeMb = Files.size(outputZip) / (1024.0 * 1024.0)
     logger.lifecycle(
         "Packaged coverage bundle: {} ({} MB) - {} report(s), {} merged report(s), {} unique template(s) extracted, {} .map file(s) rewritten.",
-        outputZip, String.format(Locale.ROOT, '%.2f', sizeMb), totalReports, manifestMergedReports.size(), extractedTemplates, rewrittenMaps
+        outputZip, String.format(Locale.ROOT, '%.2f', sizeMb), totalReports, manifestMergedReports.size(), extractedTemplates.size(), rewrittenMaps.get()
     )
   }
 }

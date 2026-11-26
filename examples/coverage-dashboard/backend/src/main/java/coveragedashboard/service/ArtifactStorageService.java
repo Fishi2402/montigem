@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +15,8 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -29,7 +32,7 @@ public class ArtifactStorageService {
 
   private static final DateTimeFormatter DIR_TIMESTAMP =
       DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
-  private static final int BUFFER_SIZE = 8192;
+  private static final int BUFFER_SIZE = 65536;
 
   private final IngestionProperties properties;
 
@@ -57,7 +60,10 @@ public class ArtifactStorageService {
     long totalBytes = 0;
     int entryCount = 0;
 
-    try (InputStream rawStream = new BufferedInputStream(archive.getInputStream());
+    Set<Path> createdDirs = new HashSet<>();
+    createdDirs.add(runDir);
+
+    try (InputStream rawStream = new BufferedInputStream(archive.getInputStream(), BUFFER_SIZE);
          ZipInputStream zis = new ZipInputStream(rawStream)) {
 
       byte[] buffer = new byte[BUFFER_SIZE];
@@ -67,13 +73,15 @@ public class ArtifactStorageService {
         Path target = resolveSafePath(runDir, entry.getName());
 
         if (entry.isDirectory()) {
-          Files.createDirectories(target);
+          if (createdDirs.add(target)) {
+            Files.createDirectories(target);
+          }
         } else {
           Path parent = target.getParent();
-          if (parent != null) {
+          if (parent != null && createdDirs.add(parent)) {
             Files.createDirectories(parent);
           }
-          try (OutputStream out = Files.newOutputStream(target)) {
+          try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(target), BUFFER_SIZE)) {
             int read;
             while ((read = zis.read(buffer)) != -1) {
               totalBytes += read;
