@@ -107,12 +107,6 @@ public abstract class AbstractPlaywrightE2ETest implements PlaywrightUtils {
     frontendServer.start();
   }
 
-  @BeforeEach
-  protected void autoInitCoverage(BrowserContext context){
-    coverageTracker = new CoverageTracker(context, getFrontendDistDirectory());
-    coverageTracker.startJSCoverage();
-  }
-
   /**
    * Initializes the coverage tracker for JavaScript coverage analysis.
    *
