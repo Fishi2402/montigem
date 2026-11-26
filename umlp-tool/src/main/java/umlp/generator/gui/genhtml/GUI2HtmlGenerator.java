@@ -26,7 +26,8 @@ public class GUI2HtmlGenerator {
   }
 
   public void generate(ASTGUICompilationUnit ast, String configTemplate) {
-    Reporting.addConfigTemplate(configTemplate);
+    try {
+      Reporting.addConfigTemplate(configTemplate);
     TemplateController tc = setup.getNewTemplateController(configTemplate);
     TemplateHookPoint hpp = new TemplateHookPoint(configTemplate);
 
@@ -35,7 +36,9 @@ public class GUI2HtmlGenerator {
     // translate the GUI-AST into HTML
     hpp.processValue(tc, ast,
         Arrays.asList(ast, setup.getGlex(), setup.getHandcodedPath(), this));
-    Reporting.clearConfigTemplates();
+    }finally {
+      Reporting.clearConfigTemplates();
+    }
   }
 
   public void generate(ASTGUICompilationUnit decoratedAst) {

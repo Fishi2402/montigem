@@ -1,6 +1,5 @@
 package umlp.test_rte.playwright;
 
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,6 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * Tracks JavaScript coverage for a given browser context.
+ */
 public final class CoverageTracker {
 
   private final BrowserContext context;
@@ -150,7 +152,7 @@ public final class CoverageTracker {
           sessionSources.put(scriptId, scriptResult.get("scriptSource"));
         }
       }catch (Exception e){
-        // Script was unloaded, eval was discarded, or target closed during navigation.
+        // Script was unloaded, eval was discarded, or the target closed during navigation.
         // Safe to ignore since it won't appear in final coverage.
       }
     }
@@ -175,7 +177,7 @@ public final class CoverageTracker {
     }
 
 
-    // Replace any localhost occurrences to ensure proper handling by later tools that can not
+    // Replace any localhost occurrences to ensure proper handling by later tools that cannot
     // resolve a localhost URI
     for(JsonElement element : content){
       if(element.isJsonObject()){

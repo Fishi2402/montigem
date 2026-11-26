@@ -32,6 +32,7 @@ public class GUIDSLReports implements ReportManager.ReportManagerFactory {
   protected List<AReporter> reporters = new ArrayList<>();
 
   protected ReportLevel reportLevel = ReportLevel.ALL;
+  protected TemplateSourceMapping templateSourceMapping = TemplateSourceMapping.OFF;
 
   // protected MCPath templatePath;
 
@@ -54,6 +55,9 @@ public class GUIDSLReports implements ReportManager.ReportManagerFactory {
     this.reportLevel = reportLevel;
   }
 
+  public void setTemplateSourceMapping(TemplateSourceMapping mapping){
+    this.templateSourceMapping = mapping;
+  }
   /**
    * @see ReportManager.ReportManagerFactory#provide(String)
    */
@@ -95,7 +99,17 @@ public class GUIDSLReports implements ReportManager.ReportManagerFactory {
     SuccessfulReporter successfulReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     IncGenGradleReporter incGenGradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput,
         lowerCaseName);
-    TemplateSourceMappingReporter templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, true);
+    TemplateSourceMappingReporter templateSourceMappingReporter = null;
+    if(templateSourceMapping != TemplateSourceMapping.OFF) {
+      templateSourceMappingReporter = new TemplateSourceMappingReporter(this.reportDirectory, templateSourceMapping == TemplateSourceMapping.INCLUDE_SOURCES);
+    }
+
+
+    // Check if source-mapping is required before early exit in case of
+    // inc-gen report level
+    if(templateSourceMappingReporter != null){
+      reports.addReportEventHandler(templateSourceMappingReporter);
+    }
 
     if (reportLevel == ReportLevel.INCGEN) {
       reports.addReportEventHandler(incGenGradleReporter);
@@ -103,7 +117,6 @@ public class GUIDSLReports implements ReportManager.ReportManagerFactory {
       return reports;
     }
 
-    reports.addReportEventHandler(templateSourceMappingReporter);
     reports.addReportEventHandler(summaryReporter);
     reports.addReportEventHandler(generatedFilesReporter);
     reports.addReportEventHandler(handWrittenCodeReporter);

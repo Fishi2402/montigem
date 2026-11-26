@@ -92,19 +92,13 @@ public class JSweetInvoker {
     List<String> outputs = Arrays.stream(sourceFiles)
         .map(SourceFile::getTsFile)
         .filter(Objects::nonNull)
-        //.map(File::getAbsolutePath)
         .flatMap(f -> {
-          if(sourceMaps){
+          if(sourceMaps) {
             File mapFile = new File(f.getAbsolutePath() + ".map");
-            if(mapFile.exists()){
+            if (mapFile.exists())
               return Stream.of(f.getAbsolutePath(), mapFile.getAbsolutePath());
-            }else{
-              // Discuss: What is correct here?
-              return Stream.of(f.getAbsolutePath());
-            }
-          }else{
-            return Stream.of(f.getAbsolutePath());
           }
+          return Stream.of(f.getAbsolutePath());
         })
         .collect(Collectors.toList());
     try {

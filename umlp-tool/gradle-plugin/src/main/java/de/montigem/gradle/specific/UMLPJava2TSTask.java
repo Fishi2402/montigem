@@ -121,16 +121,16 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
   @PathSensitive(PathSensitivity.RELATIVE)
   public abstract DirectoryProperty getHandWrittenJSweetDir();
 
-  @Input
-  @Optional
-  public abstract Property<String> getJacocoAgentArg();
-
   @Inject
   abstract public WorkerExecutor getWorkerExecutor();
 
   @InputFiles
   @Classpath
   public abstract ConfigurableFileCollection getClassPath();
+
+  @Input
+  @Optional
+  public abstract Property<String> getJacocoAgentArg();
 
   @Input
   @Optional
@@ -183,7 +183,7 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
     List<String> classPath = new ArrayList<>();
     classPath.add(getJSweetRuntimeClassPath().getAsPath());
 
-    // Prepare a WorkQueue in the jsweet class path
+    // Get correct work queue (based on JacocoAgentArg)
     WorkQueue workQueue = createWorkQueue(getJSweetClassPath());
 
     // collect all .java files
@@ -265,9 +265,18 @@ public abstract class UMLPJava2TSTask extends DefaultTask {
     return individualInputPaths;
   }
 
+  /**
+   * Creates and configures a {@link WorkQueue} for executing tasks based on the provided classpath.
+   * Depending on whether JaCoCo coverage is requested for this build, the method sets up either
+   * a process-isolated or class-loader-isolated work queue.
+   *
+   * @param targetClassPath the classpath that will be assigned to the worker specification.
+   *                        This classpath determines the dependencies available to the worker.
+   * @return the configured {@link WorkQueue}, which can be used to execute tasks.
+   */
   private WorkQueue createWorkQueue(ConfigurableFileCollection targetClassPath){
     // Check if JaCoCo is requested for this build to get the coverage during invocation of the
-    // generator. In order to attach JaCoCo, spawn separate JVM just for this step and attach
+    // generator. To attach JaCoCo, spawn a separate JVM just for this step and attach
     // JaCoCo
     if(getJacocoAgentArg().isPresent() && !getJacocoAgentArg().get().isEmpty()) {
       getLogger().info("Spawning separate JVM with JaCoCo attached for internal coverage");
