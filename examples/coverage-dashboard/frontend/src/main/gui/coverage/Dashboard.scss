@@ -1,0 +1,17 @@
+:host ::ng-deep {
+  gem-grid.dashboardGrid,
+  gem-grid.dashboardGrid > gem-grid-cell,
+  gem-grid.headerGrid,
+  gem-grid.headerGrid gem-grid-cell {
+    overflow: visible !important;
+  }
+
+  .runDropdown {
+    position: relative;
+    z-index: 1000;
+
+    .gem-dropdown-content {
+      z-index: 1000 !important;
+    }
+  }
+}

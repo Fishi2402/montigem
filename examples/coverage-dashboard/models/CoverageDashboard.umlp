@@ -159,6 +159,8 @@ classdiagram CoverageDashboard{
     CoverageReport getLatestGeneratedCodeTest(TestGroup group);
     List<TestGroup> getLatestTestGroups();
     Run getLatestRun();
+    List<Run> getAllRuns();
+    GemLineChartData getCciTrajectory();
 
     GemPieChartData getCoverageData(CoveragePerspective perspective);
     GemPieChartData getAggregatedCoverageData(CoveragePerspective perspective);

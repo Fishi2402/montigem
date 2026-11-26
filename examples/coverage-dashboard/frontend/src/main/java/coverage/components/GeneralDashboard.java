@@ -6,7 +6,6 @@ import coveragedashboard.TestGroup;
 import coveragedashboard.commands.GetLatestComponentTest;
 import coveragedashboard.commands.GetLatestGeneratedCodeTest;
 import coveragedashboard.commands.GetLatestIntegrationTest;
-import coveragedashboard.commands.GetLatestRun;
 import umlp.backendrte.command.CommandManager;
 import umlp.backendrte.command.CommandResult;
 import umlp.jsweet.extension.annotation.Component;
@@ -19,16 +18,6 @@ public class GeneralDashboard extends GeneralDashboardTOP {
 
   public GeneralDashboard() {
     super();
-  }
-
-  @Override
-  public List<Run> getLatestRuns() {
-    List<Run> runs = new ArrayList<>();
-    CommandResult<Run> res = CommandManager.executeCommand(new GetLatestRun());
-    if (res.isSuccessful() && res.isSimpleResult() && res.asSimpleResult().get() != null) {
-      runs.add(res.asSimpleResult().get());
-    }
-    return runs;
   }
 
   @Override

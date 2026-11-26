@@ -17,14 +17,14 @@ import CoverageDashboard.TestGroup;
 import CoverageDashboard.CoverageReport;
 import CoverageDashboard.AggregatedCoverageReport;
 
-component GeneralDashboard(App app) {
+component GeneralDashboard(App app, List<Run> runs) {
   @GemColumn(
     width = "100%",
     rowGap = "20px",
     components = [
-      @iterate(Run run : getLatestRuns()){
+      @iterate(Run run : runs){
         runSummaryCard@GemCard(
-          title = "Latest Run",
+          title = "Run Summary",
           width = "100%",
           component = @GemGrid(
             width = "100%",
